@@ -1,0 +1,293 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\tablelist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\tablelist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\customerslist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\customerslist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:wwwroot\\css\\dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\managerorderlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\managerorderlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\managerreports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\managerreports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\categorylist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\categorylist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\addorder.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\addorder.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\foodlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\foodlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\share.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:wwwroot\\css\\share.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\home\\chooserestaurant.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\chooserestaurant.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:11:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:13:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:14:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Microsoft.NET.Sdk.StaticWebAssets.targets",
+              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
+              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
+              "ViewState": "AgIAAJwCAAAAAAAAAAAvwKYCAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-06-06T19:20:36.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "D:\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "D:\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAABMAAAAAAAAAAAAvwB0AAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-06-06T19:19:31.225Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ManagerReports.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ManagerReports.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\ManagerReports.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ManagerReports.cshtml",
+              "RelativeToolTip": "Views\\Home\\ManagerReports.cshtml",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-06T18:09:00.465Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CustomersList.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\CustomersList.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\CustomersList.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\CustomersList.cshtml",
+              "RelativeToolTip": "Views\\Home\\CustomersList.cshtml",
+              "ViewState": "AgIAAM8AAAAAAAAAAAAAANUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-06T18:08:09.235Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TableList.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\TableList.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\TableList.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\TableList.cshtml",
+              "RelativeToolTip": "Views\\Home\\TableList.cshtml",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-06T18:07:38.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ManagerOrderList.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ManagerOrderList.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\ManagerOrderList.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ManagerOrderList.cshtml",
+              "RelativeToolTip": "Views\\Home\\ManagerOrderList.cshtml",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAEMAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-06T18:05:00.68Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Dashboard.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\Dashboard.cshtml",
+              "RelativeToolTip": "Views\\Home\\Dashboard.cshtml",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAuwAoAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T10:06:35.303Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "dashboard.css",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\dashboard.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\dashboard.css",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\dashboard.css",
+              "RelativeToolTip": "wwwroot\\css\\dashboard.css",
+              "ViewState": "AgIAAFkCAAAAAAAAAAAswGgCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-06-05T11:16:19.759Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CategoryList.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\CategoryList.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\CategoryList.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\CategoryList.cshtml",
+              "RelativeToolTip": "Views\\Home\\CategoryList.cshtml",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAB8AAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-06T18:06:44.252Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAACkEAAAAAAAAAAAAABYEAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-06T17:31:39.267Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FoodList.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\FoodList.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\FoodList.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\FoodList.cshtml",
+              "RelativeToolTip": "Views\\Home\\FoodList.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADABAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T12:57:38.651Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AddOrder.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\AddOrder.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\AddOrder.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\AddOrder.cshtml",
+              "RelativeToolTip": "Views\\Home\\AddOrder.cshtml",
+              "ViewState": "AgIAAK4DAAAAAAAAAAAuwLYDAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T12:55:21.99Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ChooseRestaurant.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ChooseRestaurant.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\ChooseRestaurant.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Home\\ChooseRestaurant.cshtml",
+              "RelativeToolTip": "Views\\Home\\ChooseRestaurant.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T10:30:27.909Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "share.css",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\share.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\share.css",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\share.css",
+              "RelativeToolTip": "wwwroot\\css\\share.css",
+              "ViewState": "AgIAABkBAAAAAAAAAAAcwCQBAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-06-05T10:11:23.31Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAADcAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T10:03:30.647Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "D:\\aspnet projects\\resturanyar\\resturanyar\\resturanyar\\resturanyar_webservice\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-05T09:59:33.224Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+2025-11-22 09:09:14.972 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-22 09:09:15.233 +03:30 [INF] Now listening on: https://localhost:7171
+2025-11-22 09:09:15.234 +03:30 [INF] Now listening on: http://localhost:5292
+2025-11-22 09:09:15.327 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-22 09:09:15.327 +03:30 [INF] Hosting environment: Development
+2025-11-22 09:09:15.327 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2025-11-22 09:09:16.487 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2025-11-22 09:09:16.677 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:09:16.689 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:09:17.026 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2025-11-22 09:09:17.030 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.4485ms.
+2025-11-22 09:09:17.044 +03:30 [INF] Executing ViewResult, running view Index.
+2025-11-22 09:09:17.123 +03:30 [INF] Executed ViewResult - view Index executed in 88.3282ms.
+2025-11-22 09:09:17.125 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2025-11-22 09:09:17.125 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:09:17.125 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - null null
+2025-11-22 09:09:17.126 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - null null
+2025-11-22 09:09:17.128 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 438.2095ms
+2025-11-22 09:09:17.128 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:09:17.129 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:09:17.135 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2025-11-22 09:09:17.136 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2025-11-22 09:09:17.136 +03:30 [INF] The file /resturanyar.styles.css was not modified
+2025-11-22 09:09:17.136 +03:30 [INF] The file /lib/bootstrap/dist/css/bootstrap.min.css was not modified
+2025-11-22 09:09:17.136 +03:30 [INF] The file /images/logo.png was not modified
+2025-11-22 09:09:17.136 +03:30 [INF] The file /css/site.css was not modified
+2025-11-22 09:09:17.136 +03:30 [INF] The file /lib/bootstrap/dist/js/bootstrap.bundle.min.js was not modified
+2025-11-22 09:09:17.138 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - null null
+2025-11-22 09:09:17.140 +03:30 [INF] The file /lib/jquery/dist/jquery.min.js was not modified
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 304 null text/javascript 7.4338ms
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - 304 null text/css 17.9561ms
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - 304 null text/css 17.2318ms
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - 304 null text/css 18.6706ms
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 304 null image/png 7.8476ms
+2025-11-22 09:09:17.144 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - 304 null text/javascript 6.0351ms
+2025-11-22 09:09:17.146 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - null null
+2025-11-22 09:09:17.183 +03:30 [INF] The file /js/site.js was not modified
+2025-11-22 09:09:17.184 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - 304 null text/javascript 39.5077ms
+2025-11-22 09:09:17.184 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 59.2469ms
+2025-11-22 09:09:17.191 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 713.1723ms
+2025-11-22 09:09:17.221 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 92.2515ms
+2025-11-22 09:09:17.255 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2025-11-22 09:09:17.255 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tablethome.jpg - null null
+2025-11-22 09:09:17.256 +03:30 [INF] The file /images/tabletfoodlist.jpg was not modified
+2025-11-22 09:09:17.256 +03:30 [INF] The file /images/tablethome.jpg was not modified
+2025-11-22 09:09:17.256 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 304 null image/jpeg 0.7232ms
+2025-11-22 09:09:17.256 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tablethome.jpg - 304 null image/jpeg 0.5074ms
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - null null
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - null null
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - null null
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - null null
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - null null
+2025-11-22 09:09:36.427 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - null null
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb6.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb4.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb2.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb5.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb3.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - 304 null image/jpeg 0.6642ms
+2025-11-22 09:09:36.428 +03:30 [INF] The file /images/sampleweb1.jpg was not modified
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - 304 null image/jpeg 0.6491ms
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - 304 null image/jpeg 0.7769ms
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - 304 null image/jpeg 0.5956ms
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - 304 null image/jpeg 0.645ms
+2025-11-22 09:09:36.428 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - 304 null image/jpeg 0.9855ms
+2025-11-22 09:30:01.282 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-22 09:30:01.422 +03:30 [INF] Now listening on: https://localhost:7171
+2025-11-22 09:30:01.423 +03:30 [INF] Now listening on: http://localhost:5292
+2025-11-22 09:30:01.467 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-22 09:30:01.467 +03:30 [INF] Hosting environment: Development
+2025-11-22 09:30:01.467 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2025-11-22 09:30:01.738 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2025-11-22 09:30:01.851 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:30:01.858 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:30:01.955 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2025-11-22 09:30:01.958 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3636ms.
+2025-11-22 09:30:01.964 +03:30 [INF] Executing ViewResult, running view Index.
+2025-11-22 09:30:02.015 +03:30 [INF] Executed ViewResult - view Index executed in 53.358ms.
+2025-11-22 09:30:02.018 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 159.5954ms
+2025-11-22 09:30:02.018 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:30:02.024 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 290.6718ms
+2025-11-22 09:30:02.033 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:30:02.033 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:30:02.036 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 2.7803ms
+2025-11-22 09:30:02.061 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 27.582ms
+2025-11-22 09:53:39.470 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-22 09:53:39.628 +03:30 [INF] Now listening on: https://localhost:7171
+2025-11-22 09:53:39.628 +03:30 [INF] Now listening on: http://localhost:5292
+2025-11-22 09:53:39.672 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-22 09:53:39.672 +03:30 [INF] Hosting environment: Development
+2025-11-22 09:53:39.672 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2025-11-22 09:53:40.352 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2025-11-22 09:53:40.466 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:53:40.474 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:53:40.577 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2025-11-22 09:53:40.579 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3285ms.
+2025-11-22 09:53:40.585 +03:30 [INF] Executing ViewResult, running view Index.
+2025-11-22 09:53:40.634 +03:30 [INF] Executed ViewResult - view Index executed in 51.0456ms.
+2025-11-22 09:53:40.636 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 162.2229ms
+2025-11-22 09:53:40.637 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-22 09:53:40.639 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:53:40.639 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:53:40.649 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 9.6022ms
+2025-11-22 09:53:40.649 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 302.5001ms
+2025-11-22 09:53:40.673 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 34.189ms
+2025-11-22 09:54:05.155 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2025-11-22 09:54:05.191 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2025-11-22 09:54:05.193 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:05.219 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:05.220 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.8298ms.
+2025-11-22 09:54:05.221 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2025-11-22 09:54:05.382 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 161.0152ms.
+2025-11-22 09:54:05.386 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 192.9324ms
+2025-11-22 09:54:05.387 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2025-11-22 09:54:05.389 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 233.9641ms
+2025-11-22 09:54:05.400 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:54:05.400 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css - null null
+2025-11-22 09:54:05.401 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/bergerback.jpg - null null
+2025-11-22 09:54:05.402 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:54:05.402 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.9752ms
+2025-11-22 09:54:05.417 +03:30 [INF] The file /images/bergerback.jpg was not modified
+2025-11-22 09:54:05.418 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/bergerback.jpg - 304 null image/jpeg 17.7125ms
+2025-11-22 09:54:05.424 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 22.0205ms
+2025-11-22 09:54:05.429 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\site.css'
+2025-11-22 09:54:05.429 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css - 200 1592 text/css 28.684ms
+2025-11-22 09:54:05.445 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2025-11-22 09:54:05.446 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2025-11-22 09:54:05.450 +03:30 [INF] CORS policy execution successful.
+2025-11-22 09:54:05.450 +03:30 [INF] CORS policy execution successful.
+2025-11-22 09:54:05.451 +03:30 [INF] The file /fonts/iranyekan/iranyekanwebboldfanum.woff was not modified
+2025-11-22 09:54:05.451 +03:30 [INF] The file /fonts/iranyekan/iranyekanwebregularfanum.woff was not modified
+2025-11-22 09:54:05.452 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - 304 null application/font-woff 6.3785ms
+2025-11-22 09:54:05.452 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - 304 null application/font-woff 6.9498ms
+2025-11-22 09:54:06.531 +03:30 [INF] Request starting HTTP/2 POST https://localhost:7171/Home/ManagerLogin - application/x-www-form-urlencoded 216
+2025-11-22 09:54:06.551 +03:30 [INF] CORS policy execution successful.
+2025-11-22 09:54:06.558 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2025-11-22 09:54:06.568 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ManagerLogin(resturanyar.Models.OwnerLoginRequest) on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:06.597 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:07.572 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:07.573 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-11-22 09:54:09.193 +03:30 [INF] Executed DbCommand (230ms) [Parameters=[@__request_Phone_0='?' (Size = 11)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [o].[Id], [o].[Name], [o].[Password], [o].[Phone], [o].[role_id]
+FROM [Owners] AS [o]
+WHERE [o].[Phone] = @__request_Phone_0
+2025-11-22 09:54:09.269 +03:30 [INF] AuthenticationScheme: Cookies signed in.
+2025-11-22 09:54:09.269 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.RedirectToActionResult in 2671.9817ms.
+2025-11-22 09:54:09.270 +03:30 [INF] Executing RedirectResult, redirecting to /Home/ChooseRestaurant.
+2025-11-22 09:54:09.270 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 2701.5819ms
+2025-11-22 09:54:09.270 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2025-11-22 09:54:09.273 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ChooseRestaurant - null null
+2025-11-22 09:54:09.293 +03:30 [INF] Request finished HTTP/2 POST https://localhost:7171/Home/ManagerLogin - 302 0 null 2762.311ms
+2025-11-22 09:54:09.294 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar)'
+2025-11-22 09:54:09.296 +03:30 [INF] Route matched with {action = "ChooseRestaurant", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ChooseRestaurant() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:09.307 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:09.385 +03:30 [INF] Executed DbCommand (44ms) [Parameters=[@__Parse_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[restaurant_id], [r].[PublicMenuToken], [r].[name], [r].[owner_id], [r].[restaurant_code]
+FROM [Restaurants] AS [r]
+WHERE [r].[owner_id] = @__Parse_0
+2025-11-22 09:54:09.496 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 189.3655ms.
+2025-11-22 09:54:09.497 +03:30 [INF] Executing ViewResult, running view ChooseRestaurant.
+2025-11-22 09:54:09.682 +03:30 [INF] Executed ViewResult - view ChooseRestaurant executed in 185.3419ms.
+2025-11-22 09:54:09.682 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar) in 385.9593ms
+2025-11-22 09:54:09.682 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar)'
+2025-11-22 09:54:09.682 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ChooseRestaurant - 200 null text/html; charset=utf-8 408.597ms
+2025-11-22 09:54:09.692 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:54:09.692 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/man.png - null null
+2025-11-22 09:54:09.692 +03:30 [INF] The file /images/man.png was not modified
+2025-11-22 09:54:09.693 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/man.png - 304 null image/png 1.0403ms
+2025-11-22 09:54:09.694 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:54:09.695 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.2217ms
+2025-11-22 09:54:09.712 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 19.8029ms
+2025-11-22 09:54:13.214 +03:30 [INF] Request starting HTTP/2 POST https://localhost:7171/Home/SelectRestaurant - application/x-www-form-urlencoded 241
+2025-11-22 09:54:13.238 +03:30 [INF] CORS policy execution successful.
+2025-11-22 09:54:13.239 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar)'
+2025-11-22 09:54:13.243 +03:30 [INF] Route matched with {action = "SelectRestaurant", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SelectRestaurant(Int32) on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:13.254 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:13.516 +03:30 [INF] Executed DbCommand (111ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[AutoRenew], [s].[CafeBazarOrderId], [s].[CafeBazarPurchaseToken], [s].[CanceledAt], [s].[CreatedAt], [s].[DiscountApplied], [s].[EndDate], [s].[IsPaid], [s].[NextRenewalDate], [s].[OwnerId], [s].[PaymentMethod], [s].[PricePaid], [s].[PurchaseDate], [s].[RestaurantId], [s].[StartDate], [s].[Status], [s].[SubscriptionPeriod], [s].[SubscriptionPlanId], [s].[TransactionId], [s].[UpdatedAt], [s0].[Id], [s0].[CafeBazarCode12Monthly], [s0].[CafeBazarCode3Monthly], [s0].[CafeBazarCode6Monthly], [s0].[CafeBazarCodeMonthly], [s0].[CanAccessReports], [s0].[CanAddImages], [s0].[CanManageCategories], [s0].[CanManageMultipleRestaurants], [s0].[CanManageTables], [s0].[CanManageUsers], [s0].[CanShareMenu], [s0].[CanUseGoftino], [s0].[CanUsePrinter], [s0].[CanUseRealtime], [s0].[CanUseSocialChat], [s0].[CanUseWeb], [s0].[CategoryLimit], [s0].[Code], [s0].[CreatedAt], [s0].[Description], [s0].[DiscountPrice12Monthly], [s0].[DiscountPrice3Monthly], [s0].[DiscountPrice6Monthly], [s0].[DiscountPriceMonthly], [s0].[EmployeeLimit], [s0].[FoodLimit], [s0].[IsActive], [s0].[Name], [s0].[Price12Monthly], [s0].[Price3Monthly], [s0].[Price6Monthly], [s0].[PriceMonthly], [s0].[TableLimit], [s0].[UpdatedAt]
+FROM [Subscriptions] AS [s]
+INNER JOIN [SubscriptionPlans] AS [s0] ON [s].[SubscriptionPlanId] = [s0].[Id]
+WHERE [s].[RestaurantId] = @__restaurantId_0 AND [s].[Status] = N'Active' AND [s].[EndDate] >= GETDATE()
+2025-11-22 09:54:13.600 +03:30 [INF] AuthenticationScheme: Cookies signed in.
+2025-11-22 09:54:13.600 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar), returned result Microsoft.AspNetCore.Mvc.RedirectToActionResult in 346.0793ms.
+2025-11-22 09:54:13.601 +03:30 [INF] Executing RedirectResult, redirecting to /Home/Dashboard.
+2025-11-22 09:54:13.601 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar) in 358.5687ms
+2025-11-22 09:54:13.601 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar)'
+2025-11-22 09:54:13.601 +03:30 [INF] Request finished HTTP/2 POST https://localhost:7171/Home/SelectRestaurant - 302 0 null 387.4917ms
+2025-11-22 09:54:13.604 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/Dashboard - null null
+2025-11-22 09:54:13.616 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2025-11-22 09:54:13.619 +03:30 [INF] Route matched with {action = "Dashboard", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Dashboard() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:13.629 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Dashboard (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:13.683 +03:30 [INF] Executed DbCommand (40ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[restaurant_id], [r].[PublicMenuToken], [r].[name], [r].[owner_id], [r].[restaurant_code]
+FROM [Restaurants] AS [r]
+WHERE [r].[restaurant_id] = @__restaurantId_0
+2025-11-22 09:54:13.755 +03:30 [INF] Executed DbCommand (57ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Users] AS [u]
+WHERE [u].[restaurant_id] = @__restaurantId_0
+2025-11-22 09:54:13.848 +03:30 [INF] Executed DbCommand (74ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+WHERE [f].[RestaurantId] = @__restaurantId_0 AND [f].[IsActive] = CAST(1 AS bit) AND [f].[IsAvailable] = CAST(1 AS bit)
+2025-11-22 09:54:13.906 +03:30 [INF] Executed DbCommand (51ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32), @__today_1='?' (DbType = DateTime2), @__tomorrow_2='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[CreatedAt] >= @__today_1 AND [o].[CreatedAt] < @__tomorrow_2
+2025-11-22 09:54:13.957 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Dashboard (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 327.9339ms.
+2025-11-22 09:54:13.958 +03:30 [INF] Executing ViewResult, running view Dashboard.
+2025-11-22 09:54:13.967 +03:30 [INF] Executed ViewResult - view Dashboard executed in 9.2896ms.
+2025-11-22 09:54:13.967 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Dashboard (resturanyar) in 348.0541ms
+2025-11-22 09:54:13.967 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2025-11-22 09:54:13.967 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/Dashboard - 200 null text/html; charset=utf-8 363.619ms
+2025-11-22 09:54:13.983 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:54:13.983 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:54:13.984 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo_circle.png - null null
+2025-11-22 09:54:13.984 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.0538ms
+2025-11-22 09:54:13.984 +03:30 [INF] The file /images/logo_circle.png was not modified
+2025-11-22 09:54:13.985 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo_circle.png - 304 null image/png 0.4819ms
+2025-11-22 09:54:13.992 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 8.9697ms
+2025-11-22 09:54:13.998 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/back.jpg - null null
+2025-11-22 09:54:13.998 +03:30 [INF] The file /images/back.jpg was not modified
+2025-11-22 09:54:13.998 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/back.jpg - 304 null image/jpeg 0.8241ms
+2025-11-22 09:54:19.955 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerReports - null null
+2025-11-22 09:54:19.975 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerReports (resturanyar)'
+2025-11-22 09:54:19.980 +03:30 [INF] Route matched with {action = "ManagerReports", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ManagerReports(Int32, System.String, System.Nullable`1[System.DateTime], System.Nullable`1[System.DateTime], Int32) on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-22 09:54:19.998 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerReports (resturanyar) - Validation state: "Valid"
+2025-11-22 09:54:20.055 +03:30 [INF] Executed DbCommand (43ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0
+2025-11-22 09:54:20.101 +03:30 [INF] Executed DbCommand (37ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[StatusId] = 8
+2025-11-22 09:54:20.154 +03:30 [INF] Executed DbCommand (42ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[StatusId] IN (9, 10)
+2025-11-22 09:54:20.236 +03:30 [INF] Executed DbCommand (53ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[StatusId], COUNT(*) AS [Count]
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0
+GROUP BY [o].[StatusId]
+2025-11-22 09:54:20.306 +03:30 [INF] Executed DbCommand (50ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(SUM(CAST([o].[Quantity] AS decimal(18,2)) * COALESCE([o].[UnitPriceWithDiscount], [o].[UnitPrice])), 0.0)
+FROM [OrderItems] AS [o]
+INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o0].[RestaurantId] = @__restaurantId_0
+2025-11-22 09:54:20.366 +03:30 [INF] Executed DbCommand (49ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(SUM(CAST([o].[Quantity] AS decimal(18,2)) * COALESCE([o].[UnitPriceWithDiscount], [o].[UnitPrice])), 0.0)
+FROM [OrderItems] AS [o]
+INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o0].[RestaurantId] = @__restaurantId_0 AND [o0].[StatusId] = 8
+2025-11-22 09:54:20.423 +03:30 [INF] Executed DbCommand (46ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(SUM([o].[Quantity]), 0)
+FROM [OrderItems] AS [o]
+INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o0].[RestaurantId] = @__restaurantId_0
+2025-11-22 09:54:20.485 +03:30 [INF] Executed DbCommand (46ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Key] AS [Day], COALESCE(SUM(CAST([s].[Quantity] AS decimal(18,2)) * COALESCE([s].[UnitPriceWithDiscount], [s].[UnitPrice])), 0.0) AS [Revenue], COUNT(DISTINCT ([s].[OrderId])) AS [Orders]
+FROM (
+    SELECT [o].[OrderId], [o].[Quantity], [o].[UnitPrice], [o].[UnitPriceWithDiscount], CONVERT(date, [o0].[CreatedAt]) AS [Key]
+    FROM [OrderItems] AS [o]
+    INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+    WHERE [o0].[RestaurantId] = @__restaurantId_0
+) AS [s]
+GROUP BY [s].[Key]
+ORDER BY [s].[Key]
+2025-11-22 09:54:20.537 +03:30 [INF] Executed DbCommand (46ms) [Parameters=[@__p_1='?' (DbType = Int32), @__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(@__p_1) [o].[FoodItemId], [o].[FoodName] AS [Name], [o].[FoodImageUrl] AS [ImageUrl], COALESCE(SUM([o].[Quantity]), 0) AS [Quantity], COALESCE(SUM(CAST([o].[Quantity] AS decimal(18,2)) * COALESCE([o].[UnitPriceWithDiscount], [o].[UnitPrice])), 0.0) AS [Revenue]
+FROM [OrderItems] AS [o]
+INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o0].[RestaurantId] = @__restaurantId_0
+GROUP BY [o].[FoodItemId], [o].[FoodName], [o].[FoodImageUrl]
+ORDER BY COALESCE(SUM([o].[Quantity]), 0) DESC
+2025-11-22 09:54:20.586 +03:30 [INF] Executed DbCommand (44ms) [Parameters=[@__p_1='?' (DbType = Int32), @__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(@__p_1) [o].[FoodItemId], [o].[FoodName] AS [Name], [o].[FoodImageUrl] AS [ImageUrl], COALESCE(SUM([o].[Quantity]), 0) AS [Quantity], COALESCE(SUM(CAST([o].[Quantity] AS decimal(18,2)) * COALESCE([o].[UnitPriceWithDiscount], [o].[UnitPrice])), 0.0) AS [Revenue]
+FROM [OrderItems] AS [o]
+INNER JOIN [Orders] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o0].[RestaurantId] = @__restaurantId_0
+GROUP BY [o].[FoodItemId], [o].[FoodName], [o].[FoodImageUrl]
+ORDER BY COALESCE(SUM(CAST([o].[Quantity] AS decimal(18,2)) * COALESCE([o].[UnitPriceWithDiscount], [o].[UnitPrice])), 0.0) DESC
+2025-11-22 09:54:20.588 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerReports (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 589.9298ms.
+2025-11-22 09:54:20.589 +03:30 [INF] Executing ViewResult, running view ManagerReports.
+2025-11-22 09:54:20.640 +03:30 [INF] Executed ViewResult - view ManagerReports executed in 51.2866ms.
+2025-11-22 09:54:20.641 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerReports (resturanyar) in 661.103ms
+2025-11-22 09:54:20.641 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerReports (resturanyar)'
+2025-11-22 09:54:20.645 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerReports - 200 null text/html; charset=utf-8 690.2322ms
+2025-11-22 09:54:20.655 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-22 09:54:20.655 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/jalalidatepicker.min.js - null null
+2025-11-22 09:54:20.655 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/jalalidatepicker.min.css - null null
+2025-11-22 09:54:20.655 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-22 09:54:20.655 +03:30 [INF] The file /css/jalalidatepicker.min.css was not modified
+2025-11-22 09:54:20.656 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/jalalidatepicker.min.css - 304 null text/css 0.8069ms
+2025-11-22 09:54:20.656 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.2073ms
+2025-11-22 09:54:20.656 +03:30 [INF] The file /js/jalalidatepicker.min.js was not modified
+2025-11-22 09:54:20.657 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/jalalidatepicker.min.js - 304 null text/javascript 1.5772ms
+2025-11-22 09:54:20.670 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.9886ms

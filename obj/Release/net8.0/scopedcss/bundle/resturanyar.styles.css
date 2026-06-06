@@ -1,0 +1,147 @@
+/* _content/resturanyar/Views/Shared/_Layout3.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-vw5afwpafs] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-vw5afwpafs] {
+  color: #0077cc;
+}
+
+.btn-primary[b-vw5afwpafs] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-vw5afwpafs], .nav-pills .show > .nav-link[b-vw5afwpafs] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-vw5afwpafs] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-vw5afwpafs] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-vw5afwpafs] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-vw5afwpafs] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-vw5afwpafs] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+/* _content/resturanyar/Views/Shared/_Layoutdefault.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-b0u5rfmsdu] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-b0u5rfmsdu] {
+  color: #0077cc;
+}
+
+.btn-primary[b-b0u5rfmsdu] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-b0u5rfmsdu], .nav-pills .show > .nav-link[b-b0u5rfmsdu] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-b0u5rfmsdu] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-b0u5rfmsdu] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-b0u5rfmsdu] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-b0u5rfmsdu] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-b0u5rfmsdu] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+/* _content/resturanyar/Views/Shared/_Layoutgrock.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-jfzzdjmxh9] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-jfzzdjmxh9] {
+  color: #0077cc;
+}
+
+.btn-primary[b-jfzzdjmxh9] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-jfzzdjmxh9], .nav-pills .show > .nav-link[b-jfzzdjmxh9] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-jfzzdjmxh9] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-jfzzdjmxh9] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-jfzzdjmxh9] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-jfzzdjmxh9] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-jfzzdjmxh9] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

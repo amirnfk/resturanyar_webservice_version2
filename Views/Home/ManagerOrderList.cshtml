@@ -1,0 +1,216 @@
+﻿@model resturanyar.Models.OrderListViewModel
+@{
+    ViewData["Title"] = "مدیریت سفارش‌ها";
+    string currentPeriod = ViewData["CurrentPeriod"]?.ToString() ?? "";
+}
+<link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" />
+<link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
+<script src="~/js/jalalidatepicker.min.js"></script>
+
+<style>
+    body {
+        direction: rtl;
+        background: linear-gradient(145deg,#f6f8fb 0%,#eef2f6 100%);
+        font-family: "IRANSans", Tahoma, sans-serif;
+        min-height: 100vh;
+    }
+
+    .page-title {
+        font-weight: 800;
+        color: #0d6efd;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .filter-card {
+        background: #fff;
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 3px 20px rgba(0,0,0,.04);
+        transition: box-shadow .3s ease;
+    }
+
+        .filter-card:hover {
+            box-shadow: 0 3px 25px rgba(0,0,0,.07);
+        }
+
+    .form-label {
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg,#008cff 0%,#0061ff 100%);
+        border: none;
+        font-weight: 600;
+        padding: .6rem 1.3rem;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg,#0061ff 0%,#008cff 100%);
+        }
+
+    .quick-filter-btn {
+        border-radius: 30px;
+        font-size: .9rem;
+        transition: all .2s;
+    }
+
+        .quick-filter-btn.active,
+        .quick-filter-btn:hover {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container py-5">
+    
+
+    <div class="filter-card p-4 mb-4">
+        <form id="filterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerOrderList","Home")">
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">وضعیت</label>
+                <select name="statusId" class="form-select">
+                    <option value="0" selected="@(Model.FilterStatusId == 0 ? "selected" : null)">انتخاب...</option>
+                    <option value="-1" selected="@(Model.FilterStatusId == -1 ? "selected" : null)">همه</option>
+                    @foreach (var kv in Model.StatusMap)
+                    {
+                        <option value="@kv.Key" selected="@(Model.FilterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">از تاریخ</label>
+                <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" readonly />
+                <input type="hidden" name="from" id="fromIso" value="@(Model.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+                <div id="fromFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
+            </div>
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">تا تاریخ</label>
+                <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" readonly />
+                <input type="hidden" name="to" id="toIso" value="@(Model.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+                <div id="toFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label">جست‌وجو</label>
+                <input type="text" name="search" class="form-control" placeholder="شماره سفارش یا توضیح"
+                       value="@(Model.Search ?? "")" />
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">تعداد در صفحه</label>
+                <select name="pageSize" class="form-select">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                </select>
+            </div>
+
+            <div class="col-md-1 col-sm-12 text-end">
+                <button type="submit" class="btn btn-primary w-100">اعمال</button>
+            </div>
+
+            <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                <a href="@Url.Action("ManagerOrderList","Home",new{period="today",page=1})"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="today"?"active":"")">امروز</a>
+                <a href="@Url.Action("ManagerOrderList","Home",new{period="week",page=1})"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="week"?"active":"")">هفته</a>
+                <a href="@Url.Action("ManagerOrderList","Home",new{period="month",page=1})"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="month"?"active":"")">ماه</a>
+                <a href="@Url.Action("ManagerOrderList","Home",new{period="quarter",page=1})"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="quarter"?"active":"")">سه‌ماهه</a>
+                <a href="@Url.Action("ManagerOrderList","Home",new{period="year",page=1})"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="year"?"active":"")">سال</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="ordersContainer">
+        @await Html.PartialAsync("_ManagerOrdersPartial", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/jquery_3.6.0.min.js"></script>
+    <script>
+        (() => {
+            const ordersContainer = document.getElementById('ordersContainer');
+            const filterForm = document.getElementById('filterForm');
+
+            function jalali_to_gregorian(jy,jm,jd){
+                jy-=979; jm-=1; jd-=1;
+                var j_day_no=365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4);
+                var j_days=[31,31,31,31,31,31,30,30,30,30,30,29];
+                for(var i=0;i<jm;++i) j_day_no+=j_days[i];
+                j_day_no+=jd;
+                var g_day_no=j_day_no+79;
+                var gy=1600+400*Math.floor(g_day_no/146097); g_day_no%=146097;
+                var leap=true;
+                if(g_day_no>=36525){g_day_no--;gy+=100*Math.floor(g_day_no/36524);g_day_no%=36524;
+                    if(g_day_no>=365)g_day_no++;else leap=false;}
+                gy+=4*Math.floor(g_day_no/1461); g_day_no%=1461;
+                if(g_day_no>=366){leap=false;g_day_no--;gy+=Math.floor(g_day_no/365);g_day_no%=365;}
+                var g_days=[31,(leap?29:28),31,30,31,30,31,31,30,31,30,31];
+                var gm; for(gm=0;g_day_no>=g_days[gm];gm++) g_day_no-=g_days[gm];
+                return [gy,gm+1,g_day_no+1];
+            }
+
+            function initializeDatepickers(){
+                jalaliDatepicker.startWatch({time:false});
+                document.querySelectorAll("input[data-jdp]").forEach(input=>{
+                    input.addEventListener("change",()=>{
+                        const id=input.id;
+                        const faDate=input.value;
+                        if(!faDate) return;
+                        const [jy,jm,jd]=faDate.split('/').map(Number);
+                        const [gy,gm,gd]=jalali_to_gregorian(jy,jm,jd);
+                        const iso=`${gy}-${String(gm).padStart(2,'0')}-${String(gd).padStart(2,'0')}`;
+                        if(id==="fromFa") document.getElementById("fromIso").value=iso;
+                        else if(id==="toFa") document.getElementById("toIso").value=iso;
+                    });
+                });
+            }
+
+            function getFormQuery(form){
+                const data=new FormData(form),params=new URLSearchParams();
+                for(const [k,v] of data.entries()) if(v.trim()!="") params.append(k,v);
+                return params.toString();
+            }
+
+            async function loadOrders(url){
+                const res=await fetch(url,{headers:{'X-Requested-With':'XMLHttpRequest'}});
+                ordersContainer.innerHTML=await res.text();
+                setTimeout(initializeDatepickers,200);
+            }
+
+            filterForm.addEventListener('submit',e=>{
+                e.preventDefault();
+                const query=getFormQuery(filterForm);
+                loadOrders(`${filterForm.action}?${query}&page=1`);
+            });
+
+            document.querySelectorAll('.quick-filter-btn').forEach(btn=>{
+                btn.addEventListener('click',e=>{
+                    e.preventDefault();
+                    loadOrders(btn.href);
+                });
+            });
+
+            ordersContainer.addEventListener('click',e=>{
+                if(e.target.matches('.pagination a.page-link')){
+                    e.preventDefault(); loadOrders(e.target.href);
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded',()=>{
+                initializeDatepickers();
+            });
+        })();
+    </script>
+}

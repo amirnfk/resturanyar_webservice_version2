@@ -1,0 +1,76 @@
+﻿/* IRANYekan Regular */
+@font-face {
+    font-family: 'IRANYekan';
+    src: url('/fonts/iranyekan/iranyekanwebregularfanum.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* IRANYekan Bold */
+@font-face {
+    font-family: 'IRANYekan';
+    src: url('/fonts/iranyekan/iranyekanwebboldfanum.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* اعمال فونت روی کل پروژه */
+html, body, button, input, select, textarea, table, th, td {
+    font-family: 'IRANYekan', Tahoma, sans-serif;
+    direction: rtl;
+    text-align: right;
+    user-select: none; /* استاندارد */
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+}
+
+
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+.bg-orange {
+    background-color: #f57c00; /* HaftOrange */
+}
+
+.text-orange {
+    color: #f57c00;
+}
+ 
+ 
+
+.form-control::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+
+.btn-orange {
+    background-color: #f57c00;
+    color: white;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+    .btn-orange:hover {
+        background-color: #e65100;
+    }
+
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+ 

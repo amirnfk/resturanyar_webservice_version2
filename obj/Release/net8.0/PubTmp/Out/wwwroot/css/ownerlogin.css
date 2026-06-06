@@ -1,0 +1,30 @@
+﻿ 
+.main-box {
+    max-width: 420px;
+    margin: -180px auto 0 auto; /* بالاتر بیاد و وسط چین بمونه */
+}
+
+.logo-img {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+}
+
+.bg-orange {
+    background-color: #FF8000;
+}
+
+.text-orange {
+    color: #FF8000;
+}
+
+.btn-orange {
+    background-color: #FF8800;
+    color: #fff;
+}
+
+    .btn-orange:hover {
+        background-color: #e06e00;
+    }
+
+ 

@@ -1,0 +1,6 @@
+2026-06-02 14:48:29.871 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 14:48:30.019 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 14:48:30.020 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 14:48:30.096 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 14:48:30.097 +03:30 [INF] Hosting environment: Development
+2026-06-02 14:48:30.097 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice

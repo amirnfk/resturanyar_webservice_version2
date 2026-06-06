@@ -1,0 +1,480 @@
+2026-05-30 15:15:05 - Verify called: Authority=S000000000000000000000000000000n628d, Status=OK
+2026-05-30 15:15:05 - EXCEPTION: System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method829(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1748
+2026-05-30 15:18:14 - Verify called: Authority=S000000000000000000000000000000zpd3x, Status=OK
+2026-05-30 15:18:14 - No payment found with TransactionId = S000000000000000000000000000000zpd3x
+2026-05-30 15:18:33 - Verify called: Authority=S000000000000000000000000000000o3jrw, Status=OK
+2026-05-30 15:18:33 - EXCEPTION: System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method829(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1748
+2026-05-30 15:46:10 - Verify called: Authority=S0000000000000000000000000000001xlll, Status=OK
+2026-05-30 15:46:10 - EXCEPTION: System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method841(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1748
+2026-05-30 15:49:25 - Verify called: Authority=S000000000000000000000000000000pp1ne, Status=OK
+2026-05-30 3:49:25 PM - EXCEPTION: System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method841(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1744
+2026-05-30 15:59:35 - Verify called: Authority=S000000000000000000000000000000rxpe1, Status=OK
+2026-05-30 3:59:35 PM - EXCEPTION: System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method829(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1744
+2026-05-30 16:14:32 - ========== VERIFY HIT ==========
+2026-05-30 16:14:32 - Request.Path = /zarinpal/verify
+2026-05-30 16:14:32 - Request.QueryString = ?Authority=S000000000000000000000000000000dz278&Status=OK
+2026-05-30 16:14:32 - Authority(param) = S000000000000000000000000000000dz278
+2026-05-30 16:14:32 - Status(param) = OK
+2026-05-30 16:14:32 - RemoteIP = ::1
+2026-05-30 16:14:32 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:14:32 - ========== EXCEPTION ==========
+2026-05-30 16:14:32 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method821(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:16:03 - ========== VERIFY HIT ==========
+2026-05-30 16:16:03 - Request.Path = /zarinpal/verify
+2026-05-30 16:16:03 - Request.QueryString = ?Authority=S000000000000000000000000000000ppo77&Status=OK
+2026-05-30 16:16:03 - Authority(param) = S000000000000000000000000000000ppo77
+2026-05-30 16:16:03 - Status(param) = OK
+2026-05-30 16:16:03 - RemoteIP = ::1
+2026-05-30 16:16:03 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:16:03 - ========== EXCEPTION ==========
+2026-05-30 16:16:03 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method821(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:17:03 - ========== VERIFY HIT ==========
+2026-05-30 16:17:03 - Request.Path = /zarinpal/verify
+2026-05-30 16:17:03 - Request.QueryString = ?Authority=S00000000000000000000000000000076qej&Status=OK
+2026-05-30 16:17:03 - Authority(param) = S00000000000000000000000000000076qej
+2026-05-30 16:17:03 - Status(param) = OK
+2026-05-30 16:17:03 - RemoteIP = ::1
+2026-05-30 16:17:03 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:17:03 - ========== EXCEPTION ==========
+2026-05-30 16:17:03 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method821(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:19:59 - ========== VERIFY HIT ==========
+2026-05-30 16:19:59 - Request.Path = /zarinpal/verify
+2026-05-30 16:19:59 - Request.QueryString = ?Authority=S000000000000000000000000000000w7wlj&Status=OK
+2026-05-30 16:19:59 - Authority(param) = S000000000000000000000000000000w7wlj
+2026-05-30 16:19:59 - Status(param) = OK
+2026-05-30 16:19:59 - RemoteIP = ::1
+2026-05-30 16:19:59 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:19:59 - ========== EXCEPTION ==========
+2026-05-30 16:19:59 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method841(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:20:49 - ========== VERIFY HIT ==========
+2026-05-30 16:20:49 - Request.Path = /zarinpal/verify
+2026-05-30 16:20:49 - Request.QueryString = ?Authority=S000000000000000000000000000000n6rvl&Status=OK
+2026-05-30 16:20:49 - Authority(param) = S000000000000000000000000000000n6rvl
+2026-05-30 16:20:49 - Status(param) = OK
+2026-05-30 16:20:49 - RemoteIP = ::1
+2026-05-30 16:20:49 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:20:49 - ========== EXCEPTION ==========
+2026-05-30 16:20:49 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method841(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:26:08 - ========== VERIFY HIT ==========
+2026-05-30 16:26:08 - Request.Path = /zarinpal/verify
+2026-05-30 16:26:08 - Request.QueryString = ?Authority=S000000000000000000000000000000zpwq8&Status=OK
+2026-05-30 16:26:08 - Authority(param) = S000000000000000000000000000000zpwq8
+2026-05-30 16:26:08 - Status(param) = OK
+2026-05-30 16:26:08 - RemoteIP = ::1
+2026-05-30 16:26:08 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:26:08 - ========== EXCEPTION ==========
+2026-05-30 16:26:08 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method821(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:28:04 - ========== VERIFY HIT ==========
+2026-05-30 16:28:04 - Request.Path = /zarinpal/verify
+2026-05-30 16:28:04 - Request.QueryString = ?Authority=S000000000000000000000000000000x2o2x&Status=OK
+2026-05-30 16:28:04 - Authority(param) = S000000000000000000000000000000x2o2x
+2026-05-30 16:28:04 - Status(param) = OK
+2026-05-30 16:28:04 - RemoteIP = ::1
+2026-05-30 16:28:04 - UserAgent = Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+2026-05-30 16:28:04 - ========== EXCEPTION ==========
+2026-05-30 16:28:04 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method832(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1762
+2026-05-30 16:30:14 - ========== VERIFY HIT ==========
+2026-05-30 16:30:14 - Request.Path = /zarinpal/verify
+2026-05-30 16:30:14 - Request.QueryString = ?Authority=S00000000000000000000000000000026g2w&Status=OK
+2026-05-30 16:30:14 - Authority(param) = S00000000000000000000000000000026g2w
+2026-05-30 16:30:14 - Status(param) = OK
+2026-05-30 16:30:15 - Payment found => Id=1148, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-30 16:30:15 - ========== EXCEPTION ==========
+2026-05-30 16:30:15 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method836(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1779
+2026-05-30 16:43:58 - ========== VERIFY HIT ==========
+2026-05-30 16:43:58 - Request.Path = /zarinpal/verify
+2026-05-30 16:43:58 - Request.QueryString = ?Authority=S0000000000000000000000000000008m5l7&Status=OK
+2026-05-30 16:43:58 - Authority(param) = S0000000000000000000000000000008m5l7
+2026-05-30 16:43:58 - Status(param) = OK
+2026-05-30 16:43:58 - Payment found => Id=1149, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-30 16:43:58 - ========== EXCEPTION ==========
+2026-05-30 16:43:58 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method824(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1779
+2026-05-30 16:49:06 - ========== VERIFY HIT ==========
+2026-05-30 16:49:06 - Request.Path = /zarinpal/verify
+2026-05-30 16:49:06 - Request.QueryString = ?Authority=S000000000000000000000000000000loj3n&Status=OK
+2026-05-30 16:49:06 - Authority(param) = S000000000000000000000000000000loj3n
+2026-05-30 16:49:06 - Status(param) = OK
+2026-05-30 16:49:06 - Payment found => Id=1150, Status=PendingPayment, PricePaid=245000.00, Period=1
+2026-05-30 16:49:06 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S000000000000000000000000000000loj3n"}
+2026-05-30 16:49:06 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":1914501,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-30 16:49:06 - Verify parsed => code=100, refId=1914501
+2026-05-31 09:04:43 - ========== VERIFY HIT ==========
+2026-05-31 09:04:43 - Request.Path = /zarinpal/verify
+2026-05-31 09:04:43 - Request.QueryString = ?Authority=S000000000000000000000000000000qywg7&Status=OK
+2026-05-31 09:04:43 - Authority(param) = S000000000000000000000000000000qywg7
+2026-05-31 09:04:43 - Status(param) = OK
+2026-05-31 09:04:43 - Payment found => Id=1151, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 09:04:43 - ========== EXCEPTION ==========
+2026-05-31 09:04:43 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method932(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1928
+2026-05-31 09:14:12 - ========== VERIFY HIT ==========
+2026-05-31 09:14:12 - Request.Path = /zarinpal/verify
+2026-05-31 09:14:12 - Request.QueryString = ?Authority=S000000000000000000000000000000mroqr&Status=OK
+2026-05-31 09:14:12 - Authority(param) = S000000000000000000000000000000mroqr
+2026-05-31 09:14:12 - Status(param) = OK
+2026-05-31 09:14:12 - Payment found => Id=1152, Status=PendingPayment, PricePaid=343000.00, Period=1
+2026-05-31 09:14:12 - ========== EXCEPTION ==========
+2026-05-31 09:14:12 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlBuffer.ThrowIfNull()
+   at Microsoft.Data.SqlClient.SqlBuffer.get_String()
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method932(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1928
+2026-05-31 09:17:24 - ========== VERIFY HIT ==========
+2026-05-31 09:17:24 - Request.Path = /zarinpal/verify
+2026-05-31 09:17:24 - Request.QueryString = ?Authority=S00000000000000000000000000000082xl2&Status=OK
+2026-05-31 09:17:24 - Authority(param) = S00000000000000000000000000000082xl2
+2026-05-31 09:17:24 - Status(param) = OK
+2026-05-31 09:17:24 - Payment found => Id=1153, Status=PendingPayment, PricePaid=343000.00, Period=1
+2026-05-31 09:17:24 - ========== EXCEPTION ==========
+2026-05-31 09:17:24 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method932(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1928
+2026-05-31 09:19:25 - ========== VERIFY HIT ==========
+2026-05-31 09:19:25 - Request.Path = /zarinpal/verify
+2026-05-31 09:19:25 - Request.QueryString = ?Authority=S000000000000000000000000000000y5gpr&Status=OK
+2026-05-31 09:19:25 - Authority(param) = S000000000000000000000000000000y5gpr
+2026-05-31 09:19:25 - Status(param) = OK
+2026-05-31 09:19:25 - Payment found => Id=1154, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 09:19:25 - ========== EXCEPTION ==========
+2026-05-31 09:19:25 - System.Data.SqlTypes.SqlNullValueException: Data is Null. This method or property cannot be called on Null values.
+   at Microsoft.Data.SqlClient.SqlDataReader.GetString(Int32 i)
+   at lambda_method932(Closure, QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at resturanyar.Controllers.HomeController.ZarinpalVerify(String Authority, String Status) in E:\myAspProjects\resturanyar\resturanyar_webservice\Controllers\HomeController.cs:line 1928
+2026-05-31 09:22:04 - ========== VERIFY HIT ==========
+2026-05-31 09:22:04 - Request.Path = /zarinpal/verify
+2026-05-31 09:22:04 - Request.QueryString = ?Authority=S000000000000000000000000000000l3xre&Status=OK
+2026-05-31 09:22:04 - Authority(param) = S000000000000000000000000000000l3xre
+2026-05-31 09:22:04 - Status(param) = OK
+2026-05-31 09:22:04 - Payment found => Id=1155, Status=PendingPayment, PricePaid=245000.00, Period=1
+2026-05-31 09:22:04 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S000000000000000000000000000000l3xre"}
+2026-05-31 09:22:04 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5619101,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 09:22:04 - Verify parsed => code=100, refId=5619101
+2026-05-31 09:29:41 - ========== VERIFY HIT ==========
+2026-05-31 09:29:41 - Request.Path = /zarinpal/verify
+2026-05-31 09:29:41 - Request.QueryString = ?Authority=S0000000000000000000000000000005qedw&Status=OK
+2026-05-31 09:29:41 - Authority(param) = S0000000000000000000000000000005qedw
+2026-05-31 09:29:41 - Status(param) = OK
+2026-05-31 09:29:41 - Payment found => Id=1156, Status=PendingPayment, PricePaid=343000.00, Period=1
+2026-05-31 09:29:41 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S0000000000000000000000000000005qedw"}
+2026-05-31 09:29:42 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5659001,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 09:29:42 - Verify parsed => code=100, refId=5659001
+2026-05-31 09:36:09 - ========== VERIFY HIT ==========
+2026-05-31 09:36:09 - Request.Path = /zarinpal/verify
+2026-05-31 09:36:09 - Request.QueryString = ?Authority=S000000000000000000000000000000vgleo&Status=OK
+2026-05-31 09:36:09 - Authority(param) = S000000000000000000000000000000vgleo
+2026-05-31 09:36:09 - Status(param) = OK
+2026-05-31 09:36:09 - Payment found => Id=1157, Status=PendingPayment, PricePaid=343000.00, Period=1
+2026-05-31 09:36:09 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000vgleo"}
+2026-05-31 09:36:09 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5677501,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 09:36:09 - Verify parsed => code=100, refId=5677501
+2026-05-31 10:22:30 - ========== VERIFY HIT ==========
+2026-05-31 10:22:30 - Request.Path = /zarinpal/verify
+2026-05-31 10:22:30 - Request.QueryString = ?Authority=S000000000000000000000000000000wxj26&Status=OK
+2026-05-31 10:22:30 - Authority(param) = S000000000000000000000000000000wxj26
+2026-05-31 10:22:30 - Status(param) = OK
+2026-05-31 10:22:30 - Payment found => Id=1159, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 10:22:30 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000wxj26"}
+2026-05-31 10:22:31 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5873701,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 10:22:31 - Verify parsed => code=100, refId=5873701
+2026-05-31 10:23:26 - ========== VERIFY HIT ==========
+2026-05-31 10:23:26 - Request.Path = /zarinpal/verify
+2026-05-31 10:23:26 - Request.QueryString = ?Authority=S000000000000000000000000000000ox1jy&Status=OK
+2026-05-31 10:23:26 - Authority(param) = S000000000000000000000000000000ox1jy
+2026-05-31 10:23:26 - Status(param) = OK
+2026-05-31 10:23:26 - Payment found => Id=1160, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 10:23:26 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000ox1jy"}
+2026-05-31 10:23:26 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5876501,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 10:23:26 - Verify parsed => code=100, refId=5876501
+2026-05-31 10:27:05 - ========== VERIFY HIT ==========
+2026-05-31 10:27:05 - Request.Path = /zarinpal/verify
+2026-05-31 10:27:05 - Request.QueryString = ?Authority=S000000000000000000000000000000eevym&Status=OK
+2026-05-31 10:27:05 - Authority(param) = S000000000000000000000000000000eevym
+2026-05-31 10:27:05 - Status(param) = OK
+2026-05-31 10:27:05 - Payment found => Id=1161, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 10:27:05 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000eevym"}
+2026-05-31 10:27:05 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":5891701,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 10:27:05 - Verify parsed => code=100, refId=5891701
+2026-05-31 11:31:43 - ========== VERIFY HIT ==========
+2026-05-31 11:31:43 - Request.Path = /zarinpal/verify
+2026-05-31 11:31:43 - Request.QueryString = ?Authority=S000000000000000000000000000000wq75x&Status=OK
+2026-05-31 11:31:43 - Authority(param) = S000000000000000000000000000000wq75x
+2026-05-31 11:31:43 - Status(param) = OK
+2026-05-31 11:31:43 - Payment found => Id=1162, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 11:31:43 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000wq75x"}
+2026-05-31 11:31:43 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":6141401,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 11:31:43 - Verify parsed => code=100, refId=6141401
+2026-05-31 12:46:28 - ========== VERIFY HIT ==========
+2026-05-31 12:46:28 - Request.Path = /zarinpal/verify
+2026-05-31 12:46:28 - Request.QueryString = ?Authority=S000000000000000000000000000000pq23n&Status=OK
+2026-05-31 12:46:28 - Authority(param) = S000000000000000000000000000000pq23n
+2026-05-31 12:46:28 - Status(param) = OK
+2026-05-31 12:46:28 - Payment found => Id=1168, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 12:46:28 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000pq23n"}
+2026-05-31 12:46:28 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":6473601,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 12:46:28 - Verify parsed => code=100, refId=6473601
+2026-05-31 16:17:31 - ========== VERIFY HIT ==========
+2026-05-31 16:17:31 - Request.Path = /zarinpal/verify
+2026-05-31 16:17:31 - Request.QueryString = ?Authority=S0000000000000000000000000000001lr6v&Status=OK
+2026-05-31 16:17:31 - Authority(param) = S0000000000000000000000000000001lr6v
+2026-05-31 16:17:31 - Status(param) = OK
+2026-05-31 16:17:31 - Payment found => Id=1170, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 16:17:31 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S0000000000000000000000000000001lr6v"}
+2026-05-31 16:17:31 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":7888501,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:17:31 - Verify parsed => code=100, refId=7888501
+2026-05-31 16:17:57 - ========== VERIFY HIT ==========
+2026-05-31 16:17:57 - Request.Path = /zarinpal/verify
+2026-05-31 16:17:57 - Request.QueryString = ?Authority=S000000000000000000000000000000ddpej&Status=OK
+2026-05-31 16:17:57 - Authority(param) = S000000000000000000000000000000ddpej
+2026-05-31 16:17:57 - Status(param) = OK
+2026-05-31 16:17:57 - Payment found => Id=1171, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 16:17:57 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000ddpej"}
+2026-05-31 16:17:57 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":7891801,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:17:57 - Verify parsed => code=100, refId=7891801
+2026-05-31 16:18:18 - ========== VERIFY HIT ==========
+2026-05-31 16:18:18 - Request.Path = /zarinpal/verify
+2026-05-31 16:18:18 - Request.QueryString = ?Authority=S0000000000000000000000000000003mxml&Status=OK
+2026-05-31 16:18:18 - Authority(param) = S0000000000000000000000000000003mxml
+2026-05-31 16:18:18 - Status(param) = OK
+2026-05-31 16:18:18 - Payment found => Id=1172, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-31 16:18:18 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S0000000000000000000000000000003mxml"}
+2026-05-31 16:18:18 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":7896901,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:18:18 - Verify parsed => code=100, refId=7896901
+2026-05-31 16:18:37 - ========== VERIFY HIT ==========
+2026-05-31 16:18:37 - Request.Path = /zarinpal/verify
+2026-05-31 16:18:37 - Request.QueryString = ?Authority=S0000000000000000000000000000006mvoj&Status=OK
+2026-05-31 16:18:37 - Authority(param) = S0000000000000000000000000000006mvoj
+2026-05-31 16:18:37 - Status(param) = OK
+2026-05-31 16:18:37 - Payment found => Id=1174, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 16:18:37 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S0000000000000000000000000000006mvoj"}
+2026-05-31 16:18:38 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":7900401,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:18:38 - Verify parsed => code=100, refId=7900401
+2026-05-31 16:21:40 - ========== VERIFY HIT ==========
+2026-05-31 16:21:40 - Request.Path = /zarinpal/verify
+2026-05-31 16:21:40 - Request.QueryString = ?Authority=S000000000000000000000000000000ylovx&Status=OK
+2026-05-31 16:21:40 - Authority(param) = S000000000000000000000000000000ylovx
+2026-05-31 16:21:40 - Status(param) = OK
+2026-05-31 16:21:40 - Payment found => Id=1176, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 16:21:40 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000ylovx"}
+2026-05-31 16:21:40 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":7925101,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:21:40 - Verify parsed => code=100, refId=7925101
+2026-05-31 16:54:14 - ========== VERIFY HIT ==========
+2026-05-31 16:54:14 - Request.Path = /zarinpal/verify
+2026-05-31 16:54:14 - Request.QueryString = ?Authority=S000000000000000000000000000000xd1dv&Status=OK
+2026-05-31 16:54:14 - Authority(param) = S000000000000000000000000000000xd1dv
+2026-05-31 16:54:14 - Status(param) = OK
+2026-05-31 16:54:14 - Payment found => Id=1178, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 16:54:14 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000xd1dv"}
+2026-05-31 16:54:14 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":8109501,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 16:54:14 - Verify parsed => code=100, refId=8109501
+2026-05-31 20:38:26 - ========== VERIFY HIT ==========
+2026-05-31 20:38:26 - Request.Path = /zarinpal/verify
+2026-05-31 20:38:26 - Request.QueryString = ?Authority=S000000000000000000000000000000d1rw8&Status=OK
+2026-05-31 20:38:26 - Authority(param) = S000000000000000000000000000000d1rw8
+2026-05-31 20:38:26 - Status(param) = OK
+2026-05-31 20:38:26 - Payment found => Id=1179, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 20:38:26 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000d1rw8"}
+2026-05-31 20:38:26 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":9084101,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 20:38:26 - Verify parsed => code=100, refId=9084101
+2026-05-31 20:38:57 - ========== VERIFY HIT ==========
+2026-05-31 20:38:57 - Request.Path = /zarinpal/verify
+2026-05-31 20:38:57 - Request.QueryString = ?Authority=S000000000000000000000000000000n8rpj&Status=OK
+2026-05-31 20:38:57 - Authority(param) = S000000000000000000000000000000n8rpj
+2026-05-31 20:38:57 - Status(param) = OK
+2026-05-31 20:38:57 - Payment found => Id=1180, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-31 20:38:57 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S000000000000000000000000000000n8rpj"}
+2026-05-31 20:38:57 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":9087601,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 20:38:57 - Verify parsed => code=100, refId=9087601
+2026-05-31 20:39:51 - ========== VERIFY HIT ==========
+2026-05-31 20:39:51 - Request.Path = /zarinpal/verify
+2026-05-31 20:39:51 - Request.QueryString = ?Authority=S000000000000000000000000000000yewqm&Status=OK
+2026-05-31 20:39:51 - Authority(param) = S000000000000000000000000000000yewqm
+2026-05-31 20:39:51 - Status(param) = OK
+2026-05-31 20:39:51 - Payment found => Id=1181, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-31 20:39:51 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S000000000000000000000000000000yewqm"}
+2026-05-31 20:39:52 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":9095101,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 20:39:52 - Verify parsed => code=100, refId=9095101
+2026-05-31 21:13:12 - ========== VERIFY HIT ==========
+2026-05-31 21:13:12 - Request.Path = /zarinpal/verify
+2026-05-31 21:13:12 - Request.QueryString = ?Authority=S00000000000000000000000000000081ex2&Status=NOK
+2026-05-31 21:13:12 - Authority(param) = S00000000000000000000000000000081ex2
+2026-05-31 21:13:12 - Status(param) = NOK
+2026-05-31 21:13:12 - Payment found => Id=1182, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 21:13:12 - Status != OK => NOK
+2026-05-31 21:13:39 - ========== VERIFY HIT ==========
+2026-05-31 21:13:39 - Request.Path = /zarinpal/verify
+2026-05-31 21:13:39 - Request.QueryString = ?Authority=S00000000000000000000000000000058e3j&Status=OK
+2026-05-31 21:13:39 - Authority(param) = S00000000000000000000000000000058e3j
+2026-05-31 21:13:39 - Status(param) = OK
+2026-05-31 21:13:39 - Payment found => Id=1183, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-05-31 21:13:39 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S00000000000000000000000000000058e3j"}
+2026-05-31 21:13:39 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":9289001,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 21:13:39 - Verify parsed => code=100, refId=9289001
+2026-05-31 21:33:19 - ========== VERIFY HIT ==========
+2026-05-31 21:33:19 - Request.Path = /zarinpal/verify
+2026-05-31 21:33:19 - Request.QueryString = ?Authority=S000000000000000000000000000000o58nj&Status=OK
+2026-05-31 21:33:19 - Authority(param) = S000000000000000000000000000000o58nj
+2026-05-31 21:33:19 - Status(param) = OK
+2026-05-31 21:33:19 - Payment found => Id=1188, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-05-31 21:33:19 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S000000000000000000000000000000o58nj"}
+2026-05-31 21:33:19 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":9381901,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-05-31 21:33:19 - Verify parsed => code=100, refId=9381901
+2026-06-01 08:23:49 - ========== VERIFY HIT ==========
+2026-06-01 08:23:49 - Request.Path = /zarinpal/verify
+2026-06-01 08:23:49 - Request.QueryString = ?Authority=S00000000000000000000000000000065mov&Status=OK
+2026-06-01 08:23:49 - Authority(param) = S00000000000000000000000000000065mov
+2026-06-01 08:23:49 - Status(param) = OK
+2026-06-01 08:23:49 - Payment found => Id=1193, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-06-01 08:23:49 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S00000000000000000000000000000065mov"}
+2026-06-01 08:23:49 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":14935001,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-06-01 08:23:50 - Verify parsed => code=100, refId=14935001
+2026-06-01 08:24:13 - ========== VERIFY HIT ==========
+2026-06-01 08:24:13 - Request.Path = /zarinpal/verify
+2026-06-01 08:24:13 - Request.QueryString = ?Authority=S00000000000000000000000000000025p8n&Status=OK
+2026-06-01 08:24:13 - Authority(param) = S00000000000000000000000000000025p8n
+2026-06-01 08:24:13 - Status(param) = OK
+2026-06-01 08:24:13 - Payment found => Id=1195, Status=PendingPayment, PricePaid=245000.00, Period=Monthly
+2026-06-01 08:24:13 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":245000,"authority":"S00000000000000000000000000000025p8n"}
+2026-06-01 08:24:13 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":14935701,"fee_type":"Merchant","fee":73500,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-06-01 08:24:13 - Verify parsed => code=100, refId=14935701
+2026-06-01 08:41:50 - ========== VERIFY HIT ==========
+2026-06-01 08:41:50 - Request.Path = /zarinpal/verify
+2026-06-01 08:41:50 - Request.QueryString = ?Authority=S000000000000000000000000000000pg2w2&Status=OK
+2026-06-01 08:41:50 - Authority(param) = S000000000000000000000000000000pg2w2
+2026-06-01 08:41:50 - Status(param) = OK
+2026-06-01 08:41:50 - Payment found => Id=1196, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-06-01 08:41:50 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000pg2w2"}
+2026-06-01 08:41:50 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":15001301,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-06-01 08:41:50 - Verify parsed => code=100, refId=15001301
+2026-06-01 08:42:02 - ========== VERIFY HIT ==========
+2026-06-01 08:42:02 - Request.Path = /zarinpal/verify
+2026-06-01 08:42:02 - Request.QueryString = ?Authority=S000000000000000000000000000000xmezv&Status=OK
+2026-06-01 08:42:02 - Authority(param) = S000000000000000000000000000000xmezv
+2026-06-01 08:42:02 - Status(param) = OK
+2026-06-01 08:42:02 - Payment found => Id=1197, Status=PendingPayment, PricePaid=343000.00, Period=Monthly
+2026-06-01 08:42:02 - Verify request => {"merchant_id":"ede4080d-e6e6-4524-b7f3-4da0cc3ffe51","amount":343000,"authority":"S000000000000000000000000000000xmezv"}
+2026-06-01 08:42:03 - Verify response => {"data":{"wages":null,"code":100,"message":"Paid","card_hash":"0866A6EAEA5CB085E4CF6EF19296BF19647552DD5F96F1E530DB3AE61837EFE7","card_pan":"999999******9999","ref_id":15002601,"fee_type":"Merchant","fee":102900,"shaparak_fee":1200,"order_id":null},"errors":[]}
+2026-06-01 08:42:03 - Verify parsed => code=100, refId=15002601

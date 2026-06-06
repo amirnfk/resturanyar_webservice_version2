@@ -1,0 +1,548 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="رستورانیار: نرم‌افزار یکپارچه مدیریت رستوران، منوی دیجیتال، سفارش‌گیر، آشپزخانه و صندوق. سریع، هوشمند، قابل اتکا." />
+    <meta name="keywords" content="نرم افزار رستوران, POS رستوران, منوی دیجیتال QR, سفارشگیر گارسون, سیستم مدیریت کافه, نرم افزار فست فود, صندوق رستوران, مدیریت آشپزخانه" />
+    <meta name="theme-color" content="#ff7a1a" />
+    <title>دانلود نرم افزار مدیریت رستوران و کافه (اندروید و ویندوز) | رستورانیار</title>
+    <meta name="description" content="دانلود رایگان نرم افزار رستوران، فست فود و کافی شاپ. سیستم سفارش گیر گارسون، منوی دیجیتال QR و حسابداری رستوران. نسخه اندروید و ویندوز." />
+    <meta property="og:image" content="/images/og-resturanyar.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fa_IR" />
+    <title>رستورانیار | نرم‌افزار مدیریت رستوران و منوی دیجیتال</title>
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
+    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
+    <link href="~/css/all.min.css" rel="stylesheet">
+    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
+   
+</head>
+<body data-bs-spy="scroll" data-bs-target="#nav">
+    <!-- Navbar -->
+    <nav id="nav" class="navbar navbar-expand-lg sticky-top py-2">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#home" aria-label="خانه">
+                <img src="~/images/logo.png" alt="لوگو رستورانیار" class="brand-logo">
+                <strong class="fs-5">رستورانیار</strong>
+            </a>
+            <div class="d-flex align-items-center gap-2 order-lg-2">
+                <button class="theme-toggle"  id="themeToggle" aria-label="تغییر تم"><i class="fa-solid fa-moon"></i></button>
+                <a href="/Home/ManagerLogin" class="btn btn-ghost d-none d-sm-inline-flex"><i class="fa-solid fa-right-to-bracket ms-1 btn-center"></i> ورود مدیر</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="بازکردن منو">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto gap-lg-2">
+                    <li class="nav-item"><a class="nav-link active" href="#home">خانه</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">امکانات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how">نحوه ی استفاده</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#screens">تصاویر</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#download">دانلود</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">پرسش‌های متداول</a></li>
+                    <li class="nav-item d-sm-none"><a class="nav-link" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <main id="home" class="hero">
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <p class="mb-3 bullet"><i class="fa-solid fa-bolt"></i> سریع، دقیق و قابل اتکا</p>
+                    <h1 class="hero-title mb-3">نرم افزار مدیریت رستوران و سفارش گیر گارسون</h1>
+                    <p class="fs-4 fw-bold text-primary">رستوران خودت را هوشمند مدیریت کن</p>
+                    <p class="hero-sub mb-4">رستورانیار: پلتفرم کامل برای مدیریت منوی دیجیتال، سفارش‌گیری سریع گارسون، ارسال به آشپزخانه و صندوق هوشمند. کارایی را افزایش دهید و خطای انسانی را به صفر برسانید.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#download" class="btn btn-cta"><i class="fa-solid fa-download ms-1"></i> دانلود اپلیکیشن</a>
+                        <a href="/Home/ManagerLogin" class="btn btn-ghost"><i class="fa-solid fa-right-to-bracket ms-1 btn-center"></i> ورود مدیر رستوران</a>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="~/images/logo.png" alt="لوگو نرم افزار رستورانیار" width="28" height="28" class="rounded-3">
+                            <small class="muted">اعتماد بیش از ۳۰۰ رستوران در کشور</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-success"></i>
+                            <small class="muted">پشتیبانی و به‌روزرسانی منظم</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <!-- Tablet mockup -->
+                    <div class="tablet fade-up">
+                        <div class="tablet-frame mx-auto">
+                            <div class="tablet-screen">
+                                <img src="~/images/tabletfoodlist.jpg" alt="محیط برنامه سفارش گیر رستوران نسخه اندروید" loading="lazy" decoding="async">
+                            </div>
+                            <div class="tablet-btns">
+                                <span class="tablet-btn"></span>
+                                <span class="tablet-btn"></span>
+                                <span class="tablet-btn"></span>
+                            </div>
+                        </div>
+                        <div class="tablet-badge"><i class="fa-solid fa-circle-check"></i> اتصال یکپارچه: سفارش‌گیر گارسون ↔️ پنل آشپزخانه ↔️ صندوق</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-3 mt-5">
+                <div class="col-6 col-md-3">
+                    <div class="stat">
+                        <div class="num" data-count="300">0</div>
+                        <div class="cap">رستوران فعال</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat">
+                        <div class="num" data-count="98">0</div>
+                        <div class="cap">رضایت مشتری</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat">
+                        <div class="num" data-count="240">0</div>
+                        <div class="cap">منوی ثبت‌شده</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat">
+                        <div class="num" data-count="24">0</div>
+                        <div class="cap">ساعت پشتیبانی</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="section-title">امکانات نرم افزار رستوران و کافه</h2>
+                <p class="section-lead">مجموعه‌ای از ابزارها که به شما کمک می‌کند فروش بیشتری ثبت کنید و تجربه بهتری برای مشتری بسازید.</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-utensils"></i></div>
+                        <h5 class="fw-bold mb-2">منوی دیجیتال با امکانات پیشرفته</h5>
+                        <p class="muted mb-0">منوی دیجیتال QR و اختصاصی رستوران شما. مشتری با اسکن QR کد میز، به منوی زیبا و همیشه به‌روز شما دسترسی پیدا می‌کند و می‌تواند سفارش خود را به گارسون اطلاع دهد.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <h5 class="fw-bold mb-2">سفارش‌گیر گارسون</h5>
+                        <p class="muted mb-0">سفارش‌گیری سریع با موبایل یا تبلت توسط گارسون. سفارش‌ها لحظه‌ای به پنل آشپزخانه و صندوق ارسال می‌شوند؛ خطای سفارش و زمان انتظار مشتری کاهش می‌یابد.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-users-gear"></i></div>
+                        <h5 class="fw-bold mb-2">سطوح دسترسی پرسنل</h5>
+                        <p class="muted mb-0">کنترل دقیق و مدیریت نقش‌های پرسنل. گارسون، آشپز، صندوقدار و مدیر هرکدام به پنل مختص خود با دسترسی‌های تعریف‌شده شما دسترسی دارند.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <h5 class="fw-bold mb-2">گزارش‌گیری هوشمند</h5>
+                        <p class="muted mb-0">گزارش‌های کامل مالی و عملکردی با قابلیت خروجی گرفتن. فروش روزانه، آمار سود، محبوب‌ترین آیتم‌ها و ... را در لحظه مشاهده کنید.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-credit-card"></i></div>
+                        <h5 class="fw-bold mb-2">امکان اتصال به پرینتر</h5>
+                        <p class="muted mb-0">چاپ سریع سفارش، فیش آشپزخانه و فاکتور مشتری. امکان اتصال به انواع پرینترهای حرارتی و شبکه برای چاپ دقیق در تمامی مراحل</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card fade-up">
+                        <div class="feature-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <h5 class="fw-bold mb-2">پنل مدیریتی تحت وب</h5>
+                        <p class="muted mb-0">مدیریت کامل رستوران از هر کجا با پنل تحت وب. با لپ‌تاپ یا کامپیوتر خود به داشبورد مدیریتی دسترسی داشته باشید و تنظیمات، منو و گزارش‌ها را به‌روز کنید.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="section-title">چطور کار می‌کند؟</h2>
+                    <p class="muted mb-4">در چند گام ساده رستوران خود را دیجیتال کنید و خطاها را کاهش دهید.</p>
+                    <div class="step fade-up">
+                        <div class="step-dot"><i class="fa-solid fa-user-plus"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">ثبت‌نام و ساخت منو</h6>
+                            <p class="muted mb-0"> آیتم‌ها را به‌همراه تصویر دسته بندی و قیمت اضافه کنید</p>
+                        </div>
+                    </div>
+                    <div class="step fade-up">
+                        <div class="step-dot"><i class="fa-solid fa-qrcode"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">چاپ QR</h6>
+                            <p class="muted mb-0">مشتری اسکن می‌کند،سفارش خود را به گارسون داده و آن را ثبت میکند.</p>
+                        </div>
+                    </div>
+                    <div class="step fade-up">
+                        <div class="step-dot"><i class="fa-solid fa-kitchen-set"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">نمایش سفارش در آشپزخانه</h6>
+                            <p class="muted mb-0">سفارش گارسون در آشپزخانه از طریق تبلت یا پرینتر روئیت می شود.</p>
+                        </div>
+                    </div>
+                    <div class="step fade-up">
+                        <div class="step-dot"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">گزارش‌گیری</h6>
+                            <p class="muted mb-0">دریافت گزارش لحظه‌ای و دقیق از فروش و عملکرد. همه آمار فروش و مالی شما به صورت خودکار ثبت و در پنل مدیریت قابل مشاهده است.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <!-- Tablet mockup reused -->
+                    <div class="tablet fade-up">
+                        <div class="tablet-frame mx-auto">
+                            <div class="tablet-screen">
+                                <img src="~/images/tablethome.jpg" alt="داشبورد مدیریت رستورانیار" loading="lazy" decoding="async">
+                            </div>
+                            <div class="tablet-btns">
+                                <span class="tablet-btn"></span>
+                                <span class="tablet-btn"></span>
+                                <span class="tablet-btn"></span>
+                            </div>
+                        </div>
+                        <div class="tablet-badge"><i class="fa-solid fa-rocket"></i> راه‌اندازی سریع و آسان</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section id="screens" class="section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="section-title">نگاهی به محیط اپلیکیشن</h2>
+                <p class="section-lead">تصاویر زیر تنها بخشی از قابلیت‌های محصول را نمایش می‌دهد.</p>
+            </div>
+            <div class="shots">
+                <figure class="shot"><img src="~/images/sampleweb1.jpg" class="w-100" alt="سفارش‌گیر گارسون" loading="lazy"></figure>
+                <figure class="shot"><img src="~/images/sampleweb2.jpg" class="w-100" alt="داشبورد مدیریتی" loading="lazy"></figure>
+                <figure class="shot"><img src="~/images/sampleweb3.jpg" class="w-100" alt="منوی دیجیتال مشتری" loading="lazy"></figure>
+                <figure class="shot"><img src="~/images/sampleweb4.jpg" class="w-100" alt="مدیریت سفارش‌ها" loading="lazy"></figure>
+                <figure class="shot"><img src="~/images/sampleweb5.jpg" class="w-100" alt="گزارش فروش" loading="lazy"></figure>
+                <figure class="shot"><img src="~/images/sampleweb6.jpg" class="w-100" alt="تنظیمات سیستم" loading="lazy"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download CTA -->
+    <section id="download" class="section">
+        <div class="container">
+            <div class="download p-4 p-md-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <h3 class="fw-black mb-2">دانلود اپلیکیشن رستورانیار</h3>
+                        <p class="mb-3">هم‌اکنون از طریق کافه‌بازار در دسترس است. نصب سریع و راه‌اندازی آسان.</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="https://cafebazaar.ir/app/com.musiclrc.resturanyar" target="_blank" rel="noopener" class="store-btn">
+                                <i class="fa-solid fa-store ms-1"></i> دریافت از کافه‌بازار
+                            </a>
+                            <a href="/Home/ManagerLogin" class="btn btn-outline-light rounded-pill px-3 btn-center">
+                                <i class="fa-solid fa-right-to-bracket ms-1 btn-center"></i> ورود مدیر
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-shield-halved text-success"></i>
+                                        <div><div class="fw-bold">امن و پایدار</div><small class="opacity-75">پشتیبان‌گیری و بازیابی</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-rocket text-warning"></i>
+                                        <div><div class="fw-bold">به‌روزرسانی مستمر</div><small class="opacity-75">قابلیت‌های جدید ماهانه</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-headset text-info"></i>
+                                        <div><div class="fw-bold">پشتیبانی واقعی</div><small class="opacity-75">۷ روز هفته</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
+                                        <div><div class="fw-bold">نصب آسان</div><small class="opacity-75">آماده بهره‌برداری فوری</small></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- grid -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="section-title">پرسش‌های متداول</h2>
+                <p class="section-lead">سؤالات پرتکرار درباره نصب، قیمت، امکانات و پشتیبانی.</p>
+            </div>
+            <div class="accordion faq" id="faqAcc">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q1">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1">
+                            آیا رستورانیار روی همه دستگاه‌ها کار می‌کند؟
+                        </button>
+                    </h2>
+                    <div id="a1" class="accordion-collapse collapse" aria-labelledby="q1" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            بله، اپلیکیشن و پنل مدیریت برای موبایل، تبلت و رایانه رومیزی (دسکتاپ) بهینه‌سازی شده‌اند و در تمامی مرورگرهای مدرن اجرا می‌شوند.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q2">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
+                            چطور می‌توانم منوی خود را به مشتری نمایش دهم؟
+                        </button>
+                    </h2>
+                    <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            کافیه غذاهای خودتون رو داخل اپلیکیشن یا در پنل مدیریتی ثبت کنید. منوی شما از طریق اسکن کدینه سریع (کیو آر کد) و تحت وب در دسترس خواهد بود.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q3">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
+                            آیا پشتیبانی و آموزش ارائه می‌شود؟
+                        </button>
+                    </h2>
+                    <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            بله، تیم پشتیبانی ما در تمامی مراحل نصب، راه‌اندازی و استفاده در کنار شماست و هر سوال یا آموزشی نیاز باشد در خدمت شماست.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q4">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4" aria-expanded="false" aria-controls="a4">
+                            آیا رستورانیار فقط برای رستوران‌های بزرگ مناسب است؟
+                        </button>
+                    </h2>
+                    <div id="a4" class="accordion-collapse collapse" aria-labelledby="q4" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            خیر. رستورانیار برای انواع کسب‌وکارهای صنعت غذا، از کافه‌ها و فست فودهای کوچک گرفته تا رستوران‌های زنجیره‌ای و بزرگ، طراحی شده است. سیستم ما کاملاً ماژولار و قابل تنظیم است تا با حجم کاری شما هماهنگ شود.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q5">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5" aria-expanded="false" aria-controls="a5">
+                            هزینه استفاده از نرم‌افزار رستورانیار چقدر است؟
+                        </button>
+                    </h2>
+                    <div id="a5" class="accordion-collapse collapse" aria-labelledby="q5" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            قیمت‌گذاری ما بر اساس نیاز و اندازه کسب‌وکار شما (مانند تعداد دستگاه‌ها یا امکانات مورد نیاز) متفاوت است. لطفاً برای دریافت جزئیات دقیق و مشاوره برای انتخاب بهترین طرح، با بخش فروش ما تماس بگیرید.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q6">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a6" aria-expanded="false" aria-controls="a6">
+                            آیا برای استفاده از رستورانیار به اینترنت نیاز است؟
+                        </button>
+                    </h2>
+                    <div id="a6" class="accordion-collapse collapse" aria-labelledby="q6" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            بله، سیستم رستورانیار یک راهکار مبتنی بر فضای ابری است که نیاز به اتصال اینترنت دارد تا همگام‌سازی لحظه‌ای سفارش‌ها و گزارش‌ها بین گارسون، آشپزخانه و صندوق به‌درستی انجام شود.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q7">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a7" aria-expanded="false" aria-controls="a7">
+                            اگر چاپگر (پرینتر) نداشته باشیم، چطور سفارش‌ها را به آشپزخانه بفرستیم؟
+                        </button>
+                    </h2>
+                    <div id="a7" class="accordion-collapse collapse" aria-labelledby="q7" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            در رستورانیار، شما می‌توانید از **سیستم نمایش آشپزخانه** استفاده کنید. سفارش‌های ثبت‌شده توسط گارسون، به صورت خودکار روی یک تبلت در آشپزخانه نمایش داده می‌شوند و نیاز به چاپ فیزیکی فیش را از بین می‌برند.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q8">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a8" aria-expanded="false" aria-controls="a8">
+                            آیا می‌توانیم منو را خودمان ویرایش یا تغییر دهیم؟
+                        </button>
+                    </h2>
+                    <div id="a8" class="accordion-collapse collapse" aria-labelledby="q8" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            بله، شما از طریق پنل مدیریتی تحت وب، دسترسی کامل به منو دارید. می‌توانید در هر لحظه، آیتم‌های جدید اضافه، قیمت‌ها را به‌روز یا تصاویر را تغییر دهید. تغییرات بلافاصله در منوی دیجیتال مشتری اعمال می‌شوند.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="q9">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a9" aria-expanded="false" aria-controls="a9">
+                            آیا امکان ثبت سفارش به صورت بیرون‌بر یا ارسال هم وجود دارد؟
+                        </button>
+                    </h2>
+                    <div id="a9" class="accordion-collapse collapse" aria-labelledby="q9" data-bs-parent="#faqAcc">
+                        <div class="accordion-body">
+                            بله. رستورانیار امکان ثبت و مدیریت سفارش‌های بیرون‌بر  را از طریق دریافت سفارش با پیام مشتری فراهم کرده است
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP' alt='' style='cursor:pointer' code='krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'></a>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="~/images/logo.png" alt="لوگو نرم افزار رستورانیار" class="brand-logo">
+                        <strong>رستورانیار</strong>
+                    </div>
+                    <p class="mb-2">نرم‌افزار یکپارچه مدیریت رستوران برای ثبت سفارش، منوی دیجیتال، پرداخت و گزارش‌گیری.</p>
+                    <div class="social mt-3">
+                        <a href="https://instagram.com/resturanyar_delavita" aria-label="اینستاگرام"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/resturanyar_delavita" aria-label="تلگرام"><i class="fab fa-telegram"></i></a>
+                        <a href="https://wa.me/989374422588" aria-label="واتساپ"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold mb-3">لینک‌های سریع</h6>
+                    <ul class="list-unstyled">
+                        <li><a class="text-reset text-decoration-none" href="#features">ویژگی‌ها</a></li>
+                        <li><a class="text-reset text-decoration-none" href="#screens">تصاویر</a></li>
+                        <li><a class="text-reset text-decoration-none" href="#download">دانلود</a></li>
+                        <li><a class="text-reset text-decoration-none" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold mb-3">ارتباط با ما</h6>
+                    <p class="mb-1"><i class="fa-solid fa-phone ms-1"></i> 09374422588</p>
+                    <p class="mb-1"><i class="fa-solid fa-envelope ms-1"></i> support@resturanyar.ir</p>
+                    <p class="mb-0"><i class="fa-solid fa-location-dot ms-1"></i> ایران - پشتیبانی سراسری</p>
+                </div>
+                
+            </div>
+            <hr class="border-light border-opacity-25 my-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center pb-3">
+                <small>© 2025 رستورانیار - تمامی حقوق محفوظ است.</small>
+                <small class="opacity-75">نسخه وب سبک و سریع </small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating buttons -->
+    @* <a href="https://wa.me/989374422588" class="fab-chat" aria-label="گفتگوی واتساپ"><i class="fab fa-whatsapp"></i></a> *@
+
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+    </script>
+
+
+    <!--- Add this to open/close/toggle widget --->
+    <script>
+        window.addEventListener('goftino_ready', function () {
+            document.getElementById("open_chat").addEventListener("click", function () {
+                        Goftino.setUser({
+           email : '...',
+           name : '...',
+           about : 'Resturanyar...',
+           phone : '...',
+           avatar : '...',
+        
+           forceUpdate : true
+        });
+
+                Goftino.open();
+            });
+            document.getElementById("close_chat").addEventListener("click", function () {
+                Goftino.close();
+            });
+            document.getElementById("toggle_chat").addEventListener("click", function () {
+                Goftino.toggle();
+            });
+        });
+    </script>
+    
+    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <script src="~/js/home.js"  asp-append-version="true"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "SoftwareApplication",
+          "name": "رستورانیار",
+          "headline": "نرم افزار مدیریت رستوران و سفارش گیر گارسون",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Android, Windows, Web, iOS",
+          "offers": {
+              "@@type": "Offer",
+              "price": "0",
+              "priceCurrency": "IRR",
+              "availability": "https://schema.org/InStock"
+          },
+          "aggregateRating": {
+              "@@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "120",
+              "bestRating": "5",
+              "worstRating": "1"
+          },
+          "description": "نرم‌افزار جامع مدیریت رستوران، کافه و فست فود. شامل منوی دیجیتال، سفارش‌گیر گارسون، اتصال به چاپگر آشپزخانه و حسابداری.",
+          "url": "https://resturanyar.ir/",
+          "downloadUrl": "https://cafebazaar.ir/app/com.musiclrc.resturanyar",
+          "author": {
+              "@@type": "Organization",
+              "name": "رستورانیار"
+          },
+          "image": "https://resturanyar.ir/images/logo.png"
+        }
+    </script>
+</body>
+</html>

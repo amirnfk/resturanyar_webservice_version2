@@ -1,0 +1,17 @@
+﻿@model Resturanyar.Data.User
+
+@{
+    ViewData["Title"] = "حذف کاربر";
+}
+
+<h2>حذف کاربر</h2>
+
+<div class="alert alert-danger">
+    آیا مطمئن هستید که می‌خواهید کاربر "<strong>@Model.name</strong>" را حذف کنید؟
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="user_id" />
+    <button type="submit" class="btn btn-danger">بله، حذف شود</button>
+    <a asp-action="ManageUsers" asp-controller="Home" asp-route-restaurantId="@Model.restaurant_id" class="btn btn-secondary">انصراف</a>
+</form>

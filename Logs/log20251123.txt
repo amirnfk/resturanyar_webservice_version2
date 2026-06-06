@@ -1,0 +1,65 @@
+2025-11-23 16:04:11.551 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-23 16:04:11.713 +03:30 [INF] Now listening on: https://localhost:7171
+2025-11-23 16:04:11.714 +03:30 [INF] Now listening on: http://localhost:5292
+2025-11-23 16:04:11.758 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-23 16:04:11.759 +03:30 [INF] Hosting environment: Development
+2025-11-23 16:04:11.759 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2025-11-23 16:04:12.830 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2025-11-23 16:04:12.972 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-23 16:04:12.980 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2025-11-23 16:04:13.301 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2025-11-23 16:04:13.303 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.4468ms.
+2025-11-23 16:04:13.312 +03:30 [INF] Executing ViewResult, running view Index.
+2025-11-23 16:04:13.373 +03:30 [INF] Executed ViewResult - view Index executed in 65.5027ms.
+2025-11-23 16:04:13.375 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 394.5251ms
+2025-11-23 16:04:13.376 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2025-11-23 16:04:13.379 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 554.0931ms
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - null null
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - null null
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - null null
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-23 16:04:13.384 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2025-11-23 16:04:13.391 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - null null
+2025-11-23 16:04:13.394 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2025-11-23 16:04:13.399 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2025-11-23 16:04:13.416 +03:30 [INF] The file /css/site.css was not modified
+2025-11-23 16:04:13.416 +03:30 [INF] The file /js/site.js was not modified
+2025-11-23 16:04:13.416 +03:30 [INF] The file /lib/bootstrap/dist/css/bootstrap.min.css was not modified
+2025-11-23 16:04:13.416 +03:30 [INF] The file /lib/jquery/dist/jquery.min.js was not modified
+2025-11-23 16:04:13.416 +03:30 [INF] The file /lib/bootstrap/dist/js/bootstrap.bundle.min.js was not modified
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 32.1936ms
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - 304 null text/css 32.367ms
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 304 null text/javascript 17.1811ms
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - 304 null text/javascript 26.2503ms
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - 304 null text/css 32.3691ms
+2025-11-23 16:04:13.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - 304 null text/javascript 32.374ms
+2025-11-23 16:04:13.417 +03:30 [INF] The file /images/logo.png was not modified
+2025-11-23 16:04:13.417 +03:30 [INF] The file /resturanyar.styles.css was not modified
+2025-11-23 16:04:13.418 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 304 null image/png 33.6762ms
+2025-11-23 16:04:13.418 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - 304 null text/css 34.0557ms
+2025-11-23 16:04:13.446 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 52.5014ms
+2025-11-23 16:04:13.498 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2025-11-23 16:04:13.498 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tablethome.jpg - null null
+2025-11-23 16:04:13.499 +03:30 [INF] The file /images/tabletfoodlist.jpg was not modified
+2025-11-23 16:04:13.499 +03:30 [INF] The file /images/tablethome.jpg was not modified
+2025-11-23 16:04:13.499 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 304 null image/jpeg 1.0645ms
+2025-11-23 16:04:13.499 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tablethome.jpg - 304 null image/jpeg 0.4588ms
+2025-11-23 16:04:15.038 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - null null
+2025-11-23 16:04:15.038 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - null null
+2025-11-23 16:04:15.039 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - null null
+2025-11-23 16:04:15.039 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - null null
+2025-11-23 16:04:15.039 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - null null
+2025-11-23 16:04:15.039 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - null null
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb4.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb6.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb1.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb3.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - 304 null image/jpeg 1.2204ms
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb2.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] The file /images/sampleweb5.jpg was not modified
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - 304 null image/jpeg 1.8319ms
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - 304 null image/jpeg 0.6895ms
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - 304 null image/jpeg 1.3055ms
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - 304 null image/jpeg 1.9226ms
+2025-11-23 16:04:15.040 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - 304 null image/jpeg 1.3695ms

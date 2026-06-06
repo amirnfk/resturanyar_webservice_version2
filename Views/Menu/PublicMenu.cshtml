@@ -1,0 +1,925 @@
+﻿@model List<resturanyar.Models.FoodItemViewModel>
+@{
+    ViewData["Title"] = "منوی رستوران";
+    var placeholder = Url.Content("~/images/food_placeholder.jpg");
+    var groups = Model
+    .GroupBy(f => new { f.CategoryId, f.CategoryName })
+    .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, Items = g.ToList() })
+    .OrderBy(g => g.CategoryName)
+    .ToList();
+    var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);
+}
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-icons.css" rel="stylesheet" />
+@* <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap" rel="stylesheet" /> *@
+<style>
+    :root {
+        --primary: #ff7a1a;
+        --primary-2: #ff9e53;
+        --accent: #00c2a8;
+        --bg: #fff7ef;
+        --card: #ffffff;
+        --text: #212529;
+        --muted: #6d7385;
+        --shadow: 0 12px 40px rgba(0,0,0,.08);
+        --radius: 18px;
+        --toolbar-h: 72px;
+        --safe-bottom: env(safe-area-inset-bottom,0px);
+    }
+
+    body {
+        direction: rtl;
+        font-family: "IRANYekan",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+        background: radial-gradient(1400px 600px at 100% -10%, rgba(255,122,26,.12), transparent 60%), radial-gradient(1000px 400px at -5% 105%, rgba(0,194,168,.10), transparent 60%), var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent
+    }
+
+    .menu-hero {
+        position: relative;
+        padding: 40px 12px 14px;
+        text-align: center;
+        overflow: hidden
+    }
+
+        .menu-hero .title {
+            font-weight: 900;
+            font-size: clamp(20px,5vw,36px)
+        }
+
+    .blob {
+        position: absolute;
+        inset: auto -10% 0 -10%;
+        height: 50%;
+        background: radial-gradient(600px 180px at 78% 20%, rgba(255,122,26,.08), transparent 60%), radial-gradient(500px 160px at 20% 80%, rgba(0,194,168,.08), transparent 60%);
+        pointer-events: none
+    }
+
+    .menu-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        backdrop-filter: saturate(140%) blur(10px);
+        background: rgba(255,255,255,.75);
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 6px 16px rgba(0,0,0,.06)
+    }
+
+    .toolbar-inner {
+        padding: 8px 10px
+    }
+
+    .search-wrap {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 12px;
+        padding: 6px 10px;
+        box-shadow: 0 6px 16px rgba(0,0,0,.04)
+    }
+
+        .search-wrap input {
+            border: 0;
+            outline: 0;
+            background: transparent;
+            width: 100%;
+            font-size: 15px
+        }
+
+    .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: nowrap;
+        overflow: auto;
+        padding-bottom: 2px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity
+    }
+
+    .filter-chip {
+        scroll-snap-align: start;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        color: #333;
+        padding: 6px 12px;
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap
+    }
+
+        .filter-chip.active {
+            background: linear-gradient(90deg,var(--primary),var(--primary-2));
+            color: #fff;
+            border: 0
+        }
+
+    .chip-scroller {
+        display: flex;
+        gap: 8px;
+        overflow: auto;
+        padding: 8px 2px 10px;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity
+    }
+
+        .chip-scroller::-webkit-scrollbar {
+            height: 6px
+        }
+
+    .chip {
+        border: 0;
+        border-radius: 999px;
+        background: #fff;
+        color: #444;
+        padding: 8px 14px;
+        font-weight: 800;
+        box-shadow: 0 6px 16px rgba(0,0,0,.05);
+        white-space: nowrap;
+        scroll-snap-align: start
+    }
+
+        .chip .count {
+            background: #f1f3f5;
+            color: #555;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            margin-inline-start: 6px
+        }
+
+        .chip.active-category {
+            background: linear-gradient(135deg,var(--primary),var(--primary-2));
+            color: #fff
+        }
+
+            .chip.active-category .count {
+                background: rgba(255,255,255,.25);
+                color: #fff
+            }
+
+    .container-section {
+        padding: 18px 0
+    }
+
+    .category-section {
+        scroll-margin-top: calc(var(--toolbar-h) + 10px);
+        content-visibility: auto;
+        contain-intrinsic-size: 600px
+    }
+
+    .cat-title {
+        font-weight: 900;
+        font-size: clamp(16px,3.8vw,22px);
+        margin: 10px 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+        .cat-title i {
+            color: var(--primary)
+        }
+
+    .food-card .card {
+        border: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--card);
+        box-shadow: 0 8px 18px rgba(0,0,0,.06);
+        transition: transform .25s ease, box-shadow .25s ease
+    }
+    @@media (hover:hover) {
+        .food-card .card:hover
+
+    {
+        transform: translateY(-4px)
+    }
+
+    }
+
+    .img-wrap {
+        position: relative
+    }
+
+        .img-wrap img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+            aspect-ratio: 4/3
+        }
+
+    .gradient-over {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.28), transparent 60%);
+        pointer-events: none
+    }
+
+    .discount-ribbon {
+        position: absolute;
+        inset-inline-start: 8px;
+        inset-block-start: 12px;
+        background: linear-gradient(135deg,#24c768,#0aa84e);
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        box-shadow: 0 6px 16px rgba(0,0,0,.08)
+    }
+
+    .sold-badge {
+        position: absolute;
+        inset-inline-end: 8px;
+        inset-block-start: 12px;
+        background: linear-gradient(135deg,#ff6b6b,#ff3b3b);
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 12px;
+        box-shadow: 0 6px 16px rgba(0,0,0,.08)
+    }
+
+    .card-body {
+        padding: 10px 12px;
+        text-align: center
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 800;
+        margin: 0 0 4px
+    }
+
+    .card-text {
+        color: #6c757d;
+        font-size: .9rem;
+        min-height: 36px
+    }
+
+    .price-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 6px
+    }
+
+    .price {
+        color: #1f8f5f;
+        font-weight: 900
+    }
+
+    .old-price {
+        color: #adb5bd;
+        text-decoration: line-through;
+        font-size: .85rem
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 10px
+    }
+
+    .btn-quick, .btn-add {
+        border-radius: 12px;
+        padding: 8px 12px;
+        font-weight: 800;
+        font-size: 13px;
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg,var(--primary),var(--primary-2));
+        color: #fff;
+        border: 0
+    }
+
+    .sold-out .card {
+        filter: grayscale(.4);
+        opacity: .78
+    }
+
+    .sold-out .btn-add {
+        pointer-events: none;
+        opacity: .65
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: .45s ease
+    }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+    .back-top {
+        position: fixed;
+        inset-inline-end: 12px;
+        inset-block-end: calc(12px + var(--safe-bottom));
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg,var(--primary),var(--primary-2));
+        color: #fff;
+        border: 0;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 8px 18px rgba(0,0,0,.12);
+        opacity: 0;
+        transform: translateY(16px);
+        transition: .25s ease;
+        z-index: 998
+    }
+
+        .back-top.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    /* FAB notebook */
+    .note-fab {
+        position: fixed;
+        inset-inline-end: 12px;
+        inset-block-end: calc(64px + var(--safe-bottom));
+        z-index: 999;
+        border: 0;
+        border-radius: 14px;
+        background: #111;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 10px 24px rgba(0,0,0,.2)
+    }
+
+        .note-fab .badge {
+            background: linear-gradient(135deg,var(--primary),var(--primary-2));
+        }
+    /* Offcanvas note */
+    .offcanvas-header {
+        border-bottom: 1px solid #eee
+    }
+
+    .offcanvas-footer {
+        border-top: 1px solid #eee;
+        background: #fff;
+        position: sticky;
+        bottom: 0
+    }
+
+    .note-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px;
+        border-bottom: 1px dashed #eee
+    }
+
+        .note-item .title {
+            font-weight: 700
+        }
+
+    .qty-group {
+        display: flex;
+        align-items: center;
+        gap: 6px
+    }
+
+    .qty-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        background: #fff;
+        display: grid;
+        place-items: center
+    }
+
+    .note-empty {
+        padding: 24px;
+        text-align: center;
+        color: #777
+    }
+
+    .note-text {
+        width: 100%;
+        min-height: 80px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        padding: 8px 10px
+    }
+    @@media (max-width:576px) {
+        .img-wrap img
+
+    {
+        height: 140px
+    }
+
+    /* .card-actions .btn-quick, .card-actions .btn-add { */
+    /*     width: 42px; */
+    /*     height: 42px; */
+    /*     padding: 0; */
+    /*     border-radius: 12px; */
+    /*     font-size: 0 */
+    /* } */
+
+    /*     .card-actions .btn-quick i, .card-actions .btn-add i { */
+    /*         font-size: 18px */
+    /*     } */
+
+    .note-fab {
+        padding: 9px 10px
+    }
+
+    }
+</style>
+
+<section class="menu-hero">
+    <h1 class="title">منوی رستوران</h1>
+    <div class="blob"></div>
+</section>
+
+<div class="menu-toolbar">
+    <div class="container">
+        <div class="toolbar-inner">
+            <div class="row g-2 align-items-center">
+                <div class="col-12 col-md-6">
+                    <div class="search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input id="searchBox" type="search" inputmode="search" enterkeyhint="search" placeholder="جستجو نام/توضیح غذا..." aria-label="جستجو">
+                        <button id="clearSearch" class="btn btn-sm btn-light rounded-pill d-none" aria-label="پاک کردن جستجو"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mt-1 mt-md-0">
+                    <div class="filters" role="tablist" aria-label="فیلترها">
+                        <button class="filter-chip" id="onlyAvailable" aria-pressed="false"><i class="bi bi-check2-circle ms-1"></i> فقط موجود</button>
+                        <button class="filter-chip" id="onlyDiscount" aria-pressed="false"><i class="bi bi-percent ms-1"></i> فقط تخفیف‌دار</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chip-scroller mt-2" id="categoryChips">
+                <button type="button" class="chip active-category" data-scroll="top"><i class="bi bi-grid-3x3-gap ms-1"></i> همه</button>
+                @foreach (var g in groups)
+                {
+                    <button type="button" class="chip" data-scroll="cat-@g.CategoryId">
+                        <i class="bi bi-tags ms-1"></i> @g.CategoryName
+                        <span class="count">@categoryCounts[g.CategoryId]</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container container-section">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="card shadow-sm border-0 mx-auto" style="max-width:420px;border-radius:1rem;">
+                <div class="card-body">
+                    <div style="font-size:3rem;">🍴</div>
+                    <h5 class="mt-3 mb-2 fw-bold">منو در حال حاضر خالی است</h5>
+                    <p class="text-muted mb-0">به زودی غذاهای خوشمزه به این منو اضافه خواهند شد.</p>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var g in groups)
+        {
+            <section class="category-section reveal" id="cat-@g.CategoryId">
+                <h4 class="cat-title"><i class="bi bi-star-fill"></i> @g.CategoryName</h4>
+                <div class="row g-3">
+                    @foreach (var item in g.Items)
+                    {
+                        var hasDiscount = item.DiscountPrice > 0 && item.DiscountPrice != item.Price;
+                        var finalPrice = hasDiscount ? item.DiscountPrice : item.Price;
+                        var itemKey = $"{item.CategoryId}|{item.Name}";
+                        <div class="col-6 col-md-4 col-lg-3 food-card @(item.IsAvailable ? "" : "sold-out")"
+                             data-name="@($"{item.Name} {item.Description}".ToLowerInvariant())"
+                             data-available="@(item.IsAvailable ? 1 : 0)"
+                             data-discount="@(hasDiscount ? 1 : 0)"
+                             data-price="@finalPrice"
+                             data-name-sort="@item.Name"
+                             data-item-key="@itemKey"
+                             data-item-name="@item.Name"
+                             data-item-price="@finalPrice">
+                            <div class="card h-100">
+                                <div class="img-wrap">
+                                    <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)"
+                                         alt="تصویر @item.Name" loading="lazy" decoding="async"
+                                         sizes="(max-width: 576px) 50vw, (max-width: 992px) 33vw, 25vw"
+                                         onerror="this.onerror=null; this.src='@placeholder';" />
+                                    <span class="gradient-over"></span>
+                                    @if (hasDiscount)
+                                    {
+                                        var discountPercent = (int)Math.Round(((item.Price - item.DiscountPrice) / item.Price) * 100);
+                                        <span class="discount-ribbon"><i class="bi bi-lightning-fill ms-1"></i>@discountPercent% تخفیف</span>
+                                    }
+                                    @if (!item.IsAvailable)
+                                    {
+                                        <span class="sold-badge">ناموجود</span>
+                                    }
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Name</h5>
+                                    <p class="card-text">@item.Description</p>
+                                    <div class="price-wrap">
+                                        @if (hasDiscount)
+                                        {
+                                            <span class="old-price">@item.Price.ToString("N0") تومان</span>
+                                        }
+                                        <span class="price">@finalPrice.ToString("N0") تومان</span>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button class="btn-quick" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"
+                                                data-title="@item.Name"
+                                                data-desc="@item.Description"
+                                                data-img="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)">
+                                              نمایش
+                                        </button>
+                                        <button class="btn-add" type="button" @(item.IsAvailable ? "" : "disabled")
+                                                aria-label="افزودن @item.Name">
+                                              افزودن
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+    }
+</div>
+
+<!-- Quick view modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+        <div class="modal-content" style="border-radius:16px;">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <img id="qvImg" src="@placeholder" class="w-100 h-100" style="object-fit:cover; border-radius:16px 0 0 16px;" alt="">
+                    </div>
+                    <div class="col-md-6 p-3 p-md-4">
+                        <h5 id="qvTitle" class="fw-bold mb-2"></h5>
+                        <p id="qvDesc" class="text-muted mb-3"></p>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span id="qvPrice" class="fw-bolder text-success"></span>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-warning rounded-pill px-3 text-white" id="qvAddBtn">
+                                <i class="bi bi-bag-plus ms-1"></i> افزودن به دفترچه
+                            </button>
+                            <button class="btn btn-dark rounded-pill px-3" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg ms-1"></i> بستن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notebook Offcanvas -->
+<button type="button" class="note-fab" data-bs-toggle="offcanvas" data-bs-target="#noteCanvas" aria-controls="noteCanvas">
+    <i class="bi bi-journal-text"></i>
+    <span class="d-none d-sm-inline">دفترچه</span>
+    <span class="badge rounded-pill" id="noteCount">0</span>
+    <span class="ms-1 small" id="noteTotal">0 تومان</span>
+</button>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="noteCanvas" aria-labelledby="noteCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="noteCanvasLabel" class="mb-0"><i class="bi bi-journal-text ms-1"></i> دفترچه سفارش من</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+        <div id="noteList" class="flex-grow-1">
+            <div class="note-empty">هنوز چیزی اضافه نکرده‌اید. از دکمه‌های افزودن روی کارت‌ها استفاده کنید.</div>
+        </div>
+        <div class="mt-2">
+            <label class="form-label small text-muted">یادداشت برای گارسون (اختیاری)</label>
+<textarea id="noteText" class="note-text" placeholder="مثل: بدون پیاز، کم‌نمک، نوشابه رژیمی..."></textarea>
+        </div>
+    </div>
+    <div class="offcanvas-footer p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div><span class="fw-bold">جمع کل:</span> <span id="noteTotalBottom" class="text-success fw-bold">0 تومان</span></div>
+            <div class="text-muted"><i class="bi bi-list-check ms-1"></i> تعداد آیتم‌ها: <span id="noteItemsCount">0</span></div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-secondary flex-fill" id="btnCopy"><i class="bi bi-clipboard ms-1"></i> کپی</button>
+            <button class="btn btn-outline-secondary flex-fill" id="btnShare"><i class="bi bi-share ms-1"></i> اشتراک‌گذاری</button>
+            <button class="btn btn-outline-danger flex-fill" id="btnClear"><i class="bi bi-trash ms-1"></i> پاک‌سازی</button>
+        </div>
+    </div>
+</div>
+
+<button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="bi bi-arrow-up"></i></button>
+
+<script>
+    (function(){
+    const chips = Array.from(document.querySelectorAll("[data-scroll]"));
+    const sections = Array.from(document.querySelectorAll(".category-section"));
+    const searchBox = document.getElementById("searchBox");
+    const clearBtn = document.getElementById("clearSearch");
+    const onlyAvailable = document.getElementById("onlyAvailable");
+    const onlyDiscount = document.getElementById("onlyDiscount");
+    const toolbar = document.querySelector(".menu-toolbar");
+    const backTop = document.getElementById("backTop");
+
+    // Toolbar var
+    const setToolbarVar = () => {
+    const h = (toolbar?.offsetHeight || 0);
+    document.documentElement.style.setProperty("--toolbar-h", h + "px");
+    };
+    setToolbarVar(); window.addEventListener("resize", setToolbarVar);
+
+    // CSS.escape shim
+    if (typeof window.CSS === "undefined" || typeof CSS.escape !== "function") {
+    window.CSS = window.CSS || {};
+    CSS.escape = function (value) {
+    return String(value).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, '\\$&');
+    };
+    }
+
+    // Reveal
+    const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if (e.isIntersecting){ e.target.classList.add("show"); io.unobserve(e.target);} });
+    }, {threshold:.12, rootMargin:"120px 0px"});
+    document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+    // Scroll to section
+    function scrollToSection(id){
+    const off = (toolbar?.offsetTop ?? 0) + (toolbar?.offsetHeight || 0) + 8;
+    if (id === "top"){ window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.offsetTop - off, behavior: "smooth" });
+    }
+    chips.forEach(btn => btn.addEventListener("click", ()=> scrollToSection(btn.dataset.scroll), {passive:true}));
+
+    // Active chip
+    let ticking = false;
+    const updateActive = ()=>{
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(()=>{
+    const y = window.scrollY + (toolbar?.offsetHeight || 0) + 12;
+    let current = "top";
+    sections.forEach(s => { if (y >= s.offsetTop) current = s.id; });
+    chips.forEach(b => b.classList.toggle("active-category", b.dataset.scroll === current));
+    ticking = false;
+    });
+    };
+    window.addEventListener("scroll", updateActive, { passive:true });
+    window.addEventListener("load", updateActive);
+    window.addEventListener("resize", updateActive);
+
+    // Filters + search
+    const cards = Array.from(document.querySelectorAll(".food-card"));
+    let q = "", fAvail = false, fDisc = false, sort = "popular";
+    function applyFilters(){
+    cards.forEach(card=>{
+    const matchText = !q || card.dataset.name.indexOf(q) !== -1;
+    const matchAvail = !fAvail || card.dataset.available === "1";
+    const matchDisc = !fDisc || card.dataset.discount === "1";
+    const show = matchText && matchAvail && matchDisc;
+    card.classList.toggle("d-none", !show);
+    });
+    sections.forEach(sec=>{
+    const anyVisible = sec.querySelector(".food-card:not(.d-none)") !== null;
+    sec.classList.toggle("d-none", !anyVisible);
+    });
+    }
+    function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), delay); }; }
+    searchBox?.addEventListener("input", debounce(()=>{
+    q = (searchBox.value || "").trim().toLowerCase();
+    clearBtn.classList.toggle("d-none", !q);
+    applyFilters();
+    }, 160));
+    searchBox?.addEventListener("keydown", (e)=>{ if (e.key === "Enter") searchBox.blur(); });
+    clearBtn?.addEventListener("click", ()=>{ searchBox.value = ""; q = ""; clearBtn.classList.add("d-none"); applyFilters(); searchBox.blur(); });
+    onlyAvailable?.addEventListener("click", ()=>{ fAvail = !fAvail; onlyAvailable.classList.toggle("active"); onlyAvailable.setAttribute("aria-pressed", String(fAvail)); applyFilters(); });
+    onlyDiscount?.addEventListener("click", ()=>{ fDisc = !fDisc; onlyDiscount.classList.toggle("active"); onlyDiscount.setAttribute("aria-pressed", String(fDisc)); applyFilters(); });
+
+    // Quick view modal populate + add-to-note
+    const qv = document.getElementById("quickViewModal");
+    const qvAddBtn = document.getElementById("qvAddBtn");
+    if (qv){
+    qv.addEventListener("show.bs.modal", (ev)=>{
+    const btn = ev.relatedTarget; if (!btn) return;
+    const card = btn.closest(".food-card");
+    const title = btn.getAttribute("data-title") || card?.dataset.itemName || "";
+    const desc = btn.getAttribute("data-desc") || "";
+    const img = btn.getAttribute("data-img") || "";
+    const priceNum = +(card?.dataset.itemPrice || card?.dataset.price || 0);
+    qv.querySelector("#qvTitle").textContent = title;
+    qv.querySelector("#qvDesc").textContent = desc;
+    qv.querySelector("#qvImg").src = img;
+    qv.querySelector("#qvPrice").textContent = formatPrice(priceNum);
+    // attach payload to add button
+    qvAddBtn.dataset.key = card?.dataset.itemKey || (title || "") ;
+    qvAddBtn.dataset.name = title;
+    qvAddBtn.dataset.price = String(priceNum || 0);
+    });
+    }
+
+    // ===== Notebook logic (localStorage) =====
+    const STORAGE_KEY = "ryar_menu_note_v1";
+
+    function loadState(){
+    try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { items: [], note: "" };
+    const s = JSON.parse(raw);
+    if (!Array.isArray(s.items)) s.items = [];
+    if (typeof s.note !== "string") s.note = "";
+    return s;
+    } catch { return { items: [], note: "" }; }
+    }
+    function saveState(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    renderNote();
+    }
+    function formatPrice(n){
+    n = Number(n)||0;
+    return n.toLocaleString("fa-IR") + " تومان";
+    }
+    function upsertItem(key, name, price, delta){
+    if (!key) return;
+    const idx = state.items.findIndex(x => x.key === key);
+    if (idx === -1 && delta > 0){
+    state.items.push({ key, name, price: Number(price)||0, qty: delta });
+    } else if (idx > -1){
+    state.items[idx].qty += delta;
+    if (state.items[idx].qty <= 0) state.items.splice(idx,1);
+    }
+    saveState();
+    pingFab();
+    }
+    function removeItem(key){
+    const idx = state.items.findIndex(x => x.key === key);
+    if (idx > -1){ state.items.splice(idx,1); saveState(); pingFab(); }
+    }
+    function calcTotals(){
+    const count = state.items.reduce((s,it)=> s + it.qty, 0);
+    const total = state.items.reduce((s,it)=> s + (it.qty * (Number(it.price)||0)), 0);
+    return { count, total };
+    }
+    function renderNote(){
+    const list = document.getElementById("noteList");
+    const {count,total} = calcTotals();
+    // fab
+    document.getElementById("noteCount").textContent = String(count);
+    document.getElementById("noteTotal").textContent = formatPrice(total);
+    // offcanvas footer
+    document.getElementById("noteItemsCount").textContent = String(count);
+    document.getElementById("noteTotalBottom").textContent = formatPrice(total);
+    // textarea
+    noteText.value = state.note || "";
+    // list
+    if (!state.items.length){
+    list.innerHTML = '<div class="note-empty">هنوز چیزی اضافه نکرده‌اید. از دکمه‌های افزودن روی کارت‌ها استفاده کنید.</div>';
+    return;
+    }
+    list.innerHTML = state.items.map(it => `
+    <div class="note-item" data-key="${it.key}">
+    <div class="flex-grow-1">
+    <div class="title">${escapeHtml(it.name)}</div>
+    <div class="text-muted small">${formatPrice(it.price)}</div>
+    </div>
+    <div class="qty-group">
+    <button class="qty-btn" data-action="dec" aria-label="کاهش"><i class="bi bi-dash"></i></button>
+    <div class="fw-bold" style="min-width:28px; text-align:center">${it.qty}</div>
+    <button class="qty-btn" data-action="inc" aria-label="افزایش"><i class="bi bi-plus"></i></button>
+    </div>
+    <button class="btn btn-sm btn-outline-danger ms-1" data-action="remove" aria-label="حذف"><i class="bi bi-x-lg"></i></button>
+    </div>
+    `).join("");
+    }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+    function pingFab(){
+    const fab = document.querySelector(".note-fab");
+    fab?.classList.add("pulse");
+    setTimeout(()=> fab?.classList.remove("pulse"), 300);
+    }
+
+    let state = loadState();
+
+    // Connect all "Add" buttons on cards
+    document.addEventListener("click", (e)=>{
+    const addBtn = e.target.closest(".btn-add");
+    if (addBtn){
+    const card = addBtn.closest(".food-card");
+    if (!card) return;
+    const key = card.dataset.itemKey || (card.dataset.itemName || "");
+    const name = card.dataset.itemName || card.querySelector(".card-title")?.textContent || "بدون‌نام";
+    const price = +(card.dataset.itemPrice || card.dataset.price || 0);
+    upsertItem(key, name, price, 1);
+    }
+    // Offcanvas qty actions
+    const actionBtn = e.target.closest(".qty-btn, .btn-outline-danger");
+    if (actionBtn && actionBtn.closest("#noteList")){
+    const wrap = actionBtn.closest(".note-item"); if (!wrap) return;
+    const key = wrap.dataset.key;
+    const act = actionBtn.dataset.action;
+    if (act === "inc") upsertItem(key, "", 0, 1);
+    else if (act === "dec") upsertItem(key, "", 0, -1);
+    else if (act === "remove") removeItem(key);
+    }
+    });
+
+    // Quick view add button
+    qvAddBtn?.addEventListener("click", ()=>{
+    const key = qvAddBtn.dataset.key || "";
+    const name = qvAddBtn.dataset.name || "";
+    const price = +(qvAddBtn.dataset.price || 0);
+    upsertItem(key, name, price, 1);
+    });
+
+    // Note textarea
+    const noteText = document.getElementById("noteText");
+    noteText.addEventListener("input", debounce(()=>{
+    state.note = noteText.value || "";
+    saveState();
+    }, 250));
+
+    // Copy / Share / Clear
+    const btnCopy = document.getElementById("btnCopy");
+    const btnShare = document.getElementById("btnShare");
+    const btnClear = document.getElementById("btnClear");
+
+    function buildPlainText(){
+    const {count,total} = calcTotals();
+    let lines = ["سفارش من:"];
+    state.items.forEach((it,i)=>{
+    lines.push(`${i+1}. ${it.name} × ${it.qty} — ${formatPrice(it.price)}`);
+    });
+    lines.push(`جمع کل: ${formatPrice(total)}`);
+    if (state.note) { lines.push("یادداشت:", state.note); }
+    return lines.join("\n");
+    }
+    btnCopy.addEventListener("click", async ()=>{
+    try{
+    await navigator.clipboard.writeText(buildPlainText());
+    toastMini("متن سفارش کپی شد.");
+    }catch{ toastMini("کپی ناموفق بود.");}
+    });
+    btnShare.addEventListener("click", async ()=>{
+    const text = buildPlainText();
+    if (navigator.share){
+    try{ await navigator.share({ text, title:"سفارش من" }); }
+    catch(e){}
+    }else{
+    try{ await navigator.clipboard.writeText(text); toastMini("متن برای اشتراک‌گذاری کپی شد."); }
+    catch{ toastMini("اشتراک‌گذاری پشتیبانی نمی‌شود."); }
+    }
+    });
+    btnClear.addEventListener("click", ()=>{
+    if (!state.items.length && !state.note) return;
+    if (confirm("همه موارد دفترچه پاک شود؟")){
+    state = { items: [], note: "" };
+    saveState();
+    }
+    });
+
+    // Back to top
+    const onScroll = ()=>{ if (window.scrollY > 400) backTop.classList.add("show"); else backTop.classList.remove("show"); };
+    backTop.addEventListener("click", ()=> window.scrollTo({ top:0, behavior:"smooth" }));
+    document.addEventListener("scroll", onScroll, { passive:true });
+
+    // Tiny toast
+    function toastMini(msg){
+    const el = document.createElement("div");
+    el.textContent = msg;
+    el.style.cssText = "position:fixed;inset-inline:0;left:0;right:0;bottom:calc(20px + var(--safe-bottom));margin:auto;max-width:260px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;text-align:center;z-index:2000;box-shadow:0 10px 24px rgba(0,0,0,.2)";
+    document.body.appendChild(el);
+    setTimeout(()=>{ el.style.opacity="0"; el.style.transition="opacity .25s"; setTimeout(()=> el.remove(), 260); }, 1200);
+    }
+
+    // Initial render
+    renderNote();
+    })();
+</script>
+<script src="~/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "QR Code منوی عمومی";
+}
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100 px-3">
+    <div class="qr-card text-center shadow-lg p-4 rounded-4 bg-white w-100">
+        <h2 class="fw-bold mb-3">منوی عمومی @ViewBag.RestaurantName</h2>
+        <p class="text-muted mb-4">برای مشاهده منو، این QR Code را اسکن کنید:</p>
+
+        <div class="qr-wrapper mb-4">
+            <img id="qrImage"
+                 src="data:image/png;base64,@ViewBag.QRCodeImage"
+                 alt="QR Code منوی عمومی"
+                 class="img-fluid" />
+        </div>
+
+        @* <p class="text-muted">یا این لینک را باز کنید:</p> *@
+        @* <a href="@ViewBag.MenuUrl" target="_blank" class="d-block mb-4">@ViewBag.MenuUrl</a> *@
+        <span/>
+        <span/>
+        <div class="action-buttons d-flex flex-column flex-md-row gap-2 justify-content-center">
+            <button onclick="window.print()" class="btn btn-primary py-2 flex-fill">
+                🖨 چاپ
+            </button>
+            <button onclick="downloadQR()" class="btn btn-outline-secondary py-2 flex-fill">
+                ⬇ دانلود QR
+            </button>
+            <a href="@ViewBag.MenuUrl" target="_blank" class="btn btn-success py-2 flex-fill">
+                🌐 مشاهده منو
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function downloadQR() {
+        const qrImg = document.getElementById("qrImage");
+        const link = document.createElement("a");
+        link.href = qrImg.src;
+        link.download = "QRCode_Menu.png";
+        link.click();
+    }
+</script>
+
+<style>
+    body {
+        font-family: 'IRANYekan', 'IRANSans', sans-serif;
+        direction: rtl;
+        background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+        margin: 0;
+    }
+
+    .qr-card {
+        max-width: 460px;
+        margin: auto;
+        border-radius: 1.5rem;
+        transition: all 0.25s ease-in-out;
+    }
+
+        .qr-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12) !important;
+        }
+
+    .qr-wrapper img {
+        max-width: 240px;
+        border: 10px solid #fff;
+        border-radius: 1rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+        word-break: break-all;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    button, .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    /* موبایل */
+    @@media (max-width: 576px) {
+        h2
+
+    {
+        font-size: 1.2rem;
+    }
+
+    .qr-wrapper img {
+        max-width: 200px;
+    }
+
+    .action-buttons {
+        flex-direction: column !important;
+    }
+
+    }
+
+    /* نسخه پرینت */
+    @@media print {
+        body
+
+    {
+        background: #fff !important;
+    }
+
+    .btn, a {
+        display: none !important;
+    }
+
+    .qr-card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    }
+</style>

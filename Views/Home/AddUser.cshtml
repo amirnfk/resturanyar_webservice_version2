@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "افزودن کاربر جدید";
+}
+
+<div class="container mt-4" dir="rtl">
+    <h2 class="mb-4 text-center">افزودن کاربر جدید</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <form asp-action="AddUser" method="post">
+        <div class="mb-3">
+            <label class="form-label">نام کاربر</label>
+            <input type="text" name="name" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">رمز عبور</label>
+            <input type="password" name="password" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">نقش</label>
+            <select name="role_id" class="form-select" required>
+                <option value="">انتخاب نقش</option>
+                <option value="2">گارسون</option>
+                <option value="3">سرآشپز</option>
+                <option value="4">صندوق‌دار</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">ثبت کاربر</button>
+    </form>
+</div>

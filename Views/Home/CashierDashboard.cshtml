@@ -1,0 +1,400 @@
+﻿@model resturanyar.Models.OrderListViewModel
+
+@{
+    ViewData["Title"] = "سفارش‌های صندوقدار";
+    string baseImageUrl = "https://delavita.ir/";
+    string currentPeriod = ViewContext.HttpContext.Request.Query["period"].ToString() ?? "";
+
+    var cashierVisibleStatuses = new[] { 6, 7, 8, 11 };
+    var nextStatusMap = new Dictionary<int, int>
+    {
+        { 6, 7 },
+        { 7, 8 },
+        { 8, 11 }
+    };
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+    <style>
+        body {
+            direction: rtl;
+            font-family: 'IRANSans', Tahoma, sans-serif;
+            background-color: #f3f6f9;
+            padding-bottom: 50px;
+            margin: 0;
+        }
+
+        .order-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: white;
+            transition: box-shadow 0.3s ease;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+            .order-card:hover {
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
+
+        .order-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #fff;
+            min-width: 110px;
+            justify-content: center;
+        }
+
+        .bg-status-6 {
+            background-color: #0d6efd;
+        }
+        /* تحویل داده شده */
+        .bg-status-7 {
+            background-color: #ffc107;
+            color: #212529 !important;
+        }
+        /* در انتظار پرداخت */
+        .bg-status-8 {
+            background-color: #198754;
+        }
+        /* پرداخت شده */
+        .bg-status-11 {
+            background-color: #6c757d;
+        }
+        /* بسته شده */
+
+        .order-date {
+            font-size: 0.9rem;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .food-item {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .food-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .food-info {
+            flex-grow: 1;
+            min-width: 150px;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .food-quantity {
+            color: #444;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .food-price {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0d6efd;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .order-description {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .order-total {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #198754;
+            text-align: left;
+            margin-top: 20px;
+            border-top: 2px solid #198754;
+            padding-top: 10px;
+            direction: ltr;
+        }
+
+        .filter-label {
+            font-weight: 600;
+        }
+
+        @@media (max-width: 768px) {
+            .food-item
+
+        {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .food-price {
+            margin-top: 8px;
+        }
+
+        .order-total {
+            text-align: right;
+            direction: rtl;
+        }
+
+        }
+
+        .quick-filter-btn.active {
+            background-color: #0d6efd !important;
+            color: white !important;
+            font-weight: 900;
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(13, 110, 253, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4 fw-bold">📋 سفارش‌های صندوقدار</h2>
+
+        <!-- فرم فیلتر -->
+        <form id="filterForm" class="row g-3 align-items-end mb-4 bg-white p-3 rounded shadow-sm" method="get">
+            <div class="col-auto">
+                <label class="form-label filter-label">وضعیت</label>
+                <select name="statusId" class="form-select">
+                    @* <option value="0" selected="@(Model?.FilterStatusId == 0 ? "selected" : null)">🔰 سفارش‌های جاری (پیش‌فرض)</option> *@
+                    <option value="-1" selected="@(Model?.FilterStatusId == -1 ? "selected" : null)">همه وضعیت‌ها</option>
+
+                    @foreach (var kv in Model.StatusMap.Where(s => cashierVisibleStatuses.Contains(s.Key)))
+                    {
+                            <option value="@kv.Key" selected="@(Model?.FilterStatusId == kv.Key ? "selected" : null)">
+                            @kv.Value
+                            </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label filter-label">از تاریخ</label>
+                <input type="date" name="from" class="form-control" value="@(Model.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+            </div>
+            <div class="col-auto">
+                <label class="form-label filter-label">تا تاریخ</label>
+                <input type="date" name="to" class="form-control" value="@(Model.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label filter-label">جستجو</label>
+                <input type="text" name="search" placeholder="شماره سفارش یا شماره میز" class="form-control" value="@(Model.Search ?? "")" />
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label filter-label">تعداد در صفحه</label>
+                <select name="pageSize" class="form-select">
+                    <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+                    <option value="20" selected="@(Model.PageSize == 20 ? "selected" : null)">20</option>
+                    <option value="50" selected="@(Model.PageSize == 50 ? "selected" : null)">50</option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">اعمال فیلتر</button>
+            </div>
+
+            <div class="col-auto d-flex align-items-center gap-2">
+                <label class="form-label mb-0 filter-label">سریع:</label>
+                <a class="btn btn-outline-secondary btn-sm quick-filter-btn @(currentPeriod == "today" ? "active" : "")"
+                   href="#" data-period="today">امروز</a>
+                <a class="btn btn-outline-secondary btn-sm quick-filter-btn @(currentPeriod == "week" ? "active" : "")"
+                   href="#" data-period="week">هفته</a>
+                <a class="btn btn-outline-secondary btn-sm quick-filter-btn @(currentPeriod == "month" ? "active" : "")"
+                   href="#" data-period="month">ماه</a>
+            </div>
+        </form>
+
+        @Html.AntiForgeryToken()
+
+        <!-- اینجا لیست سفارش‌ها با AJAX آپدیت میشه -->
+        <div id="ordersContainer">
+            @await Html.PartialAsync("_CashierOrdersPartial", Model)
+        </div>
+
+        <!-- صفحه‌بندی -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center" id="paginationContainer">
+                @* همین ساختار صفحه‌بندی، بعدا با JS آپدیت میشه *@
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a href="#" class="page-link" data-page="@i">@i</a>
+                        </li>
+                }
+            </ul>
+        </nav>
+
+    </div>
+
+    <script>
+        const form = document.getElementById('filterForm');
+        const ordersContainer = document.getElementById('ordersContainer');
+        const paginationContainer = document.getElementById('paginationContainer');
+        let currentPage = @Model.Page;
+
+        // تابع برای دریافت آنتی‌فورجری
+        function getAntiForgeryToken() {
+            var inp = document.querySelector('input[name="__RequestVerificationToken"]');
+            return inp ? inp.value : '';
+        }
+
+        // ارسال AJAX برای فیلتر و صفحه‌بندی
+        async function loadOrders(params = {}) {
+            try {
+                // آماده‌سازی پارامترهای ارسال
+                let formData = new URLSearchParams(new FormData(form));
+
+                // اگر صفحه تعیین شده است جایگزین کنیم
+                if (params.page) {
+                    formData.set('page', params.page);
+                }
+
+                // اگر period تعیین شده است جایگزین کنیم
+                if (params.period) {
+                    formData.set('period', params.period);
+                }
+
+                // حذف پارامترهایی که مقدار خالی دارند
+                for (const [key, value] of formData.entries()) {
+                    if (!value) formData.delete(key);
+                }
+
+                const token = getAntiForgeryToken();
+
+                const response = await fetch('@Url.Action("GetFilteredCashierOrders", "Home")', {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token,
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    body: formData.toString()
+                });
+
+                if (!response.ok) throw new Error('خطا در دریافت داده‌ها');
+
+                const html = await response.text();
+                ordersContainer.innerHTML = html;
+
+                // آپدیت صفحه فعلی و صفحه‌بندی (اینجا فرض شده سرور تعداد کل صفحات را می‌فرسته در هدر یا داخل html)
+                // اگر نیاز به آپدیت صفحه‌بندی داری، اینجا می‌تونی انجام بدی.
+
+                // پاک کردن history (بدون ذخیره کردن)
+                window.history.replaceState({}, '', '@Url.Action("CashierDashboard", "Home")');
+
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        // هندلر ارسال فرم (فیلتر)
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            currentPage = 1;
+            loadOrders({ page: 1 });
+        });
+
+        // هندلر کلیک دکمه‌های فیلتر سریع
+        document.querySelectorAll('.quick-filter-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const period = btn.getAttribute('data-period');
+                // تنظیم مقدار period در فرم
+                const periodInput = document.createElement('input');
+                periodInput.type = 'hidden';
+                periodInput.name = 'period';
+                periodInput.value = period;
+                form.appendChild(periodInput);
+                currentPage = 1;
+                loadOrders({ page: 1, period });
+            });
+        });
+
+        // هندلر صفحه‌بندی (فرض شده صفحه‌بندی ساده است)
+        paginationContainer.addEventListener('click', e => {
+            if (e.target.matches('a.page-link')) {
+                e.preventDefault();
+                const page = parseInt(e.target.getAttribute('data-page'));
+                if (!isNaN(page) && page !== currentPage) {
+                    currentPage = page;
+                    loadOrders({ page });
+                }
+            }
+        });
+
+        // تابع تغییر وضعیت (مثل قبل)
+        async function changeStatus(orderId, newStatusId) {
+            if (!confirm("آیا از تغییر وضعیت سفارش مطمئن هستید؟")) {
+                return;
+            }
+
+            try {
+                var token = getAntiForgeryToken();
+                var form = new URLSearchParams();
+                form.append('orderId', orderId);
+                form.append('newStatusId', newStatusId);
+
+                const res = await fetch('@Url.Action("UpdateOrderStatus", "Home")', {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token,
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    body: form.toString()
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message || "وضعیت با موفقیت تغییر کرد.");
+                    loadOrders({ page: currentPage }); // بعد از تغییر وضعیت لیست رو آپدیت کن
+                } else {
+                    alert(data.message || "خطا در تغییر وضعیت.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("خطا در ارتباط با سرور.");
+            }
+        }
+    </script>
+</body>
+</html>
+

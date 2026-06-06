@@ -1,0 +1,91 @@
+﻿@{
+    Layout = null;
+}
+
+@model AddRestaurantRequest
+@{
+    ViewData["Title"] = "انتخاب یا افزودن کافه یا رستوران";
+    var restaurants = ViewBag.Restaurants as List<Restaurant>;
+    var ownerId = ViewBag.OwnerId;
+
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
+    <link href="~/css/all.min.css" rel="stylesheet">
+    <link href="~/css/chooserestaurant.css" rel="stylesheet" asp-append-version="true">
+    
+</head>
+<body class="bg-white">
+
+    
+    <div class="bg-orange" style="height:220px;"></div>
+
+    
+    <div class="main-box text-center position-relative">
+
+        
+        <img src="~/images/logo.png" alt="لوگو" class="rounded-circle shadow logo-img" />
+
+         
+        <div class="card mt-4 shadow rounded-4">
+            <div class="card-body px-4 py-5 text-start">
+
+                <h5 class="text-orange fw-bold text-center mb-4">انتخاب کافه/رستوران</h5>
+
+                @if (restaurants != null && restaurants.Count > 0)
+                {
+                    <form asp-action="SelectRestaurant" method="post" class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" id="btnShowAdd" class="btn btn-orange rounded-circle d-flex align-items-center justify-content-center" style="width:48px; height:48px;">
+                                <i class="fa-solid fa-plus"></i>
+
+                            </button>
+                            <select name="restaurantId" class="form-select custom-select">
+                                @foreach (var r in restaurants)
+                                {
+                                    <option value="@r.restaurant_id">@r.name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-orange w-100 mt-2 fw-bold">ورود</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-info mt-3 text-center">هیچ کافه یا رستورانی ثبت نشده است.</div>
+                    <button type="button" id="btnShowAdd" class="btn btn-orange w-100 mt-2 fw-bold">
+                        <i class="fa-solid fa-plus"></i> افزودن  کافه / رستوران
+
+                    </button>
+                }
+
+                
+                <form id="addRestaurantForm" class="mt-3 text-start" style="display:none;">
+                    <div class="mb-3">
+                        <label class="form-label">نام کافه / رستوران</label>
+                        <input type="text" id="restaurantName" class="form-control text-end" placeholder="نام کافه یا رستوران را وارد کنید" />
+                        <div id="nameError" class="text-danger small mt-1" style="display:none;"></div>
+                    </div>
+                    <button type="button" id="btnAddRestaurant" class="btn btn-orange w-100 fw-bold">افزودن</button>
+                </form>
+            </div>
+        </div>
+
+        
+        <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" />
+    </div>
+    <script>
+        
+        var currentOwnerId = "@(ViewBag.ownerId ?? 0)";
+    </script>
+    <script src="~/js/jquery_3.6.0.min.js"></script>
+    <script src="~/js/chooserestaurant.js" asp-append-version="true"></script>
+</body>
+</html>

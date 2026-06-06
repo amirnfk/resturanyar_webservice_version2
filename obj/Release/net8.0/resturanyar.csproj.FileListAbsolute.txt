@@ -1,0 +1,909 @@
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.Development.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.runtime.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.endpoints.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.exe
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.deps.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.runtimeconfig.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.pdb
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Core.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Identity.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.Parser.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.Framework.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.SqlServer.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.Interfaces.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ExcelNumberFormat.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Humanizer.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.Http.Formatting.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.WebHost.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Build.Locator.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Json.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Options.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Primitives.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.OpenApi.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.Host.SystemWeb.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.SqlServer.Server.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Web.Infrastructure.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Mono.TextTemplating.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Owin.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\QRCoder.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\RBush.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.AspNetCore.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Hosting.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Logging.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Formatting.Compact.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Settings.Configuration.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Console.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Debug.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.File.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\SixLabors.Fonts.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.Core.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.ClientModel.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.CodeDom.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.AttributedModel.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Convention.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Hosting.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Runtime.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.TypedParts.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Configuration.ConfigurationManager.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Drawing.Common.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Formats.Asn1.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Packaging.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Pipelines.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Memory.Data.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Runtime.Caching.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Xml.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Permissions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Encodings.Web.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Json.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Windows.Extensions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\WebActivatorEx.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\sni.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\sni.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\sni.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.AssemblyReference.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.GeneratedMSBuildEditorConfig.editorconfig
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfoInputs.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfo.cs
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.CoreCompileInputs.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cs
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cs
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.sourcelink.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\projectbundle\resturanyar.bundle.scp.css
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.development.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.endpoints.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets\msbuild.resturanyar.Microsoft.AspNetCore.StaticWebAssets.props
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets\msbuild.resturanyar.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets\msbuild.build.resturanyar.props
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets\msbuild.buildMultiTargeting.resturanyar.props
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets\msbuild.buildTransitive.resturanyar.props
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.pack.json
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturan.3E290ECC.Up2Date
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\refint\resturanyar.dll
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.pdb
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
+D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\ref\resturanyar.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.Development.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.runtime.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.endpoints.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.exe
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.deps.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.runtimeconfig.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.pdb
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Core.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Identity.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.Parser.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.SqlServer.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.Interfaces.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ExcelNumberFormat.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Humanizer.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.Http.Formatting.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.WebHost.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Build.Locator.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Memory.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Json.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Options.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Primitives.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.OpenApi.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.Host.SystemWeb.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.SqlServer.Server.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Web.Infrastructure.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Mono.TextTemplating.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Owin.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\QRCoder.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\RBush.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.AspNetCore.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Hosting.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Logging.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Formatting.Compact.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Settings.Configuration.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Console.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Debug.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.File.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\SixLabors.Fonts.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.Core.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.ClientModel.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.CodeDom.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.AttributedModel.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Convention.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Hosting.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Runtime.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.TypedParts.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Configuration.ConfigurationManager.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Diagnostics.DiagnosticSource.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Drawing.Common.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Formats.Asn1.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Packaging.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Pipelines.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Memory.Data.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Runtime.Caching.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Xml.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Permissions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Encodings.Web.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Json.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Windows.Extensions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\WebActivatorEx.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\sni.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\sni.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\sni.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.AssemblyReference.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\rpswa.dswa.cache.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.GeneratedMSBuildEditorConfig.editorconfig
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfoInputs.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfo.cs
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.CoreCompileInputs.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cs
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cs
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.sourcelink.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjimswa.dswa.cache.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmrazor.dswa.cache.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmcshtml.dswa.cache.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\projectbundle\resturanyar.bundle.scp.css
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.development.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.endpoints.json
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturan.3E290ECC.Up2Date
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\refint\resturanyar.dll
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.pdb
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
+E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\ref\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.Development.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.endpoints.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.runtime.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.exe
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.deps.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.runtimeconfig.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Core.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Identity.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.Parser.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.Framework.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.SqlServer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.Interfaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ExcelNumberFormat.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Humanizer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.Http.Formatting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.WebHost.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Build.Locator.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Options.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Primitives.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.OpenApi.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.Host.SystemWeb.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.SqlServer.Server.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Web.Infrastructure.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Mono.TextTemplating.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Owin.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\QRCoder.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\RBush.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.AspNetCore.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Hosting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Formatting.Compact.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Settings.Configuration.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Console.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Debug.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.File.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\SixLabors.Fonts.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.Core.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.ClientModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.CodeDom.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.AttributedModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Convention.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Hosting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Runtime.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.TypedParts.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Configuration.ConfigurationManager.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Formats.Asn1.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Packaging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Pipelines.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Memory.Data.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Runtime.Caching.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Xml.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Permissions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Encodings.Web.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Windows.Extensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\WebActivatorEx.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.AssemblyReference.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rpswa.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.GeneratedMSBuildEditorConfig.editorconfig
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfoInputs.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.CoreCompileInputs.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.sourcelink.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjimswa.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmrazor.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmcshtml.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.development.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.endpoints.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturan.3E290ECC.Up2Date
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\refint\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\ref\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.Development.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\appsettings.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.endpoints.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.staticwebassets.runtime.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.exe
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.deps.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.runtimeconfig.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Core.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Azure.Identity.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ClosedXML.Parser.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\DocumentFormat.OpenXml.Framework.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.SqlServer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EntityFramework.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\EPPlus.Interfaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ExcelNumberFormat.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Humanizer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.Http.Formatting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Web.Http.WebHost.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Build.Locator.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Configuration.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.ObjectPool.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Options.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Extensions.Primitives.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.OpenApi.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Owin.Host.SystemWeb.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.SqlServer.Server.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Web.Infrastructure.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Mono.TextTemplating.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Newtonsoft.Json.Bson.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Owin.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\QRCoder.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\RBush.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.AspNetCore.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Hosting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Extensions.Logging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Formatting.Compact.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Settings.Configuration.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Console.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.Debug.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Serilog.Sinks.File.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\SixLabors.Fonts.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\Swashbuckle.Core.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.ClientModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.CodeDom.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.AttributedModel.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Convention.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Hosting.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.Runtime.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Composition.TypedParts.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Configuration.ConfigurationManager.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Formats.Asn1.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Packaging.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.IO.Pipelines.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Memory.Data.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Runtime.Caching.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Cryptography.Xml.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Security.Permissions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Encodings.Web.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Text.Json.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\System.Windows.Extensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\WebActivatorEx.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-arm64\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x64\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win-x86\native\sni.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\bin\Release\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.AssemblyReference.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rpswa.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.GeneratedMSBuildEditorConfig.editorconfig
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfoInputs.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.AssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.csproj.CoreCompileInputs.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.MvcApplicationPartsAssemblyInfo.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.RazorAssemblyInfo.cs
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.sourcelink.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjimswa.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmrazor.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\rjsmcshtml.dswa.cache.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.json.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.development.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.build.endpoints.json
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturan.3E290ECC.Up2Date
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\refint\resturanyar.dll
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
+D:\aspnet projects\resturanyar\resturanyar\resturanyar\resturanyar_webservice\obj\Release\net8.0\ref\resturanyar.dll

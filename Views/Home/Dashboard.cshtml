@@ -1,0 +1,177 @@
+﻿@{
+    Layout = null;
+}
+
+@model DashboardStatsViewModel
+@{
+    ViewData["Title"] = "داشبورد";
+    var restaurant = Model?.RestaurantName ?? "مجموعه شما";
+    var publicToken = Model?.PublicMenuToken;
+}
+<link rel="stylesheet" href="~/css/all.min.css">
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
+<section class="dash-hero">
+   
+    <div class="dash-hero__card">
+        <div class="dash-hero__row">
+            <div class="dash-hero__brand">
+                <img src="~/images/logo.png" alt="لوگوی کافه / رستوران" class="dash-hero__logo">
+                <div class="dash-hero__info">
+                    <h1 class="dash-hero__title">خوش آمدید</h1>
+                    <p class="dash-hero__subtitle">
+                         <strong>@restaurant</strong>
+                        <span class="dash-hero__dot">•</span>
+                        <span id="dashClock" class="dash-hero__clock" aria-live="polite"></span>
+                    </p>
+                    <p class="dash-hero__note">مدیریت سریع، هوشمند و لذت‌بخش</p>
+                </div>
+            </div>
+            <div class="dash-hero__actions">
+                <button id="themeToggle" class="btn-chip" aria-label="تغییر تم">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a href="@Url.Action("PublicMenuQRCode","Menu", new { token = publicToken })" class="btn-chip" title="منوی عمومی (QR)">
+                    <i class="fa-solid fa-qrcode"></i>
+                </a>
+            </div>
+        </div>
+        <div class="dash-stats">
+            <div class="stat-card fade-up" data-hint="کاربران">
+                <i class="fa-solid fa-users stat-card__icon"></i>
+                <div class="stat-card__meta">
+                    <span class="stat-card__label">کاربران</span>
+                    <span class="stat-card__value num" data-count="@Model.UsersCount">0</span>
+                </div>
+            </div>
+            <div class="stat-card fade-up" data-hint="آیتم‌های منو">
+                <i class="fa-solid fa-utensils stat-card__icon"></i>
+                <div class="stat-card__meta">
+                    <span class="stat-card__label">آیتم‌های منو</span>
+                    <span class="stat-card__value num" data-count="@Model.MenuItemsCount">0</span>
+                </div>
+            </div>
+            <div class="stat-card fade-up" data-hint="سفارشات امروز">
+                <i class="fa-solid fa-receipt stat-card__icon"></i>
+                <div class="stat-card__meta">
+                    <span class="stat-card__label">سفارشات امروز</span>
+                    <span class="stat-card__value num" data-count="@Model.OrdersTodayCount">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="dash-main">
+    <div class="tiles">
+        <a class="tile fade-up tilt" href="@Url.Action("ManageUsers","Home")" title="مدیریت کارکنان" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-users"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">مدیریت کارکنان</h3>
+                <p class="tile__desc">تعریف نقش‌ها، اضافه/حذف و کنترل دسترسی‌ها</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+
+        <a class="tile fade-up tilt" href="@Url.Action("FoodList","Home")" title="لیست غذاها" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">لیست غذاها</h3>
+                <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
+            </div>
+
+
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+        <a class="tile fade-up tilt" href="@Url.Action("AddOrder", "Home")" title="ثبت سفارش جدید" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-cart-plus"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">ثبت سفارش جدید</h3>
+                <p class="tile__desc">ثبت سفارش جدید</p>
+            </div>
+
+
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+
+        <a class="tile fade-up tilt" href="@Url.Action("CategoryList","Home")" title="لیست دسته بندی" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">لیست دسته بندی</h3>
+                <p class="tile__desc">دسته بندی های غذا</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+        <a class="tile fade-up tilt" href="@Url.Action("TableList","Home")" title="لیست میزها" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-chair"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">لیست میزها  </h3>
+                <p class="tile__desc"> لیست میزها </p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+        <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" title="لیست مشتریان" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-address-book"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">لیست مشتریان</h3>
+                <p class="tile__desc">لیست مشتریان ما</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+        <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" title="لیست سفارشات" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">لیست سفارشات</h3>
+                <p class="tile__desc">پیگیری لحظه‌ای ثبت تا تسویه سفارش‌ها</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+
+        <a class="tile fade-up tilt" href="@Url.Action("RestaurantMenu","Menu")" title="منو " role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">منو</h3>
+                <p class="tile__desc">ویرایش ساختار منو و نمایش برای مشتری</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+
+        <a class="tile fade-up tilt" href="@Url.Action("PublicMenuQRCode","Menu", new { token = publicToken })" title="منوی عمومی (QR)" role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-qrcode"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">منوی عمومی</h3>
+                <p class="tile__desc">اشتراک QR منو برای مشتریان</p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+        <a class="tile fade-up tilt" href="@Url.Action("ManagerReports","Home")" title="گزارش گیری " role="button" tabindex="0">
+            <div class="tile__icon"><i class="fa-solid fa-receipt"></i></div>
+            <div class="tile__body">
+                <h3 class="tile__title">گزارش گیری</h3>
+                <p class="tile__desc">گزارش سفارشات </p>
+            </div>
+            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            <span class="ripple"></span>
+        </a>
+    </div>
+</main>
+
+<footer class="dash-footer">
+    <div class="dash-footer__overlay"></div>
+    <div class="dash-footer__content">
+        <img src="~/images/logo_circle.png" alt="لوگو" class="dash-footer__logo">
+        <p class="dash-footer__text">با رستوران‌یار دلاویتا، مدیریت کافه / رستوران شما ساده، دقیق و لذت‌بخش است.</p>
+    </div>
+</footer>
+
+
+
+<script src="~/js/dashboard.js" asp-append-version="true"></script>

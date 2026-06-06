@@ -1,0 +1,631 @@
+﻿@model List<Resturanyar.Data.User>
+
+@{
+    var restaurantName = ViewBag.RestaurantName as string;
+    ViewData["Title"] = "مدیریت کارکنان - "+@restaurantName;
+   
+}
+
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/bootstrap_icons.css">
+
+<style>
+   
+   
+    .user-permissions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .perm-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: #f1f3f5;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+        .perm-icon i {
+            font-size: 24px;
+        }
+        /* Turn OFF look */
+        .perm-icon.inactive {
+            opacity: 0.10;
+            filter: grayscale(100%);
+        }
+       
+        .perm-icon:not(.inactive):hover {
+            transform: translateY(-1px);
+        }
+
+        .perm-icon img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+    .user-card {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 15px;
+        background-color: #fff;
+        direction: rtl;
+        text-align: center;
+    }
+
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        overflow: hidden;
+    }
+
+        .user-avatar img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+    .staff-name {
+        width:100%;
+        font-weight: bold;
+        font-family:IranNastaliq;
+        font-size: 18px;
+        color:#000;
+        margin: 5px 0;
+        align-content:center;
+    }
+
+    .user-role {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .user-actions button {
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        margin: 0 3px;
+    }
+
+    .btn-green {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .btn-orange {
+        background-color: #ffe5b4;
+        color: #cc7000;
+    }
+
+    .btn-red {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    @@media (min-width: 768px) {
+        .user-card {
+            max-width: 280px;
+            margin: auto;
+        }
+    }
+
+    .btn-primary {
+        --bs-btn-bg: #ff7a00;
+        --bs-btn-border-color: #ff7a00;
+        --bs-btn-hover-bg: #f06700;
+        --bs-btn-hover-border-color: #f06700;
+        border-radius: 10px;
+        padding: .5rem .9rem;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(255,122,0,.22);
+        transition: transform .12s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @* <h2 class="text-center m-0">مدیریت کارکنان - @restaurantName</h2> *@
+         
+<button type="button" class="btn btn-primary" id="btnAddUser">
+    افزودن کاربر
+</button>
+
+    </div>
+
+   <div class="row g-3">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center p-4 rounded shadow-sm">
+                <i class="bi bi-people display-6 d-block mb-2"></i>
+                <h5 class="fw-bold mb-2">هنوز هیچ کاربری ثبت نشده است</h5>
+                <p class="text-muted mb-3">برای شروع می‌توانید اولین کاربر را اضافه کنید.</p>
+
+                 
+
+
+                    <button type="button" class="btn btn-primary" id="btnAddUserEmpty">
+                    افزودن کاربر جدید
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var user in Model)
+        {
+            string roleName = (user.Role?.role_name) ?? "نامشخص";
+            string roleIcon = "/images/default.png";
+            switch (user.Role?.role_id ?? 0)
+            {
+                case 3: roleIcon = "/images/baker_9102653.png"; break;
+                case 2: roleIcon = "/images/waiter_2453333.png"; break;
+                case 4: roleIcon = "/images/cashier_1651946.png"; break;
+            }
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="user-card">
+                    <!-- Three permission image places -->
+                    <div class="user-permissions" data-order="@user.order_management_permission"
+                         data-kitchen="@user.kitchen_management_permission"
+                         data-payment="@user.payment_management_permission">
+                        <!-- Order -->
+                        <div class="perm-icon perm-order @(user.order_management_permission ? "" : "inactive")"
+                             title="دسترسی مدیریت سفارشات">
+                            <img src="/images/waiter_2453333.png" alt="Order">  
+                           
+                        </div>
+
+                        <!-- Kitchen -->
+                        <div class="perm-icon perm-kitchen @(user.kitchen_management_permission ? "" : "inactive")"
+                             title="دسترسی مدیریت آشپزخانه">
+                            <img src="/images/baker_9102653.png" alt="Kitchen">  
+
+                        </div>
+
+                        <!-- Payment -->
+                        <div class="perm-icon perm-payment @(user.payment_management_permission ? "" : "inactive")"
+                             title="دسترسی مدیریت پرداخت">
+                            <img src="/images/cashier_1651946.png" alt="Payment">  
+
+                        </div>
+                    </div>
+
+                    <div class="staff-name">@user.name</div>
+                    @* <div class="user-role">@roleName</div> *@
+                    <div class="user-actions">
+                        <button class="btn btn-green btn-show-info"
+                                data-id="@user.user_id"
+                                data-name="@user.name"
+                                data-role="@roleName"
+                                data-password="@user.password"
+                                data-restaurantid="@user.restaurant_id"
+                                title="مشاهده اطلاعات">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                        <button class="btn btn-orange btn-edit"
+                                data-id="@user.user_id"
+                                data-name="@user.name"
+                                data-password="@user.password"
+                                data-role_id="@user.Role?.role_id"
+                                data-restaurantid="@user.restaurant_id"
+                                data-order_management_permission="@(user.order_management_permission ? 1 : 0)"
+                                data-kitchen_management_permission="@(user.kitchen_management_permission ? 1 : 0)"
+                                data-payment_management_permission="@(user.payment_management_permission ? 1 : 0)"
+                                title="ویرایش">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-red btn-delete" data-id="@user.user_id" title="حذف">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+        }
+    </div>
+</div>
+
+<!-- Modal نمایش اطلاعات -->
+<div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-4" dir="rtl">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">اطلاعات کاربر</h5>
+               
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center">
+                        <img id="infoQr" class="img-fluid border rounded p-2" alt="QR Code" />
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>نام:</strong> <span id="infoName"></span></p>
+                        <p><strong>نقش:</strong> <span id="infoRole"></span></p>
+                        <p><strong>رمز عبور:</strong> <span id="infoPassword"></span></p>
+                        <p><strong>کد رستوران:</strong> <span id="infoCode"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal ویرایش -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3" dir="rtl">
+            <div class="modal-header">
+                <h5 class="modal-title">ویرایش کاربر</h5>
+                
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserId">
+                <div class="mb-3">
+                    <label class="form-label">نام کاربر</label>
+                    <input type="text" id="editName" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">رمز عبور</label>
+                    <input type="text" id="editPassword" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">نقش</label>
+                    <select id="editRole" class="form-select">
+                        <option value="2">گارسون</option>
+                        <option value="3">آشپز</option>
+                        <option value="4">صندوقدار</option>
+                    </select>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="editOrderPermission">
+                    <label class="form-check-label" for="editOrderPermission">دسترسی مدیریت سفارشات</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="editKitchenPermission">
+                    <label class="form-check-label" for="editKitchenPermission">دسترسی مدیریت آشپزخانه</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="editPaymentPermission">
+                    <label class="form-check-label" for="editPaymentPermission">دسترسی مدیریت پرداخت</label>
+                </div>
+
+                <input type="hidden" id="editRestaurantId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary" id="saveEdit">ذخیره تغییرات</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal ثبت کاربر جدید -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3" dir="rtl">
+            <div class="modal-header">
+                <h5 class="modal-title">ثبت کاربر جدید</h5>
+                
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="addName" class="form-label">نام کاربر</label>
+                    <input type="text" id="addName" class="form-control" placeholder="نام کاربر را وارد کنید">
+                </div>
+                <div class="mb-3">
+                    <label for="addPassword" class="form-label">رمز عبور</label>
+                    <input type="password" id="addPassword" class="form-control" placeholder="رمز عبور">
+                </div>
+                <div class="mb-3">
+                    <label for="addRole" class="form-label">نقش</label>
+                    <select id="addRole" class="form-select">
+                        <option value="2">گارسون</option>
+                        <option value="3">آشپز</option>
+                        <option value="4">صندوقدار</option>
+                    </select>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="addOrderPermission">
+                    <label class="form-check-label" for="addOrderPermission">دسترسی مدیریت سفارشات</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="addKitchenPermission">
+                    <label class="form-check-label" for="addKitchenPermission">دسترسی مدیریت آشپزخانه</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="addPaymentPermission">
+                    <label class="form-check-label" for="addPaymentPermission">دسترسی مدیریت پرداخت</label>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-success" id="saveAddUser">ثبت کاربر</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script>
+       $("#btnAddUserEmpty").click(function () {
+        $("#btnAddUser").click(); // همون مودال اصلی رو باز کن
+    });
+    // حذف کاربر
+    $(".btn-delete").click(function () {
+         var restaurantId = @ViewBag.RestaurantId ?? 0;
+        if (restaurantId === 0) {
+            alert("شناسه رستوران پیدا نشد.");
+            return;
+        }
+        var id = $(this).data("id");
+
+        if (!confirm("آیا مطمئن هستید که این کاربر حذف شود؟")) return;
+
+        $.ajax({
+            url: `/api/UserApi/deleteuser/${restaurantId}/${id}`,  // backtick برای template string
+            type: 'DELETE',  // باید حروف بزرگ باشه (معمول)
+            success: function (res) {
+                alert(res.message);
+                if (res.success) {
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert("خطا در حذف کاربر");
+            }
+        });
+    });
+
+        function encodeBase64(str) {
+        try {
+            return btoa(str); // btoa رشته رو Base64 می‌کنه
+        } catch {
+            return "";
+        }
+    }
+        function decodeBase64(str) {
+        try {
+            return atob(str); // atob رشته Base64 رو decode می‌کنه
+        } catch {
+            return "";
+        }
+    }
+
+        
+     // نمایش اطلاعات
+    $(".btn-show-info").click(function () {
+        var name = $(this).data("name");
+        var password = decodeBase64($(this).data("password"));
+        var restaurantId = $(this).data("restaurantid");
+
+        // پرمیشن‌ها از card بخونیم
+        const $card = $(this).closest(".user-card");
+        const hasOrder   = $card.find(".perm-order").hasClass("inactive") === false;
+        const hasKitchen = $card.find(".perm-kitchen").hasClass("inactive") === false;
+        const hasPayment = $card.find(".perm-payment").hasClass("inactive") === false;
+
+        // متن نقش‌ها
+        let roles = [];
+        if (hasOrder) roles.push("گارسون");
+        if (hasKitchen) roles.push("آشپز");
+        if (hasPayment) roles.push("صندوقدار");
+
+        // اگر هیچ پرمیشنی نداشت
+        let roleText = roles.length > 0 ? roles.join(" ، ") : "نامشخص";
+
+        $.get(`/api/UserApi/getrestaurantcode/${restaurantId}`, function (res) {
+            if (res.success) {
+                $("#infoName").text(name);
+                $("#infoRole").text(roleText);
+                $("#infoPassword").text(password);
+                $("#infoCode").text(res.code);
+
+                var qrData = `${name}::${password}::${res.code}`;
+                var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+                $("#infoQr").attr("src", qrUrl);
+
+                new bootstrap.Modal(document.getElementById('infoModal')).show();
+            } else {
+                alert("خطا در دریافت کد رستوران");
+            }
+        });
+    });
+
+
+ $(".btn-edit").click(function () {
+         const $card = $(this).closest(".user-card");
+
+        const hasOrder   = $(this).data("order_management_permission") == 1;
+        const hasKitchen = $(this).data("kitchen_management_permission") == 1;
+        const hasPayment = $(this).data("payment_management_permission") == 1;
+
+        setPermIconState($card, 'order',   hasOrder);
+        setPermIconState($card, 'kitchen', hasKitchen);
+        setPermIconState($card, 'payment', hasPayment);
+    var password = decodeBase64($(this).data("password"));
+    $("#editUserId").val($(this).data("id"));
+    $("#editName").val($(this).data("name"));
+    $("#editPassword").val(password);
+    $("#editRole").val($(this).data("role_id"));
+    $("#editRestaurantId").val($(this).data("restaurantid"));
+
+    // مقداردهی اولیه بر اساس مقادیر ذخیره‌شده (نگه میداریم)
+    $("#editOrderPermission").prop("checked", $(this).data("order_management_permission") == 1);
+    $("#editKitchenPermission").prop("checked", $(this).data("kitchen_management_permission") == 1);
+    $("#editPaymentPermission").prop("checked", $(this).data("payment_management_permission") == 1);
+
+    // اگر بعداً کاربر نقش را تغییر دهد، handler مرحله 2 آن را به پیش‌فرض نقش جدید می‌برد.
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+});
+
+
+    // ذخیره تغییرات و ارسال به API
+       $("#saveEdit").click(function () {
+        var id = parseInt($("#editUserId").val());
+        var name = $("#editName").val().trim();
+        var password = $("#editPassword").val().trim();
+        var role_id = parseInt($("#editRole").val());
+        var restaurantId = parseInt($("#editRestaurantId").val());
+
+        // ✅ validation
+        if (!validateUserForm(name, password, role_id)) return;
+
+        var payload = {
+            user_id: id,
+            name: name,
+            password: password,
+            role_id: role_id,
+            restaurant_id: restaurantId,
+            order_management_permission: $("#editOrderPermission").prop("checked"),
+            kitchen_management_permission: $("#editKitchenPermission").prop("checked"),
+            payment_management_permission: $("#editPaymentPermission").prop("checked")
+        };
+
+        $.ajax({
+            url: "https://resturanyar.ir/api/UserApi/edituser",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function () {
+                alert("خطا در ذخیره تغییرات کاربر");
+            }
+        });
+    });
+
+
+       $("#btnAddUser").click(function () {
+        $("#addName").val('');
+        $("#addPassword").val('');
+        $("#addRole").val('2');  // مقدار پیشفرض گارسون
+
+        // ست کردن چک‌باکس‌ها براساس نقش پیش‌فرض (گارسون -> فقط دسترسی سفارش)
+        applyRoleDefaults(2, 'add');
+
+        new bootstrap.Modal(document.getElementById('addUserModal')).show();
+    });
+
+    // ارسال فرم ثبت کاربر جدید
+       $("#saveAddUser").click(function () {
+        var name = $("#addName").val().trim();
+        var password = $("#addPassword").val().trim();
+        var role_id = parseInt($("#addRole").val());
+
+        // ✅ validation
+        if (!validateUserForm(name, password, role_id)) return;
+
+        var restaurantId = @ViewBag.RestaurantId ?? 0;
+        if (restaurantId === 0) {
+            alert("شناسه رستوران پیدا نشد.");
+            return;
+        }
+
+        var payload = {
+            name: name,
+            password: password,
+            role_id: role_id,
+            restaurant_id: restaurantId,
+            order_management_permission: $("#addOrderPermission").prop("checked"),
+            kitchen_management_permission: $("#addKitchenPermission").prop("checked"),
+            payment_management_permission: $("#addPaymentPermission").prop("checked")
+        };
+
+        $.ajax({
+            url: "https://resturanyar.ir/api/UserApi/adduser",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function () {
+                alert("خطا در ثبت کاربر");
+            }
+        });
+    });
+        // وقتی کاربر نقش در فرم ثبت جدید رو تغییر داد
+    $("#addRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+        applyRoleDefaults($(this).val(), 'add');
+    });
+
+    // وقتی نقش در فرم ویرایش تغییر کرد
+    $("#editRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+        applyRoleDefaults($(this).val(), 'edit');
+    });
+
+
+        function isValidUsername(username) {
+        return username && username.length >= 3;
+    }
+
+    function isValidPassword(password) {
+        return password && password.length >= 6;
+    }
+
+    function validateUserForm(name, password, roleId) {
+        if (!isValidUsername(name)) {
+            alert("نام کاربری باید حداقل ۳ کاراکتر باشد.");
+            return false;
+        }
+        if (!isValidPassword(password)) {
+            alert("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+            return false;
+        }
+        if (!roleId || roleId === 0) {
+            alert("لطفاً نقش کاربر را انتخاب کنید.");
+            return false;
+        }
+        return true;
+    }
+        // roleId: عدد نقش (2,3,4)
+    // modal: 'add' یا 'edit' -> برای ساختن id های صحیح (#addOrderPermission / #editOrderPermission)
+    function applyRoleDefaults(roleId, modal) {
+        var base = (modal === 'edit') ? '#edit' : '#add';
+        roleId = parseInt(roleId) || 0;
+
+        var order = false, kitchen = false, payment = false;
+        if (roleId === 2) { // گارسون
+            order = true;
+        } else if (roleId === 3) { // آشپز
+            kitchen = true;
+        } else if (roleId === 4) { // صندوقدار
+            payment = true;
+        }
+
+        $(base + 'OrderPermission').prop('checked', order);
+        $(base + 'KitchenPermission').prop('checked', kitchen);
+        $(base + 'PaymentPermission').prop('checked', payment);
+    }
+        function setPermIconState($card, perm, isOn) {
+        const $icon = $card.find('.perm-' + perm);
+        $icon.toggleClass('inactive', !isOn);
+    }
+</script>

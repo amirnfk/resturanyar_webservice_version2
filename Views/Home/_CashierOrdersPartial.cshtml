@@ -1,0 +1,83 @@
+﻿@model resturanyar.Models.OrderListViewModel
+    @{
+    string baseImageUrl = "https://delavita.ir/";
+
+    }
+@{
+    var nextStatusMap = new Dictionary<int, int>
+    {
+        { 6, 7 },
+        { 7, 8 },
+        { 8, 11 }
+    };
+}
+
+@if (Model != null && Model.Orders.Any())
+{
+    foreach (var order in Model.Orders)
+    {
+         
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    سفارش شماره <span class="text-primary">#@order.OrderId</span>
+                    <span class="mx-2">-</span>
+                    میز <span class="text-primary">@order.TableNumber</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="order-date">📅 @order.CreatedAt.ToString("yyyy/MM/dd HH:mm")</div>
+                    <div class="status-badge
+                        @(order.StatusId == 6 ? "bg-status-6" : order.StatusId == 7 ? "bg-status-7" : order.StatusId == 8 ? "bg-status-8" : order.StatusId == 11 ? "bg-status-11" : "bg-secondary")">
+                        @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
+                    </div>
+                    <div>
+                        @if (Model.StatusMap.ContainsKey(order.StatusId))
+                        {
+                            if (nextStatusMap.ContainsKey(order.StatusId))
+                            {
+                                <button class="btn btn-sm btn-primary"
+                                        onclick="changeStatus(@order.OrderId, @nextStatusMap[order.StatusId])">
+                                    تغییر وضعیت به @Model.StatusMap[nextStatusMap[order.StatusId]]
+                                </button>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(order.Description))
+            {
+                <div class="order-description">📝 @order.Description</div>
+            }
+
+            @if (order.OrderItems != null && order.OrderItems.Any())
+            {
+                <div>
+                    @foreach (var item in order.OrderItems)
+                    {
+                        var imgUrl = string.IsNullOrEmpty(item.FoodImageUrl) ? (baseImageUrl + "images/default-food.jpg") : (baseImageUrl + item.FoodImageUrl.TrimStart('/'));
+                        <div class="food-item">
+                            <img src="@imgUrl" alt="@item.FoodName" class="food-img" />
+                            <div class="food-info">
+                                <div class="food-name">@item.FoodName</div>
+                                <div class="food-quantity">تعداد: @item.Quantity</div>
+                            </div>
+                           
+                        </div>
+                    }
+                </div>
+
+                
+            }
+            else
+            {
+                <div class="alert alert-secondary mt-3">هیچ آیتمی در این سفارش ثبت نشده است.</div>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning text-center fs-5">هیچ سفارشی یافت نشد.</div>
+}

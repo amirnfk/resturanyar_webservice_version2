@@ -1,0 +1,613 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\resturanyar.bundle.scp.css",
+      "PackagePath": "staticwebassets\\resturanyar.u4osaxwrlf.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\Vazirmatn_font_face.css",
+      "PackagePath": "staticwebassets\\css\\Vazirmatn_font_face.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\all.min.css",
+      "PackagePath": "staticwebassets\\css\\all.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\bootstrap-icons.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-icons.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\bootstrap_icons.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap_icons.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\bootstrap_rtl_min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap_rtl_min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\chooserestaurant.css",
+      "PackagePath": "staticwebassets\\css\\chooserestaurant.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\dashboard.css",
+      "PackagePath": "staticwebassets\\css\\dashboard.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\bootstrap-icons.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\bootstrap-icons.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\bootstrap-icons.woff2",
+      "PackagePath": "staticwebassets\\css\\fonts\\bootstrap-icons.woff2"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebblackfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebblackfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebblackfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebblackfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebboldfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebboldfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebboldfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebboldfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebextrablackfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebextrablackfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebextrablackfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebextrablackfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebextraboldfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebextraboldfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebextraboldfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebextraboldfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanweblightfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanweblightfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanweblightfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanweblightfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebmediumfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebmediumfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebmediumfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebmediumfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebregularfanum.eot",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebregularfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\fonts\\iranyekan\\iranyekanwebregularfanum.woff",
+      "PackagePath": "staticwebassets\\css\\fonts\\iranyekan\\iranyekanwebregularfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\home.css",
+      "PackagePath": "staticwebassets\\css\\home.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\jalalidatepicker.min.css",
+      "PackagePath": "staticwebassets\\css\\jalalidatepicker.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\managerlogin.css",
+      "PackagePath": "staticwebassets\\css\\managerlogin.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\ownerlogin.css",
+      "PackagePath": "staticwebassets\\css\\ownerlogin.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\share.css",
+      "PackagePath": "staticwebassets\\css\\share.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\bootstrap-icons.woff",
+      "PackagePath": "staticwebassets\\fonts\\bootstrap-icons.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\bootstrap-icons.woff2",
+      "PackagePath": "staticwebassets\\fonts\\bootstrap-icons.woff2"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebblackfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebblackfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebblackfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebblackfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebboldfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebboldfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebboldfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebboldfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebextrablackfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebextrablackfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebextrablackfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebextrablackfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebextraboldfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebextraboldfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebextraboldfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebextraboldfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanweblightfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanweblightfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanweblightfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanweblightfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebmediumfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebmediumfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebmediumfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebmediumfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebregularfanum.eot",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebregularfanum.eot"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\fonts\\iranyekan\\iranyekanwebregularfanum.woff",
+      "PackagePath": "staticwebassets\\fonts\\iranyekan\\iranyekanwebregularfanum.woff"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\addfood.jpg",
+      "PackagePath": "staticwebassets\\images\\addfood.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\apphome.jpg",
+      "PackagePath": "staticwebassets\\images\\apphome.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\appscreenfoodlist.jpg",
+      "PackagePath": "staticwebassets\\images\\appscreenfoodlist.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\back.jpg",
+      "PackagePath": "staticwebassets\\images\\back.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\baker_9102653.png",
+      "PackagePath": "staticwebassets\\images\\baker_9102653.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\bergerback.jpg",
+      "PackagePath": "staticwebassets\\images\\bergerback.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\cashier_1651946.png",
+      "PackagePath": "staticwebassets\\images\\cashier_1651946.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\food_default.jpg",
+      "PackagePath": "staticwebassets\\images\\food_default.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\food_placeholder.jpg",
+      "PackagePath": "staticwebassets\\images\\food_placeholder.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\foodlist.jpg",
+      "PackagePath": "staticwebassets\\images\\foodlist.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\icons\\baseline_auto_awesome_24.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\baseline_auto_awesome_24.svg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\logo_circle.png",
+      "PackagePath": "staticwebassets\\images\\logo_circle.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\man.png",
+      "PackagePath": "staticwebassets\\images\\man.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\orderlist.jpg",
+      "PackagePath": "staticwebassets\\images\\orderlist.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb1.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb1.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb2.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb2.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb3.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb3.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb4.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb4.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb5.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb5.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\sampleweb6.jpg",
+      "PackagePath": "staticwebassets\\images\\sampleweb6.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\staff_managment.jpg",
+      "PackagePath": "staticwebassets\\images\\staff_managment.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\tabletfoodlist.jpg",
+      "PackagePath": "staticwebassets\\images\\tabletfoodlist.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\tablethome.jpg",
+      "PackagePath": "staticwebassets\\images\\tablethome.jpg"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\images\\waiter_2453333.png",
+      "PackagePath": "staticwebassets\\images\\waiter_2453333.png"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\chart.umd.min.js",
+      "PackagePath": "staticwebassets\\js\\chart.umd.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\chooserestaurant.js",
+      "PackagePath": "staticwebassets\\js\\chooserestaurant.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\dashboard.js",
+      "PackagePath": "staticwebassets\\js\\dashboard.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\home.js",
+      "PackagePath": "staticwebassets\\js\\home.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\jalalidatepicker.min.js",
+      "PackagePath": "staticwebassets\\js\\jalalidatepicker.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\jquery_3.6.0.min.js",
+      "PackagePath": "staticwebassets\\js\\jquery_3.6.0.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\managerlogin.js",
+      "PackagePath": "staticwebassets\\js\\managerlogin.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\persian-date.min.js",
+      "PackagePath": "staticwebassets\\js\\persian-date.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\js\\sweetalert2@11.js",
+      "PackagePath": "staticwebassets\\js\\sweetalert2@11.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\webfonts\\fa-brands-400.ttf",
+      "PackagePath": "staticwebassets\\webfonts\\fa-brands-400.ttf"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\webfonts\\fa-brands-400.woff2",
+      "PackagePath": "staticwebassets\\webfonts\\fa-brands-400.woff2"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\webfonts\\fa-regular-400.woff2",
+      "PackagePath": "staticwebassets\\webfonts\\fa-regular-400.woff2"
+    },
+    {
+      "Id": "D:\\myAspProjects\\resturanyar\\resturanyar_webservice\\wwwroot\\webfonts\\fa-solid-900.woff2",
+      "PackagePath": "staticwebassets\\webfonts\\fa-solid-900.woff2"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.resturanyar.props",
+      "PackagePath": "build\\resturanyar.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.resturanyar.props",
+      "PackagePath": "buildMultiTargeting\\resturanyar.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.resturanyar.props",
+      "PackagePath": "buildTransitive\\resturanyar.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.resturanyar.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.resturanyar.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

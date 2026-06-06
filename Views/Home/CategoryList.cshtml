@@ -1,0 +1,188 @@
+﻿@model List<CategoryViewModel>
+
+@{
+    ViewData["Title"] = "مدیریت دسته‌بندی‌ها";
+}
+
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<style>
+    body {
+        direction: rtl;
+       
+       
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    .card {
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: none;
+    }
+
+    .btn-rounded {
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+       
+        <button class="btn btn-primary btn-rounded" onclick="openAddCategoryModal()">افزودن دسته‌بندی</button>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">هیچ دسته‌بندی وجود ندارد.</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var cat in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4 mb-3" data-id="@cat.CategoryId" data-name="@cat.CategoryName">
+                    <div class="card p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5>@cat.CategoryName</h5>
+                            @* <small class="text-muted">@cat.CreatedAt</small> *@
+                        </div>
+                        <div class="mt-3 d-flex justify-content-between">
+                            <button class="btn btn-sm btn-warning" onclick="openEditCategoryModal(@cat.CategoryId)">ویرایش</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCategory(@cat.CategoryId)">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="errorContainer" class="alert alert-danger d-none"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">افزودن دسته‌بندی</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId" />
+                    <div class="mb-3">
+                        <label>نام دسته‌بندی <span class="text-danger">*</span></label>
+                        <input type="text" id="categoryName" class="form-control" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button class="btn btn-primary" onclick="saveCategory()">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const API_BASE = "https://resturanyar.ir/api/UserApi";
+    var restaurantId = @(ViewBag.RestaurantId ?? 0);
+
+    // باز کردن مودال برای افزودن
+    function openAddCategoryModal() {
+        $("#modalTitle").text("افزودن دسته‌بندی");
+        $("#categoryId").val("");
+        $("#categoryName").val("");
+        clearErrors();
+        new bootstrap.Modal(document.getElementById('categoryModal')).show();
+    }
+
+    // باز کردن مودال برای ویرایش
+    function openEditCategoryModal(id) {
+        const card = $(`[data-id='${id}']`);
+        const name = card.data("name");
+        $("#categoryId").val(id);
+        $("#categoryName").val(name);
+        $("#modalTitle").text("ویرایش دسته‌بندی");
+        clearErrors();
+        new bootstrap.Modal(document.getElementById('categoryModal')).show();
+    }
+
+    // ذخیره دسته
+    function saveCategory() {
+        clearErrors();
+        const id = $("#categoryId").val();
+        const name = $("#categoryName").val().trim();
+
+        if (!name) {
+            showErrors(["نام دسته‌بندی الزامی است."]);
+            return;
+        }
+
+        const data = {
+            restaurantId: restaurantId,
+            categoryName: name
+        };
+
+        let url = `${API_BASE}/addcategory`;
+        let method = "POST";
+
+        if (id) {
+            url = `${API_BASE}/editcategory`;
+            data.categoryId = parseInt(id);
+        }
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message || "عملیات موفق");
+                    location.reload();
+                } else {
+                    showErrors([res.message || "خطا در ذخیره"]);
+                }
+            },
+            error: function (xhr) {
+                showErrors([xhr.responseJSON?.message || "خطا در ارتباط با سرور"]);
+            }
+        });
+    }
+
+    // حذف دسته
+    function deleteCategory(id) {
+        if (!confirm("آیا از حذف این دسته‌بندی مطمئن هستید؟")) return;
+
+        $.ajax({
+            url: `${API_BASE}/deletecategory`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                restaurantId: restaurantId,
+                categoryId: id
+            }),
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function () {
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    }
+
+    function showErrors(errors) {
+        const errorBox = $("#errorContainer");
+        errorBox.html(errors.map(e => `<div>• ${e}</div>`).join(""));
+        errorBox.removeClass("d-none");
+    }
+    function clearErrors() {
+        $("#errorContainer").addClass("d-none").html("");
+    }
+</script>

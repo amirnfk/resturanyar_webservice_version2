@@ -1,0 +1,82 @@
+2026-04-27 13:04:39.924 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-27 13:04:40.263 +03:30 [INF] Now listening on: https://localhost:7171
+2026-04-27 13:04:40.264 +03:30 [INF] Now listening on: http://localhost:5292
+2026-04-27 13:04:40.351 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-27 13:04:40.352 +03:30 [INF] Hosting environment: Development
+2026-04-27 13:04:40.352 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-04-27 13:04:41.800 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-04-27 13:04:42.032 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-04-27 13:04:42.052 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-04-27 13:04:42.871 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-04-27 13:04:42.876 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.56ms.
+2026-04-27 13:04:42.883 +03:30 [INF] Executing ViewResult, running view Index.
+2026-04-27 13:04:43.130 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2026-04-27 13:04:43.130 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - null null
+2026-04-27 13:04:43.131 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - null null
+2026-04-27 13:04:43.131 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - null null
+2026-04-27 13:04:43.132 +03:30 [INF] Executed ViewResult - view Index executed in 250.2931ms.
+2026-04-27 13:04:43.132 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - null null
+2026-04-27 13:04:43.132 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/all.min.css - null null
+2026-04-27 13:04:43.142 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - null null
+2026-04-27 13:04:43.149 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 1096.2981ms
+2026-04-27 13:04:43.149 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-04-27 13:04:43.159 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - null null
+2026-04-27 13:04:43.176 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-27 13:04:43.176 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2026-04-27 13:04:43.181 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 1381.2263ms
+2026-04-27 13:04:43.187 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-04-27 13:04:43.189 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - null null
+2026-04-27 13:04:43.189 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - null null
+2026-04-27 13:04:43.189 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - null null
+2026-04-27 13:04:43.193 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2026-04-27 13:04:43.194 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 18.5946ms
+2026-04-27 13:04:43.195 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - null null
+2026-04-27 13:04:43.197 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\home.css'
+2026-04-27 13:04:43.197 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\site.css'
+2026-04-27 13:04:43.197 +03:30 [INF] Sending file. Request path: '/resturanyar.styles.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css'
+2026-04-27 13:04:43.197 +03:30 [INF] Sending file. Request path: '/css/Vazirmatn_font_face.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\Vazirmatn_font_face.css'
+2026-04-27 13:04:43.198 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - 200 1604 text/css 65.7404ms
+2026-04-27 13:04:43.198 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - 200 1592 text/css 66.8989ms
+2026-04-27 13:04:43.198 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - 200 1129 text/css 67.7561ms
+2026-04-27 13:04:43.199 +03:30 [INF] Sending file. Request path: '/css/share.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\share.css'
+2026-04-27 13:04:43.199 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - 200 3237 text/css 68.532ms
+2026-04-27 13:04:43.200 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - 200 11812 text/css 41.0318ms
+2026-04-27 13:04:43.208 +03:30 [INF] Sending file. Request path: '/js/home.js'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\home.js'
+2026-04-27 13:04:43.209 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - 200 2910 text/javascript 20.4636ms
+2026-04-27 13:04:43.216 +03:30 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\site.js'
+2026-04-27 13:04:43.216 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - 200 1814 text/javascript 21.6296ms
+2026-04-27 13:04:43.230 +03:30 [INF] Sending file. Request path: '/css/all.min.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\all.min.css'
+2026-04-27 13:04:43.230 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/all.min.css - 200 102526 text/css 98.1553ms
+2026-04-27 13:04:43.233 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css'
+2026-04-27 13:04:43.233 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - 200 162726 text/css 102.5833ms
+2026-04-27 13:04:43.240 +03:30 [INF] Sending file. Request path: '/css/bootstrap_rtl_min.css'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\bootstrap_rtl_min.css'
+2026-04-27 13:04:43.241 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - 200 232911 text/css 98.8571ms
+2026-04-27 13:04:43.243 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js'
+2026-04-27 13:04:43.244 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 200 78474 text/javascript 50.273ms
+2026-04-27 13:04:43.255 +03:30 [INF] Sending file. Request path: '/images/logo.png'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\logo.png'
+2026-04-27 13:04:43.256 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 200 546277 image/png 80.2068ms
+2026-04-27 13:04:43.258 +03:30 [INF] Sending file. Request path: '/js/bootstrap.bundle.min.js'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\bootstrap.bundle.min.js'
+2026-04-27 13:04:43.258 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - 200 80721 text/javascript 68.942ms
+2026-04-27 13:04:43.277 +03:30 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.min.js'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\jquery\dist\jquery.min.js'
+2026-04-27 13:04:43.277 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - 200 89503 text/javascript 88.0029ms
+2026-04-27 13:04:43.315 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 127.7978ms
+2026-04-27 13:04:43.346 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2026-04-27 13:04:43.349 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - null null
+2026-04-27 13:04:43.349 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - null null
+2026-04-27 13:04:43.354 +03:30 [INF] CORS policy execution successful.
+2026-04-27 13:04:43.354 +03:30 [INF] CORS policy execution successful.
+2026-04-27 13:04:43.373 +03:30 [INF] Sending file. Request path: '/images/tabletfoodlist.jpg'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\tabletfoodlist.jpg'
+2026-04-27 13:04:43.373 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 200 59361 image/jpeg 26.8933ms
+2026-04-27 13:04:43.376 +03:30 [INF] Sending file. Request path: '/webfonts/fa-brands-400.woff2'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-brands-400.woff2'
+2026-04-27 13:04:43.376 +03:30 [INF] Sending file. Request path: '/webfonts/fa-solid-900.woff2'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-solid-900.woff2'
+2026-04-27 13:04:43.376 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - 200 117852 font/woff2 28.0923ms
+2026-04-27 13:04:43.377 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - 200 110892 font/woff2 29.351ms
+2026-04-27 13:04:43.399 +03:30 [INF] Request starting HTTP/1.1 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - null null
+2026-04-27 13:04:43.399 +03:30 [INF] Request starting HTTP/1.1 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-04-27 13:04:43.403 +03:30 [INF] Request finished HTTP/1.1 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 4.7677ms
+2026-04-27 13:04:43.404 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-04-27 13:04:43.409 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-04-27 13:04:43.411 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 2.6406ms
+2026-04-27 13:04:43.411 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-04-27 13:04:43.416 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map'. Physical path: 'E:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map'
+2026-04-27 13:04:43.416 +03:30 [INF] Request finished HTTP/1.1 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - 200 327261 text/plain 17.456ms

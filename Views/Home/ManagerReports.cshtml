@@ -1,0 +1,318 @@
+﻿@model resturanyar.Models.ManagerReportViewModel
+@{
+ViewData["Title"] = "گزارش‌های مدیریتی";
+string currentPeriod = Model?.Period?.ToLower() ?? (ViewData["CurrentPeriod"]?.ToString() ?? "");
+int filterStatusId = -1;
+string fromFaDate = "";
+string toFaDate = "";
+int topN = 8;
+
+if (ViewData["FilterStatusId"] != null) { filterStatusId = Convert.ToInt32(ViewData["FilterStatusId"]); }
+if (ViewData["FromFaDate"] != null) { fromFaDate = ViewData["FromFaDate"].ToString(); }
+if (ViewData["ToFaDate"] != null) { toFaDate = ViewData["ToFaDate"].ToString(); }
+if (ViewData["TopN"] != null) { topN = Convert.ToInt32(ViewData["TopN"]); }
+}
+<!DOCTYPE html>
+
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@ViewData["Title"]</title>
+<link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" />
+<link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
+<style>
+body { direction: rtl; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+.page-title { font-weight: 800; color: #0d6efd; margin-bottom: 1.5rem; text-align: center; }
+.filter-card { background: #fff; border: none; border-radius: 18px; box-shadow: 0 3px 20px rgba(0,0,0,.04); transition: .3s; }
+.filter-card:hover { box-shadow: 0 3px 25px rgba(0,0,0,.07); }
+.btn-primary { background: linear-gradient(90deg,#008cff,#0061ff); border: none; font-weight: 600; padding: .6rem 1.3rem; }
+.btn-primary:hover { background: linear-gradient(90deg,#0061ff,#008cff); }
+.quick-filter-btn { border-radius: 30px; font-size: .9rem; transition: .2s; }
+.quick-filter-btn.active, .quick-filter-btn:hover { background: #0d6efd !important; color: #fff !important; transform: scale(1.05); }
+.loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; border-radius: 18px; }
+.no-data-message { text-align: center; padding: 2rem; color: #6c757d; }
+
+        #reportFilterForm .btn {
+            height: 38px;
+        }
+
+</style>
+</head>
+<body>
+<div class="container py-5">
+
+<div class="filter-card p-4 mb-4 position-relative">
+<div class="loading-overlay">
+<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+</div>
+
+<form id="reportFilterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerReports","Home")">
+<div class="col-md-2 col-sm-6">
+<label class="form-label">وضعیت</label>
+<select name="statusId" class="form-select">
+<option value="-1" selected="@(filterStatusId == -1 ? "selected" : null)">همه</option>
+<option value="0" selected="@(filterStatusId == 0 ? "selected" : null)">فعال‌ها</option>
+@if (Model?.StatusMap != null)
+{
+foreach (var kv in Model.StatusMap)
+{
+<option value="@kv.Key" selected="@(filterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
+}
+}
+</select>
+</div>
+
+<div class="col-md-2 col-sm-6">
+<label class="form-label">از تاریخ</label>
+<input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@fromFaDate" readonly />
+<input type="hidden" name="from" id="fromIso" value="@(Model?.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+</div>
+
+<div class="col-md-2 col-sm-6">
+<label class="form-label">تا تاریخ</label>
+<input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@toFaDate" readonly />
+<input type="hidden" name="to" id="toIso" value="@(Model?.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+</div>
+
+<div class="col-md-2 col-sm-6">
+                    <label class="form-label">تعداد آیتم‌های برتر</label>
+<select name="topN" class="form-select">
+<option value="5" selected="@(topN == 5 ? "selected" : null)">5</option>
+<option value="8" selected="@(topN == 8 ? "selected" : null)">8</option>
+<option value="10" selected="@(topN == 10 ? "selected" : null)">10</option>
+<option value="15" selected="@(topN == 15 ? "selected" : null)">15</option>
+</select>
+</div>
+
+<div class="col-md-2 col-sm-6">
+<button type="submit" class="btn btn-primary w-100">اعمال</button>
+</div>
+
+<div class="col-md-2 col-sm-6">
+                    <a id="exportBtn" class="btn btn-success w-100"
+                       href="@Url.Action("ExportOrdersToExcel","Home")">
+                        دانلود اکسل
+                    </a>
+</div>
+
+<input type="hidden" name="period" id="periodInput" value="@(Model?.Period ?? "")" />
+
+<div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+<a href="@Url.Action("ManagerReports","Home", new{period="today"})" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="today"?"active":"")">امروز</a>
+<a href="@Url.Action("ManagerReports","Home", new{period="week"})" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="week"?"active":"")">هفته</a>
+<a href="@Url.Action("ManagerReports","Home", new{period="month"})" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="month"?"active":"")">ماه</a>
+<a href="@Url.Action("ManagerReports","Home", new{period="quarter"})" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="quarter"?"active":"")">سه‌ماهه</a>
+<a href="@Url.Action("ManagerReports","Home", new{period="year"})" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="year"?"active":"")">سال</a>
+</div>
+</form>
+</div>
+
+<div id="reportsContainer">
+@await Html.PartialAsync("_ManagerReportsPartial", Model)
+</div>
+</div>
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/jalalidatepicker.min.js"></script>
+<script>
+// Global storage
+window.chartInstances = {};
+window.eventListeners = [];
+
+function destroyAllCharts() {
+Object.values(window.chartInstances).forEach(chart => {
+if (chart && typeof chart.destroy === 'function') chart.destroy();
+});
+window.chartInstances = {};
+}
+function removeAllEventListeners() {
+window.eventListeners.forEach(item => {
+if (item.element && item.event && item.handler) {
+item.element.removeEventListener(item.event, item.handler);
+}
+});
+window.eventListeners = [];
+}
+// عدم تداخل با window.addEventListener
+function registerListener(element, event, handler) {
+element.addEventListener(event, handler);
+window.eventListeners.push({ element, event, handler });
+}
+
+// اجرای اسکریپت‌های داخل پارشیال پس از تزریق HTML
+function replaceAndExecuteScripts(container) {
+if (!container) return;
+const scripts = container.querySelectorAll('script');
+scripts.forEach(oldScript => {
+const newScript = document.createElement('script');
+// کپی ویژگی‌ها (src و ...)
+[...oldScript.attributes].forEach(attr => newScript.setAttribute(attr.name, attr.value));
+
+// اگر Chart.js قبلا لود شده، دوباره لود نکن
+const isChartJs = newScript.src && /chart(\.umd)?\.min\.js/i.test(newScript.src);
+if (isChartJs && window.Chart) {
+oldScript.remove();
+return;
+}
+
+// کپی محتوای inline
+if (!newScript.src) {
+newScript.text = oldScript.text || oldScript.textContent || '';
+}
+
+// جایگزینی و اجرا
+oldScript.parentNode.replaceChild(newScript, oldScript);
+});
+}
+
+function jalali_to_gregorian(jy,jm,jd){
+jy-=979; jm-=1; jd-=1;
+var j_day_no=365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4);
+var j_days=[31,31,31,31,31,31,30,30,30,30,30,29];
+for(var i=0;i<jm;++i) j_day_no+=j_days[i];
+j_day_no+=jd;
+var g_day_no=j_day_no+79;
+var gy=1600+400*Math.floor(g_day_no/146097); g_day_no%=146097;
+var leap=true;
+if(g_day_no>=36525){g_day_no--;gy+=100*Math.floor(g_day_no/36524);g_day_no%=36524; if(g_day_no>=365)g_day_no++; else leap=false;}
+gy+=4*Math.floor(g_day_no/1461); g_day_no%=1461;
+if(g_day_no>=366){leap=false;g_day_no--;gy+=Math.floor(g_day_no/365);g_day_no%=365;}
+var g_days=[31,(leap?29:28),31,30,31,30,31,31,30,31,30,31];
+var gm; for(gm=0;g_day_no>=g_days[gm];gm++) g_day_no-=g_days[gm];
+return [gy,gm+1,g_day_no+1];
+}
+
+function initializeDatepickers(){
+if (!window.datepickerInitialized) {
+jalaliDatepicker.startWatch({time:false});
+window.datepickerInitialized = true;
+}
+document.querySelectorAll("input[data-jdp]").forEach(input => {
+const newInput = input.cloneNode(true);
+input.parentNode.replaceChild(newInput, input);
+newInput.addEventListener("change", () => {
+const faDate = newInput.value;
+if(!faDate) return;
+const parts = faDate.split('/');
+if (parts.length !== 3) return;
+const [jy,jm,jd] = parts.map(Number);
+if (isNaN(jy) || isNaN(jm) || isNaN(jd)) return;
+const [gy,gm,gd] = jalali_to_gregorian(jy,jm,jd);
+const iso = `${gy}-${String(gm).padStart(2,'0')}-${String(gd).padStart(2,'0')}`;
+if(newInput.id === "fromFa") document.getElementById("fromIso").value = iso;
+if(newInput.id === "toFa") document.getElementById("toIso").value = iso;
+// با تغییر تاریخ‌ها لینک خروجی را آپدیت کن
+wireExportLink();
+});
+});
+}
+
+function getFormQuery(form){
+const data = new FormData(form);
+const params = new URLSearchParams();
+for(const [k,v] of data.entries()) {
+if((v ?? "").toString().trim() !== "") params.append(k, v);
+}
+return params.toString();
+}
+
+function showLoading() {
+const overlay = document.querySelector('.loading-overlay');
+if (overlay) overlay.style.display = 'flex';
+}
+function hideLoading() {
+const overlay = document.querySelector('.loading-overlay');
+if (overlay) overlay.style.display = 'none';
+}
+
+function setupEventListeners() {
+const form = document.getElementById('reportFilterForm');
+if (!form) return;
+
+removeAllEventListeners();
+
+// ارسال فرم به صورت AJAX
+registerListener(form, 'submit', function(e) {
+e.preventDefault();
+const url = `${form.action}?${getFormQuery(form)}`;
+loadReports(url);
+});
+
+// تغییر هر فیلد فرم => به‌روزرسانی لینک خروجی
+registerListener(form, 'change', function() {
+wireExportLink();
+});
+
+// فیلترهای سریع
+document.querySelectorAll('.quick-filter-btn').forEach(btn => {
+registerListener(btn, 'click', function(e) {
+e.preventDefault();
+try {
+const u = new URL(btn.href, window.location.origin);
+const p = u.searchParams.get('period') || '';
+const periodInput = document.getElementById('periodInput');
+if (periodInput) periodInput.value = p;
+} catch {}
+loadReports(btn.href);
+});
+});
+}
+
+async function loadReports(url){
+showLoading();
+destroyAllCharts();
+try {
+const res = await fetch(url, {
+headers: {'X-Requested-With': 'XMLHttpRequest'},
+cache: 'no-cache'
+});
+if (res.ok) {
+const html = await res.text();
+const container = document.getElementById('reportsContainer');
+container.innerHTML = html;
+
+// اجرای اسکریپت‌های داخل پارشیال (برای ساخت نمودارها)
+replaceAndExecuteScripts(container);
+
+initializeDatepickers();
+wireExportLink();
+setupEventListeners();
+if (window.gc) window.gc();
+} else {
+console.error('Error loading reports:', res.status);
+document.getElementById('reportsContainer').innerHTML =
+'<div class="no-data-message">خطا در بارگذاری داده‌ها. لطفا دوباره تلاش کنید.</div>';
+}
+} catch (error) {
+console.error('Error loading reports:', error);
+document.getElementById('reportsContainer').innerHTML =
+'<div class="no-data-message">خطا در ارتباط با سرور. لطفا دوباره تلاش کنید.</div>';
+} finally {
+hideLoading();
+}
+}
+
+              function wireExportLink(){
+            const form = document.getElementById('reportFilterForm');
+            if (!form) return;
+            const params = new URLSearchParams(new FormData(form));
+            const exp = document.getElementById('exportBtn');
+            if (exp) {
+                exp.href = `@Url.Action("ExportOrdersToExcel", "Home")?${params.toString()}`;
+            }
+        }
+
+document.addEventListener('DOMContentLoaded', () => {
+initializeDatepickers();
+wireExportLink();
+setupEventListeners();
+window.addEventListener('beforeunload', () => {
+destroyAllCharts();
+removeAllEventListeners();
+});
+});
+</script></body>
+</html>
+
+

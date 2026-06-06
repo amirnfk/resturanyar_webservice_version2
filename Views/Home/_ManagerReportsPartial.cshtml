@@ -1,0 +1,399 @@
+﻿@using System.Text.Json
+@model resturanyar.Models.ManagerReportViewModel
+
+<link rel="stylesheet" href="~/css/bootstrap-icons.css">
+<script src="~/js/chart.umd.min.js"></script>
+
+<style>
+    .kpi-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0,0,0,.06);
+        padding: 20px;
+        background: #fff;
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+
+    .kpi-title {
+        font-size: .9rem;
+        color: #6c757d;
+        margin-bottom: .25rem;
+        font-weight: 600;
+    }
+
+    .kpi-value {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #2c3e50;
+    }
+
+    .kpi-badge {
+        font-size: .8rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .chart-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(0,0,0,.05);
+        background: #fff;
+        padding: 20px;
+        height: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    .no-data-chart {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #6c757d;
+        font-style: italic;
+    }
+</style>
+
+@{
+    if (Model == null)
+    {
+        <div class="alert alert-warning text-center">داده‌ای برای نمایش وجود ندارد.</div>
+        return;
+    }
+
+    string money(decimal v) => string.Format("{0:N0}", v);
+    string percent(double v) => v.ToString("0.##");
+
+    var statusMap = Model.StatusMap ?? new Dictionary<int, string>();
+    var statusColors = Model.StatusColors ?? new Dictionary<int, string>();
+
+    var labels = Model.SalesByDay?.Select(x => x.Day.ToString("yyyy-MM-dd")).ToArray() ?? Array.Empty<string>();
+    var revenues = Model.SalesByDay?.Select(x => x.Revenue).ToArray() ?? Array.Empty<decimal>();
+    var orders = Model.SalesByDay?.Select(x => x.Orders).ToArray() ?? Array.Empty<int>();
+
+    var topQtyLabels = Model.TopItemsByQuantity?.Select(x => x.Name ?? ("#" + x.FoodItemId)).ToArray() ?? Array.Empty<string>();
+    var topQtyValues = Model.TopItemsByQuantity?.Select(x => x.Quantity).ToArray() ?? Array.Empty<int>();
+
+    var topRevLabels = Model.TopItemsByRevenue?.Select(x => x.Name ?? ("#" + x.FoodItemId)).ToArray() ?? Array.Empty<string>();
+    var topRevValues = Model.TopItemsByRevenue?.Select(x => x.Revenue).ToArray() ?? Array.Empty<decimal>();
+
+    var statusLabels = statusMap.Where(kv => Model.StatusCounts?.ContainsKey(kv.Key) == true).Select(kv => kv.Value).ToArray();
+    var statusValues = statusMap.Where(kv => Model.StatusCounts?.ContainsKey(kv.Key) == true).Select(kv => Model.StatusCounts[kv.Key]).ToArray();
+
+    var statusBg = statusMap
+    .Where(kv => Model.StatusCounts?.ContainsKey(kv.Key) == true)
+    .Select(kv => statusColors.ContainsKey(kv.Key) ? statusColors[kv.Key] :
+    kv.Key switch
+    {
+        1 => "#6c757d",
+        2 => "#0dcaf0",
+        3 => "#198754",
+        4 => "#ffc107",
+        5 => "#0d6efd",
+        6 => "#212529",
+        7 => "#dc3545",
+        8 => "#20c997",
+        9 => "#dc3545",
+        10 => "#dc3545",
+        11 => "#6c757d",
+        12 => "#ffc107",
+        _ => "#6c757d"
+    })
+    .ToArray();
+
+    bool hasSalesData = labels.Length > 0 && revenues.Length > 0;
+    bool hasStatusData = statusLabels.Length > 0;
+    bool hasQtyData = topQtyLabels.Length > 0;
+    bool hasRevData = topRevLabels.Length > 0;
+}
+
+<div class="row g-3">
+    <div class="col-md-3 col-6">
+        <div class="kpi-card">
+            <div class="kpi-title">سفارش‌ها</div>
+            <div class="kpi-value">@Model.TotalOrders</div>
+            <span class="badge text-bg-light kpi-badge"><i class="bi bi-cart-check"></i> پرداخت: @Model.PaidOrders</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card">
+            <div class="kpi-title">مبلغ کل</div>
+            <div class="kpi-value">@money(Model.TotalRevenue)</div>
+            <span class="badge text-bg-primary kpi-badge">پرداخت‌شده: @money(Model.PaidRevenue)</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card">
+            <div class="kpi-title">میانگین سبد خرید</div>
+            <div class="kpi-value">@money(Model.AvgOrderValue)</div>
+            <span class="badge text-bg-light kpi-badge">میانگین آیتم/سفارش: @Model.AvgItemsPerOrder.ToString("0.0")</span>
+        </div>
+    </div>
+
+
+    <div class="col-md-3 col-6">
+        <div class="kpi-card">
+            <div class="kpi-title">نرخ‌ها</div>
+            <div class="kpi-value" style="font-size: 1.1rem;">
+                <span class="badge text-bg-success">تبدیل: @percent(Model.PaidConversionRate)%</span>
+            </div>
+            <span class="badge text-bg-danger kpi-badge">لغو: @percent(Model.CancelRate)% (@Model.CancelledOrders)</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-3">
+    <div class="col-lg-8">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">روند فروش و تعداد سفارش‌ها</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+                @if (!hasSalesData)
+                {
+                    <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">تفکیک وضعیت سفارش‌ها</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+                @if (!hasStatusData)
+                {
+                    <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (براساس تعداد)</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="topQtyChart"></canvas>
+                @if (!hasQtyData)
+                {
+                    <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">پرفروش‌های آیتم‌ها (براساس مبلغ)</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="topRevChart"></canvas>
+                @if (!hasRevData)
+                {
+                    <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+    if (!window.chartInstances) window.chartInstances = {};
+
+    // داده‌ها
+    const labels = @Html.Raw((hasSalesData ? JsonSerializer.Serialize(labels) : "[]"));
+    const revenues = @Html.Raw((hasSalesData ? JsonSerializer.Serialize(revenues) : "[]"));
+    const orders = @Html.Raw((hasSalesData ? JsonSerializer.Serialize(orders) : "[]"));
+
+    const statusLabels = @Html.Raw((hasStatusData ? JsonSerializer.Serialize(statusLabels) : "[]"));
+    const statusValues = @Html.Raw((hasStatusData ? JsonSerializer.Serialize(statusValues) : "[]"));
+    const statusBg = @Html.Raw((hasStatusData ? JsonSerializer.Serialize(statusBg) : "[]"));
+
+    const topQtyLabels = @Html.Raw((hasQtyData ? JsonSerializer.Serialize(topQtyLabels) : "[]"));
+    const topQtyValues = @Html.Raw((hasQtyData ? JsonSerializer.Serialize(topQtyValues) : "[]"));
+
+    const topRevLabels = @Html.Raw((hasRevData ? JsonSerializer.Serialize(topRevLabels) : "[]"));
+    const topRevValues = @Html.Raw((hasRevData ? JsonSerializer.Serialize(topRevValues) : "[]"));
+
+    // وضعیت‌های داده در JS
+    const hasSalesDataJs = Array.isArray(labels) && labels.length > 0 && Array.isArray(revenues) && revenues.length > 0;
+    const hasStatusDataJs = Array.isArray(statusLabels) && statusLabels.length > 0;
+    const hasQtyDataJs = Array.isArray(topQtyLabels) && topQtyLabels.length > 0;
+    const hasRevDataJs = Array.isArray(topRevLabels) && topRevLabels.length > 0;
+
+    function mkCurrency(v){
+    try { return new Intl.NumberFormat('fa-IR').format(v); }
+    catch { return (v ?? 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    }
+
+    // نابودی نمودارهای قبلی
+    ['salesChart', 'statusChart', 'topQtyChart', 'topRevChart'].forEach(id => {
+    if (window.chartInstances[id]) {
+    window.chartInstances[id].destroy();
+    delete window.chartInstances[id];
+    }
+    });
+
+    // نمودار فروش
+    if (hasSalesDataJs) {
+    const salesCtx = document.getElementById('salesChart');
+    if (salesCtx) {
+    window.chartInstances.salesChart = new Chart(salesCtx, {
+    type: 'line',
+    data: {
+    labels: labels,
+    datasets: [
+    {
+    label: 'مبلغ فروش',
+    data: revenues,
+    yAxisID: 'y1',
+    borderColor: '#0d6efd',
+    backgroundColor: 'rgba(13,110,253,.1)',
+    tension: 0.3, fill: true, pointRadius: 3, pointHoverRadius: 5
+    },
+    {
+    label: 'تعداد سفارش',
+    data: orders,
+    yAxisID: 'y2',
+    borderColor: '#20c997',
+    backgroundColor: 'rgba(32,201,151,.1)',
+    tension: 0.3, fill: true, pointRadius: 3, pointHoverRadius: 5
+    }
+    ]
+    },
+    options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+    y1: {
+    type: 'linear', position: 'left',
+    ticks: { callback: (v) => mkCurrency(v) },
+    grid: { drawBorder: false }
+    },
+    y2: {
+    type: 'linear', position: 'right',
+    grid: { drawOnChartArea: false },
+    ticks: { precision: 0 }
+    }
+    },
+    plugins: {
+    legend: { labels: { usePointStyle: true, padding: 15 } },
+    tooltip: {
+    callbacks: {
+    label: (ctx) => {
+    if(ctx.dataset.yAxisID === 'y1') {
+    return `${ctx.dataset.label}: ${mkCurrency(ctx.parsed.y)} تومان`;
+    }
+    return `${ctx.dataset.label}: ${ctx.parsed.y}`;
+    }
+    }
+    }
+    }
+    }
+    });
+    }
+    }
+
+    // نمودار وضعیت‌ها
+    if (hasStatusDataJs) {
+    const statusCtx = document.getElementById('statusChart');
+    if (statusCtx) {
+    window.chartInstances.statusChart = new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+    labels: statusLabels,
+    datasets: [{
+    data: statusValues,
+    backgroundColor: statusBg,
+    borderWidth: 1, borderColor: '#fff'
+    }]
+    },
+    options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+    legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
+    }
+    }
+    });
+    }
+    }
+
+    // Top by Qty
+    if (hasQtyDataJs) {
+    const qtyCtx = document.getElementById('topQtyChart');
+    if (qtyCtx) {
+    window.chartInstances.topQtyChart = new Chart(qtyCtx, {
+    type: 'bar',
+    data: {
+    labels: topQtyLabels,
+    datasets: [{ label: 'تعداد', data: topQtyValues, backgroundColor: '#6f42c1', borderWidth: 0 }]
+    },
+    options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+    x: { beginAtZero: true, ticks: { precision: 0 } },
+    y: { }
+    }
+    }
+    });
+    }
+    }
+
+    // Top by Revenue
+    if (hasRevDataJs) {
+    const revCtx = document.getElementById('topRevChart');
+    if (revCtx) {
+    window.chartInstances.topRevChart = new Chart(revCtx, {
+    type: 'bar',
+    data: {
+    labels: topRevLabels,
+    datasets: [{
+    label: 'مبلغ',
+    data: topRevValues,
+    backgroundColor: '#fd7e14',
+    borderWidth: 0
+    }]
+    },
+    options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+    legend: { display: false },
+    tooltip: { callbacks: { label: (ctx) => `مبلغ: ${mkCurrency(ctx.parsed.x)} تومان` } }
+    },
+    scales: {
+    x: { beginAtZero: true, ticks: { callback: (v) => mkCurrency(v) } },
+    y: { }
+    }
+    }
+    });
+    }
+    }
+
+    // پاکسازی هنگام خروج
+    window.addEventListener('beforeunload', () => {
+    Object.values(window.chartInstances).forEach(c => { if (c && typeof c.destroy === 'function') c.destroy(); });
+    window.chartInstances = {};
+    });
+    })();
+</script>

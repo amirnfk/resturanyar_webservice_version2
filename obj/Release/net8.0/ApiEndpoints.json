@@ -1,0 +1,1163 @@
+[
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "AddAddress",
+    "RelativePath": "api/Customers/addaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.AddAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "AddCustomer",
+    "RelativePath": "api/Customers/addcustomer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.AddCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "DeleteAddress",
+    "RelativePath": "api/Customers/deleteaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.DeleteAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "DeleteCustomer",
+    "RelativePath": "api/Customers/deletecustomer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.DeleteCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "EditAddress",
+    "RelativePath": "api/Customers/editaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.EditAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "EditCustomer",
+    "RelativePath": "api/Customers/editcustomer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.EditCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetAddresses",
+    "RelativePath": "api/Customers/getaddresses/{customerId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "customerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetCustomers",
+    "RelativePath": "api/Customers/getcustomers/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetCustomersStats",
+    "RelativePath": "api/Customers/getcustomersstats/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "CancelSubscription",
+    "RelativePath": "api/Subscription/cancelsubscription/{subscriptionId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "subscriptionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "CreateSubscription",
+    "RelativePath": "api/Subscription/createsubscription",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CreateSubscriptionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "GetActiveSubscription",
+    "RelativePath": "api/Subscription/getactivesubscription/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "GetOwnerInfo",
+    "RelativePath": "api/Subscription/getOwnerInfoAndSubscriptions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OwnerLoginWithRestaurantRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "GetRestaurantSubscriptions",
+    "RelativePath": "api/Subscription/getrestaurantsubscriptions/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "LoginUser",
+    "RelativePath": "api/Subscription/getUserInfoAndSubscriptions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.LoginUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "GetUserPermissions",
+    "RelativePath": "api/Subscription/getUserPermissions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OwnerLoginWithRestaurantRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.SubscriptionController",
+    "Method": "RenewSubscription",
+    "RelativePath": "api/Subscription/renewsubscription/{subscriptionId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "subscriptionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddCategory",
+    "RelativePath": "api/UserApi/addcategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddFood",
+    "RelativePath": "api/UserApi/addfood",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "CategoryId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Price",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiscountPrice",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CostPrice",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "isAvailable",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "RestaurantId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "RemoveImage",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddOwner",
+    "RelativePath": "api/UserApi/addowner",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Resturanyar.Controllers.Api.UserApiController\u002BAddOwnerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddRestaurant",
+    "RelativePath": "api/UserApi/addrestaurant",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddRestaurantRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddTable",
+    "RelativePath": "api/UserApi/addtable",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddTableRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "AddUser",
+    "RelativePath": "api/UserApi/adduser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/UserApi/changepassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "CheckOrderUpdates",
+    "RelativePath": "api/UserApi/CheckOrderUpdates",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "role2",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "role3",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "role4",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "lastCheck",
+        "Type": "System.Int64",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "CheckPhone",
+    "RelativePath": "api/UserApi/checkphone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "phone",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "CheckVersion",
+    "RelativePath": "api/UserApi/checkVersion",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.VersionCheckRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/UserApi/createOrder",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CreateOrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "DeleteCategory",
+    "RelativePath": "api/UserApi/deletecategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.DeleteCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "DeleteFoodItem",
+    "RelativePath": "api/UserApi/deleteFood/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "DeleteTable",
+    "RelativePath": "api/UserApi/deletetable",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.DeleteTableRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/UserApi/deleteuser/{restaurantId}/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "EditCategory",
+    "RelativePath": "api/UserApi/editcategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.EditCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "EditTable",
+    "RelativePath": "api/UserApi/edittable",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.EditTableRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "EditUser",
+    "RelativePath": "api/UserApi/edituser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.EditUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ExportOrdersToExcel",
+    "RelativePath": "api/UserApi/ExportOrdersToExcel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetAllByRestaurant",
+    "RelativePath": "api/UserApi/getallFoods/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetAllPlans",
+    "RelativePath": "api/UserApi/getallsubscriptions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetCategoriesByRestaurant",
+    "RelativePath": "api/UserApi/getcategoriesbyrestaurant/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetFoodById",
+    "RelativePath": "api/UserApi/getfoodbyid/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetOrderById",
+    "RelativePath": "api/UserApi/getOrderById/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetOrdersByRestaurant",
+    "RelativePath": "api/UserApi/GetOrdersByRestaurant/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetOrdersByRestaurantWithDateFilter",
+    "RelativePath": "api/UserApi/GetOrdersByRestaurantWithDateFilter",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "getOwnerInfo",
+    "RelativePath": "api/UserApi/getOwnerInfo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OwnerLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetRestaurantCode",
+    "RelativePath": "api/UserApi/getrestaurantcode/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetRestaurantPublicMenuToken",
+    "RelativePath": "api/UserApi/getrestaurantpublicmenutoken/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetRestaurantsByOwner",
+    "RelativePath": "api/UserApi/getrestaurantsbyowner/{ownerId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ownerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetTablesByRestaurant",
+    "RelativePath": "api/UserApi/gettablesbyrestaurant/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetUsersByRestaurant",
+    "RelativePath": "api/UserApi/getusersbyrestaurant/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "LoginUser",
+    "RelativePath": "api/UserApi/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.LoginUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "RequestOtp",
+    "RelativePath": "api/UserApi/otprequest",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/UserApi/otpverify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OtpVerifyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "VerifyOtpForRegister",
+    "RelativePath": "api/UserApi/otpverifyregister",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OtpVerifyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "Login",
+    "RelativePath": "api/UserApi/owner_login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OwnerLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "UpdateFood",
+    "RelativePath": "api/UserApi/updatefood/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Description",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Image",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "CategoryId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Price",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "DiscountPrice",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "CostPrice",
+        "Type": "System.Nullable\u00601[[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "isAvailable",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "RestaurantId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "RemoveImage",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "UpdateOrder",
+    "RelativePath": "api/UserApi/UpdateOrder/{orderId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "UpdateOrderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "UpdateOrderStatusWithSignalar",
+    "RelativePath": "api/UserApi/UpdateOrderStatusWithSignalar/{orderId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "Resturanyar.Controllers.Api.UserApiController\u002BUpdateOrderStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "VerifyOtpWeb",
+    "RelativePath": "api/UserApi/verifyotpweb",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OtpVerifyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ExportOrdersToExcel",
+    "RelativePath": "ExportOrdersToExcel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "statusId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.ProxyController",
+    "Method": "GetSubscriptions",
+    "RelativePath": "Proxy/GetSubscriptions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MenuController",
+    "Method": "PublicMenu",
+    "RelativePath": "PublicMenu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "CreateZarinpalPayment",
+    "RelativePath": "zarinpal/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CreateZarinpalPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ZarinpalVerify",
+    "RelativePath": "zarinpal/verify",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Authority",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Status",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

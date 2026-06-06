@@ -1,0 +1,541 @@
+﻿@model resturanyar.Models.OrderListViewModel
+@using resturanyar.Utility
+@{
+    string BaseImageUrl = "https://resturanyar.ir/";
+    var defaultImgUrl = Url.Content("~/images/food_default.jpg");
+
+}
+
+<style>
+    body {
+        direction: rtl;
+        font-family: "IRANYekan", Tahoma, sans-serif;
+      
+    }
+    /* ---------- کارت کلی هر سفارش ---------- */
+    .order-card {
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 3px 18px rgba(0,0,0,.05);
+        transition: transform .2s, box-shadow .2s;
+    }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0,0,0,.1);
+        }
+
+    .order-header {
+        font-weight: 700;
+        color: #212529;
+        font-size: 1rem;
+    }
+
+    .status-badge {
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: .8rem;
+        font-weight: 600;
+        white-space: nowrap; /* ← کلیدی */
+        display: inline-block;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* در صورت نیاز، برای والد فلکس */
+    .d-flex.flex-wrap {
+        gap: 10px; /* فاصله بین اجزا */
+    }
+
+    .order-header {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .order-meta {
+        color: #6c757d;
+        font-size: .85rem;
+    }
+
+    /* ---------- جدول اقلام هر سفارش ---------- */
+    .food-header {
+        display: grid;
+        grid-template-columns: 60px 1fr 90px 120px 120px; /* عکس - نام - تعداد - قیمت واحد - مجموع */
+        align-items: center;
+        font-weight: 700;
+        background: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    .food-row {
+        display: grid;
+        grid-template-columns: 60px 1fr 90px 120px 120px; /* عکس - نام - تعداد - قیمت واحد - مجموع */
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-bottom: 1px solid #f1f1f1;
+        min-height: 60px;
+    }
+
+    .food-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .food-name {
+        font-weight: 600;
+        font-size: .9rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .food-qty, .food-price, .food-sum {
+        text-align: center;
+        font-size: .9rem;
+        font-weight: 500;
+        color: #444;
+    }
+
+    .total-box {
+        background: #f9fafb;
+        border-radius: 10px;
+        padding: 10px 0;
+        text-align: center;
+        font-weight: 700;
+        color: #198754;
+        margin-top: 10px;
+    }
+
+    /* ---------- برای موبایل ---------- */
+    @@media (max-width: 768px) {
+        .food-header, .food-row
+
+    {
+        grid-template-columns: 50px 1fr 60px 80px 80px;
+    }
+
+    .food-name {
+        font-size: 0.85rem;
+    }
+
+    .food-qty, .food-price, .food-sum {
+        font-size: 0.8rem;
+    }
+
+    }
+    /* ---------- استایل بخش اطلاعات مشتری ---------- */
+    .customer-info {
+        background: linear-gradient(135deg, #e9f5ff 0%, #d9ecff 100%);
+        border-radius: 12px;
+        padding: 8px 16px;
+        margin-bottom: 12px;
+        margin-top: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        border-right: 4px solid #0d6efd;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        direction: rtl;
+    }
+
+        .customer-info i {
+            font-size: 1.2rem;
+            color: #0d6efd;
+        }
+
+        .customer-info .customer-name {
+            font-weight: 700;
+            color: #0a58ca;
+        }
+
+        .customer-info .customer-mobile {
+            font-family: 'IRANYekan', 'IRANYekan', system-ui, -apple-system, sans-serif;
+            font-size: 0.9rem;
+            background: #fff;
+            padding: 2px 8px;
+            border-radius: 20px;
+            color: #2c3e50;
+        }
+
+        .customer-info.unknown {
+            background: #f8f9fa;
+            border-right-color: #adb5bd;
+        }
+
+            .customer-info.unknown i {
+                color: #6c757d;
+            }
+
+    /* برای موبایل */
+    @@media (max-width: 768px) {
+        .customer-info
+
+    {
+        flex-wrap: wrap;
+        gap: 5px;
+        font-size: 0.75rem;
+    }
+
+    }
+</style>
+
+@if (Model != null && Model.Orders.Any())
+{
+    foreach (var order in Model.Orders)
+    {
+        decimal totalPrice = order.OrderItems?.Sum(i => i.TotalPrice) ?? 0;
+
+        <div class="order-card p-4 mb-4" id="order-@order.OrderId">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                <div class="order-header">
+                    📦 سفارش #@order.OrderId.ToString().ToPersianDigits()
+                    | میز: @order.TableNumber?.ToPersianDigits()
+                    <span class="status-badge bg-@(Model.StatusColors.GetValueOrDefault(order.StatusId,"secondary")) text-white ms-2">
+                        @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
+                    </span>
+                    <!-- بعد از نمایش توضیحات، قبل از جدول آیتم‌ها -->
+                    <!-- نمایش اطلاعات مشتری -->
+                    @if (order.CustomerId.HasValue)
+                    {
+                        <div class="customer-info">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="customer-name">@order.CustomerFullName</span>
+                            <span class="customer-mobile">@order.CustomerMobile</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="customer-info unknown">
+                            <i class="fas fa-walkie-talkie"></i>
+                            <span>مشتری مهمان</span>
+                        </div>
+                    }
+                </div>
+                <button class="btn btn-sm btn-dark"
+                        onclick="printInvoice(@order.OrderId)">
+                    🖨 چاپ فاکتور
+                </button>
+
+                <div>
+                    <select class="form-select form-select-sm"
+                            style="min-width:140px"
+                            data-orderid="@order.OrderId"
+                            onchange="onChangeStatus(this,@order.OrderId)">
+                        <option value="">تغییر وضعیت</option>
+                        @foreach (var kv in Model.StatusMap)
+                        {
+                            <option value="@kv.Key" selected="@(kv.Key==order.StatusId?"selected":null)">
+                                @kv.Value
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="order-meta mb-2">
+                ثبت: @order.CreatedAt.ToPersianDateTime()
+                | آخرین تغییر: @order.UpdatedAt.ToPersianDateTime()
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(order.Description))
+            {
+                <div class="alert alert-light py-2 px-3 mb-3 border-start border-3 border-primary">
+                    📝 @order.Description
+                </div>
+            }
+
+            @if (order.OrderItems != null && order.OrderItems.Any())
+            {
+                <!-- Header ثابت هر سفارش -->
+                <div class="food-header">
+                    <div>عکس</div>
+                    <div>نام غذا</div>
+                    <div>تعداد</div>
+                    <div>قیمت واحد</div>
+                    <div>جمع</div>
+                </div>
+
+                @foreach (var item in order.OrderItems)
+                {
+                    var imgUrl = string.IsNullOrEmpty(item.FoodImageUrl)
+                    ? defaultImgUrl
+                    : $"{BaseImageUrl}{item.FoodImageUrl.TrimStart('/')}";
+                    decimal finalUnit = item.FinalUnitPrice;
+                    decimal itemSum = item.TotalPrice;
+
+                    <div class="food-row"
+                         data-price="@item.FinalUnitPrice.ToString("N0")">
+
+                        <img src="@imgUrl" alt="@item.FoodName"
+                             class="food-img"
+                             onerror="this.src='@defaultImgUrl';" />
+                        <div class="food-name">@item.FoodName</div>
+                        <div class="food-qty">@item.Quantity.ToString("N0")</div>
+                        <div class="food-price">
+                            @if (item.FinalUnitPrice < item.UnitPrice)
+                            {
+                                <span class="text-muted text-decoration-line-through">@item.UnitPrice.ToString("N0")</span>
+                                <br />
+                                <span class="text-danger fw-bold">@item.FinalUnitPrice.ToString("N0")</span>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-bold">@item.UnitPrice.ToString("N0")</span>
+                            }
+                        </div>
+                        <span class="food-sum">@item.TotalPrice</span>
+
+                    </div>
+                }
+
+                <div class="total-box mt-3">
+                     مبلغ کل: @totalPrice.ToString("N0") تومان
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary mt-2 mb-0">هیچ آیتمی در این سفارش ثبت نشده است.</div>
+            }
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning text-center fs-5">📭 هیچ سفارشی یافت نشد.</div>
+}
+
+<script>
+    const restaurantName = "@ViewBag.RestaurantName";
+
+    async function onChangeStatus(sel, orderId) {
+        const newStatus = parseInt(sel.value);
+        if (!newStatus) return;
+
+        const res = await fetch('@Url.Action("UpdateOrderStatus", "Home")', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+            },
+            body: `orderId=${orderId}&newStatusId=${newStatus}`
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // ✅ آپدیت متن بدج
+            const card = document.querySelector(`#order-${orderId}`);
+            const badge = card?.querySelector('.status-badge');
+
+            if (badge) {
+                const selectedText = sel.options[sel.selectedIndex].text.trim();
+
+                // ✅ آپدیت کلاس رنگ - حذف کلاس‌های bg قبلی
+                badge.className = badge.className
+                    .replace(/\bbg-\S+/g, '')
+                    .trim();
+
+                // نقشه رنگ‌ها - همون StatusColors مدل
+                const colorMap = @Html.Raw(
+                                        System.Text.Json.JsonSerializer.Serialize(Model.StatusColors)
+                                );
+                const newColor = colorMap[newStatus] ?? 'secondary';
+                badge.classList.add(`bg-${newColor}`);
+
+                // ✅ متن بدج بدون line-break
+                badge.textContent = selectedText;
+                badge.style.whiteSpace = 'nowrap';
+                badge.style.display = 'inline-block';
+            }
+
+            // آپدیت زمان
+            const meta = card?.querySelector('.order-meta');
+            if (meta) {
+                const now = new Date().toLocaleString('fa-IR');
+                meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
+            }
+
+            showToast('وضعیت سفارش بروز شد', 'success');
+        } else {
+            showToast(data.message || 'خطا در تغییر وضعیت', 'error');
+        }
+    }
+     function printInvoice(orderId){
+
+        const order = document.querySelector("#order-" + orderId);
+        if(!order) return;
+
+        const items = order.querySelectorAll(".food-row");
+        const customerInfo = order.querySelector(".customer-info")?.innerText || "مشتری مهمان";
+        let rows = "";
+
+        items.forEach(item=>{
+
+            const name = item.querySelector(".food-name").innerText;
+            const qty = item.querySelector(".food-qty").innerText;
+            const price = item.dataset.price;
+
+            rows += `
+            <div class="row">
+                <div class="name">${name}</div>
+                <div class="qty">${qty}</div>
+                <div class="price">${price}</div>
+            </div>
+            `;
+        });
+        const now = new Date().toLocaleString('fa-IR');
+
+        const total = order.querySelector(".total-box").innerText;
+
+        const html = `
+        <html>
+        <head>
+        <meta charset="utf-8"/>
+        <style>
+        body{
+            direction:rtl;
+            font-family: 'IRANYekan', 'IRANYekan', system-ui, -apple-system, sans-serif;
+            width:80mm;
+            margin:0;
+            padding:10px;
+        }
+        .center{text-align:center;}
+        .title{font-weight:bold;font-size:16px;margin-bottom:5px;}
+        .line{border-top:1px dashed #000;margin:8px 0;}
+        .row{display:flex;justify-content:space-between;font-size:13px;margin:4px 0;}
+        .name{width:45%;}
+        .qty{width:15%;text-align:center;}
+        .price{width:40%;text-align:left;}
+        .total{font-weight:bold;font-size:14px;text-align:center;margin-top:10px;}
+        </style>
+        </head>
+        <body>
+    <div class="center title">${restaurantName}</div>
+ 
+    <div class="center">شماره سفارش: ${orderId}</div>
+    <div class="center">زمان چاپ: ${now}</div>
+ 
+
+        <div class="line"></div>
+
+        <div class="row">
+            <div class="name">غذا</div>
+            <div class="qty">تعداد</div>
+            <div class="price">قیمت</div>
+        </div>
+
+        <div class="line"></div>
+
+        ${rows}
+
+        <div class="line"></div>
+
+        <div class="total">${total}</div>
+
+        <div class="line"></div>
+        <br>
+         <div class="center">${customerInfo}</div>
+          <br>
+        <div class="center">با تشکر از خرید شما</div>
+
+        </body>
+        </html>
+        `;
+
+        // ✅ ساخت iframe مخفی (به‌جای window.open)
+        const iframe = document.createElement("iframe");
+        iframe.style.position = "fixed";
+        iframe.style.right = "0";
+        iframe.style.bottom = "0";
+        iframe.style.width = "0";
+        iframe.style.height = "0";
+        iframe.style.border = "0";
+
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        // حذف بعد از چاپ
+        setTimeout(()=>{
+            document.body.removeChild(iframe);
+        },1000);
+    }
+        function showToast(message, type = 'success') {
+        // حذف توست قبلی (در صورت وجود)
+        const existingToast = document.querySelector('.custom-toast');
+        if (existingToast) existingToast.remove();
+
+        // ایجاد المان توست
+        const toast = document.createElement('div');
+        toast.className = `custom-toast toast-${type}`;
+        toast.innerHTML = `
+            <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
+            <div class="toast-message">${message}</div>
+            <div class="toast-close">&times;</div>
+        `;
+
+        // استایل‌های توست (می‌تونید در <style> اصلی هم بنویسید)
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            min-width: 240px;
+            background: ${type === 'success' ? '#1e7e34' : '#dc3545'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            direction: rtl;
+            font-family: inherit;
+            animation: slideInLeft 0.3s ease;
+        `;
+
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.style.cssText = 'cursor:pointer; margin-right: auto; font-size: 20px; line-height: 1;';
+
+        closeBtn.onclick = () => toast.remove();
+
+        document.body.appendChild(toast);
+
+        // حذف خودکار بعد از ۳ ثانیه
+        setTimeout(() => {
+            if (toast.parentNode) toast.remove();
+        }, 3000);
+    }
+
+    // اضافه کردن انیمیشن به استایل (اگه قبلاً نداشتید)
+    if (!document.querySelector('#toast-keyframes')) {
+        const style = document.createElement('style');
+        style.id = 'toast-keyframes';
+        style.textContent = `
+            @@keyframes slideInLeft {
+                from { transform: translateX(-100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+</script>

@@ -1,0 +1,195 @@
+﻿@model List<TableViewModel>
+
+@{
+    ViewData["Title"] = "مدیریت میزها";
+}
+
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<style>
+    body {
+        direction: rtl;
+        font-family: "IRANYekan", sans-serif;
+        */
+        /* background-color: #f5f6fa; */
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 1rem;
+    }
+
+    .btn-rounded {
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+       
+        <button class="btn btn-primary btn-rounded" onclick="openAddTableModal()">افزودن میز</button>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center">هیچ میزی ثبت نشده است.</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var t in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4 mb-3"
+                     data-id="@t.TableId"
+                     data-name="@t.TableName"
+                     data-seats="@t.Seats">
+                    <div class="card h-100">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5>@t.TableName</h5>
+                            @* <small class="text-muted">@t.CreatedAt</small> *@
+                        </div>
+                        <p class="text-muted mt-2">تعداد صندلی: <strong>@t.Seats</strong></p>
+                        <div class="mt-2 d-flex justify-content-between">
+                            <button class="btn btn-sm btn-warning" onclick="openEditTableModal(@t.TableId)">ویرایش</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTable(@t.TableId)">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="tableModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="errorContainer" class="alert alert-danger d-none"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">افزودن میز</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="tableForm">
+                    <input type="hidden" id="tableId" />
+                    <div class="mb-3">
+                        <label>نام میز <span class="text-danger">*</span></label>
+                        <input type="text" id="tableName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>تعداد صندلی</label>
+                        <input type="number" id="seats" class="form-control" min="1" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button class="btn btn-primary" onclick="saveTable()">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script>
+    const API_BASE = "https://resturanyar.ir/api/UserApi";
+    var restaurantId = @(ViewBag.RestaurantId ?? 0);
+
+    // اضافه کردن میز
+    function openAddTableModal() {
+        $("#modalTitle").text("افزودن میز");
+        $("#tableId").val("");
+        $("#tableName").val("");
+        $("#seats").val("");
+        clearErrors();
+        new bootstrap.Modal(document.getElementById('tableModal')).show();
+    }
+
+    // ویرایش میز
+    function openEditTableModal(id) {
+        const card = $(`[data-id='${id}']`);
+        $("#tableId").val(id);
+        $("#tableName").val(card.data("name"));
+        $("#seats").val(card.data("seats"));
+        $("#modalTitle").text("ویرایش میز");
+        clearErrors();
+        new bootstrap.Modal(document.getElementById('tableModal')).show();
+    }
+
+    // ذخیره میز (افزودن یا ویرایش)
+    function saveTable() {
+        clearErrors();
+        const id = $("#tableId").val();
+        const name = $("#tableName").val().trim();
+        const seats = parseInt($("#seats").val()) || 0;
+
+        if (!name) {
+            showErrors(["نام میز الزامی است."]);
+            return;
+        }
+
+        const data = { restaurantId: restaurantId, tableName: name, seats: seats };
+
+        let url = `${API_BASE}/addtable`;
+        let method = "POST";
+
+        if (id) {
+            url = `${API_BASE}/edittable`;
+            data.tableId = parseInt(id);
+        }
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message || "عملیات موفق");
+                    location.reload();
+                } else {
+                    showErrors([res.message || "خطا در ذخیره میز"]);
+                }
+            },
+            error: function (xhr) {
+                showErrors([xhr.responseJSON?.message || "خطا در ارتباط با سرور"]);
+            }
+        });
+    }
+
+    // حذف میز
+    function deleteTable(id) {
+        if (!confirm("آیا از حذف این میز اطمینان دارید؟")) return;
+
+        $.ajax({
+            url: `${API_BASE}/deletetable`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ restaurantId: restaurantId, tableId: id }),
+            success: function (res) {
+                alert(res.message);
+                if (res.success) location.reload();
+            },
+            error: function () {
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    }
+
+    // Utility
+    function showErrors(errors) {
+        const box = $("#errorContainer");
+        box.html(errors.map(e => `<div>• ${e}</div>`).join(""));
+        box.removeClass("d-none");
+    }
+    function clearErrors() {
+        $("#errorContainer").addClass("d-none").html("");
+    }
+</script>

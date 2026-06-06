@@ -1,0 +1,670 @@
+﻿@model List<resturanyar.Models.FoodItemViewModel>
+@{
+    ViewData["Title"] = "منوی کافه/رستوران";
+    var placeholder = Url.Content("~/images/food_placeholder.jpg");
+
+    var groups = Model
+        .GroupBy(f => new { f.CategoryId, f.CategoryName })
+        .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, Items = g.ToList() })
+        .OrderBy(g => g.CategoryName)
+        .ToList();
+
+    var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);
+}
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-icons.css" rel="stylesheet" />
+@* <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap" rel="stylesheet" /> *@
+<style>
+    :root {
+        --primary: #ff7a1a;
+        --primary-2: #ff9e53;
+        --accent: #00c2a8;
+        --bg: #fff7ef;
+        --card: #ffffff;
+        --text: #212529;
+        --muted: #6d7385;
+        --shadow: 0 12px 40px rgba(0,0,0,.08);
+        --radius: 18px;
+    }
+
+    body {
+        direction: rtl;
+        font-family: "IRANYekan",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+        background: radial-gradient(1400px 600px at 100% -10%, rgba(255,122,26,.12), transparent 60%), radial-gradient(1000px 400px at -5% 105%, rgba(0,194,168,.10), transparent 60%), var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+
+    /* Hero */
+    .menu-hero {
+        position: relative;
+        padding: 64px 16px 24px;
+        text-align: center;
+        overflow: hidden;
+    }
+
+        .menu-hero .title {
+            font-weight: 900;
+            font-size: clamp(24px,4.4vw,40px);
+        }
+
+        .menu-hero .subtitle {
+            color: var(--muted);
+            max-width: 760px;
+            margin: 8px auto 0;
+            font-size: clamp(14px,2.4vw,18px);
+        }
+
+    .blob {
+        position: absolute;
+        inset: auto -10% 0 -10%;
+        height: 65%;
+        background: radial-gradient(600px 180px at 78% 20%, rgba(255,122,26,.08), transparent 60%), radial-gradient(500px 160px at 20% 80%, rgba(0,194,168,.08), transparent 60%);
+        pointer-events: none;
+    }
+
+    /* Sticky toolbar */
+    .menu-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        backdrop-filter: saturate(140%) blur(10px);
+        background: rgba(255,255,255,.65);
+        border-bottom: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 6px 16px rgba(0,0,0,.06);
+    }
+
+    .toolbar-inner {
+        padding: 10px 12px;
+    }
+
+    .search-wrap {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.06);
+        border-radius: 999px;
+        padding: 6px 10px;
+        box-shadow: var(--shadow);
+    }
+
+        .search-wrap input {
+            border: 0;
+            outline: 0;
+            background: transparent;
+            width: 100%;
+            font-size: 15px;
+        }
+
+    .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-chip {
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.08);
+        background: #fff;
+        color: #333;
+        padding: 6px 12px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+        .filter-chip.active, .sort-select {
+            background: linear-gradient(90deg,var(--primary),var(--primary-2));
+            color: #fff;
+            border: 0;
+        }
+
+    .sort-select {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-weight: 800;
+        font-size: 13px;
+    }
+
+    /* Category chips scroller */
+    .chip-scroller {
+        display: flex;
+        gap: 8px;
+        overflow: auto;
+        padding: 8px 2px 10px;
+    }
+
+        .chip-scroller::-webkit-scrollbar {
+            height: 8px;
+        }
+
+    .chip {
+        border: 0;
+        border-radius: 999px;
+        background: #fff;
+        color: #444;
+        padding: 8px 14px;
+        font-weight: 800;
+        box-shadow: var(--shadow);
+        white-space: nowrap;
+    }
+
+        .chip .count {
+            background: #f1f3f5;
+            color: #555;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            margin-inline-start: 6px;
+        }
+
+        .chip.active-category {
+            background: linear-gradient(135deg,var(--primary),var(--primary-2));
+            color: #fff;
+        }
+
+            .chip.active-category .count {
+                background: rgba(255,255,255,.25);
+                color: #fff;
+            }
+
+    /* Sections */
+    .container-section {
+        padding: 28px 0;
+    }
+
+    .cat-title {
+        font-weight: 900;
+        font-size: clamp(18px,2.6vw,24px);
+        margin: 14px 0 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .cat-title i {
+            color: var(--primary);
+        }
+
+    /* Cards */
+    .food-card {
+        perspective: 1000px;
+    }
+
+        .food-card .card {
+            border: 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+            .food-card .card:hover {
+                transform: translateY(-6px) rotateX(2deg);
+            }
+
+    .img-wrap {
+        position: relative;
+    }
+
+        .img-wrap img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .gradient-over {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.35), transparent 60%);
+        pointer-events: none;
+    }
+
+    .discount-ribbon {
+        position: absolute;
+        inset-inline-start: -6px;
+        inset-block-start: 12px;
+        background: linear-gradient(135deg,#24c768,#0aa84e);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        box-shadow: var(--shadow);
+    }
+
+    .sold-badge {
+        position: absolute;
+        inset-inline-end: 12px;
+        inset-block-start: 12px;
+        background: linear-gradient(135deg,#ff6b6b,#ff3b3b);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    .card-body {
+        padding: 12px 14px;
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 0 0 4px;
+    }
+
+    .card-text {
+        color: #6c757d;
+        font-size: .9rem;
+        min-height: 38px;
+    }
+
+    .price-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    .price {
+        color: #1f8f5f;
+        font-weight: 900;
+    }
+
+    .old-price {
+        color: #adb5bd;
+        text-decoration: line-through;
+        font-size: .85rem;
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .btn-quick, .btn-add {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-weight: 800;
+        font-size: 13px;
+        color: #fff;
+        border: 0;
+        background: linear-gradient(135deg,var(--primary),var(--primary-2));
+    }
+
+    .btn-add {
+        background: linear-gradient(135deg,var(--primary),var(--primary-2));
+        color: #fff;
+        border: 0;
+    }
+
+    .sold-out .card {
+        filter: grayscale(.5);
+        opacity: .72;
+    }
+
+    .sold-out .btn-add {
+        pointer-events: none;
+        opacity: .65;
+    }
+
+    /* Reveal */
+    .reveal {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: .6s ease;
+    }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* Back to top */
+    .back-top {
+        position: fixed;
+        inset-inline-end: 16px;
+        inset-block-end: 16px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: linear-gradient(135deg,var(--primary),var(--primary-2));
+        color: #fff;
+        border: 0;
+        display: grid;
+        place-items: center;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transform: translateY(18px);
+        transition: .25s ease;
+        z-index: 999;
+    }
+
+        .back-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* Media */
+    @@media (max-width:576px) {
+        .img-wrap img {
+            height: 160px;
+        }
+
+        .search-wrap {
+            padding: 6px 12px;
+        }
+    }
+    /* Keyframes example for subtle shimmer on images while loading (optional) */
+    @@keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+    }
+</style>
+
+<!-- Hero -->
+<section class="menu-hero">
+    <h1 class="title">منوی کافه / رستوران</h1>
+    @* <p class="subtitle">منوی دیجیتال با ظاهر مدرن، فیلتر هوشمند، دسته‌بندی سریع و نمایش تخفیف‌ها</p> *@
+    <div class="blob"></div>
+</section>
+
+<!-- Sticky toolbar: search + filters + category chips -->
+<div class="menu-toolbar">
+    <div class="container">
+        <div class="toolbar-inner">
+            <div class="row g-2 align-items-center">
+                <div class="col-12 col-md-6">
+                    <div class="search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input id="searchBox" type="text" placeholder="جستجو نام/توضیح غذا..." aria-label="جستجو">
+                        <button id="clearSearch" class="btn btn-sm btn-light rounded-pill d-none"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="filters">
+                        <button class="filter-chip" id="onlyAvailable" aria-pressed="false"><i class="bi bi-check2-circle ms-1"></i> فقط موجود</button>
+                        <button class="filter-chip" id="onlyDiscount" aria-pressed="false"><i class="bi bi-percent ms-1"></i> فقط تخفیف‌دار</button>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="chip-scroller mt-2" id="categoryChips">
+                <button type="button" class="chip active-category" data-scroll="top"><i class="bi bi-grid-3x3-gap ms-1"></i> همه</button>
+                @foreach (var g in groups)
+                {
+                    <button type="button" class="chip" data-scroll="cat-@g.CategoryId">
+                        <i class="bi bi-tags ms-1"></i> @g.CategoryName
+                        <span class="count">@categoryCounts[g.CategoryId]</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sections -->
+<div class="container container-section">
+    @foreach (var g in groups)
+    {
+        <section class="category-section reveal" id="cat-@g.CategoryId">
+            <h4 class="cat-title"><i class="bi bi-star-fill"></i> @g.CategoryName</h4>
+            <div class="row g-3">
+                @foreach (var item in g.Items)
+                {
+                    var hasDiscount = item.DiscountPrice > 0 && item.DiscountPrice != item.Price;
+                    var finalPrice = hasDiscount ? item.DiscountPrice : item.Price;
+                    <div class="col-6 col-md-4 col-lg-3 food-card @(item.IsAvailable ? "" : "sold-out")"
+                         data-name="@($"{item.Name} {item.Description}".ToLowerInvariant())"
+                         data-available="@(item.IsAvailable ? 1 : 0)"
+                         data-discount="@(hasDiscount ? 1 : 0)"
+                         data-price="@finalPrice"
+                         data-name-sort="@item.Name">
+                        <div class="card h-100">
+                            <div class="img-wrap">
+                                <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)"
+                                     alt="تصویر @item.Name"
+                                     loading="lazy"
+                                     decoding="async"
+                                     onerror="this.onerror=null; this.src='@placeholder';" />
+                                <span class="gradient-over"></span>
+                                @if (hasDiscount)
+                                {
+                                    var discountPercent = (int)Math.Round(((item.Price - item.DiscountPrice) / item.Price) * 100);
+                                    <span class="discount-ribbon"><i class="bi bi-lightning-fill ms-1"></i>@discountPercent% تخفیف</span>
+                                }
+                                @if (!item.IsAvailable)
+                                {
+                                    <span class="sold-badge">ناموجود</span>
+                                }
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text">@item.Description</p>
+                                <div class="price-wrap">
+                                    @if (hasDiscount)
+                                    {
+                                        <span class="old-price">@item.Price.ToString("N0") تومان</span>
+                                    }
+                                    <span class="price">@finalPrice.ToString("N0") تومان</span>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn-quick" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#quickViewModal"
+                                            data-title="@item.Name"
+                                            data-desc="@item.Description"
+                                            data-img="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)"
+                                            data-price="@finalPrice.ToString("N0")"
+                                            data-old="@((hasDiscount ? item.Price.ToString("N0") : ""))">
+                                        <i class="bi bi-eye ms-1"></i> نمایش
+                                    </button>
+                                    @* <button class="btn-add" type="button" @(item.IsAvailable ? "" : "disabled")> *@
+                                    @*     <i class="bi bi-bag-plus ms-1"></i> افزودن *@
+                                    @* </button> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</div>
+
+<!-- Quick view modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius:16px;">
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <img id="qvImg" src="@placeholder" class="w-100 h-100" style="object-fit:cover; border-radius:16px 0 0 16px;" alt="">
+                    </div>
+                    <div class="col-md-6 p-3 p-md-4">
+                        <h5 id="qvTitle" class="fw-bold mb-2"></h5>
+                        <p id="qvDesc" class="text-muted mb-3"></p>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span id="qvOld" class="text-decoration-line-through text-muted"></span>
+                            <span id="qvPrice" class="fw-bolder text-success"></span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-dark rounded-pill px-3" data-bs-dismiss="modal"><i class="bi bi-x-lg ms-1"></i> بستن</button>
+                            <button class="btn btn-warning rounded-pill px-3 text-white"><i class="bi bi-bag-plus ms-1"></i> افزودن به سفارش</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back to top -->
+<button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="bi bi-arrow-up"></i></button>
+
+<script>
+    (function(){
+      const chips = Array.from(document.querySelectorAll("[data-scroll]"));
+      const sections = Array.from(document.querySelectorAll(".category-section"));
+      const searchBox = document.getElementById("searchBox");
+      const clearBtn = document.getElementById("clearSearch");
+      const onlyAvailable = document.getElementById("onlyAvailable");
+      const onlyDiscount = document.getElementById("onlyDiscount");
+      const sortSelect = document.getElementById("sortSelect");
+      const toolbar = document.querySelector(".menu-toolbar");
+      const backTop = document.getElementById("backTop");
+
+      // CSS.escape shim
+      if (typeof window.CSS === "undefined" || typeof CSS.escape !== "function") {
+        window.CSS = window.CSS || {};
+        CSS.escape = function (value) {
+          return String(value).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, '\\$&');
+        };
+      }
+
+      const getOffset = () => (toolbar?.offsetHeight || 0) + 8;
+      const cards = Array.from(document.querySelectorAll(".food-card"));
+
+      // Reveal on scroll
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if (e.isIntersecting){ e.target.classList.add("show"); io.unobserve(e.target);} });
+      }, {threshold:.12});
+      document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+      // Scroll to section
+      function scrollToSection(id){
+        const off = getOffset();
+        if (id === "top"){ window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+        const el = document.getElementById(id);
+        if (el) window.scrollTo({ top: el.offsetTop - off, behavior: "smooth" });
+      }
+      chips.forEach(btn => btn.addEventListener("click", ()=> scrollToSection(btn.dataset.scroll)));
+
+      // Active chip by scroll
+      const updateActive = ()=>{
+        const y = window.scrollY + getOffset() + 10;
+        let current = "top";
+        sections.forEach(s => { if (y >= s.offsetTop) current = s.id; });
+        chips.forEach(b => b.classList.toggle("active-category", b.dataset.scroll === current));
+      };
+      window.addEventListener("scroll", updateActive, { passive:true });
+      window.addEventListener("load", updateActive);
+      window.addEventListener("resize", updateActive);
+
+      // Filters and sorting
+      let q = "";
+      let fAvail = false;
+      let fDisc = false;
+      let sort = "popular";
+
+      function applyFilters(){
+        let visibleCount = 0;
+        const qSafe = CSS.escape(q);
+        cards.forEach(card=>{
+          const matchText = !q || card.dataset.name.indexOf(q) !== -1;
+          const matchAvail = !fAvail || card.dataset.available === "1";
+          const matchDisc = !fDisc || card.dataset.discount === "1";
+          const show = matchText && matchAvail && matchDisc;
+          card.classList.toggle("d-none", !show);
+          if (show) visibleCount++;
+        });
+
+        // Hide empty sections
+        sections.forEach(sec=>{
+          const anyVisible = sec.querySelector(".food-card:not(.d-none)") !== null;
+          sec.classList.toggle("d-none", !anyVisible);
+        });
+
+        // Sort inside each visible section
+        sections.forEach(sec=>{
+          const row = sec.querySelector(".row");
+          if (!row) return;
+          const list = Array.from(sec.querySelectorAll(".food-card:not(.d-none)"));
+          if (sort === "price-asc") list.sort((a,b)=> (+a.dataset.price) - (+b.dataset.price));
+          else if (sort === "price-desc") list.sort((a,b)=> (+b.dataset.price) - (+a.dataset.price));
+          else if (sort === "name-asc") list.sort((a,b)=> a.dataset.nameSort.localeCompare(b.dataset.nameSort, "fa"));
+          else if (sort === "name-desc") list.sort((a,b)=> b.dataset.nameSort.localeCompare(a.dataset.nameSort, "fa"));
+          // popular => keep original order
+          list.forEach(el=> row.appendChild(el)); // reflow
+        });
+      }
+
+      function debounce(fn, delay){
+        let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), delay); };
+      }
+
+      searchBox?.addEventListener("input", debounce(()=>{
+        q = (searchBox.value || "").trim().toLowerCase();
+        clearBtn.classList.toggle("d-none", !q);
+        applyFilters();
+      }, 150));
+      clearBtn?.addEventListener("click", ()=>{
+        searchBox.value = ""; q = ""; clearBtn.classList.add("d-none"); applyFilters();
+      });
+
+      onlyAvailable?.addEventListener("click", ()=>{
+        fAvail = !fAvail;
+        onlyAvailable.classList.toggle("active");
+        onlyAvailable.setAttribute("aria-pressed", String(fAvail));
+        applyFilters();
+      });
+
+      onlyDiscount?.addEventListener("click", ()=>{
+        fDisc = !fDisc;
+        onlyDiscount.classList.toggle("active");
+        onlyDiscount.setAttribute("aria-pressed", String(fDisc));
+        applyFilters();
+      });
+
+      sortSelect?.addEventListener("change", ()=>{
+        sort = sortSelect.value; applyFilters();
+      });
+
+      // Quick view modal population
+      const qv = document.getElementById("quickViewModal");
+      if (qv){
+        qv.addEventListener("show.bs.modal", (ev)=>{
+          const btn = ev.relatedTarget;
+          if (!btn) return;
+          const title = btn.getAttribute("data-title") || "";
+          const desc = btn.getAttribute("data-desc") || "";
+          const img  = btn.getAttribute("data-img")  || "";
+          const price= btn.getAttribute("data-price")|| "";
+          const old  = btn.getAttribute("data-old")  || "";
+          qv.querySelector("#qvTitle").textContent = title;
+          qv.querySelector("#qvDesc").textContent = desc;
+          qv.querySelector("#qvImg").src = img;
+          qv.querySelector("#qvPrice").textContent = price + " تومان";
+          const oldEl = qv.querySelector("#qvOld");
+          oldEl.textContent = old ? (old + " تومان") : "";
+          oldEl.classList.toggle("d-none", !old);
+        });
+      }
+
+      // Back to top
+      const onScroll = ()=>{
+        if (window.scrollY > 400) backTop.classList.add("show"); else backTop.classList.remove("show");
+      };
+      backTop.addEventListener("click", ()=> window.scrollTo({ top:0, behavior:"smooth" }));
+      document.addEventListener("scroll", onScroll, { passive:true });
+
+      // Initial apply
+      applyFilters();
+    })();
+</script>
+<script src="~/js/bootstrap.bundle.min.js"></script>

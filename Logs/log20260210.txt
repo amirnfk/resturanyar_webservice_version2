@@ -1,0 +1,475 @@
+2026-02-10 09:51:08.924 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 09:51:09.135 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 09:51:09.135 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 09:51:09.177 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 09:51:09.177 +03:30 [INF] Hosting environment: Development
+2026-02-10 09:51:09.177 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 09:51:10.273 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 09:51:10.395 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 09:51:10.402 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 09:51:10.679 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 09:51:10.682 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3653ms.
+2026-02-10 09:51:10.688 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 09:51:10.761 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2026-02-10 09:51:10.761 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - null null
+2026-02-10 09:51:10.761 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - null null
+2026-02-10 09:51:10.761 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - null null
+2026-02-10 09:51:10.766 +03:30 [INF] Executed ViewResult - view Index executed in 75.6581ms.
+2026-02-10 09:51:10.767 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - null null
+2026-02-10 09:51:10.772 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - null null
+2026-02-10 09:51:10.777 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/all.min.css - null null
+2026-02-10 09:51:10.782 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 09:51:10.787 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - null null
+2026-02-10 09:51:10.793 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 389.0653ms
+2026-02-10 09:51:10.793 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2026-02-10 09:51:10.797 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 09:51:10.860 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 59.9162ms
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/resturanyar.styles.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 607.8136ms
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\home.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/css/Vazirmatn_font_face.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\Vazirmatn_font_face.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\site.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/css/all.min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\all.min.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Sending file. Request path: '/css/share.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\share.css'
+2026-02-10 09:51:10.876 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - 200 1129 text/css 115.3512ms
+2026-02-10 09:51:10.877 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - 200 3237 text/css 115.9422ms
+2026-02-10 09:51:10.877 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - 200 162726 text/css 115.9333ms
+2026-02-10 09:51:10.877 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - 200 1592 text/css 116.0707ms
+2026-02-10 09:51:10.876 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - 200 11812 text/css 88.9446ms
+2026-02-10 09:51:10.877 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/all.min.css - 200 102526 text/css 99.6865ms
+2026-02-10 09:51:10.876 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - 200 1604 text/css 104.2159ms
+2026-02-10 09:51:10.878 +03:30 [INF] Sending file. Request path: '/css/bootstrap_rtl_min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\bootstrap_rtl_min.css'
+2026-02-10 09:51:10.878 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - 200 232911 text/css 111.866ms
+2026-02-10 09:51:10.883 +03:30 [INF] Sending file. Request path: '/images/logo.png'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\logo.png'
+2026-02-10 09:51:10.883 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 200 546277 image/png 90.4396ms
+2026-02-10 09:51:11.002 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 09:51:11.013 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - null null
+2026-02-10 09:51:11.013 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - null null
+2026-02-10 09:51:11.013 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - null null
+2026-02-10 09:51:11.013 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2026-02-10 09:51:11.014 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - null null
+2026-02-10 09:51:11.018 +03:30 [INF] Sending file. Request path: '/js/home.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\home.js'
+2026-02-10 09:51:11.018 +03:30 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\site.js'
+2026-02-10 09:51:11.020 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - 200 2910 text/javascript 6.5638ms
+2026-02-10 09:51:11.020 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - 200 680 text/javascript 6.3419ms
+2026-02-10 09:51:11.021 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js'
+2026-02-10 09:51:11.022 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 200 78474 text/javascript 8.3457ms
+2026-02-10 09:51:11.022 +03:30 [INF] Sending file. Request path: '/js/bootstrap.bundle.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\bootstrap.bundle.min.js'
+2026-02-10 09:51:11.022 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - 200 80721 text/javascript 9.0968ms
+2026-02-10 09:51:11.022 +03:30 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\jquery\dist\jquery.min.js'
+2026-02-10 09:51:11.022 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - 200 89503 text/javascript 8.7566ms
+2026-02-10 09:51:11.047 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 45.2289ms
+2026-02-10 09:51:11.099 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2026-02-10 09:51:11.099 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tablethome.jpg - null null
+2026-02-10 09:51:11.099 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - null null
+2026-02-10 09:51:11.100 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - null null
+2026-02-10 09:51:11.102 +03:30 [INF] CORS policy execution successful.
+2026-02-10 09:51:11.102 +03:30 [INF] CORS policy execution successful.
+2026-02-10 09:51:11.108 +03:30 [INF] Sending file. Request path: '/webfonts/fa-solid-900.woff2'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-solid-900.woff2'
+2026-02-10 09:51:11.109 +03:30 [INF] Sending file. Request path: '/webfonts/fa-brands-400.woff2'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-brands-400.woff2'
+2026-02-10 09:51:11.109 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - 200 110892 font/woff2 9.9538ms
+2026-02-10 09:51:11.109 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - 200 117852 font/woff2 9.7779ms
+2026-02-10 09:51:11.111 +03:30 [INF] Sending file. Request path: '/images/tablethome.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\tablethome.jpg'
+2026-02-10 09:51:11.111 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tablethome.jpg - 200 39408 image/jpeg 11.8872ms
+2026-02-10 09:51:11.112 +03:30 [INF] Sending file. Request path: '/images/tabletfoodlist.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\tabletfoodlist.jpg'
+2026-02-10 09:51:11.112 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 200 59361 image/jpeg 13.4732ms
+2026-02-10 09:51:11.327 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-02-10 09:51:11.327 +03:30 [INF] CORS policy execution successful.
+2026-02-10 09:51:11.329 +03:30 [INF] Sending file. Request path: '/fonts/iranyekan/iranyekanwebregularfanum.woff'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\fonts\iranyekan\iranyekanwebregularfanum.woff'
+2026-02-10 09:51:11.329 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - 200 33585 application/font-woff 2.3981ms
+2026-02-10 09:51:18.653 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-02-10 09:51:18.658 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 5.1548ms
+2026-02-10 09:51:18.658 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-02-10 09:51:19.241 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - null null
+2026-02-10 09:51:19.242 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-02-10 09:51:19.249 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 7.3486ms
+2026-02-10 09:51:19.249 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-02-10 09:51:19.250 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map'
+2026-02-10 09:51:19.250 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - 200 327261 text/plain 8.6819ms
+2026-02-10 09:51:19.269 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-02-10 09:51:19.269 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css.map - null null
+2026-02-10 09:51:19.270 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 0.9752ms
+2026-02-10 09:51:19.270 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-02-10 09:51:19.278 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css.map'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map'
+2026-02-10 09:51:19.278 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css.map - 200 449111 text/plain 8.7138ms
+2026-02-10 10:28:46.562 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 10:28:46.696 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 10:28:46.696 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 10:28:46.754 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 10:28:46.754 +03:30 [INF] Hosting environment: Development
+2026-02-10 10:28:46.754 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 10:28:47.326 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 10:28:47.429 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:28:47.436 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:28:47.549 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 10:28:47.552 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.4219ms.
+2026-02-10 10:28:47.558 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 10:28:47.609 +03:30 [INF] Executed ViewResult - view Index executed in 53.3726ms.
+2026-02-10 10:28:47.612 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 176.0754ms
+2026-02-10 10:28:47.612 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2026-02-10 10:28:47.613 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:28:47.614 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - null null
+2026-02-10 10:28:47.614 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - null null
+2026-02-10 10:28:47.614 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:28:47.614 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - null null
+2026-02-10 10:28:47.620 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - null null
+2026-02-10 10:28:47.620 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - null null
+2026-02-10 10:28:47.624 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/all.min.css - null null
+2026-02-10 10:28:47.629 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - null null
+2026-02-10 10:28:47.634 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2026-02-10 10:28:47.639 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - null null
+2026-02-10 10:28:47.640 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:28:47.650 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - null null
+2026-02-10 10:28:47.650 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - null null
+2026-02-10 10:28:47.660 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2026-02-10 10:28:47.667 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 331.5138ms
+2026-02-10 10:28:47.669 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - null null
+2026-02-10 10:28:47.686 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 67.2053ms
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/js/bootstrap.bundle.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\bootstrap.bundle.min.js'
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/css/share.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\share.css'
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js'
+2026-02-10 10:28:47.697 +03:30 [INF] Sending file. Request path: '/css/Vazirmatn_font_face.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\Vazirmatn_font_face.css'
+2026-02-10 10:28:47.697 +03:30 [INF] Sending file. Request path: '/js/home.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\home.js'
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/resturanyar.styles.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\obj\Release\net8.0\scopedcss\bundle\resturanyar.styles.css'
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/share.css?v=j_QCP5p8FFfnqu7n1a1FGFG3iAKePuFQ6qKkdWodH_Y - 200 3237 text/css 82.424ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - 200 1604 text/css 77.2004ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css?v=LpfX1Y8HHIZBbGAO5LlrzusHMlo4u2Hvf7bYgn1urdo - 200 1129 text/css 83.1827ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - 200 80721 text/javascript 47.2128ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 200 78474 text/javascript 37.2214ms
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\home.css'
+2026-02-10 10:28:47.696 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\site.css'
+2026-02-10 10:28:47.697 +03:30 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\site.js'
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - 200 2910 text/javascript 57.7799ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=aHX7tbuMT79voiuHclRb5ZGt7OqJ9tXhPixCO2yc-Sk - 200 11812 text/css 68.2118ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=6z9BJD-R7XT4JRVgejCPor331fXy9DL7Q22MalkptYU - 200 1592 text/css 83.5548ms
+2026-02-10 10:28:47.697 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=DiPFEfWhDzEF2s0urZLsP-ShAPlweGdN1heBsOkQAkI - 200 680 text/javascript 28.874ms
+2026-02-10 10:28:47.700 +03:30 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.min.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\jquery\dist\jquery.min.js'
+2026-02-10 10:28:47.700 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/jquery/dist/jquery.min.js - 200 89503 text/javascript 50.0374ms
+2026-02-10 10:28:47.701 +03:30 [INF] Sending file. Request path: '/css/all.min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\all.min.css'
+2026-02-10 10:28:47.701 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/all.min.css - 200 102526 text/css 77.009ms
+2026-02-10 10:28:47.703 +03:30 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css'
+2026-02-10 10:28:47.703 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/lib/bootstrap/dist/css/bootstrap.min.css - 200 162726 text/css 90.6463ms
+2026-02-10 10:28:47.704 +03:30 [INF] Sending file. Request path: '/css/bootstrap_rtl_min.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\bootstrap_rtl_min.css'
+2026-02-10 10:28:47.704 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - 200 232911 text/css 84.1588ms
+2026-02-10 10:28:47.710 +03:30 [INF] Sending file. Request path: '/images/logo.png'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\logo.png'
+2026-02-10 10:28:47.710 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 200 546277 image/png 75.4329ms
+2026-02-10 10:28:47.723 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 83.0156ms
+2026-02-10 10:28:47.837 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - null null
+2026-02-10 10:28:47.837 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2026-02-10 10:28:47.837 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tablethome.jpg - null null
+2026-02-10 10:28:47.838 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - null null
+2026-02-10 10:28:47.841 +03:30 [INF] Sending file. Request path: '/images/tablethome.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\tablethome.jpg'
+2026-02-10 10:28:47.841 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tablethome.jpg - 200 39408 image/jpeg 4.0297ms
+2026-02-10 10:28:47.841 +03:30 [INF] Sending file. Request path: '/images/tabletfoodlist.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\tabletfoodlist.jpg'
+2026-02-10 10:28:47.841 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 200 59361 image/jpeg 4.4714ms
+2026-02-10 10:28:47.842 +03:30 [INF] CORS policy execution successful.
+2026-02-10 10:28:47.842 +03:30 [INF] CORS policy execution successful.
+2026-02-10 10:28:47.848 +03:30 [INF] Sending file. Request path: '/webfonts/fa-solid-900.woff2'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-solid-900.woff2'
+2026-02-10 10:28:47.848 +03:30 [INF] Sending file. Request path: '/webfonts/fa-brands-400.woff2'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\webfonts\fa-brands-400.woff2'
+2026-02-10 10:28:47.849 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - 200 110892 font/woff2 11.8858ms
+2026-02-10 10:28:47.849 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - 200 117852 font/woff2 11.7869ms
+2026-02-10 10:31:29.237 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 10:31:29.364 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 10:31:29.365 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 10:31:29.406 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 10:31:29.406 +03:30 [INF] Hosting environment: Development
+2026-02-10 10:31:29.406 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 10:31:29.648 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 10:31:29.753 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:31:29.760 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:31:29.858 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 10:31:29.860 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3503ms.
+2026-02-10 10:31:29.866 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 10:31:29.916 +03:30 [INF] Executed ViewResult - view Index executed in 52.5911ms.
+2026-02-10 10:31:29.918 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 157.8498ms
+2026-02-10 10:31:29.919 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:31:29.923 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:31:29.925 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 281.0322ms
+2026-02-10 10:31:29.925 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:31:29.927 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 4.937ms
+2026-02-10 10:31:29.947 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 21.9187ms
+2026-02-10 10:31:35.387 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-02-10 10:31:35.409 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:31:35.411 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:31:35.426 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2026-02-10 10:31:35.426 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3546ms.
+2026-02-10 10:31:35.427 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-02-10 10:31:35.556 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 129.2905ms.
+2026-02-10 10:31:35.556 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 145.1759ms
+2026-02-10 10:31:35.556 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:31:35.556 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 169.7619ms
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/sweetalert2@11.js - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/bergerback.jpg - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/managerlogin.css?v=R9Di_EM1OS-XJKKBT8s2-NNm0EIgKB1ANQmBIMVBWQk - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:31:35.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/managerlogin.js?v=KXwvKLCXQ0zQZDB9cHlC2V2Fnf5i_ERdsR22y6Q3oYw - null null
+2026-02-10 10:31:35.573 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.7991ms
+2026-02-10 10:31:35.588 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 20.6618ms
+2026-02-10 10:31:35.617 +03:30 [INF] Sending file. Request path: '/js/managerlogin.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\managerlogin.js'
+2026-02-10 10:31:35.617 +03:30 [INF] Sending file. Request path: '/js/sweetalert2@11.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\sweetalert2@11.js'
+2026-02-10 10:31:35.617 +03:30 [INF] Sending file. Request path: '/css/managerlogin.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\managerlogin.css'
+2026-02-10 10:31:35.617 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\css\site.css'
+2026-02-10 10:31:35.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/managerlogin.js?v=KXwvKLCXQ0zQZDB9cHlC2V2Fnf5i_ERdsR22y6Q3oYw - 200 5369 text/javascript 49.5452ms
+2026-02-10 10:31:35.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css - 200 1592 text/css 50.2587ms
+2026-02-10 10:31:35.617 +03:30 [INF] Sending file. Request path: '/images/bergerback.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\bergerback.jpg'
+2026-02-10 10:31:35.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/managerlogin.css?v=R9Di_EM1OS-XJKKBT8s2-NNm0EIgKB1ANQmBIMVBWQk - 200 2865 text/css 50.0583ms
+2026-02-10 10:31:35.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/sweetalert2@11.js - 200 79875 text/javascript 50.1631ms
+2026-02-10 10:31:35.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/bergerback.jpg - 200 101209 image/jpeg 50.3386ms
+2026-02-10 10:31:35.632 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2026-02-10 10:31:35.632 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-02-10 10:31:35.634 +03:30 [INF] CORS policy execution successful.
+2026-02-10 10:31:35.634 +03:30 [INF] CORS policy execution successful.
+2026-02-10 10:31:35.638 +03:30 [INF] Sending file. Request path: '/fonts/iranyekan/iranyekanwebregularfanum.woff'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\fonts\iranyekan\iranyekanwebregularfanum.woff'
+2026-02-10 10:31:35.638 +03:30 [INF] Sending file. Request path: '/fonts/iranyekan/iranyekanwebboldfanum.woff'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\fonts\iranyekan\iranyekanwebboldfanum.woff'
+2026-02-10 10:31:35.638 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - 200 33585 application/font-woff 5.9874ms
+2026-02-10 10:31:35.638 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - 200 33581 application/font-woff 6.0145ms
+2026-02-10 10:31:36.996 +03:30 [INF] Request starting HTTP/2 POST https://localhost:7171/Home/ManagerLogin - application/x-www-form-urlencoded 216
+2026-02-10 10:31:37.017 +03:30 [INF] CORS policy execution successful.
+2026-02-10 10:31:37.033 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:31:37.043 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ManagerLogin(resturanyar.Models.OwnerLoginRequest) on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:31:37.066 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:37.612 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-02-10 10:31:55.109 +03:30 [ERR] An error occurred using the connection to database 'resturanyar_db' on server 'WIN-F6NF7R6I6PJ\REST_OPERATION'.
+2026-02-10 10:31:55.168 +03:30 [ERR] An exception occurred while iterating over the results of a query for context type 'Resturanyar.Data.AppDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:-1,State:0,Class:20
+Microsoft.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, Boolean ignoreSniOpenTimeout, Int64 timerExpire, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open(SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:-1,State:0,Class:20
+2026-02-10 10:31:55.246 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 18180.087ms.
+2026-02-10 10:31:55.246 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-02-10 10:31:55.266 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 19.1983ms.
+2026-02-10 10:31:55.266 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 18222.8979ms
+2026-02-10 10:31:55.266 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:31:55.273 +03:30 [INF] Request finished HTTP/2 POST https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 18277.3407ms
+2026-02-10 10:31:55.275 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:31:55.275 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:31:55.276 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 0.927ms
+2026-02-10 10:31:55.292 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.6001ms
+2026-02-10 10:32:38.242 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 10:32:38.357 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 10:32:38.357 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 10:32:38.405 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 10:32:38.405 +03:30 [INF] Hosting environment: Development
+2026-02-10 10:32:38.405 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 10:32:38.593 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 10:32:38.699 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:32:38.706 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:32:38.802 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 10:32:38.804 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3721ms.
+2026-02-10 10:32:38.811 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 10:32:38.862 +03:30 [INF] Executed ViewResult - view Index executed in 54.0245ms.
+2026-02-10 10:32:38.864 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 158.3179ms
+2026-02-10 10:32:38.865 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:32:38.867 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:32:38.867 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:32:38.871 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 3.9673ms
+2026-02-10 10:32:38.871 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 283.8533ms
+2026-02-10 10:32:38.887 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 20.2725ms
+2026-02-10 10:32:46.156 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-02-10 10:32:46.182 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:32:46.183 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:32:46.207 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2026-02-10 10:32:46.208 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.4126ms.
+2026-02-10 10:32:46.209 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-02-10 10:32:46.362 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 153.8553ms.
+2026-02-10 10:32:46.363 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 179.0097ms
+2026-02-10 10:32:46.363 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:32:46.364 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 208.3658ms
+2026-02-10 10:32:46.374 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:32:46.374 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:32:46.375 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.315ms
+2026-02-10 10:32:46.390 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.498ms
+2026-02-10 10:34:29.472 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 10:34:29.599 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 10:34:29.599 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 10:34:29.641 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 10:34:29.641 +03:30 [INF] Hosting environment: Development
+2026-02-10 10:34:29.641 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 10:34:29.927 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 10:34:30.031 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:34:30.038 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:34:30.134 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 10:34:30.136 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3511ms.
+2026-02-10 10:34:30.142 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 10:34:30.190 +03:30 [INF] Executed ViewResult - view Index executed in 50.54ms.
+2026-02-10 10:34:30.194 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 154.7693ms
+2026-02-10 10:34:30.194 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 10:34:30.197 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:34:30.197 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:34:30.198 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - null null
+2026-02-10 10:34:30.211 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 14.5919ms
+2026-02-10 10:34:30.212 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 288.3687ms
+2026-02-10 10:34:30.219 +03:30 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\site.js'
+2026-02-10 10:34:30.220 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - 200 1814 text/javascript 22.6835ms
+2026-02-10 10:34:30.232 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 35.6637ms
+2026-02-10 10:34:36.618 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-02-10 10:34:36.650 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:34:36.652 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 10:34:36.676 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) - Validation state: "Valid"
+2026-02-10 10:34:36.677 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.ManagerLogin (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.4844ms.
+2026-02-10 10:34:36.678 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-02-10 10:34:36.833 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 156.2546ms.
+2026-02-10 10:34:36.834 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 181.7215ms
+2026-02-10 10:34:36.834 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-02-10 10:34:36.835 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 216.8075ms
+2026-02-10 10:34:36.844 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 10:34:36.845 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.0511ms
+2026-02-10 10:34:36.847 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - null null
+2026-02-10 10:34:36.847 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 10:34:36.848 +03:30 [INF] The file /js/site.js was not modified
+2026-02-10 10:34:36.850 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - 304 null text/javascript 3.0753ms
+2026-02-10 10:34:36.864 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.4868ms
+2026-02-10 13:35:41.118 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-10 13:35:41.422 +03:30 [INF] Now listening on: https://localhost:7171
+2026-02-10 13:35:41.423 +03:30 [INF] Now listening on: http://localhost:5292
+2026-02-10 13:35:41.529 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-10 13:35:41.530 +03:30 [INF] Hosting environment: Development
+2026-02-10 13:35:41.530 +03:30 [INF] Content root path: D:\myAspProjects\resturanyar\resturanyar_webservice
+2026-02-10 13:35:42.588 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 13:35:42.792 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:35:42.804 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 13:35:43.365 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 13:35:43.368 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.3026ms.
+2026-02-10 13:35:43.373 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 13:35:43.484 +03:30 [INF] Executed ViewResult - view Index executed in 111.9506ms.
+2026-02-10 13:35:43.486 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 13:35:43.487 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 682.5929ms
+2026-02-10 13:35:43.488 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:35:43.492 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.1452ms
+2026-02-10 13:35:43.500 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 920.1966ms
+2026-02-10 13:35:43.654 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 13:35:43.667 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - null null
+2026-02-10 13:35:43.694 +03:30 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\js\site.js'
+2026-02-10 13:35:43.695 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/site.js?v=4smmzSj3OdkOmfuD7AiVKZEdIW59YuPb82NT_68JqfU - 200 1814 text/javascript 27.677ms
+2026-02-10 13:35:43.703 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 50.1397ms
+2026-02-10 13:38:57.355 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 13:38:57.384 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:38:57.384 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 13:38:57.402 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 13:38:57.402 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.04ms.
+2026-02-10 13:38:57.402 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 13:38:57.415 +03:30 [INF] Executed ViewResult - view Index executed in 12.8082ms.
+2026-02-10 13:38:57.415 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 30.9438ms
+2026-02-10 13:38:57.415 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:38:57.415 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 64.0944ms
+2026-02-10 13:38:57.420 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 13:38:57.421 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 0.9927ms
+2026-02-10 13:38:57.564 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 13:38:57.574 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 10.0515ms
+2026-02-10 13:39:35.373 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 13:39:35.391 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:39:35.392 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 13:39:35.404 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 13:39:35.404 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.0203ms.
+2026-02-10 13:39:35.404 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 13:39:35.414 +03:30 [INF] Executed ViewResult - view Index executed in 9.6959ms.
+2026-02-10 13:39:35.414 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 22.5643ms
+2026-02-10 13:39:35.414 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:39:35.414 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 41.8552ms
+2026-02-10 13:39:35.421 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 13:39:35.421 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 13:39:35.421 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.1148ms
+2026-02-10 13:39:35.434 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.1657ms
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - null null
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - null null
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - null null
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - null null
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - null null
+2026-02-10 13:39:39.887 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - null null
+2026-02-10 13:39:39.942 +03:30 [INF] Sending file. Request path: '/images/sampleweb5.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb5.jpg'
+2026-02-10 13:39:39.943 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb5.jpg - 200 149807 image/jpeg 55.4689ms
+2026-02-10 13:39:39.944 +03:30 [INF] Sending file. Request path: '/images/sampleweb2.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb2.jpg'
+2026-02-10 13:39:39.944 +03:30 [INF] Sending file. Request path: '/images/sampleweb3.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb3.jpg'
+2026-02-10 13:39:39.944 +03:30 [INF] Sending file. Request path: '/images/sampleweb4.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb4.jpg'
+2026-02-10 13:39:39.944 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb2.jpg - 200 196566 image/jpeg 57.2342ms
+2026-02-10 13:39:39.944 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb4.jpg - 200 148857 image/jpeg 57.2716ms
+2026-02-10 13:39:39.944 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb3.jpg - 200 153322 image/jpeg 57.244ms
+2026-02-10 13:39:39.944 +03:30 [INF] Sending file. Request path: '/images/sampleweb6.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb6.jpg'
+2026-02-10 13:39:39.945 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb6.jpg - 200 167049 image/jpeg 57.1383ms
+2026-02-10 13:39:39.945 +03:30 [INF] Sending file. Request path: '/images/sampleweb1.jpg'. Physical path: 'D:\myAspProjects\resturanyar\resturanyar_webservice\wwwroot\images\sampleweb1.jpg'
+2026-02-10 13:39:39.945 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/sampleweb1.jpg - 200 218063 image/jpeg 58.2319ms
+2026-02-10 13:40:59.494 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-02-10 13:40:59.520 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:40:59.520 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-02-10 13:40:59.530 +03:30 [INF] Executing action method resturanyar.Controllers.HomeController.Index (resturanyar) - Validation state: "Valid"
+2026-02-10 13:40:59.530 +03:30 [INF] Executed action method resturanyar.Controllers.HomeController.Index (resturanyar), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.0192ms.
+2026-02-10 13:40:59.530 +03:30 [INF] Executing ViewResult, running view Index.
+2026-02-10 13:40:59.534 +03:30 [INF] Executed ViewResult - view Index executed in 4.0957ms.
+2026-02-10 13:40:59.537 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 17.0351ms
+2026-02-10 13:40:59.538 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-02-10 13:40:59.540 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 45.578ms
+2026-02-10 13:40:59.548 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-10 13:40:59.549 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 1.1098ms
+2026-02-10 13:40:59.578 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-02-10 13:40:59.584 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 6.6156ms

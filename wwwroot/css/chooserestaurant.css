@@ -1,0 +1,50 @@
+﻿ 
+body {
+    direction: rtl;
+}
+
+.main-box {
+    max-width: 420px;
+    margin: -180px auto 0 auto;
+}
+
+.logo-img {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+}
+
+.bg-orange {
+    background-color: #FFF;
+}
+
+.text-orange {
+    color: #FF8800;
+}
+
+.btn-orange {
+    background-color: #FF8800;
+    color: #fff;
+}
+
+    .btn-orange:hover {
+        background-color: #e06e00;
+    }
+
+.custom-select {
+    text-align: right;
+    text-align-last: right;
+    direction: rtl;
+}
+
+    .custom-select option {
+        text-align: right;
+        direction: rtl;
+    }
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+ 

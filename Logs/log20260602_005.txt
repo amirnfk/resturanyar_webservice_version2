@@ -1,0 +1,276 @@
+2026-06-02 15:02:33.787 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 15:02:33.934 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 15:02:33.936 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 15:02:34.028 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 15:02:34.028 +03:30 [INF] Hosting environment: Development
+2026-06-02 15:02:34.028 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-06-02 15:04:37.585 +03:30 [WRN] The foreign key property 'CustomerAddress.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.613 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:04:37.822 +03:30 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-06-02 15:04:37.845 +03:30 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-06-02 15:04:37.859 +03:30 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-06-02 15:04:38.001 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 15:04:38.132 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 15:04:38.132 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 15:04:38.209 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 15:04:38.210 +03:30 [INF] Hosting environment: Development
+2026-06-02 15:04:38.210 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-06-02 15:08:22.783 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-02 15:08:22.871 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-02 15:08:22.881 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:08:22.977 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-02 15:08:23.064 +03:30 [INF] Executed ViewResult - view Index executed in 90.6235ms.
+2026-06-02 15:08:23.067 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:08:23.067 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 186.1982ms
+2026-06-02 15:08:23.067 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:08:23.068 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-02 15:08:23.070 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 3.2211ms
+2026-06-02 15:08:23.073 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 291.9257ms
+2026-06-02 15:08:23.089 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 21.5844ms
+2026-06-02 15:08:38.351 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-06-02 15:08:38.357 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-02 15:08:38.359 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:08:38.365 +03:30 [INF] Executing RedirectResult, redirecting to /Home/ChooseRestaurant.
+2026-06-02 15:08:38.365 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 6.3349ms
+2026-06-02 15:08:38.365 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-02 15:08:38.366 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 302 0 null 14.9722ms
+2026-06-02 15:08:38.368 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ChooseRestaurant - null null
+2026-06-02 15:08:38.376 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar)'
+2026-06-02 15:08:38.377 +03:30 [INF] Route matched with {action = "ChooseRestaurant", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ChooseRestaurant() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:08:38.923 +03:30 [WRN] The foreign key property 'CustomerAddress.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-06-02 15:08:38.954 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.954 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:38.955 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:08:39.624 +03:30 [INF] Executed DbCommand (45ms) [Parameters=[@__Parse_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [r].[restaurant_id], [r].[PublicMenuToken], [r].[name], [r].[owner_id], [r].[restaurant_code]
+FROM [Restaurants] AS [r]
+WHERE [r].[owner_id] = @__Parse_0
+2026-06-02 15:08:39.663 +03:30 [INF] Executing ViewResult, running view ChooseRestaurant.
+2026-06-02 15:08:39.695 +03:30 [INF] Executed ViewResult - view ChooseRestaurant executed in 32.3214ms.
+2026-06-02 15:08:39.695 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar) in 1318.0272ms
+2026-06-02 15:08:39.695 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ChooseRestaurant (resturanyar)'
+2026-06-02 15:08:39.703 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ChooseRestaurant - 200 null text/html; charset=utf-8 1335.1934ms
+2026-06-02 15:08:39.712 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:08:39.713 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 0.9204ms
+2026-06-02 15:08:39.714 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:08:39.726 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.9934ms
+2026-06-02 15:09:14.058 +03:30 [INF] Request starting HTTP/2 POST https://localhost:7171/Home/SelectRestaurant - application/x-www-form-urlencoded 241
+2026-06-02 15:09:14.062 +03:30 [INF] CORS policy execution successful.
+2026-06-02 15:09:14.062 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar)'
+2026-06-02 15:09:14.071 +03:30 [INF] Route matched with {action = "SelectRestaurant", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SelectRestaurant(Int32) on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:09:14.197 +03:30 [INF] Executed DbCommand (24ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[Id], [s].[AutoRenew], [s].[CafeBazarOrderId], [s].[CafeBazarPurchaseToken], [s].[CanceledAt], [s].[CreatedAt], [s].[DiscountApplied], [s].[EndDate], [s].[IsPaid], [s].[NextRenewalDate], [s].[OwnerId], [s].[PaymentMethod], [s].[PricePaid], [s].[PurchaseDate], [s].[RestaurantId], [s].[StartDate], [s].[Status], [s].[SubscriptionPeriod], [s].[SubscriptionPlanId], [s].[TransactionId], [s].[UpdatedAt], [s0].[Id], [s0].[CafeBazarCode12Monthly], [s0].[CafeBazarCode3Monthly], [s0].[CafeBazarCode6Monthly], [s0].[CafeBazarCodeMonthly], [s0].[CanAccessReports], [s0].[CanAddImages], [s0].[CanManageCategories], [s0].[CanManageMultipleRestaurants], [s0].[CanManageTables], [s0].[CanManageUsers], [s0].[CanShareMenu], [s0].[CanUseGoftino], [s0].[CanUsePrinter], [s0].[CanUseRealtime], [s0].[CanUseSocialChat], [s0].[CanUseWeb], [s0].[CategoryLimit], [s0].[Code], [s0].[CreatedAt], [s0].[Description], [s0].[DiscountPrice12Monthly], [s0].[DiscountPrice3Monthly], [s0].[DiscountPrice6Monthly], [s0].[DiscountPriceMonthly], [s0].[EmployeeLimit], [s0].[FoodLimit], [s0].[IsActive], [s0].[Name], [s0].[Price12Monthly], [s0].[Price3Monthly], [s0].[Price6Monthly], [s0].[PriceMonthly], [s0].[TableLimit], [s0].[UpdatedAt]
+FROM [Subscriptions] AS [s]
+INNER JOIN [SubscriptionPlans] AS [s0] ON [s].[SubscriptionPlanId] = [s0].[Id]
+WHERE [s].[RestaurantId] = @__restaurantId_0 AND [s].[Status] = N'Active' AND [s].[EndDate] >= GETDATE()
+2026-06-02 15:09:14.331 +03:30 [INF] AuthenticationScheme: Cookies signed in.
+2026-06-02 15:09:14.332 +03:30 [INF] Executing RedirectResult, redirecting to /Home/Dashboard.
+2026-06-02 15:09:14.332 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar) in 261.6515ms
+2026-06-02 15:09:14.332 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.SelectRestaurant (resturanyar)'
+2026-06-02 15:09:14.333 +03:30 [INF] Request finished HTTP/2 POST https://localhost:7171/Home/SelectRestaurant - 302 0 null 274.667ms
+2026-06-02 15:09:14.335 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/Dashboard - null null
+2026-06-02 15:09:14.336 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2026-06-02 15:09:14.338 +03:30 [INF] Route matched with {action = "Dashboard", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Dashboard() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:09:14.410 +03:30 [INF] Executed DbCommand (11ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[restaurant_id], [r].[PublicMenuToken], [r].[name], [r].[owner_id], [r].[restaurant_code]
+FROM [Restaurants] AS [r]
+WHERE [r].[restaurant_id] = @__restaurantId_0
+2026-06-02 15:09:14.438 +03:30 [INF] Executed DbCommand (15ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Users] AS [u]
+WHERE [u].[restaurant_id] = @__restaurantId_0
+2026-06-02 15:09:14.457 +03:30 [INF] Executed DbCommand (12ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+WHERE [f].[RestaurantId] = @__restaurantId_0 AND [f].[IsActive] = CAST(1 AS bit) AND [f].[IsAvailable] = CAST(1 AS bit)
+2026-06-02 15:09:14.475 +03:30 [INF] Executed DbCommand (13ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32), @__today_1='?' (DbType = DateTime2), @__tomorrow_2='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[CreatedAt] >= @__today_1 AND [o].[CreatedAt] < @__tomorrow_2
+2026-06-02 15:09:14.479 +03:30 [INF] Executing ViewResult, running view Dashboard.
+2026-06-02 15:09:14.486 +03:30 [INF] Executed ViewResult - view Dashboard executed in 8.2755ms.
+2026-06-02 15:09:14.487 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Dashboard (resturanyar) in 148.5971ms
+2026-06-02 15:09:14.487 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2026-06-02 15:09:14.487 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/Dashboard - 200 null text/html; charset=utf-8 151.4485ms
+2026-06-02 15:09:14.502 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:09:14.503 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 0.3477ms
+2026-06-02 15:09:14.504 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:09:14.509 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 4.3525ms
+2026-06-02 15:10:05.601 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 15:10:05.733 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 15:10:05.734 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 15:10:05.808 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 15:10:05.808 +03:30 [INF] Hosting environment: Development
+2026-06-02 15:10:05.808 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-06-02 15:10:05.951 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/Dashboard - null null
+2026-06-02 15:10:06.051 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2026-06-02 15:10:06.071 +03:30 [INF] Route matched with {action = "Dashboard", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Dashboard() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-02 15:10:06.675 +03:30 [WRN] The foreign key property 'CustomerAddress.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-06-02 15:10:06.708 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.708 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.708 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.708 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:06.709 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:10:07.368 +03:30 [INF] Executed DbCommand (52ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [r].[restaurant_id], [r].[PublicMenuToken], [r].[name], [r].[owner_id], [r].[restaurant_code]
+FROM [Restaurants] AS [r]
+WHERE [r].[restaurant_id] = @__restaurantId_0
+2026-06-02 15:10:07.436 +03:30 [INF] Executed DbCommand (18ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Users] AS [u]
+WHERE [u].[restaurant_id] = @__restaurantId_0
+2026-06-02 15:10:07.465 +03:30 [INF] Executed DbCommand (24ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [FoodItems] AS [f]
+WHERE [f].[RestaurantId] = @__restaurantId_0 AND [f].[IsActive] = CAST(1 AS bit) AND [f].[IsAvailable] = CAST(1 AS bit)
+2026-06-02 15:10:07.497 +03:30 [INF] Executed DbCommand (25ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32), @__today_1='?' (DbType = DateTime2), @__tomorrow_2='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[CreatedAt] >= @__today_1 AND [o].[CreatedAt] < @__tomorrow_2
+2026-06-02 15:10:07.552 +03:30 [INF] Executing ViewResult, running view Dashboard.
+2026-06-02 15:10:07.632 +03:30 [INF] Executed ViewResult - view Dashboard executed in 79.8397ms.
+2026-06-02 15:10:07.637 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Dashboard (resturanyar) in 1564.1547ms
+2026-06-02 15:10:07.637 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Dashboard (resturanyar)'
+2026-06-02 15:10:07.641 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:10:07.642 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:10:07.646 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 3.1576ms
+2026-06-02 15:10:07.649 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/Dashboard - 200 null text/html; charset=utf-8 1700.0041ms
+2026-06-02 15:10:07.664 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 23.189ms
+2026-06-02 15:10:15.248 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger - null null
+2026-06-02 15:10:15.254 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger - 301 0 null 5.8621ms
+2026-06-02 15:10:15.257 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/index.html - null null
+2026-06-02 15:10:15.305 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/index.html - 200 null text/html;charset=utf-8 48.1034ms
+2026-06-02 15:10:15.310 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/swagger-ui.css - null null
+2026-06-02 15:10:15.310 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/swagger-ui-bundle.js - null null
+2026-06-02 15:10:15.310 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/index.css - null null
+2026-06-02 15:10:15.317 +03:30 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2026-06-02 15:10:15.317 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/index.css - 200 202 text/css 6.7694ms
+2026-06-02 15:10:15.320 +03:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-06-02 15:10:15.320 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/swagger-ui.css - 200 154949 text/css 10.0794ms
+2026-06-02 15:10:15.320 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/swagger-ui-standalone-preset.js - null null
+2026-06-02 15:10:15.322 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/index.js - null null
+2026-06-02 15:10:15.323 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/index.js - 200 null application/javascript;charset=utf-8 0.6212ms
+2026-06-02 15:10:15.324 +03:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-06-02 15:10:15.324 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/swagger-ui-standalone-preset.js - 200 229223 text/javascript 3.2924ms
+2026-06-02 15:10:15.326 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:10:15.327 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 0.6562ms
+2026-06-02 15:10:15.329 +03:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-06-02 15:10:15.329 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/swagger-ui-bundle.js - 200 1484234 text/javascript 19.0547ms
+2026-06-02 15:10:15.330 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:10:15.339 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 8.9481ms
+2026-06-02 15:10:15.452 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - null null
+2026-06-02 15:10:15.486 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 33.8422ms
+2026-06-02 15:12:11.293 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - null null
+2026-06-02 15:12:11.307 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - 401 null null 13.5762ms
+2026-06-02 15:12:46.024 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - null null
+2026-06-02 15:12:46.036 +03:30 [INF] Executing endpoint 'Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar)'
+2026-06-02 15:12:46.050 +03:30 [INF] Route matched with {action = "GetOrdersByRestaurant", controller = "UserApi"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetOrdersByRestaurant(Int32) on controller Resturanyar.Controllers.Api.UserApiController (resturanyar).
+2026-06-02 15:12:46.194 +03:30 [INF] Executed DbCommand (25ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32), @__statusIds_1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[TableNumber], [o].[StatusId], [o].[CreatedAt], [o].[UpdatedAt], [o].[CreatedAtShamsi], [o].[UpdatedAtShamsi], [o].[Description], [o0].[OrderItemId], [o0].[FoodItemId], [o0].[Quantity], [o0].[UnitPrice], [o0].[UnitPriceWithDiscount], [o0].[FoodName], [o0].[FoodImageUrl]
+FROM [Orders] AS [o]
+LEFT JOIN [OrderItems] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[StatusId] NOT IN (
+    SELECT [s].[value]
+    FROM OPENJSON(@__statusIds_1) WITH ([value] int '$') AS [s]
+)
+ORDER BY [o].[OrderId]
+2026-06-02 15:12:46.201 +03:30 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType47`3[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[resturanyar.Models.OrderDto, resturanyar, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-06-02 15:12:46.214 +03:30 [INF] Executed action Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar) in 163.4861ms
+2026-06-02 15:12:46.214 +03:30 [INF] Executed endpoint 'Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar)'
+2026-06-02 15:12:46.214 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - 200 null application/json; charset=utf-8 190.3693ms
+2026-06-02 15:20:10.641 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 15:20:10.810 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 15:20:10.811 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 15:20:10.886 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 15:20:10.887 +03:30 [INF] Hosting environment: Development
+2026-06-02 15:20:10.887 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-06-02 15:20:11.189 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/index.html - null null
+2026-06-02 15:20:11.306 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/index.html - 200 null text/html;charset=utf-8 118.5562ms
+2026-06-02 15:20:11.318 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:20:11.318 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:20:11.324 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.8096ms
+2026-06-02 15:20:11.340 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 22.2109ms
+2026-06-02 15:20:11.416 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - null null
+2026-06-02 15:20:11.421 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/favicon-32x32.png - null null
+2026-06-02 15:20:11.430 +03:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-06-02 15:20:11.430 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/favicon-32x32.png - 200 628 image/png 8.7946ms
+2026-06-02 15:20:11.443 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 26.7913ms
+2026-06-02 15:21:11.049 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - null null
+2026-06-02 15:21:11.087 +03:30 [INF] Executing endpoint 'Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar)'
+2026-06-02 15:21:11.101 +03:30 [INF] Route matched with {action = "GetOrdersByRestaurant", controller = "UserApi"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetOrdersByRestaurant(Int32) on controller Resturanyar.Controllers.Api.UserApiController (resturanyar).
+2026-06-02 15:21:11.748 +03:30 [WRN] The foreign key property 'CustomerAddress.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:11.779 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-02 15:21:12.570 +03:30 [INF] Executed DbCommand (70ms) [Parameters=[@__restaurantId_0='?' (DbType = Int32), @__statusIds_1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[TableNumber], [o].[StatusId], [o].[CreatedAt], [o].[UpdatedAt], [o].[CreatedAtShamsi], [o].[UpdatedAtShamsi], [o].[Description], [o0].[OrderItemId], [o0].[FoodItemId], [o0].[Quantity], [o0].[UnitPrice], [o0].[UnitPriceWithDiscount], [o0].[FoodName], [o0].[FoodImageUrl]
+FROM [Orders] AS [o]
+LEFT JOIN [OrderItems] AS [o0] ON [o].[OrderId] = [o0].[OrderId]
+WHERE [o].[RestaurantId] = @__restaurantId_0 AND [o].[StatusId] NOT IN (
+    SELECT [s].[value]
+    FROM OPENJSON(@__statusIds_1) WITH ([value] int '$') AS [s]
+)
+ORDER BY [o].[OrderId]
+2026-06-02 15:21:12.582 +03:30 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType47`3[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.List`1[[resturanyar.Models.OrderDto, resturanyar, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-06-02 15:21:12.611 +03:30 [INF] Executed action Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar) in 1507.3179ms
+2026-06-02 15:21:12.611 +03:30 [INF] Executed endpoint 'Resturanyar.Controllers.Api.UserApiController.GetOrdersByRestaurant (resturanyar)'
+2026-06-02 15:21:12.618 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/api/UserApi/GetOrdersByRestaurant/62 - 200 null application/json; charset=utf-8 1568.5441ms
+2026-06-02 15:21:44.122 +03:30 [INF] User profile is available. Using 'C:\Users\anoorafkan\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-02 15:21:44.252 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-02 15:21:44.253 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-02 15:21:44.324 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-02 15:21:44.324 +03:30 [INF] Hosting environment: Development
+2026-06-02 15:21:44.324 +03:30 [INF] Content root path: E:\myAspProjects\resturanyar\resturanyar_webservice
+2026-06-02 15:21:44.676 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/index.html - null null
+2026-06-02 15:21:44.778 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/index.html - 200 null text/html;charset=utf-8 102.4319ms
+2026-06-02 15:21:44.799 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-02 15:21:44.799 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-02 15:21:44.805 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.669ms
+2026-06-02 15:21:44.828 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 29.2779ms
+2026-06-02 15:21:44.873 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - null null
+2026-06-02 15:21:44.902 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 29.1443ms

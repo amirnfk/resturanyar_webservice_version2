@@ -1,0 +1,719 @@
+﻿@{
+    ViewData["Title"] = "لیست مشتریان";
+    var placeholder = Url.Content("~/images/customer_placeholder.png");
+}
+
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link rel="stylesheet" href="~/css/t" />
+
+<style>
+    :root {
+        --primary: #ff7a00;
+        --primary-hover: #e66900;
+        --primary-light: rgba(255,122,0,0.08);
+        --bg-page: #f6f8fc;
+        --card-bg: #ffffff;
+        --card-border: #e9eef5;
+        --shadow-sm: 0 4px 12px rgba(15,23,42,0.04);
+        --shadow-md: 0 8px 24px rgba(15,23,42,0.06);
+        --shadow-lg: 0 16px 40px rgba(15,23,42,0.08);
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --radius-sm: 10px;
+        --radius-md: 16px;
+        --radius-lg: 20px;
+        --radius-pill: 999px;
+        --transition: 0.2s ease;
+    }
+
+    body {
+        background: var(--bg-page);
+        direction: rtl;
+        font-family: 'IRANYekan', 'IRANSans', system-ui, -apple-system, sans-serif;
+        color: var(--text-dark);
+    }
+
+    .fw-black {
+        font-weight: 900;
+    }
+
+   
+    .customers-toolbar {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+
+        .customers-toolbar .form-control,
+        .customers-toolbar .form-select {
+            border-radius: var(--radius-sm);
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #f97316);
+        border: none;
+        border-radius: var(--radius-sm);
+        font-weight: 700;
+        padding: 8px 20px;
+        box-shadow: 0 6px 16px rgba(255,122,0,0.25);
+        transition: all var(--transition);
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #f97316, var(--primary-hover));
+            transform: translateY(-2px);
+        }
+
+    /* کارت مشتری */
+    .customer-card {
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .customer-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+    .customer-header {
+        background: linear-gradient(135deg, #f1f5f9, #ffffff);
+        padding: 16px;
+        text-align: center;
+        border-bottom: 1px solid var(--card-border);
+    }
+
+    .avatar-icon {
+        width: 70px;
+        height: 70px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    .customer-name {
+        font-weight: 900;
+        font-size: 1.15rem;
+        margin-bottom: 4px;
+    }
+
+    .customer-mobile {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        direction: ltr;
+    }
+
+    .customer-body {
+        padding: 12px 14px;
+        flex: 1;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+        border-bottom: 1px dashed #f1f5f9;
+        padding-bottom: 6px;
+    }
+
+    .info-label {
+        font-weight: 700;
+    }
+
+    .info-value {
+        color: var(--text-muted);
+    }
+
+    .customer-footer {
+        padding: 12px 14px;
+        background: #fafbfc;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        gap: 8px;
+    }
+
+        .customer-footer .btn {
+            flex: 1;
+            font-size: 0.8rem;
+            padding: 6px 0;
+        }
+
+    /* صفحه‌بندی */
+    .pagination {
+        margin-top: 30px;
+    }
+
+        .pagination .page-link {
+            border-radius: var(--radius-sm);
+            margin: 0 4px;
+            color: var(--text-dark);
+            border: 1px solid #e2e8f0;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+    /* مودال */
+    .modal-content {
+        border-radius: var(--radius-lg);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #f8fafc, #ffffff);
+        border-bottom: 1px solid var(--card-border);
+    }
+    /* کارت آمار */
+    .card {
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg) !important;
+        }
+
+        .card .rounded-circle {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .rounded-circle {
+            transform: scale(1.05);
+        }
+
+    #totalCustomersCount {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--primary), #f97316);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+     
+        <button class="btn btn-primary" id="btnAddCustomer">
+            <i class="fas fa-plus"></i> مشتری جدید
+        </button>
+    </div>
+    <!-- کارت آمار مشتریان -->
+    <div class="row mb-4">
+        <div class="col-md-6 col-lg-4 mx-auto">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-muted small text-uppercase">تعداد کل مشتریان</span>
+                            <h2 class="mb-0 fw-black mt-2" id="totalCustomersCount">0</h2>
+                            <span class="text-muted small" id="totalCustomersDate"></span>
+                        </div>
+                        <div class="rounded-circle p-3" style="background: var(--primary-light);">
+                            <i class="fas fa-users fa-2x" style="color: var(--primary);"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">
+                                <i class="fas fa-user-plus"></i> مشتریان فعال
+                            </span>
+                            <span class="fw-bold" id="activeCustomersCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="customers-toolbar">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">جستجو</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="نام یا شماره موبایل ..." />
+            </div>
+            <div class="col-md-3">
+                <button id="btnSearch" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> جستجو
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button id="btnResetSearch" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-undo-alt"></i> نمایش همه
+                </button>
+            </div>
+            <div id="customersList"></div>
+            <div id="totalRecordsInfo" class="text-muted text-center mt-2 mb-2" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- بارگذاری و نشانگر لودینگ -->
+    <div id="loadingSpinner" class="text-center py-5 d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">در حال بارگذاری...</span>
+        </div>
+    </div>
+
+    <!-- لیست مشتریان -->
+    <div id="customersList"></div>
+    <div id="totalRecordsInfo" class="text-muted text-center mt-2 mb-2" style="display: none;"></div>
+
+    <!-- صفحه‌بندی -->
+    <div id="paginationContainer" class="d-flex justify-content-center mt-4"></div>
+</div>
+
+<!-- مودال افزودن/ویرایش مشتری -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">افزودن مشتری جدید</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="customerForm">
+                    <input type="hidden" id="customerId" value="0" />
+                    <div class="mb-3">
+                        <label class="form-label">نام کامل</label>
+                        <input type="text" id="fullName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">شماره موبایل</label>
+                        <input type="tel" id="mobile" class="form-control" required dir="ltr" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">توضیحات (اختیاری)</label>
+                        <textarea id="description" class="form-control" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" id="btnSaveCustomer" class="btn btn-primary">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تأیید حذف -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">حذف مشتری</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                آیا از حذف این مشتری اطمینان دارید؟
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" id="confirmDelete" class="btn btn-danger">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/toastr.min.js"></script>
+
+<script>
+    // تنظیمات toastr
+    toastr.options = {
+        "positionClass": "toast-top-left",
+        "timeOut": "3000",
+        "closeButton": true,
+        "progressBar": true,
+        "rtl": true
+    };
+
+    var restaurantId = @(ViewBag.RestaurantId ?? 0);
+    var currentPage = 1;
+    var pageSize = 12;
+    var currentSearch = "";
+    var editingCustomerId = 0;
+
+    function loadCustomers(page, search) {
+        currentPage = page || 1;
+        currentSearch = search !== undefined ? search : currentSearch;
+
+        $("#loadingSpinner").removeClass("d-none");
+        $("#customersList").empty();
+        $("#totalRecordsInfo").hide().empty();
+
+        $.ajax({
+            url: `/api/Customers/getcustomers/${restaurantId}`,
+            type: "GET",
+            data: {
+                page: currentPage,
+                pageSize: pageSize,
+                search: currentSearch
+            },
+            success: function (response) {
+                if (response.success) {
+                    if (response.data && response.data.length > 0) {
+                        renderCustomers(response.data);
+                        renderPagination(response.currentPage, response.totalPages);
+
+                         loadCustomersStats();
+                        if (response.totalCount) {
+                            $("#totalRecordsInfo")
+                                .html(`<i class="fas fa-users"></i> ${response.totalCount} مشتری یافت شد`)
+                                .show();
+                        }
+                    } else {
+                        $("#customersList").html(`
+                            <div class="alert alert-info text-center p-5">
+                                <i class="fas fa-user-slash fa-3x mb-3"></i>
+                                <h5>مشتری‌ای یافت نشد</h5>
+                                ${currentSearch ? '<p class="mt-2">نتیجه‌ای برای عبارت جستجو یافت نشد</p>' : ''}
+                            </div>
+                        `);
+                        $("#paginationContainer").empty();
+                    }
+                } else {
+                    toastr.error(response.message || "خطا در دریافت اطلاعات");
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr);
+                toastr.error("خطا در ارتباط با سرور");
+            },
+            complete: function () {
+                $("#loadingSpinner").addClass("d-none");
+            }
+        });
+    }
+        // دکمه نمایش همه (ریست جستجو)
+    $("#btnResetSearch").click(function () {
+        $("#searchInput").val("");  // خالی کردن فیلد جستجو
+        currentSearch = "";         // ریست متغیر جستجو
+        loadCustomers(1, "");       // 
+        
+        toastr.info("نمایش همه مشتریان");
+    });
+        // دریافت آمار مشتریان
+    function loadCustomersStats() {
+        $.ajax({
+            url: `/api/Customers/getcustomersstats/${restaurantId}`,
+            type: "GET",
+            success: function (response) {
+                if (response.success) {
+                    // نمایش تعداد کل
+                    $("#totalCustomersCount").text(response.totalCount.toLocaleString('fa-IR'));
+
+                    // نمایش تعداد فعال (اگر API این رو برگردونه)
+                    if (response.activeCount !== undefined) {
+                        $("#activeCustomersCount").text(response.activeCount.toLocaleString('fa-IR'));
+                    }
+
+                    // نمایش تاریخ امروز
+                    const today = new Date().toLocaleDateString('fa-IR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    $("#totalCustomersDate").text(`آخرین به‌روزرسانی: ${today}`);
+                }
+            },
+            error: function () {
+                console.log("خطا در دریافت آمار");
+                $("#totalCustomersCount").text("?");
+            }
+        });
+    }
+    // رندر کارت‌های مشتری
+    function renderCustomers(customers) {
+        let html = '<div class="row g-4">';
+        customers.forEach(c => {
+            let createdAtShamsi = new Date(c.createdAt).toLocaleDateString('fa-IR');
+            html += `
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="customer-card">
+                        <div class="customer-header">
+                            <div class="avatar-icon"><i class="fas fa-user-circle"></i></div>
+                            <div class="customer-name">${escapeHtml(c.fullName || 'مشتری مهمان')}</div>
+                            <div class="customer-mobile"> ${escapeHtml(c.mobile)}</div>
+                        </div>
+                        <div class="customer-body">
+                            <div class="info-row">
+                                <span class="info-label">تاریخ عضویت:</span>
+                                <span class="info-value">${createdAtShamsi}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">توضیحات:</span>
+                                <span class="info-value">${escapeHtml(c.description || '-')}</span>
+                            </div>
+                        </div>
+                        <div class="customer-footer">
+                            <button class="btn btn-outline-primary btn-sm edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">
+                                <i class="fas fa-edit"></i> ویرایش
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm delete-customer" data-id="${c.customerId}">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        $("#customersList").html(html);
+    }
+
+    function renderPagination(current, total) {
+        if (total <= 1) {
+            $("#paginationContainer").empty();
+            return;
+        }
+
+        let html = '<ul class="pagination">';
+
+        // دکمه قبلی
+        if (current > 1) {
+            html += `<li class="page-item">
+                        <a class="page-link" href="#" data-page="${current - 1}">
+                            <i class="fas fa-chevron-right"></i> قبلی
+                        </a>
+                     </li>`;
+        } else {
+            html += `<li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i> قبلی
+                        </a>
+                     </li>`;
+        }
+
+        // نمایش صفحات (حداکثر 5 صفحه)
+        let startPage = Math.max(1, current - 2);
+        let endPage = Math.min(total, current + 2);
+
+        if (startPage > 1) {
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+            if (startPage > 2) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === current) {
+                html += `<li class="page-item active"><a class="page-link" href="#">${i}</a></li>`;
+            } else {
+                html += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+            }
+        }
+
+        if (endPage < total) {
+            if (endPage < total - 1) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${total}">${total}</a></li>`;
+        }
+
+        // دکمه بعدی
+        if (current < total) {
+            html += `<li class="page-item">
+                        <a class="page-link" href="#" data-page="${current + 1}">
+                            بعدی <i class="fas fa-chevron-left"></i>
+                        </a>
+                     </li>`;
+        } else {
+            html += `<li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            بعدی <i class="fas fa-chevron-left"></i>
+                        </a>
+                     </li>`;
+        }
+
+        html += '</ul>';
+        $("#paginationContainer").html(html);
+    }
+
+    // اضافه کردن مشتری
+    $("#btnAddCustomer").click(function () {
+        editingCustomerId = 0;
+        $("#modalTitle").text("افزودن مشتری جدید");
+        $("#customerId").val("0");
+        $("#fullName").val("");
+        $("#mobile").val("");
+        $("#description").val("");
+        $("#customerModal").modal("show");
+    });
+
+    // ویرایش مشتری (با استفاده از دیتای کارت)
+    $(document).on("click", ".edit-customer", function () {
+        editingCustomerId = $(this).data("id");
+        $("#modalTitle").text("ویرایش مشتری");
+        $("#customerId").val(editingCustomerId);
+        $("#fullName").val($(this).data("name"));
+        $("#mobile").val($(this).data("mobile"));
+        $("#description").val($(this).data("desc"));
+        $("#customerModal").modal("show");
+    });
+
+    $("#btnSaveCustomer").click(function () {
+        const id = $("#customerId").val();
+        let fullName = $("#fullName").val().trim();
+        const mobile = $("#mobile").val().trim();
+        const description = $("#description").val().trim();
+
+        // فقط شماره موبایل الزامی است
+        if (!mobile) {
+            toastr.warning("شماره موبایل الزامی است");
+            $("#mobile").focus();
+            return;
+        }
+
+        // اگر نام خالی بود، از شماره موبایل استفاده کن
+        if (!fullName) {
+            fullName = "مشتری مهمان";  // یا "مشتری " + mobile.substring(0, 4)
+            // toastr.info("نام وارد نشده، شماره موبایل به عنوان نام ثبت شد");
+        }
+
+        const url = id === "0" ? "/api/Customers/addcustomer" : "/api/Customers/editcustomer";
+        const payload = id === "0" ? {
+            restaurantId: restaurantId,
+            fullName: fullName,
+            mobile: mobile,
+            description: description
+        } : {
+            customerId: parseInt(id),
+            restaurantId: restaurantId,
+            fullName: fullName,
+            mobile: mobile,
+            description: description
+        };
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.success) {
+                    toastr.success(res.message);
+                    $("#customerModal").modal("hide");
+                    loadCustomers(1, currentSearch);
+                     
+                } else {
+                    toastr.error(res.message);
+                }
+            },
+            error: function () {
+                toastr.error("خطا در ذخیره اطلاعات");
+            }
+        });
+    });
+
+    // حذف مشتری
+    let deleteId = 0;
+    $(document).on("click", ".delete-customer", function () {
+        deleteId = $(this).data("id");
+        $("#deleteModal").modal("show");
+    });
+
+    $("#confirmDelete").click(function () {
+        $.ajax({
+            url: "/api/Customers/deletecustomer",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                customerId: deleteId,
+                restaurantId: restaurantId
+            }),
+            success: function (res) {
+                if (res.success) {
+                    toastr.success(res.message);
+                    $("#deleteModal").modal("hide");
+                    loadCustomers(currentPage, currentSearch);
+                } else {
+                    toastr.error(res.message);
+                }
+            },
+            error: function () {
+                toastr.error("خطا در حذف مشتری");
+            }
+        });
+    });
+
+      $("#btnSearch").click(function () {
+        let rawSearch = $("#searchInput").val().trim();
+        currentSearch = toEnglishDigits(rawSearch);   
+        loadCustomers(1, currentSearch);
+    });
+
+    $("#searchInput").on("keypress", function (e) {
+        if (e.which === 13) {
+            $("#btnSearch").click();
+        }
+    });
+
+    // صفحه‌بندی کلیک
+    $(document).on("click", ".page-link", function (e) {
+        e.preventDefault();
+        const page = $(this).data("page");
+        if (page) loadCustomers(page, currentSearch);
+    });
+
+    // تابع escape برای جلوگیری از XSS
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function (m) {
+            if (m === "&") return "&amp;";
+            if (m === "<") return "&lt;";
+            if (m === ">") return "&gt;";
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function (c) {
+            return c;
+        });
+    }
+
+        function toEnglishDigits(str) {
+        if (!str) return "";
+        // تبدیل اعداد فارسی و عربی به انگلیسی
+        const persianMap = {
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4',
+            '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
+        };
+        const arabicMap = {
+            '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+            '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+        };
+        let result = str;
+        for (let [key, value] of Object.entries(persianMap)) {
+            result = result.split(key).join(value);
+        }
+        for (let [key, value] of Object.entries(arabicMap)) {
+            result = result.split(key).join(value);
+        }
+        return result;
+    }
+
+    // بارگذاری اولیه
+    $(document).ready(function () {
+        if (restaurantId > 0) {
+            loadCustomers(1, "");
+            
+        } else {
+            $("#customersList").html('<div class="alert alert-danger">شناسه رستوران نامعتبر است</div>');
+        }
+    });
+</script>
