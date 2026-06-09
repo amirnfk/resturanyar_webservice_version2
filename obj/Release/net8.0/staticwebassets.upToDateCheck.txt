@@ -6,7 +6,7 @@ wwwroot\css\bootstrap_icons.css
 wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\chooserestaurant.css
-wwwroot\css\share.css
+wwwroot\css\dashboard.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
 wwwroot\css\fonts\iranyekan\iranyekanwebblackfanum.eot
@@ -25,9 +25,9 @@ wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
 wwwroot\css\home.css
 wwwroot\css\jalalidatepicker.min.css
-wwwroot\css\managerlogin.css
+wwwroot\js\managerlogin.js
 wwwroot\css\ownerlogin.css
-wwwroot\css\dashboard.css
+wwwroot\css\share.css
 wwwroot\css\site.css
 wwwroot\css\toastr.min.css
 wwwroot\css\Vazirmatn_font_face.css
@@ -81,9 +81,10 @@ wwwroot\js\chart.umd.min.js
 wwwroot\js\chooserestaurant.js
 wwwroot\js\dashboard.js
 wwwroot\js\home.js
+wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
-wwwroot\js\managerlogin.js
+wwwroot\css\managerlogin.css
 wwwroot\js\persian-date.min.js
 wwwroot\js\site.js
 wwwroot\js\sweetalert2@11.js

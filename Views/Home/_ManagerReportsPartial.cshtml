@@ -62,6 +62,16 @@
         color: #6c757d;
         font-style: italic;
     }
+    /* تنظیم کل صفحه به راست‌چین و فونت فارسی */
+    body, html {
+        direction: rtl;
+        font-family: 'IRANYekan', 'IRANYekan', 'IRANYekan', 'Tahoma', sans-serif;
+    }
+
+    /* برای اعداد داخل نمودارها اگر فارسی می‌خواهید (اختیاری) */
+    .latin-numbers {
+        font-feature-settings: "ss02"; /* برای نمایش اعداد لاتین در برخی فونت‌ها */
+    }
 </style>
 
 @{
@@ -77,7 +87,7 @@
     var statusMap = Model.StatusMap ?? new Dictionary<int, string>();
     var statusColors = Model.StatusColors ?? new Dictionary<int, string>();
 
-    var labels = Model.SalesByDay?.Select(x => x.Day.ToString("yyyy-MM-dd")).ToArray() ?? Array.Empty<string>();
+    var labels = Model.SalesByDay?.Select(x => ToPersianDate(x.Day)).ToArray() ?? Array.Empty<string>();
     var revenues = Model.SalesByDay?.Select(x => x.Revenue).ToArray() ?? Array.Empty<decimal>();
     var orders = Model.SalesByDay?.Select(x => x.Orders).ToArray() ?? Array.Empty<int>();
 
@@ -215,6 +225,13 @@
 </div>
 
 <script>
+    @{
+        string ToPersianDate(DateTime date)
+        {
+            var pc = new System.Globalization.PersianCalendar();
+            return $"{pc.GetYear(date):0000}/{pc.GetMonth(date):00}/{pc.GetDayOfMonth(date):00}";
+        }
+        }
     (function(){
     if (!window.chartInstances) window.chartInstances = {};
 
@@ -233,7 +250,31 @@
     const topRevLabels = @Html.Raw((hasRevData ? JsonSerializer.Serialize(topRevLabels) : "[]"));
     const topRevValues = @Html.Raw((hasRevData ? JsonSerializer.Serialize(topRevValues) : "[]"));
 
-    // وضعیت‌های داده در JS
+    // فونت فارسی برای نمودارها
+const persianFont = {
+            family: "'IRANYekan', 'IRANYekan', 'Tahoma', sans-serif",
+    size: 11
+};
+
+// تابع کمکی برای افزودن تنظیمات فونت به options نمودار
+function applyFontOptions(options) {
+    if (!options) options = {};
+    options.font = persianFont;
+    if (!options.plugins) options.plugins = {};
+    if (!options.plugins.legend) options.plugins.legend = {};
+    if (!options.plugins.legend.labels) options.plugins.legend.labels = {};
+    options.plugins.legend.labels.font = persianFont;
+    if (!options.plugins.tooltip) options.plugins.tooltip = {};
+    options.plugins.tooltip.titleFont = persianFont;
+    options.plugins.tooltip.bodyFont = persianFont;
+    if (options.scales) {
+        if (options.scales.x && options.scales.x.ticks) options.scales.x.ticks.font = persianFont;
+        if (options.scales.y1 && options.scales.y1.ticks) options.scales.y1.ticks.font = persianFont;
+        if (options.scales.y2 && options.scales.y2.ticks) options.scales.y2.ticks.font = persianFont;
+        if (options.scales.y && options.scales.y.ticks) options.scales.y.ticks.font = persianFont;
+    }
+    return options;
+}
     const hasSalesDataJs = Array.isArray(labels) && labels.length > 0 && Array.isArray(revenues) && revenues.length > 0;
     const hasStatusDataJs = Array.isArray(statusLabels) && statusLabels.length > 0;
     const hasQtyDataJs = Array.isArray(topQtyLabels) && topQtyLabels.length > 0;
@@ -251,6 +292,7 @@
     delete window.chartInstances[id];
     }
     });
+
 
     // نمودار فروش
     if (hasSalesDataJs) {
@@ -279,8 +321,14 @@
     }
     ]
     },
-    options: {
+        options: applyFontOptions( {
     responsive: true, maintainAspectRatio: false,
+          font: {
+            family: "'IRANYekan', 'IRANYekan', 'Tahoma', sans-serif",
+            size: 12
+        },
+       
+      
     interaction: { mode: 'index', intersect: false },
     scales: {
     y1: {
@@ -308,9 +356,19 @@
     }
     }
     }
-    });
+    )
+    ,} );
     }
     }
+
+
+
+
+
+
+
+
+
 
     // نمودار وضعیت‌ها
     if (hasStatusDataJs) {

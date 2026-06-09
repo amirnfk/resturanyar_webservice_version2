@@ -10,6 +10,8 @@
 }
 <link rel="stylesheet" href="~/css/all.min.css">
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
+
+<div class="dashboard-frame">
 <section class="dash-hero">
    
     <div class="dash-hero__card">
@@ -96,20 +98,20 @@
             <span class="ripple"></span>
         </a>
 
-        <a class="tile fade-up tilt" href="@Url.Action("CategoryList","Home")" title="لیست دسته بندی" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">لیست دسته بندی</h3>
-                <p class="tile__desc">دسته بندی های غذا</p>
-            </div>
+         <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" title="لیست سفارشات" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">لیست سفارشات</h3>
+                    <p class="tile__desc">پیگیری لحظه‌ای ثبت تا تسویه سفارش‌ها</p>
+                </div>
             <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             <span class="ripple"></span>
         </a>
         <a class="tile fade-up tilt" href="@Url.Action("TableList","Home")" title="لیست میزها" role="button" tabindex="0">
             <div class="tile__icon"><i class="fa-solid fa-chair"></i></div>
             <div class="tile__body">
-                <h3 class="tile__title">لیست میزها  </h3>
-                <p class="tile__desc"> لیست میزها </p>
+                <h3 class="tile__title">مدیریت میزها  </h3>
+                    <p class="tile__desc"> مدیریت میزها </p>
             </div>
             <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             <span class="ripple"></span>
@@ -123,12 +125,14 @@
             <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             <span class="ripple"></span>
         </a>
-        <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" title="لیست سفارشات" role="button" tabindex="0">
+            <a class="tile fade-up tilt" href="@Url.Action("CategoryList", "Home")" title="لیست دسته بندی" role="button" tabindex="0">
+
             <div class="tile__icon"><i class="fa-solid fa-clipboard-check"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">لیست سفارشات</h3>
-                <p class="tile__desc">پیگیری لحظه‌ای ثبت تا تسویه سفارش‌ها</p>
-            </div>
+       
+                <div class="tile__body">
+                    <h3 class="tile__title">لیست دسته بندی</h3>
+                    <p class="tile__desc">دسته بندی های غذا</p>
+                </div>
             <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             <span class="ripple"></span>
         </a>
@@ -172,6 +176,6 @@
     </div>
 </footer>
 
-
+</div>
 
 <script src="~/js/dashboard.js" asp-append-version="true"></script>

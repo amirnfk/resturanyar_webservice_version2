@@ -22,8 +22,8 @@ if (ViewData["TopN"] != null) { topN = Convert.ToInt32(ViewData["TopN"]); }
 <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" />
 <link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
 <style>
-body { direction: rtl; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
-.page-title { font-weight: 800; color: #0d6efd; margin-bottom: 1.5rem; text-align: center; }
+ 
+ 
 .filter-card { background: #fff; border: none; border-radius: 18px; box-shadow: 0 3px 20px rgba(0,0,0,.04); transition: .3s; }
 .filter-card:hover { box-shadow: 0 3px 25px rgba(0,0,0,.07); }
 .btn-primary { background: linear-gradient(90deg,#008cff,#0061ff); border: none; font-weight: 600; padding: .6rem 1.3rem; }
@@ -40,7 +40,7 @@ body { direction: rtl; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Genev
 </style>
 </head>
 <body>
-<div class="container py-5">
+ 
 
 <div class="filter-card p-4 mb-4 position-relative">
 <div class="loading-overlay">
@@ -111,7 +111,7 @@ foreach (var kv in Model.StatusMap)
 <div id="reportsContainer">
 @await Html.PartialAsync("_ManagerReportsPartial", Model)
 </div>
-</div>
+ 
 
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/jalalidatepicker.min.js"></script>

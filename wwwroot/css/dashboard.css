@@ -68,7 +68,7 @@ html,
 body {
     direction: rtl !important;
     min-height: 100vh !important;
-    background: var(--bg) !important;
+    background: #fff !important;
     color: var(--text) !important;
     line-height: 1.5 !important;
     overflow-x: hidden !important;
@@ -609,5 +609,87 @@ p, span, div, a, li, label {
     *::after {
         animation: none !important;
         transition: none !important;
+    }
+}
+/* ============ WRAPPER & FOOTER STICKY ============ */
+
+/* بدنه به صورت فلکس عمودی */
+body {
+    display: flex !important;
+    flex-direction: column !important;
+   
+    padding: 16px !important; /* فاصله از لبه صفحه */
+}
+
+/* قاب کلی (کارت بزرگ) */
+/* قاب کلی (کارت بزرگ) */
+.dashboard-frame {
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    background: var(--bg) !important; /* همرنگ با بدن صفحه */
+    border-radius: var(--radius-lg) !important;
+    box-shadow: none !important; /* حذف سایه اضافی (اختیاری) */
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(100vh - 32px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important; /* جداکننده ظریف در تم روشن */
+}
+
+[data-theme="dark"] .dashboard-frame {
+    border-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* بخش اصلی (بین هیرو و فوتر) را کش می‌دهیم تا فوتر بچسبد */
+.dash-main {
+    flex: 1 !important;
+}
+
+/* بهبود استایل فوتر و هماهنگی با قاب */
+.footer {
+    background: linear-gradient(135deg, #1a1a2e, #16213e) !important;
+    color: white !important;
+    padding: 2rem 1.5rem !important;
+    margin: 0 !important;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+    text-align: center !important;
+}
+
+/* در تم تاریک فوتر کمی روشن‌تر */
+[data-theme="dark"] .footer {
+    background: linear-gradient(135deg, #0f1119, #0a0c12) !important;
+}
+
+.footer-logo {
+    width: 55px !important;
+    height: 55px !important;
+    border-radius: 50% !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.footer-text {
+    font-size: 0.85rem !important;
+    opacity: 0.9 !important;
+}
+
+.footer-copyright {
+    font-size: 0.75rem !important;
+    opacity: 0.6 !important;
+    margin-top: 1rem !important;
+}
+
+/* ریسپانسیو برای موبایل */
+@media (max-width: 768px) {
+    body {
+        padding: 12px !important;
+    }
+
+    .dashboard-frame {
+        min-height: calc(100vh - 24px) !important;
+    }
+
+    .footer {
+        padding: 1.5rem 1rem !important;
     }
 }

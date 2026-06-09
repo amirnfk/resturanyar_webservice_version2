@@ -25,10 +25,7 @@ html, body, button, input, select, textarea, table, th, td {
     -ms-user-select: none; /* IE/Edge */
 }
 
-body {
-    background-color: #f3f6f9;
-    padding-bottom: 50px;
-}
+
 
 html {
   font-size: 14px;

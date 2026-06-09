@@ -6,14 +6,18 @@ header {
     --nb-white: #ffffff;
 }
 html {
-    font-family: "IRANYekan", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family: "IRANYekan", IRANYekan,IRANYekan, Segoe UI, Roboto, sans-serif;
 }
 
 body {
-    font-family: "IRANYekan", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    
+    direction: rtl;
+    font-family: "IRANYekan", "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.5;
     background: radial-gradient(1800px 800px at 85% -10%, rgba(255,122,26,.07), transparent 60%), radial-gradient(1400px 700px at 0% 110%, rgba(0,194,168,.06), transparent 60%), var(--bg);
     color: var(--text);
-    line-height: 1.9;
+   
     overflow-x: hidden;
 }
 
@@ -717,7 +721,7 @@ header .navbar .container-fluid {
     -webkit-backdrop-filter: none;
 }
 
-/* Ensure modal and backdrop always render above sidebar */
+ 
 .modal-backdrop {
     z-index: 1040 !important;
 }
@@ -725,3 +729,35 @@ header .navbar .container-fluid {
 .modal {
     z-index: 1050 !important;
 }
+.simple-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+    .simple-header .user-info {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+        .simple-header .user-info i {
+            color: #FF7A00;
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .simple-header .user-name {
+            color: #FF7A00;
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+.logout-form .btn-outline-danger {
+    border-radius: 2rem;
+    padding: 0.25rem 1rem;
+}
+
+ 

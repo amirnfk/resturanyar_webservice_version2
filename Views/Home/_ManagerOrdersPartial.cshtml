@@ -1,17 +1,16 @@
-﻿@model resturanyar.Models.OrderListViewModel
+@model resturanyar.Models.OrderListViewModel
 @using resturanyar.Utility
 @{
     string BaseImageUrl = "https://resturanyar.ir/";
     var defaultImgUrl = Url.Content("~/images/food_default.jpg");
-
 }
 
 <style>
     body {
         direction: rtl;
         font-family: "IRANYekan", Tahoma, sans-serif;
-      
     }
+
     /* ---------- کارت کلی هر سفارش ---------- */
     .order-card {
         border-radius: 16px;
@@ -29,6 +28,8 @@
         font-weight: 700;
         color: #212529;
         font-size: 1rem;
+        flex: 1;
+        min-width: 180px;
     }
 
     .status-badge {
@@ -36,20 +37,13 @@
         padding: 4px 12px;
         font-size: .8rem;
         font-weight: 600;
-        white-space: nowrap; /* ← کلیدی */
-        display: inline-block;
         white-space: nowrap;
+        display: inline-block;
         flex-shrink: 0;
     }
 
-    /* در صورت نیاز، برای والد فلکس */
     .d-flex.flex-wrap {
-        gap: 10px; /* فاصله بین اجزا */
-    }
-
-    .order-header {
-        flex: 1;
-        min-width: 180px;
+        gap: 10px;
     }
 
     .order-meta {
@@ -60,7 +54,7 @@
     /* ---------- جدول اقلام هر سفارش ---------- */
     .food-header {
         display: grid;
-        grid-template-columns: 60px 1fr 90px 120px 120px; /* عکس - نام - تعداد - قیمت واحد - مجموع */
+        grid-template-columns: 60px 1fr 90px 120px 120px;
         align-items: center;
         font-weight: 700;
         background: #f8f9fa;
@@ -73,7 +67,7 @@
 
     .food-row {
         display: grid;
-        grid-template-columns: 60px 1fr 90px 120px 120px; /* عکس - نام - تعداد - قیمت واحد - مجموع */
+        grid-template-columns: 60px 1fr 90px 120px 120px;
         align-items: center;
         gap: 8px;
         padding: 8px 10px;
@@ -116,21 +110,19 @@
 
     /* ---------- برای موبایل ---------- */
     @@media (max-width: 768px) {
-        .food-header, .food-row
+        .food-header, .food-row {
+            grid-template-columns: 50px 1fr 60px 80px 80px;
+        }
 
-    {
-        grid-template-columns: 50px 1fr 60px 80px 80px;
+        .food-name {
+            font-size: 0.85rem;
+        }
+
+        .food-qty, .food-price, .food-sum {
+            font-size: 0.8rem;
+        }
     }
 
-    .food-name {
-        font-size: 0.85rem;
-    }
-
-    .food-qty, .food-price, .food-sum {
-        font-size: 0.8rem;
-    }
-
-    }
     /* ---------- استایل بخش اطلاعات مشتری ---------- */
     .customer-info {
         background: linear-gradient(135deg, #e9f5ff 0%, #d9ecff 100%);
@@ -158,7 +150,7 @@
         }
 
         .customer-info .customer-mobile {
-            font-family: 'IRANYekan', 'IRANYekan', system-ui, -apple-system, sans-serif;
+            font-family: 'IRANYekan', system-ui, -apple-system, sans-serif;
             font-size: 0.9rem;
             background: #fff;
             padding: 2px 8px;
@@ -175,16 +167,12 @@
                 color: #6c757d;
             }
 
-    /* برای موبایل */
     @@media (max-width: 768px) {
-        .customer-info
-
-    {
-        flex-wrap: wrap;
-        gap: 5px;
-        font-size: 0.75rem;
-    }
-
+        .customer-info {
+            flex-wrap: wrap;
+            gap: 5px;
+            font-size: 0.75rem;
+        }
     }
 </style>
 
@@ -198,13 +186,12 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
                 <div class="order-header">
-                    📦 سفارش #@order.OrderId.ToString().ToPersianDigits()
+                    📦 سفارش #@order.OrderId.ToString().ToPersianDigits()
                     | میز: @order.TableNumber?.ToPersianDigits()
-                    <span class="status-badge bg-@(Model.StatusColors.GetValueOrDefault(order.StatusId,"secondary")) text-white ms-2">
+                    <span class="status-badge bg-@(Model.StatusColors.GetValueOrDefault(order.StatusId, "secondary")) text-white ms-2">
                         @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
                     </span>
-                    <!-- بعد از نمایش توضیحات، قبل از جدول آیتم‌ها -->
-                    <!-- نمایش اطلاعات مشتری -->
+
                     @if (order.CustomerId.HasValue)
                     {
                         <div class="customer-info">
@@ -221,6 +208,7 @@
                         </div>
                     }
                 </div>
+
                 <button class="btn btn-sm btn-dark"
                         onclick="printInvoice(@order.OrderId)">
                     🖨 چاپ فاکتور
@@ -230,11 +218,11 @@
                     <select class="form-select form-select-sm"
                             style="min-width:140px"
                             data-orderid="@order.OrderId"
-                            onchange="onChangeStatus(this,@order.OrderId)">
+                            onchange="onChangeStatus(this, @order.OrderId)">
                         <option value="">تغییر وضعیت</option>
                         @foreach (var kv in Model.StatusMap)
                         {
-                            <option value="@kv.Key" selected="@(kv.Key==order.StatusId?"selected":null)">
+                            <option value="@kv.Key" selected="@(kv.Key == order.StatusId ? "selected" : null)">
                                 @kv.Value
                             </option>
                         }
@@ -268,13 +256,12 @@
                 @foreach (var item in order.OrderItems)
                 {
                     var imgUrl = string.IsNullOrEmpty(item.FoodImageUrl)
-                    ? defaultImgUrl
-                    : $"{BaseImageUrl}{item.FoodImageUrl.TrimStart('/')}";
+                        ? defaultImgUrl
+                        : $"{BaseImageUrl}{item.FoodImageUrl.TrimStart('/')}";
                     decimal finalUnit = item.FinalUnitPrice;
                     decimal itemSum = item.TotalPrice;
 
-                    <div class="food-row"
-                         data-price="@item.FinalUnitPrice.ToString("N0")">
+                    <div class="food-row" data-price="@item.FinalUnitPrice.ToString("N0")">
 
                         <img src="@imgUrl" alt="@item.FoodName"
                              class="food-img"
@@ -299,8 +286,11 @@
                 }
 
                 <div class="total-box mt-3">
-                     مبلغ کل: @totalPrice.ToString("N0") تومان
+                    مبلغ کل: @totalPrice.ToString("N0") تومان
                 </div>
+
+
+
             }
             else
             {
@@ -313,184 +303,152 @@ else
 {
     <div class="alert alert-warning text-center fs-5">📭 هیچ سفارشی یافت نشد.</div>
 }
+<script src="~/js/invoice-print.js" asp-append-version="true"></script>
 
 <script>
+    
+    if (typeof window._partialScriptLoaded === 'undefined') {
+        window._partialScriptLoaded = true;
+
+        // inject keyframes animation once
+        if (!document.querySelector('#toast-keyframes')) {
+            const kfStyle = document.createElement('style');
+            kfStyle.id = 'toast-keyframes';
+            kfStyle.textContent = `
+                @@keyframes slideInLeft {
+                    from { transform: translateX(-100%); opacity: 0; }
+                    to   { transform: translateX(0);     opacity: 1; }
+                }
+            `;
+            document.head.appendChild(kfStyle);
+        }
+    }
+
+  
+
     const restaurantName = "@ViewBag.RestaurantName";
+
+    const colorMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusColors));
 
     async function onChangeStatus(sel, orderId) {
         const newStatus = parseInt(sel.value);
         if (!newStatus) return;
 
-        const res = await fetch('@Url.Action("UpdateOrderStatus", "Home")', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
-            },
-            body: `orderId=${orderId}&newStatusId=${newStatus}`
-        });
+        try {
+            const res = await fetch('@Url.Action("UpdateOrderStatus", "Home")', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+                },
+                body: `orderId=${orderId}&newStatusId=${newStatus}`
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (data.success) {
-            // ✅ آپدیت متن بدج
-            const card = document.querySelector(`#order-${orderId}`);
-            const badge = card?.querySelector('.status-badge');
+            if (data.success) {
+                const card  = document.querySelector(`#order-${orderId}`);
+                const badge = card?.querySelector('.status-badge');
 
-            if (badge) {
-                const selectedText = sel.options[sel.selectedIndex].text.trim();
+                if (badge) {
+                    const selectedText = sel.options[sel.selectedIndex].text.trim();
 
-                // ✅ آپدیت کلاس رنگ - حذف کلاس‌های bg قبلی
-                badge.className = badge.className
-                    .replace(/\bbg-\S+/g, '')
-                    .trim();
+                    // remove old bg-* color classes
+                    badge.className = badge.className.replace(/\bbg-\S+/g, '').trim();
 
-                // نقشه رنگ‌ها - همون StatusColors مدل
-                const colorMap = @Html.Raw(
-                                        System.Text.Json.JsonSerializer.Serialize(Model.StatusColors)
-                                );
-                const newColor = colorMap[newStatus] ?? 'secondary';
-                badge.classList.add(`bg-${newColor}`);
+                    const newColor = colorMap[newStatus] ?? 'secondary';
+                    badge.classList.add(`bg-${newColor}`, 'text-white');
 
-                // ✅ متن بدج بدون line-break
-                badge.textContent = selectedText;
-                badge.style.whiteSpace = 'nowrap';
-                badge.style.display = 'inline-block';
+                    badge.textContent = selectedText;
+                    badge.style.whiteSpace = 'nowrap';
+                    badge.style.display    = 'inline-block';
+                }
+
+                // update last-changed timestamp
+                const meta = card?.querySelector('.order-meta');
+                if (meta) {
+                    const now = new Date().toLocaleString('fa-IR');
+                    meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
+                }
+
+                showToast('وضعیت سفارش بروز شد', 'success');
+            } else {
+                showToast(data.message || 'خطا در تغییر وضعیت', 'error');
             }
-
-            // آپدیت زمان
-            const meta = card?.querySelector('.order-meta');
-            if (meta) {
-                const now = new Date().toLocaleString('fa-IR');
-                meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
-            }
-
-            showToast('وضعیت سفارش بروز شد', 'success');
-        } else {
-            showToast(data.message || 'خطا در تغییر وضعیت', 'error');
+        } catch (err) {
+            console.error('onChangeStatus error:', err);
+            showToast('خطا در ارتباط با سرور', 'error');
         }
     }
-     function printInvoice(orderId){
 
-        const order = document.querySelector("#order-" + orderId);
-        if(!order) return;
+      function printInvoice(orderId) {
+        const orderCard = document.getElementById(`order-${orderId}`);
+        if (!orderCard) { showToast('سفارش یافت نشد', 'error'); return; }
 
-        const items = order.querySelectorAll(".food-row");
-        const customerInfo = order.querySelector(".customer-info")?.innerText || "مشتری مهمان";
-        let rows = "";
+        const orderHeader   = orderCard.querySelector('.order-header')?.innerText || '';
+        const orderNumber   = orderHeader.match(/سفارش #(\S+)/)?.[1] || orderId;
+        const tableNumber   = orderHeader.match(/میز: (\S+)/)?.[1] || '';
+        const orderStatus   = orderCard.querySelector('.status-badge')?.innerText.trim() || '';
 
-        items.forEach(item=>{
-
-            const name = item.querySelector(".food-name").innerText;
-            const qty = item.querySelector(".food-qty").innerText;
-            const price = item.dataset.price;
-
-            rows += `
-            <div class="row">
-                <div class="name">${name}</div>
-                <div class="qty">${qty}</div>
-                <div class="price">${price}</div>
-            </div>
-            `;
-        });
-        const now = new Date().toLocaleString('fa-IR');
-
-        const total = order.querySelector(".total-box").innerText;
-
-        const html = `
-        <html>
-        <head>
-        <meta charset="utf-8"/>
-        <style>
-        body{
-            direction:rtl;
-            font-family: 'IRANYekan', 'IRANYekan', system-ui, -apple-system, sans-serif;
-            width:80mm;
-            margin:0;
-            padding:10px;
+        let customerName = '', customerMobile = '';
+        const ci = orderCard.querySelector('.customer-info');
+        if (ci) {
+            customerName   = ci.querySelector('.customer-name')?.innerText.trim() || 'مشتری مهمان';
+            customerMobile = ci.querySelector('.customer-mobile')?.innerText.trim() || '';
         }
-        .center{text-align:center;}
-        .title{font-weight:bold;font-size:16px;margin-bottom:5px;}
-        .line{border-top:1px dashed #000;margin:8px 0;}
-        .row{display:flex;justify-content:space-between;font-size:13px;margin:4px 0;}
-        .name{width:45%;}
-        .qty{width:15%;text-align:center;}
-        .price{width:40%;text-align:left;}
-        .total{font-weight:bold;font-size:14px;text-align:center;margin-top:10px;}
-        </style>
-        </head>
-        <body>
-    <div class="center title">${restaurantName}</div>
- 
-    <div class="center">شماره سفارش: ${orderId}</div>
-    <div class="center">زمان چاپ: ${now}</div>
- 
 
-        <div class="line"></div>
+        const metaText  = orderCard.querySelector('.order-meta')?.innerText || '';
+        const createdAt = metaText.match(/ثبت: (.+?)\|/)?.[1]?.trim() || '';
+        const updatedAt = metaText.match(/آخرین تغییر: (.+)/)?.[1]?.trim() || '';
 
-        <div class="row">
-            <div class="name">غذا</div>
-            <div class="qty">تعداد</div>
-            <div class="price">قیمت</div>
-        </div>
+        const description = orderCard.querySelector('.alert-light')
+            ?.innerText.replace(/^📝\s*/, '').trim() || '';
 
-        <div class="line"></div>
+        const items = [...orderCard.querySelectorAll('.food-row')].map(row => ({
+            name:     row.querySelector('.food-name')?.innerText.trim() || '',
+            quantity: row.querySelector('.food-qty')?.innerText.trim()  || '',
+            price:    row.dataset.price ||
+                      row.querySelector('.food-price .text-danger, .food-price .text-success')
+                         ?.innerText.trim() || ''
+        }));
 
-        ${rows}
+        const totalText = orderCard.querySelector('.total-box')?.innerText.trim() || '';
+        const now       = new Date().toLocaleString('fa-IR');
 
-        <div class="line"></div>
+      const html = buildInvoiceHtml({
+    restaurant: "@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.RestaurantName?.ToString() ?? "رستوران"))",
+            orderNumber, tableNumber, orderStatus,
+            createdAt, updatedAt, description,
+            items, totalText, customerName, customerMobile, now
+        });
 
-        <div class="total">${total}</div>
-
-        <div class="line"></div>
-        <br>
-         <div class="center">${customerInfo}</div>
-          <br>
-        <div class="center">با تشکر از خرید شما</div>
-
-        </body>
-        </html>
-        `;
-
-        // ✅ ساخت iframe مخفی (به‌جای window.open)
-        const iframe = document.createElement("iframe");
-        iframe.style.position = "fixed";
-        iframe.style.right = "0";
-        iframe.style.bottom = "0";
-        iframe.style.width = "0";
-        iframe.style.height = "0";
-        iframe.style.border = "0";
-
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
-
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-
-        // حذف بعد از چاپ
-        setTimeout(()=>{
-            document.body.removeChild(iframe);
-        },1000);
+        if (!openPrintWindow(html)) {
+            showToast('لطفا مسدودکننده پنجره را غیرفعال کنید', 'error');
+        }
     }
-        function showToast(message, type = 'success') {
-        // حذف توست قبلی (در صورت وجود)
-        const existingToast = document.querySelector('.custom-toast');
-        if (existingToast) existingToast.remove();
 
-        // ایجاد المان توست
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function showToast(message, type = 'success') {
+        // remove any existing toast first
+        document.querySelector('.custom-toast')?.remove();
+
         const toast = document.createElement('div');
         toast.className = `custom-toast toast-${type}`;
         toast.innerHTML = `
             <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
             <div class="toast-message">${message}</div>
-            <div class="toast-close">&times;</div>
+            <div class="toast-close" style="cursor:pointer;margin-right:auto;font-size:20px;line-height:1;">&times;</div>
         `;
 
-        // استایل‌های توست (می‌تونید در <style> اصلی هم بنویسید)
         toast.style.cssText = `
             position: fixed;
             bottom: 20px;
@@ -512,30 +470,9 @@ else
             animation: slideInLeft 0.3s ease;
         `;
 
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.style.cssText = 'cursor:pointer; margin-right: auto; font-size: 20px; line-height: 1;';
-
-        closeBtn.onclick = () => toast.remove();
-
+        toast.querySelector('.toast-close').onclick = () => toast.remove();
         document.body.appendChild(toast);
 
-        // حذف خودکار بعد از ۳ ثانیه
-        setTimeout(() => {
-            if (toast.parentNode) toast.remove();
-        }, 3000);
+        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
     }
-
-    // اضافه کردن انیمیشن به استایل (اگه قبلاً نداشتید)
-    if (!document.querySelector('#toast-keyframes')) {
-        const style = document.createElement('style');
-        style.id = 'toast-keyframes';
-        style.textContent = `
-            @@keyframes slideInLeft {
-                from { transform: translateX(-100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
 </script>

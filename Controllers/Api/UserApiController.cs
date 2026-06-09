@@ -1,35 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Resturanyar.Data;
-using resturanyar.Models;
-using System.Text;
-
- 
- 
-using resturanyar.Models;
-using Resturanyar.Data;
- 
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Text;
-using resturanyar.Utility;
-using System.Data.SqlClient;
-using Azure.Core;
-using Microsoft.AspNetCore.SignalR;
-using Resturanyar.Hubs;
-using Microsoft.EntityFrameworkCore;
-
+﻿using Azure.Core;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+ 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using resturanyar.Models;
+ 
+ 
+using resturanyar.Models;
+using resturanyar.Models.CustomerModels;
+using resturanyar.Utility;
+using Resturanyar.Data;
+using Resturanyar.Data;
+using Resturanyar.Hubs;
 using System;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using System.Drawing;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using System.Text;
 namespace Resturanyar.Controllers.Api
 {
     [ApiController]
@@ -95,7 +94,7 @@ namespace Resturanyar.Controllers.Api
                 if (owner == null)
                     return NotFound(new { success = false, message = "مالک با این شناسه یافت نشد" });
 
-                // 🟡 بررسی وجود اشتراک طلایی فعال
+               
                 bool hasActiveGold = _context.Subscriptions
                     .Include(s => s.SubscriptionPlan)
                     .Any(s =>
@@ -105,10 +104,10 @@ namespace Resturanyar.Controllers.Api
                         s.SubscriptionPlan.Name == "طلایی"
                     );
 
-                // 🟠 بررسی تعداد رستوران‌های فعلی کاربر
+                
                 int restaurantCount = _context.Restaurants.Count(r => r.owner_id == request.owner_id);
 
-                // 🔴 اگر کاربر رستوران دارد ولی اشتراک طلایی فعال ندارد
+                
                 if (restaurantCount > 0 && !hasActiveGold)
                 {
                     return Ok(new
@@ -2188,7 +2187,7 @@ namespace Resturanyar.Controllers.Api
             if (otpEntry == null || otpEntry.ExpireAt < DateTime.UtcNow)
                 return BadRequest(new { success = false, message = "OTP expired or not found" });
 
-            // Mark OTP as used
+            
             otpEntry.Used = true;
 
             try
@@ -2241,19 +2240,19 @@ namespace Resturanyar.Controllers.Api
                 await _context.SaveChangesAsync();
 
                 // ۵. پیدا کردن یا ساخت کاربر (Owner)
+                // ۵. پیدا کردن کاربر
                 var owner = await _context.Owners.FirstOrDefaultAsync(o => o.Phone == request.PhoneNumber);
                 if (owner == null)
                 {
-                    // اگر کاربر وجود نداشت، یک کاربر جدید بساز
-                    owner = new Owner
+                    // کاربر وجود ندارد - به فرانت بگو اطلاعات بگیرد
+                    return Ok(new
                     {
-                        Phone = request.PhoneNumber,
-                        Password = null // چون با OTP وارد می‌شود پسورد ندارد
-                    };
-                    _context.Owners.Add(owner);
-                    await _context.SaveChangesAsync();
+                        success = false,
+                        needsRegistration = true,
+                        phoneNumber = request.PhoneNumber,
+                        message = "کاربر یافت نشد. لطفاً اطلاعات ثبت‌نام را وارد کنید."
+                    });
                 }
-
                 // ۶. ایجاد کوکی لاگین (منحصر به فرد برای وب)
                 var claims = new List<Claim>
                 {
@@ -2289,7 +2288,49 @@ namespace Resturanyar.Controllers.Api
                 return StatusCode(500, new { success = false, message = "خطا در سرور: " + fullErrorMessage });
             }
         }
+        [HttpPost("registerandlogin")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterAndLogin([FromBody] RegisterWithOtpRequest request)
+        {
+            try
+            {
+                if (request == null || string.IsNullOrWhiteSpace(request.PhoneNumber) ||
+                    string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Password))
+                {
+                    return BadRequest(new { success = false, message = "اطلاعات ناقص است." });
+                }
 
+                // بررسی مجدد که کاربر قبلاً ثبت نشده باشد
+                var existing = await _context.Owners.FirstOrDefaultAsync(o => o.Phone == request.PhoneNumber);
+                if (existing != null)
+                    return BadRequest(new { success = false, message = "این شماره قبلاً ثبت شده است." });
+
+                var owner = new Owner
+                {
+                    Phone = request.PhoneNumber,
+                    Name = request.Name,
+                    Password = EncodePassword(request.Password)  
+                };
+                _context.Owners.Add(owner);
+                await _context.SaveChangesAsync();
+
+                // لاگین
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, owner.Name),
+            new Claim("OwnerId", owner.Id.ToString()),
+            new Claim(ClaimTypes.Role, "Owner")
+        };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+                return Ok(new { success = true, redirectUrl = "/Home/ChooseRestaurant" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا: " + ex.Message });
+            }
+        }
         [HttpPost("addcategory")]
         public IActionResult AddCategory(AddCategoryRequest request)
         {
@@ -2803,9 +2844,357 @@ namespace Resturanyar.Controllers.Api
             }
         
 
+    
+
+       [HttpPost("addcustomer")]
+        public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
+        {
+            try
+            {
+                // بررسی وجود رستوران
+                var restaurant = _context.Restaurants.Find(request.RestaurantId);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد" });
+
+                // جستجوی مشتری با این شماره موبایل در همان رستوران (حتی غیرفعال‌ها)
+                var existingCustomer = _context.Customers
+                    .FirstOrDefault(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
+
+                if (existingCustomer != null)
+                {
+                    // اگر مشتری وجود دارد ولی غیرفعال است
+                    if (!existingCustomer.IsActive)
+                    {
+                        // فعال کردن مجدد و به‌روزرسانی اطلاعات
+                        existingCustomer.IsActive = true;
+                        existingCustomer.FullName = request.FullName;
+                        existingCustomer.Description = request.Description;
+                        existingCustomer.UpdatedAt = DateTime.Now;
+
+                        _context.SaveChanges();
+
+                        return Ok(new
+                        {
+                            success = true,
+                            message = "مشتری غیرفعال قبلی با موفقیت فعال و ویرایش شد",
+                            customerId = existingCustomer.CustomerId,
+                            wasReactivated = true
+                        });
+                    }
+                    else
+                    {
+                        // مشتری فعال وجود دارد
+                        return Ok(new { success = false, message = "این شماره موبایل قبلاً برای این رستوران ثبت شده است" });
+                    }
+                }
+
+                // اگر مشتری وجود نداشت، مشتری جدید بساز
+                var customer = new Customer
+                {
+                    RestaurantId = request.RestaurantId,
+                    Mobile = request.Mobile,
+                    FullName = request.FullName,
+                    Description = request.Description,
+                    IsActive = true,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.Customers.Add(customer);
+                _context.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "مشتری با موفقیت اضافه شد",
+                    customerId = customer.CustomerId,
+                    wasReactivated = false
+                });
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                return StatusCode(500, new { success = false, message = innerMessage });
+            }
+        }
+
+
+        [HttpGet("getcustomersstats/{restaurantId}")]
+        public IActionResult GetCustomersStats(int restaurantId)
+        {
+            try
+            {
+                var restaurant = _context.Restaurants.Find(restaurantId);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد" });
+
+                var totalCount = _context.Customers
+                    .Count(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                var activeCount = _context.Customers
+                    .Count(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                return Ok(new
+                {
+                    success = true,
+                    totalCount = totalCount,
+                    activeCount = activeCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+        [HttpPost("editcustomer")]
+        public IActionResult EditCustomer([FromBody] EditCustomerRequest request)
+        {
+            try
+            {
+                var customer = _context.Customers
+                    .FirstOrDefault(c => c.CustomerId == request.CustomerId && c.RestaurantId == request.RestaurantId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                // بررسی یکتایی شماره موبایل (به جز خود این مشتری)
+                bool mobileExists = _context.Customers
+                    .Any(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile && c.CustomerId != request.CustomerId);
+                if (mobileExists)
+                    return Ok(new { success = false, message = "این شماره موبایل قبلاً برای مشتری دیگری در این رستوران ثبت شده است" });
+
+                customer.Mobile = request.Mobile;
+                customer.FullName = request.FullName;
+                customer.Description = request.Description;
+                customer.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+
+                return Ok(new { success = true, message = "مشتری با موفقیت ویرایش شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPost("deletecustomer")] // soft delete
+        public IActionResult DeleteCustomer([FromBody] DeleteCustomerRequest request)
+        {
+            try
+            {
+                var customer = _context.Customers
+                    .FirstOrDefault(c => c.CustomerId == request.CustomerId && c.RestaurantId == request.RestaurantId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                customer.IsActive = false;
+                customer.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+
+                return Ok(new { success = true, message = "مشتری با موفقیت حذف شد (غیرفعال)" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpGet("getcustomers/{restaurantId}")]
+        public IActionResult GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
+        {
+            try
+            {
+                var restaurant = _context.Restaurants.Find(restaurantId);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد" });
+
+                var query = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query = query.Where(c => c.Mobile.Contains(search) ||
+                                             (c.FullName != null && c.FullName.Contains(search)));
+                }
+
+                var totalCount = query.Count();
+                var customers = query
+                    .OrderByDescending(c => c.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(c => new
+                    {
+                        c.CustomerId,
+                        c.Mobile,
+                        c.FullName,
+                        c.Description,
+                        c.CreatedAt,
+                        c.UpdatedAt
+                    })
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    data = customers,
+                    totalCount = totalCount,
+                    currentPage = page,
+                    pageSize = pageSize,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+
+        [HttpPost("addaddress")]
+        public IActionResult AddAddress([FromBody] AddAddressRequest request)
+        {
+            try
+            {
+                var customer = _context.Customers.Find(request.CustomerId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                // اگر آدرس جدید به عنوان پیش‌فرض انتخاب شده، سایر آدرس‌های آن مشتری را غیرپیش‌فرض کن
+                if (request.IsDefault)
+                {
+                    var existingDefaults = _context.CustomerAddresses
+                        .Where(a => a.CustomerId == request.CustomerId && a.IsDefault);
+                    foreach (var addr in existingDefaults)
+                        addr.IsDefault = false;
+                }
+
+                var address = new CustomerAddress
+                {
+                    CustomerId = request.CustomerId,
+                    Title = request.Title,
+                    AddressText = request.AddressText,
+                    Unit = request.Unit,
+                    Floor = request.Floor,
+                    PlateNumber = request.PlateNumber,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
+                    IsDefault = request.IsDefault,
+                    Description = request.Description,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.CustomerAddresses.Add(address);
+                _context.SaveChanges();
+
+                return Ok(new { success = true, message = "آدرس با موفقیت اضافه شد", addressId = address.AddressId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPost("editaddress")]
+        public IActionResult EditAddress([FromBody] EditAddressRequest request)
+        {
+            try
+            {
+                var address = _context.CustomerAddresses
+                    .FirstOrDefault(a => a.AddressId == request.AddressId && a.CustomerId == request.CustomerId);
+                if (address == null)
+                    return NotFound(new { success = false, message = "آدرس یافت نشد" });
+
+                // اگر این آدرس را پیش‌فرض می‌کنیم، سایر آدرس‌های مشتری را غیرپیش‌فرض کن
+                if (request.IsDefault && !address.IsDefault)
+                {
+                    var otherAddresses = _context.CustomerAddresses
+                        .Where(a => a.CustomerId == request.CustomerId && a.AddressId != request.AddressId);
+                    foreach (var a in otherAddresses)
+                        a.IsDefault = false;
+                }
+
+                address.Title = request.Title;
+                address.AddressText = request.AddressText;
+                address.Unit = request.Unit;
+                address.Floor = request.Floor;
+                address.PlateNumber = request.PlateNumber;
+                address.Latitude = request.Latitude;
+                address.Longitude = request.Longitude;
+                address.IsDefault = request.IsDefault;
+                address.Description = request.Description;
+                address.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+
+                return Ok(new { success = true, message = "آدرس با موفقیت ویرایش شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPost("deleteaddress")]
+        public IActionResult DeleteAddress([FromBody] DeleteAddressRequest request)
+        {
+            try
+            {
+                var address = _context.CustomerAddresses
+                    .FirstOrDefault(a => a.AddressId == request.AddressId && a.CustomerId == request.CustomerId);
+                if (address == null)
+                    return NotFound(new { success = false, message = "آدرس یافت نشد" });
+
+                _context.CustomerAddresses.Remove(address);
+                _context.SaveChanges();
+
+                return Ok(new { success = true, message = "آدرس با موفقیت حذف شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpGet("getaddresses/{customerId}")]
+        public IActionResult GetAddresses(int customerId)
+        {
+            try
+            {
+                var customer = _context.Customers.Find(customerId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                var addresses = _context.CustomerAddresses
+                    .Where(a => a.CustomerId == customerId)
+                    .OrderByDescending(a => a.IsDefault)
+                    .ThenByDescending(a => a.CreatedAt)
+                    .Select(a => new
+                    {
+                        a.AddressId,
+                        a.Title,
+                        a.AddressText,
+                        a.Unit,
+                        a.Floor,
+                        a.PlateNumber,
+                        a.Latitude,
+                        a.Longitude,
+                        a.IsDefault,
+                        a.Description,
+                        a.CreatedAt,
+                        a.UpdatedAt
+                    })
+                    .ToList();
+
+                return Ok(new { success = true, data = addresses });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
     }
-
-
 
 }
  

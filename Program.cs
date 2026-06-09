@@ -154,8 +154,8 @@ app.UseAuthorization();
 app.UseWhen(context =>
 {
     var path = context.Request.Path.ToString();
-    // تبدیل مسیر به رشته و سپس بررسی Contains
-    return path.StartsWith("/api") && !path.Contains("verifyotpweb");
+   
+    return path.StartsWith("/api") && !path.Contains("verifyotpweb" ) && !path.Contains("addrestaurant")&& !path.Contains("registerandlogin"); 
 }, appBuilder =>
 {
     appBuilder.UseMiddleware<StaticTokenMiddleware>();

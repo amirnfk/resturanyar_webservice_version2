@@ -1,6 +1,8 @@
 ﻿@model resturanyar.Models.OrderListViewModel
 @{
-    ViewData["Title"] = "مدیریت سفارش‌ها";
+    var restaurantName = ViewBag.RestaurantName as string;
+    ViewData["Title"] = "مدیریت سفارش‌ها - " + @restaurantName;
+     
     string currentPeriod = ViewData["CurrentPeriod"]?.ToString() ?? "";
 }
 <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" />
@@ -8,19 +10,8 @@
 <script src="~/js/jalalidatepicker.min.js"></script>
 
 <style>
-    body {
-        direction: rtl;
-        background: linear-gradient(145deg,#f6f8fb 0%,#eef2f6 100%);
-        font-family: "IRANSans", Tahoma, sans-serif;
-        min-height: 100vh;
-    }
-
-    .page-title {
-        font-weight: 800;
-        color: #0d6efd;
-        margin-bottom: 1.5rem;
-        text-align: center;
-    }
+    
+    
 
     .filter-card {
         background: #fff;
@@ -65,7 +56,7 @@
 </style>
 
 <div class="container py-5">
-    
+ 
 
     <div class="filter-card p-4 mb-4">
         <form id="filterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerOrderList","Home")">
@@ -117,16 +108,16 @@
             </div>
 
             <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                <a href="@Url.Action("ManagerOrderList","Home",new{period="today",page=1})"
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="today"?"active":"")">امروز</a>
-                <a href="@Url.Action("ManagerOrderList","Home",new{period="week",page=1})"
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="week"?"active":"")">هفته</a>
-                <a href="@Url.Action("ManagerOrderList","Home",new{period="month",page=1})"
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="month"?"active":"")">ماه</a>
-                <a href="@Url.Action("ManagerOrderList","Home",new{period="quarter",page=1})"
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="quarter"?"active":"")">سه‌ماهه</a>
-                <a href="@Url.Action("ManagerOrderList","Home",new{period="year",page=1})"
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod=="year"?"active":"")">سال</a>
+                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "today", page = 1 })"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
+                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "week", page = 1 })"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
+                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "month", page = 1 })"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
+                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "quarter", page = 1 })"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
+                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "year", page = 1 })"
+                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
             </div>
         </form>
     </div>

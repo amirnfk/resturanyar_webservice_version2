@@ -52,6 +52,15 @@
                             
                             ورود با کد یکبار مصرف  
                         </button>
+                       
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="button" id="btnSwitchToRegister" class="btn-modern-switch">
+
+
+                           ثبت نام
+                        </button>
+
                     </div>
                 </div>
 
@@ -104,6 +113,41 @@
         <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" />
     </div>
 
+    <!-- مودال ثبت‌نام -->
+    <div class="modal fade" id="registerModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-orange fw-bold w-100 text-center">تکمیل اطلاعات ثبت‌نام</h5>
+                </div>
+                <div class="modal-body px-4">
+                    <p class="text-muted text-center small mb-4">شماره شما تایید شد. لطفاً اطلاعات زیر را تکمیل کنید.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">نام و نام خانوادگی</label>
+                        <input id="registerName" type="text" class="form-control form-control-lg text-end" placeholder="نام کامل" />
+                        <div id="registerNameError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">رمز عبور</label>
+                        <input id="registerPassword" type="password" class="form-control form-control-lg text-end" placeholder="رمز عبور (حداقل ۶ کاراکتر)" />
+                        <div id="registerPasswordError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">تکرار رمز عبور</label>
+                        <input id="registerConfirmPassword" type="password" class="form-control form-control-lg text-end" placeholder="دوباره رمز عبور را وارد کنید" />
+                        <div id="registerConfirmError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="d-grid mt-4 mb-2">
+                        <button id="btnRegisterSubmit" class="btn btn-orange btn-lg fw-bold">ثبت‌نام و ورود</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
 </body>
 </html>

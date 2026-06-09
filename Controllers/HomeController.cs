@@ -135,7 +135,7 @@ namespace resturanyar.Controllers
                     return View();
                 }
 
-                if (DecodePassword(owner.Password) != request.Password) // بهتره با Hash جایگزین بشه
+                if (DecodePassword(owner.Password) != request.Password)  
                 {
                     ViewBag.Error = "رمز عبور نادرست است.";
                     return View();
@@ -1156,16 +1156,29 @@ namespace resturanyar.Controllers
     string? period = null,
     string? search = null,
     DateTime? from = null,
-    DateTime? to = null,
-    string restaurantName="")
+    DateTime? to = null 
+     )
 
         {
             int? restaurantId = User.GetRestaurantId();
-            ViewBag.RestaurantName = restaurantName;
+
             if (restaurantId == null)
             {
                 return RedirectToAction("ChooseRestaurant");
             }
+
+            // ================ اضافه کردن نام رستوران =================
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+            if (restaurant == null)
+            {
+                ViewBag.Error = "رستوران یافت نشد.";
+                return RedirectToAction("ChooseRestaurant");
+            }
+
+            ViewBag.RestaurantName = restaurant.name;
 
 
             var statusMap = new Dictionary<int, string>
@@ -1319,6 +1332,9 @@ namespace resturanyar.Controllers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 return PartialView("_ManagerOrdersPartial", vm);
 
+            
+
+   
             return View("ManagerOrderList", vm);
         }
 

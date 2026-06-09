@@ -1,4 +1,9 @@
-﻿@model List<resturanyar.Models.FoodItemViewModel>
+﻿@{
+    Layout = "~/Views/Shared/_Layout_public.cshtml";
+}
+
+
+@model List<resturanyar.Models.FoodItemViewModel>
 @{
     ViewData["Title"] = "منوی رستوران";
     var placeholder = Url.Content("~/images/food_placeholder.jpg");

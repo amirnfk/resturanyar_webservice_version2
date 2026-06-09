@@ -67,8 +67,8 @@ var currentOwnerId = parseInt(currentOwnerId) || 0;
     type: "POST",
     contentType: "application/json",
     headers: {
-        // هدرهای مورد نیاز
-        // 'Authorization': 'Bearer ' + yourToken,
+        
+            
         'X-Requested-With': 'XMLHttpRequest'
                     },
     data: JSON.stringify(payload),
@@ -79,7 +79,7 @@ var currentOwnerId = parseInt(currentOwnerId) || 0;
     setTimeout(function() {
                                 if (res.restaurant_id) {
         // انتقال به صفحه مدیریت رستوران جدید
-        window.location.href = '/Restaurant/Manage/' + res.restaurant_id;
+        window.location.href = '/Home/Dashboard/' + res.restaurant_id;
                                 } else {
         location.reload();
                                 }
