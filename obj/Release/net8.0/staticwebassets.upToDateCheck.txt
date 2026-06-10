@@ -23,9 +23,8 @@ wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.woff
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
-wwwroot\css\home.css
 wwwroot\css\jalalidatepicker.min.css
-wwwroot\js\managerlogin.js
+wwwroot\css\managerlogin.css
 wwwroot\css\ownerlogin.css
 wwwroot\css\share.css
 wwwroot\css\site.css
@@ -84,7 +83,7 @@ wwwroot\js\home.js
 wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
-wwwroot\css\managerlogin.css
+wwwroot\js\managerlogin.js
 wwwroot\js\persian-date.min.js
 wwwroot\js\site.js
 wwwroot\js\sweetalert2@11.js
@@ -151,3 +150,4 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
+wwwroot\css\home.css

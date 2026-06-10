@@ -454,10 +454,85 @@
     }
 
     }
+
+    .restaurant-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 122, 26, 0.12);
+        backdrop-filter: blur(8px);
+        padding: 6px 18px;
+        border-radius: 100px;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--primary);
+        border: 1px solid rgba(255, 122, 26, 0.2);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .restaurant-name-glow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #ff7a1a, #ff9e53);
+        padding: 8px 24px;
+        border-radius: 60px;
+        margin-bottom: 16px;
+        box-shadow: 0 10px 25px -5px rgba(255, 122, 26, 0.4);
+    }
+
+    .glow-text {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: white;
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .star-icon {
+        color: #ffd700;
+        font-size: 1.2rem;
+        filter: drop-shadow(0 0 4px rgba(255,215,0,0.6));
+    }
+
+    .title {
+        font-weight: 900;
+        font-size: clamp(22px,6vw,40px);
+        background: linear-gradient(135deg, #212529, #4a4e54);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
 </style>
 
 <section class="menu-hero">
-    <h1 class="title">منوی رستوران</h1>
+    <section class="menu-hero">
+        <div class="hero-content">
+            <div class="restaurant-name-glow">
+               
+                <span class="glow-text">  منوی @ViewBag.RestaurantName  </span>
+              
+            </div>
+           
+            <p class="subtitle">✨ طعم‌های خاص، لحظه‌های به‌یادماندنی ✨</p>
+        </div>
+        <div class="blob"></div>
+    </section>
+   
+    
     <div class="blob"></div>
 </section>
 

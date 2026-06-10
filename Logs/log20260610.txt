@@ -1,0 +1,1056 @@
+2026-06-10 19:51:54.556 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 19:51:54.655 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 19:51:54.655 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 19:51:54.697 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 19:51:54.698 +03:30 [INF] Hosting environment: Development
+2026-06-10 19:51:54.698 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 19:51:56.300 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 19:51:56.395 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:51:56.405 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 19:51:56.477 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 19:51:56.523 +03:30 [INF] Executed ViewResult - view Index executed in 51.1443ms.
+2026-06-10 19:51:56.525 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 119.4798ms
+2026-06-10 19:51:56.525 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:51:56.529 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 229.7356ms
+2026-06-10 19:51:56.541 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 19:51:56.541 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ - null null
+2026-06-10 19:51:56.541 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 19:51:56.543 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.8503ms
+2026-06-10 19:51:56.550 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 19:51:56.550 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ - 200 11735 text/css 8.6636ms
+2026-06-10 19:51:56.565 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 23.3103ms
+2026-06-10 19:53:33.548 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-06-10 19:53:33.557 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 19:53:33.561 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 19:53:33.572 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-06-10 19:53:33.747 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 176.4276ms.
+2026-06-10 19:53:33.748 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 186.6245ms
+2026-06-10 19:53:33.748 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 19:53:33.748 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 200.1236ms
+2026-06-10 19:53:33.777 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 19:53:33.777 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css - null null
+2026-06-10 19:53:33.778 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/share.css?v=-p7intX_1JUUGfd_-MGwjfvfFcnmmcuFGEKqsnR2H4k - null null
+2026-06-10 19:53:33.778 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 19:53:33.778 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/site.css?v=amyhq2i3NsIUdo113Jym3w21YmCbJbbolKLTqoEMswU - null null
+2026-06-10 19:53:33.778 +03:30 [INF] The file /css/share.css was not modified
+2026-06-10 19:53:33.779 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/share.css?v=-p7intX_1JUUGfd_-MGwjfvfFcnmmcuFGEKqsnR2H4k - 304 null text/css 1.1707ms
+2026-06-10 19:53:33.779 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/managerlogin.js?v=jEMzonXNnmx_XHMk-5qhuBNLoLAymrnpmJ1_BsdXZPw - null null
+2026-06-10 19:53:33.780 +03:30 [INF] The file /js/managerlogin.js was not modified
+2026-06-10 19:53:33.780 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/managerlogin.js?v=jEMzonXNnmx_XHMk-5qhuBNLoLAymrnpmJ1_BsdXZPw - 304 null text/javascript 0.5759ms
+2026-06-10 19:53:33.780 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.5944ms
+2026-06-10 19:53:33.783 +03:30 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\site.css'
+2026-06-10 19:53:33.783 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/site.css?v=amyhq2i3NsIUdo113Jym3w21YmCbJbbolKLTqoEMswU - 200 1524 text/css 5.3127ms
+2026-06-10 19:53:33.785 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css - 404 0 null 7.6441ms
+2026-06-10 19:53:33.786 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 7.9153ms
+2026-06-10 19:53:33.786 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/resturanyar.styles.css, Response status code: 404
+2026-06-10 19:53:35.133 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 19:53:35.133 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.4255ms
+2026-06-10 19:55:57.505 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 19:55:57.581 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 19:55:57.581 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 19:55:57.622 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 19:55:57.622 +03:30 [INF] Hosting environment: Development
+2026-06-10 19:55:57.622 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 19:55:58.134 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 19:55:58.223 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:55:58.229 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 19:55:58.280 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 19:55:58.316 +03:30 [INF] Executed ViewResult - view Index executed in 37.3649ms.
+2026-06-10 19:55:58.317 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 88.215ms
+2026-06-10 19:55:58.317 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:55:58.320 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 187.4415ms
+2026-06-10 19:55:58.401 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 19:55:58.404 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 3.4284ms
+2026-06-10 19:55:58.419 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 19:55:58.435 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.4221ms
+2026-06-10 19:56:07.174 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 19:56:07.246 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 19:56:07.246 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 19:56:07.287 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 19:56:07.287 +03:30 [INF] Hosting environment: Development
+2026-06-10 19:56:07.287 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 19:56:07.864 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 19:56:07.926 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:56:07.933 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 19:56:07.987 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 19:56:08.023 +03:30 [INF] Executed ViewResult - view Index executed in 37.8361ms.
+2026-06-10 19:56:08.024 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 91.4604ms
+2026-06-10 19:56:08.025 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 19:56:08.027 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 163.8355ms
+2026-06-10 19:56:08.042 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 19:56:08.047 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 19:56:08.049 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.4968ms
+2026-06-10 19:56:08.055 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.4909ms
+2026-06-10 20:01:30.863 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ&__browserLink_refresh=1a033be9d8fe4b9ebf7358363f2b10ab - null null
+2026-06-10 20:01:30.872 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:01:30.872 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ&__browserLink_refresh=1a033be9d8fe4b9ebf7358363f2b10ab - 200 14256 text/css 8.5903ms
+2026-06-10 20:01:33.241 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:01:33.316 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:01:33.316 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:01:33.357 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:01:33.357 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:01:33.357 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:01:33.841 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:01:33.903 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:01:33.909 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:01:33.965 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:01:33.999 +03:30 [INF] Executed ViewResult - view Index executed in 36.0534ms.
+2026-06-10 20:01:34.000 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 90.8171ms
+2026-06-10 20:01:34.001 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:01:34.004 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 163.4584ms
+2026-06-10 20:01:34.054 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=Phy2y9KFPssoTgI1GqNgNWpntMj2vFBgbAPhwNqWu1Q - null null
+2026-06-10 20:01:34.060 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:01:34.060 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=Phy2y9KFPssoTgI1GqNgNWpntMj2vFBgbAPhwNqWu1Q - 200 14256 text/css 6.2738ms
+2026-06-10 20:01:34.073 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:01:34.075 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.5046ms
+2026-06-10 20:01:34.084 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:01:34.097 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.5249ms
+2026-06-10 20:02:13.035 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=Phy2y9KFPssoTgI1GqNgNWpntMj2vFBgbAPhwNqWu1Q&__browserLink_refresh=9cca48d3f1a548e5bff4967177cdb3ea - null null
+2026-06-10 20:02:13.036 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:02:13.036 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=Phy2y9KFPssoTgI1GqNgNWpntMj2vFBgbAPhwNqWu1Q&__browserLink_refresh=9cca48d3f1a548e5bff4967177cdb3ea - 200 14734 text/css 1.6267ms
+2026-06-10 20:02:13.734 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:02:13.809 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:02:13.809 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:02:13.850 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:02:13.850 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:02:13.850 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:02:14.108 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:02:14.165 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:02:14.171 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:02:14.226 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:02:14.258 +03:30 [INF] Executed ViewResult - view Index executed in 34.0637ms.
+2026-06-10 20:02:14.259 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 87.4387ms
+2026-06-10 20:02:14.259 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:02:14.262 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 154.2622ms
+2026-06-10 20:02:14.298 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=2314_Zx5P-X8fTIoHnmzZY2_EulP5j8bWKW19UcYrE4 - null null
+2026-06-10 20:02:14.305 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:02:14.305 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=2314_Zx5P-X8fTIoHnmzZY2_EulP5j8bWKW19UcYrE4 - 200 14734 text/css 7.0371ms
+2026-06-10 20:02:14.327 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:02:14.329 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.6204ms
+2026-06-10 20:02:14.343 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:02:14.357 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.639ms
+2026-06-10 20:05:23.989 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:05:24.064 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:05:24.064 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:05:24.107 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:05:24.107 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:05:24.107 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:05:24.724 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:05:24.790 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:05:24.796 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:05:24.857 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:05:24.893 +03:30 [INF] Executed ViewResult - view Index executed in 37.6289ms.
+2026-06-10 20:05:24.894 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 97.5811ms
+2026-06-10 20:05:24.894 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:05:24.898 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 174.7162ms
+2026-06-10 20:05:24.910 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:05:24.910 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:05:24.912 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.7486ms
+2026-06-10 20:05:24.925 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 15.108ms
+2026-06-10 20:06:38.534 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:06:38.607 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:06:38.607 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:06:38.649 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:06:38.650 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:06:38.650 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:06:38.901 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:06:38.957 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:06:38.964 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:06:39.018 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:06:39.050 +03:30 [INF] Executed ViewResult - view Index executed in 34.624ms.
+2026-06-10 20:06:39.052 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 87.6912ms
+2026-06-10 20:06:39.052 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:06:39.055 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 154.6036ms
+2026-06-10 20:06:39.134 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:06:39.137 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 3.5164ms
+2026-06-10 20:06:39.151 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:06:39.165 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.4317ms
+2026-06-10 20:07:32.437 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:07:32.439 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 2.4964ms
+2026-06-10 20:07:32.440 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:07:32.489 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:07:32.492 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.9117ms
+2026-06-10 20:07:32.492 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:07:32.676 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:07:32.676 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.488ms
+2026-06-10 20:07:32.676 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:08:29.899 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:08:29.978 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:08:29.978 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:08:30.032 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:08:30.033 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:08:30.033 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:08:30.505 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:08:30.557 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:08:30.563 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:08:30.621 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:08:30.653 +03:30 [INF] Executed ViewResult - view Index executed in 34.3187ms.
+2026-06-10 20:08:30.654 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 91.6706ms
+2026-06-10 20:08:30.655 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:08:30.658 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 153.755ms
+2026-06-10 20:08:30.670 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:08:30.670 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:08:30.670 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:08:30.673 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.6748ms
+2026-06-10 20:08:30.675 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 4.4706ms
+2026-06-10 20:08:30.675 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:08:30.687 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.8937ms
+2026-06-10 20:08:30.729 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:08:30.732 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.6992ms
+2026-06-10 20:08:30.732 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:08:30.851 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:08:30.851 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.4211ms
+2026-06-10 20:08:30.851 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:14:24.044 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:14:24.117 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:14:24.117 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:14:24.158 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:14:24.159 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:14:24.159 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:14:24.674 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:14:24.727 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:14:24.733 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:14:24.784 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:14:24.815 +03:30 [INF] Executed ViewResult - view Index executed in 33.4245ms.
+2026-06-10 20:14:24.817 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 83.8153ms
+2026-06-10 20:14:24.817 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:14:24.820 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 146.444ms
+2026-06-10 20:14:24.893 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:14:24.895 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.4501ms
+2026-06-10 20:14:24.909 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:14:24.921 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.9659ms
+2026-06-10 20:16:01.971 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:16:01.974 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 3.7471ms
+2026-06-10 20:16:01.975 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:16:02.013 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:16:02.018 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 4.269ms
+2026-06-10 20:16:02.018 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:16:02.237 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:16:02.237 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.5997ms
+2026-06-10 20:16:02.237 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:16:47.019 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ&__browserLink_refresh=6582da7b44344ca0a04f160e1ba21277 - null null
+2026-06-10 20:16:47.024 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:16:47.024 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=gKC3Q_e0tFoSvyE4z7bJ2MGxGGntEGwzubTP3yZaudQ&__browserLink_refresh=6582da7b44344ca0a04f160e1ba21277 - 200 11733 text/css 5.9074ms
+2026-06-10 20:16:47.678 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:16:47.750 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:16:47.751 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:16:47.791 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:16:47.791 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:16:47.791 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:16:48.036 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:16:48.094 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:16:48.100 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:16:48.153 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:16:48.184 +03:30 [INF] Executed ViewResult - view Index executed in 32.9726ms.
+2026-06-10 20:16:48.185 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 85.4913ms
+2026-06-10 20:16:48.186 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:16:48.188 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 152.4778ms
+2026-06-10 20:16:48.239 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=wRTVKtbam5U3gET0sXY-Vn_zGvmyUb8CVeT_8hNfDGI - null null
+2026-06-10 20:16:48.244 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:16:48.245 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 1.7202ms
+2026-06-10 20:16:48.246 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:16:48.246 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:16:48.246 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=wRTVKtbam5U3gET0sXY-Vn_zGvmyUb8CVeT_8hNfDGI - 200 11733 text/css 7.2153ms
+2026-06-10 20:16:48.257 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:16:48.258 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.5088ms
+2026-06-10 20:16:48.271 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:16:48.285 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.7462ms
+2026-06-10 20:16:48.326 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:16:48.328 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.6479ms
+2026-06-10 20:16:48.328 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:16:48.341 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:16:48.341 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.3597ms
+2026-06-10 20:16:48.342 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:17:24.718 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=wRTVKtbam5U3gET0sXY-Vn_zGvmyUb8CVeT_8hNfDGI&__browserLink_refresh=eeef3686c5ad4f3d89cfd124785e98ee - null null
+2026-06-10 20:17:24.720 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:17:24.720 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=wRTVKtbam5U3gET0sXY-Vn_zGvmyUb8CVeT_8hNfDGI&__browserLink_refresh=eeef3686c5ad4f3d89cfd124785e98ee - 200 11714 text/css 1.2032ms
+2026-06-10 20:17:25.380 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:17:25.455 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:17:25.456 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:17:25.495 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:17:25.495 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:17:25.495 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:17:25.719 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:17:25.774 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:17:25.780 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:17:25.835 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:17:25.868 +03:30 [INF] Executed ViewResult - view Index executed in 34.7228ms.
+2026-06-10 20:17:25.869 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 88.9218ms
+2026-06-10 20:17:25.870 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:17:25.872 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 153.8528ms
+2026-06-10 20:17:25.908 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=dazpC3hmsDUI_g14BWGayhlnh4val9uqVIPPFbg3bHU - null null
+2026-06-10 20:17:25.910 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:17:25.913 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 2.4483ms
+2026-06-10 20:17:25.913 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:17:25.914 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:17:25.915 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=dazpC3hmsDUI_g14BWGayhlnh4val9uqVIPPFbg3bHU - 200 11714 text/css 6.914ms
+2026-06-10 20:17:25.924 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:17:25.926 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.5476ms
+2026-06-10 20:17:25.935 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:17:25.948 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.3721ms
+2026-06-10 20:17:26.008 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:17:26.011 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 3.2932ms
+2026-06-10 20:17:26.012 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:17:26.124 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:17:26.125 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.3539ms
+2026-06-10 20:17:26.125 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:18:17.315 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=dazpC3hmsDUI_g14BWGayhlnh4val9uqVIPPFbg3bHU&__browserLink_refresh=fec69109f8d744549e25afcf451d7951 - null null
+2026-06-10 20:18:17.317 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:18:17.317 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=dazpC3hmsDUI_g14BWGayhlnh4val9uqVIPPFbg3bHU&__browserLink_refresh=fec69109f8d744549e25afcf451d7951 - 200 11729 text/css 1.5638ms
+2026-06-10 20:18:17.951 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:18:18.026 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:18:18.026 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:18:18.067 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:18:18.068 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:18:18.068 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:18:18.281 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:18:18.334 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:18:18.341 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:18:18.395 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:18:18.426 +03:30 [INF] Executed ViewResult - view Index executed in 32.8396ms.
+2026-06-10 20:18:18.428 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 87.0599ms
+2026-06-10 20:18:18.428 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:18:18.432 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 152.0996ms
+2026-06-10 20:18:18.464 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:18:18.466 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 2.0587ms
+2026-06-10 20:18:18.466 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:18:18.469 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=CKPYHGm2J4HuFbaLlzxY0-k75kR_DRhPaw8adQJFxTc - null null
+2026-06-10 20:18:18.476 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:18:18.476 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=CKPYHGm2J4HuFbaLlzxY0-k75kR_DRhPaw8adQJFxTc - 200 11729 text/css 6.3917ms
+2026-06-10 20:18:18.527 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:18:18.528 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:18:18.532 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 3.7166ms
+2026-06-10 20:18:18.533 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 5.7427ms
+2026-06-10 20:18:18.533 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:18:18.555 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:18:18.567 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.0601ms
+2026-06-10 20:18:18.647 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:18:18.647 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.3647ms
+2026-06-10 20:18:18.647 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:21:03.862 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=CKPYHGm2J4HuFbaLlzxY0-k75kR_DRhPaw8adQJFxTc&__browserLink_refresh=5692abc283be46e9ad0d6299d2981064 - null null
+2026-06-10 20:21:03.863 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:21:03.863 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=CKPYHGm2J4HuFbaLlzxY0-k75kR_DRhPaw8adQJFxTc&__browserLink_refresh=5692abc283be46e9ad0d6299d2981064 - 200 11733 text/css 1.2604ms
+2026-06-10 20:21:04.521 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:21:04.602 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:21:04.603 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:21:04.646 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:21:04.646 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:21:04.646 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:21:04.847 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:21:04.902 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:21:04.910 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:21:04.969 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:21:05.004 +03:30 [INF] Executed ViewResult - view Index executed in 36.8022ms.
+2026-06-10 20:21:05.006 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 95.4701ms
+2026-06-10 20:21:05.006 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:21:05.009 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 162.9993ms
+2026-06-10 20:21:05.044 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=uvKhpCPBthdGypkpCtjuHPVkKVSGqebIAVpuMvccfgY - null null
+2026-06-10 20:21:05.046 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:21:05.048 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 1.7866ms
+2026-06-10 20:21:05.048 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:21:05.051 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:21:05.051 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=uvKhpCPBthdGypkpCtjuHPVkKVSGqebIAVpuMvccfgY - 200 11733 text/css 7.3591ms
+2026-06-10 20:21:05.063 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:21:05.064 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.5136ms
+2026-06-10 20:21:05.080 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:21:05.093 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.2254ms
+2026-06-10 20:21:05.135 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:21:05.138 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Bold.woff2 - null null
+2026-06-10 20:21:05.138 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.5133ms
+2026-06-10 20:21:05.138 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:21:05.140 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:21:05.142 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:21:05.142 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.4021ms
+2026-06-10 20:21:05.142 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Bold.woff2 - 404 0 null 4.3852ms
+2026-06-10 20:21:05.142 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:21:05.142 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Bold.woff2, Response status code: 404
+2026-06-10 20:21:05.171 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Black.woff2 - null null
+2026-06-10 20:21:05.171 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Regular.woff2 - null null
+2026-06-10 20:21:05.172 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:21:05.172 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:21:05.172 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Regular.woff2 - 404 0 null 1.1682ms
+2026-06-10 20:21:05.172 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Black.woff2 - 404 0 null 1.1884ms
+2026-06-10 20:21:05.172 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Black.woff2, Response status code: 404
+2026-06-10 20:21:05.172 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Regular.woff2, Response status code: 404
+2026-06-10 20:21:05.188 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-ExtraBold.woff2 - null null
+2026-06-10 20:21:05.188 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Medium.woff2 - null null
+2026-06-10 20:21:05.188 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:21:05.188 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:21:05.188 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Medium.woff2 - 404 0 null 0.3317ms
+2026-06-10 20:21:05.188 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-Medium.woff2, Response status code: 404
+2026-06-10 20:21:05.188 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-ExtraBold.woff2 - 404 0 null 0.4369ms
+2026-06-10 20:21:05.189 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/fonts/webfonts/Vazirmatn-ExtraBold.woff2, Response status code: 404
+2026-06-10 20:31:00.850 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:31:00.923 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:31:00.923 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:31:00.962 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:31:00.963 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:31:00.963 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:31:01.508 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:31:01.577 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:31:01.584 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:31:01.646 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:31:01.684 +03:30 [INF] Executed ViewResult - view Index executed in 40.5695ms.
+2026-06-10 20:31:01.685 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 100.9273ms
+2026-06-10 20:31:01.686 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:31:01.689 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 181.814ms
+2026-06-10 20:31:01.703 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - null null
+2026-06-10 20:31:01.709 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:31:01.710 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - 200 12142 text/css 7.008ms
+2026-06-10 20:31:01.712 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:31:01.714 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.752ms
+2026-06-10 20:31:01.717 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:31:01.725 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2026-06-10 20:31:01.727 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:01.730 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - 404 0 null 4.8207ms
+2026-06-10 20:31:01.730 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff, Response status code: 404
+2026-06-10 20:31:01.731 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.9889ms
+2026-06-10 20:31:01.754 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-06-10 20:31:01.754 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:01.757 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - 404 0 null 2.7718ms
+2026-06-10 20:31:01.757 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff, Response status code: 404
+2026-06-10 20:31:12.531 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:31:12.537 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:31:12.537 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:31:12.544 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:31:12.552 +03:30 [INF] Executed ViewResult - view Index executed in 7.5552ms.
+2026-06-10 20:31:12.552 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 14.4458ms
+2026-06-10 20:31:12.552 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:31:12.552 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 21.0338ms
+2026-06-10 20:31:12.574 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - null null
+2026-06-10 20:31:12.574 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - null null
+2026-06-10 20:31:12.574 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/all.min.css - null null
+2026-06-10 20:31:12.574 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - null null
+2026-06-10 20:31:12.575 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2026-06-10 20:31:12.575 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - null null
+2026-06-10 20:31:12.575 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:31:12.575 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - null null
+2026-06-10 20:31:12.575 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:31:12.576 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:31:12.576 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - 200 12142 text/css 2.2048ms
+2026-06-10 20:31:12.576 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.8971ms
+2026-06-10 20:31:12.576 +03:30 [INF] Sending file. Request path: '/css/Vazirmatn_font_face.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\Vazirmatn_font_face.css'
+2026-06-10 20:31:12.576 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - 200 1676 text/css 2.7027ms
+2026-06-10 20:31:12.576 +03:30 [INF] Sending file. Request path: '/js/home.js'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\js\home.js'
+2026-06-10 20:31:12.577 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - 200 2910 text/javascript 2.0772ms
+2026-06-10 20:31:12.578 +03:30 [INF] Sending file. Request path: '/js/bootstrap.bundle.min.js'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\js\bootstrap.bundle.min.js'
+2026-06-10 20:31:12.579 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - 200 80727 text/javascript 3.2571ms
+2026-06-10 20:31:12.579 +03:30 [INF] Sending file. Request path: '/css/all.min.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\all.min.css'
+2026-06-10 20:31:12.579 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/all.min.css - 200 102534 text/css 4.9143ms
+2026-06-10 20:31:12.581 +03:30 [INF] Sending file. Request path: '/css/bootstrap_rtl_min.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\bootstrap_rtl_min.css'
+2026-06-10 20:31:12.581 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - 200 232916 text/css 7.4222ms
+2026-06-10 20:31:12.584 +03:30 [INF] Sending file. Request path: '/images/logo.png'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\images\logo.png'
+2026-06-10 20:31:12.584 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 200 546277 image/png 9.5456ms
+2026-06-10 20:31:12.585 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.4921ms
+2026-06-10 20:31:12.613 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2026-06-10 20:31:12.613 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - null null
+2026-06-10 20:31:12.613 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-06-10 20:31:12.613 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - null null
+2026-06-10 20:31:12.613 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:12.613 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:12.613 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:12.613 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:31:12.616 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - 404 0 null 3.0843ms
+2026-06-10 20:31:12.616 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - 404 0 null 3.1336ms
+2026-06-10 20:31:12.616 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff, Response status code: 404
+2026-06-10 20:31:12.616 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff, Response status code: 404
+2026-06-10 20:31:12.617 +03:30 [INF] Sending file. Request path: '/webfonts/fa-brands-400.woff2'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\webfonts\fa-brands-400.woff2'
+2026-06-10 20:31:12.617 +03:30 [INF] Sending file. Request path: '/webfonts/fa-solid-900.woff2'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\webfonts\fa-solid-900.woff2'
+2026-06-10 20:31:12.617 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - 200 117852 font/woff2 4.4848ms
+2026-06-10 20:31:12.618 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - 200 110892 font/woff2 4.5953ms
+2026-06-10 20:31:12.638 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - null null
+2026-06-10 20:31:12.640 +03:30 [INF] Sending file. Request path: '/images/tabletfoodlist.jpg'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\images\tabletfoodlist.jpg'
+2026-06-10 20:31:12.640 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tabletfoodlist.jpg - 200 59361 image/jpeg 2.2647ms
+2026-06-10 20:31:12.641 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/tablethome.jpg - null null
+2026-06-10 20:31:12.643 +03:30 [INF] Sending file. Request path: '/images/tablethome.jpg'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\images\tablethome.jpg'
+2026-06-10 20:31:12.643 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/tablethome.jpg - 200 39408 image/jpeg 1.3462ms
+2026-06-10 20:31:12.734 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/favicon.ico - null null
+2026-06-10 20:31:12.735 +03:30 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\favicon.ico'
+2026-06-10 20:31:12.735 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/favicon.ico - 200 5430 image/x-icon 0.9161ms
+2026-06-10 20:31:15.389 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - null null
+2026-06-10 20:31:15.391 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:31:15.391 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - 304 null text/css 1.4612ms
+2026-06-10 20:31:15.400 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:31:15.400 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 0.5722ms
+2026-06-10 20:31:15.400 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:31:15.431 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:31:15.431 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 0.491ms
+2026-06-10 20:31:15.431 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:31:15.673 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:31:15.674 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 1.0419ms
+2026-06-10 20:31:15.674 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:35:33.797 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:35:33.801 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:35:33.801 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:35:33.808 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:35:33.810 +03:30 [INF] Executed ViewResult - view Index executed in 3.3513ms.
+2026-06-10 20:35:33.810 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 9.6948ms
+2026-06-10 20:35:33.811 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:35:33.811 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 14.2085ms
+2026-06-10 20:35:33.839 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - null null
+2026-06-10 20:35:33.840 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:35:33.840 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:35:33.840 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k - 304 null text/css 0.3645ms
+2026-06-10 20:35:33.840 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.2815ms
+2026-06-10 20:35:33.840 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:35:33.850 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.5917ms
+2026-06-10 20:35:33.872 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:35:33.873 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 0.6162ms
+2026-06-10 20:35:33.873 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:35:33.880 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-06-10 20:35:33.880 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2026-06-10 20:35:33.880 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:35:33.880 +03:30 [INF] CORS policy execution successful.
+2026-06-10 20:35:33.881 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff - 404 0 null 1.3299ms
+2026-06-10 20:35:33.881 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff - 404 0 null 1.3298ms
+2026-06-10 20:35:33.881 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebboldfanum.woff, Response status code: 404
+2026-06-10 20:35:33.881 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/~/fonts/iranyekan/iranyekanwebregularfanum.woff, Response status code: 404
+2026-06-10 20:35:33.913 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:35:33.913 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 0.5975ms
+2026-06-10 20:35:33.913 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:35:34.015 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:35:34.020 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 5.4678ms
+2026-06-10 20:35:34.020 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:36:02.489 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k&__browserLink_refresh=1220548fee294136ac881eb034139e76 - null null
+2026-06-10 20:36:02.489 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:36:02.489 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ZTIrEZkr5jFboPTxTfXlVcMw7It6DNIBJ9Wda3Q6V0k&__browserLink_refresh=1220548fee294136ac881eb034139e76 - 200 12140 text/css 0.5377ms
+2026-06-10 20:36:03.147 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:36:03.222 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:36:03.222 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:36:03.265 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:36:03.265 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:36:03.265 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:36:03.522 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:36:03.591 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:36:03.598 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:36:03.651 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:36:03.683 +03:30 [INF] Executed ViewResult - view Index executed in 34.8318ms.
+2026-06-10 20:36:03.685 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 86.7934ms
+2026-06-10 20:36:03.685 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:36:03.687 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 166.7574ms
+2026-06-10 20:36:03.734 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - null null
+2026-06-10 20:36:03.748 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:36:03.748 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - 200 12140 text/css 14.0222ms
+2026-06-10 20:36:03.752 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:36:03.755 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.7052ms
+2026-06-10 20:36:03.770 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:36:03.786 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.4106ms
+2026-06-10 20:36:03.805 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:36:03.808 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 2.7623ms
+2026-06-10 20:36:03.808 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:36:03.878 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:36:03.883 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 5.2434ms
+2026-06-10 20:36:03.884 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:36:04.062 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:36:04.063 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.9185ms
+2026-06-10 20:36:04.063 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:36:08.876 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:36:08.877 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:36:08.878 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:36:08.882 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:36:08.885 +03:30 [INF] Executed ViewResult - view Index executed in 3.7716ms.
+2026-06-10 20:36:08.886 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 7.9364ms
+2026-06-10 20:36:08.886 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:36:08.886 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 10.4176ms
+2026-06-10 20:36:08.912 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - null null
+2026-06-10 20:36:08.912 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:36:08.912 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:36:08.913 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:36:08.913 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.3866ms
+2026-06-10 20:36:08.913 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - 304 null text/css 1.0658ms
+2026-06-10 20:36:08.916 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:36:08.917 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 0.5198ms
+2026-06-10 20:36:08.917 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:36:08.918 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 5.0893ms
+2026-06-10 20:36:08.953 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:36:08.953 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 0.5348ms
+2026-06-10 20:36:08.953 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:36:08.979 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:36:08.979 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.4376ms
+2026-06-10 20:36:08.979 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:42:16.946 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - null null
+2026-06-10 20:42:16.946 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:42:16.946 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - 304 null text/css 0.4827ms
+2026-06-10 20:42:16.949 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:42:16.950 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 0.8288ms
+2026-06-10 20:42:16.950 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:42:16.980 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:42:16.981 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 0.4329ms
+2026-06-10 20:42:16.981 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:42:17.127 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:42:17.128 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.9621ms
+2026-06-10 20:42:17.128 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:48:45.101 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:48:45.172 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:48:45.172 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:48:45.223 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:48:45.224 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:48:45.224 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:48:45.248 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:48:45.301 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:48:45.308 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:48:45.364 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:48:45.395 +03:30 [INF] Executed ViewResult - view Index executed in 33.1099ms.
+2026-06-10 20:48:45.396 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 87.9195ms
+2026-06-10 20:48:45.397 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:48:45.400 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 153.4983ms
+2026-06-10 20:48:45.414 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:48:45.414 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - null null
+2026-06-10 20:48:45.414 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:48:45.415 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.7165ms
+2026-06-10 20:48:45.416 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:48:45.416 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - 304 null text/css 2.5298ms
+2026-06-10 20:48:45.419 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 20:48:45.420 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 1.8652ms
+2026-06-10 20:48:45.421 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 20:48:45.438 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 24.7687ms
+2026-06-10 20:48:45.458 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 20:48:45.460 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.4609ms
+2026-06-10 20:48:45.460 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 20:48:45.534 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 20:48:45.534 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.3876ms
+2026-06-10 20:48:45.534 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 20:50:28.050 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:50:28.121 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:50:28.121 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:50:28.162 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:50:28.162 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:50:28.162 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:50:28.726 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:50:28.793 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:50:28.800 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:50:28.871 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:50:28.912 +03:30 [INF] Executed ViewResult - view Index executed in 45.9152ms.
+2026-06-10 20:50:28.915 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 113.9545ms
+2026-06-10 20:50:28.915 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:50:28.919 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 194.4734ms
+2026-06-10 20:50:28.932 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - null null
+2026-06-10 20:50:28.935 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:50:28.935 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE - 304 null text/css 3.0872ms
+2026-06-10 20:50:28.942 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:50:28.944 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.9505ms
+2026-06-10 20:50:28.949 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:50:28.962 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.2072ms
+2026-06-10 20:50:34.282 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-06-10 20:50:34.286 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 20:50:34.288 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:50:34.292 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-06-10 20:50:34.344 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 52.1803ms.
+2026-06-10 20:50:34.344 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 56.3335ms
+2026-06-10 20:50:34.344 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 20:50:34.344 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 61.7749ms
+2026-06-10 20:50:34.366 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css - null null
+2026-06-10 20:50:34.367 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:50:34.367 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.4414ms
+2026-06-10 20:50:34.367 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:50:34.370 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css - 404 0 null 4.1468ms
+2026-06-10 20:50:34.371 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/resturanyar.styles.css, Response status code: 404
+2026-06-10 20:50:34.374 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 6.9983ms
+2026-06-10 20:50:44.810 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:50:44.882 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:50:44.882 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:50:44.927 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:50:44.928 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:50:44.928 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:50:44.936 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/Home/ManagerLogin - null null
+2026-06-10 20:50:44.989 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 20:50:44.995 +03:30 [INF] Route matched with {action = "ManagerLogin", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult ManagerLogin() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:50:45.049 +03:30 [INF] Executing ViewResult, running view ManagerLogin.
+2026-06-10 20:50:45.117 +03:30 [INF] Executed ViewResult - view ManagerLogin executed in 70.2756ms.
+2026-06-10 20:50:45.119 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.ManagerLogin (resturanyar) in 123.6764ms
+2026-06-10 20:50:45.119 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.ManagerLogin (resturanyar)'
+2026-06-10 20:50:45.122 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/Home/ManagerLogin - 200 null text/html; charset=utf-8 186.8103ms
+2026-06-10 20:50:45.152 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:50:45.152 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/resturanyar.styles.css - null null
+2026-06-10 20:50:45.152 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:50:45.155 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.7651ms
+2026-06-10 20:50:45.156 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/resturanyar.styles.css - 404 0 null 3.5894ms
+2026-06-10 20:50:45.156 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/resturanyar.styles.css, Response status code: 404
+2026-06-10 20:50:45.168 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 15.7214ms
+2026-06-10 20:50:54.662 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:50:54.668 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:50:54.671 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:50:54.682 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:50:54.711 +03:30 [INF] Executed ViewResult - view Index executed in 30.3646ms.
+2026-06-10 20:50:54.712 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 40.9139ms
+2026-06-10 20:50:54.712 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:50:54.712 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 49.7771ms
+2026-06-10 20:50:54.731 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:50:54.731 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:50:54.732 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 0.7757ms
+2026-06-10 20:50:54.743 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.8677ms
+2026-06-10 20:51:42.173 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=51508b515e0241f58e6cebd7baa799b7 - null null
+2026-06-10 20:51:42.173 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=c9dc84930ff74e70ba27e681143883d0 - null null
+2026-06-10 20:51:42.179 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:51:42.179 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:51:42.179 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=c9dc84930ff74e70ba27e681143883d0 - 200 11939 text/css 6.4262ms
+2026-06-10 20:51:42.179 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=51508b515e0241f58e6cebd7baa799b7 - 200 11939 text/css 6.437ms
+2026-06-10 20:51:44.324 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:51:44.398 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:51:44.398 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:51:44.439 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:51:44.439 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:51:44.439 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:51:44.932 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:51:44.985 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:51:44.991 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:51:45.044 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:51:45.076 +03:30 [INF] Executed ViewResult - view Index executed in 33.1982ms.
+2026-06-10 20:51:45.077 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 85.5181ms
+2026-06-10 20:51:45.077 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:51:45.081 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 149.9297ms
+2026-06-10 20:51:45.122 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=zWmQnK-x4eTkw_Ss4er5AU_xVYd2sR-f9C-ydzLyUQg - null null
+2026-06-10 20:51:45.129 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:51:45.129 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=zWmQnK-x4eTkw_Ss4er5AU_xVYd2sR-f9C-ydzLyUQg - 200 11939 text/css 6.9776ms
+2026-06-10 20:51:45.152 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:51:45.156 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 3.3499ms
+2026-06-10 20:51:45.172 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:51:45.184 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.2754ms
+2026-06-10 20:58:49.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=zWmQnK-x4eTkw_Ss4er5AU_xVYd2sR-f9C-ydzLyUQg&__browserLink_refresh=5d61fd2afeae45cfae77dc03d5349c16 - null null
+2026-06-10 20:58:49.567 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=e40e349d031247688913792f5cff175f - null null
+2026-06-10 20:58:49.568 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:58:49.568 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:58:49.569 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=e40e349d031247688913792f5cff175f - 200 12281 text/css 1.4394ms
+2026-06-10 20:58:49.569 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=zWmQnK-x4eTkw_Ss4er5AU_xVYd2sR-f9C-ydzLyUQg&__browserLink_refresh=5d61fd2afeae45cfae77dc03d5349c16 - 200 12281 text/css 1.4547ms
+2026-06-10 20:58:50.253 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:58:50.330 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:58:50.331 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:58:50.373 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:58:50.373 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:58:50.373 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:58:50.582 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:58:50.637 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:58:50.643 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:58:50.699 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:58:50.732 +03:30 [INF] Executed ViewResult - view Index executed in 34.8759ms.
+2026-06-10 20:58:50.734 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 90.7572ms
+2026-06-10 20:58:50.734 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:58:50.737 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 155.7501ms
+2026-06-10 20:58:50.798 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=DdV_bvF3se6o_0732twwAZNY9m8rzqtWwCne3OZdGJU - null null
+2026-06-10 20:58:50.798 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:58:50.799 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:58:50.803 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 4.1048ms
+2026-06-10 20:58:50.808 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:58:50.808 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=DdV_bvF3se6o_0732twwAZNY9m8rzqtWwCne3OZdGJU - 200 12281 text/css 10.4881ms
+2026-06-10 20:58:50.818 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 19.6133ms
+2026-06-10 20:59:17.085 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=DdV_bvF3se6o_0732twwAZNY9m8rzqtWwCne3OZdGJU&__browserLink_refresh=563d5989510546748890bbe1e4b3b7ac - null null
+2026-06-10 20:59:17.085 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=7224e734593545cf8967bdd1f5572547 - null null
+2026-06-10 20:59:17.087 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:59:17.087 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:59:17.087 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=7224e734593545cf8967bdd1f5572547 - 200 12484 text/css 1.6889ms
+2026-06-10 20:59:17.087 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=DdV_bvF3se6o_0732twwAZNY9m8rzqtWwCne3OZdGJU&__browserLink_refresh=563d5989510546748890bbe1e4b3b7ac - 200 12484 text/css 1.7092ms
+2026-06-10 20:59:17.776 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:59:17.848 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:59:17.849 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:59:17.889 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:59:17.889 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:59:17.889 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:59:18.147 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:59:18.221 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:59:18.227 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:59:18.280 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:59:18.313 +03:30 [INF] Executed ViewResult - view Index executed in 35.7269ms.
+2026-06-10 20:59:18.315 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 87.3364ms
+2026-06-10 20:59:18.315 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:59:18.318 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 172.1939ms
+2026-06-10 20:59:18.382 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4 - null null
+2026-06-10 20:59:18.386 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:59:18.386 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:59:18.389 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.2512ms
+2026-06-10 20:59:18.390 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 20:59:18.391 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4 - 200 12484 text/css 8.6292ms
+2026-06-10 20:59:18.405 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 18.7012ms
+2026-06-10 20:59:57.546 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 20:59:57.622 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 20:59:57.622 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 20:59:57.662 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 20:59:57.663 +03:30 [INF] Hosting environment: Development
+2026-06-10 20:59:57.663 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 20:59:58.193 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 20:59:58.249 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:59:58.255 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 20:59:58.311 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 20:59:58.343 +03:30 [INF] Executed ViewResult - view Index executed in 34.1029ms.
+2026-06-10 20:59:58.346 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 91.1946ms
+2026-06-10 20:59:58.347 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 20:59:58.351 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 158.1935ms
+2026-06-10 20:59:58.362 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4 - null null
+2026-06-10 20:59:58.362 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 20:59:58.362 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 20:59:58.364 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.9029ms
+2026-06-10 20:59:58.364 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 20:59:58.365 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4 - 304 null text/css 3.057ms
+2026-06-10 20:59:58.376 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.1693ms
+2026-06-10 21:00:22.228 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=8ef803f6401045f6bcfc11b3cc5a1d6a - null null
+2026-06-10 21:00:22.228 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4&__browserLink_refresh=e165b5d9e0af4e5084cba7d6c75c3ec3 - null null
+2026-06-10 21:00:22.233 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:00:22.233 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:00:22.234 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=0Lgqffcr_SPI_T1q9TqFS9suDmbMhLV601nMfR-0Hs4&__browserLink_refresh=e165b5d9e0af4e5084cba7d6c75c3ec3 - 200 12505 text/css 5.6871ms
+2026-06-10 21:00:22.234 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=8ef803f6401045f6bcfc11b3cc5a1d6a - 200 12505 text/css 5.6922ms
+2026-06-10 21:00:22.886 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:00:22.963 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:00:22.963 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:00:23.005 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:00:23.005 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:00:23.005 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:00:23.274 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:00:23.328 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:00:23.334 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:00:23.386 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:00:23.415 +03:30 [INF] Executed ViewResult - view Index executed in 31.0707ms.
+2026-06-10 21:00:23.417 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 82.3425ms
+2026-06-10 21:00:23.417 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:00:23.420 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 147.4297ms
+2026-06-10 21:00:23.453 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s - null null
+2026-06-10 21:00:23.453 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:00:23.455 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.7878ms
+2026-06-10 21:00:23.460 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:00:23.460 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s - 200 12505 text/css 7.6297ms
+2026-06-10 21:00:23.462 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:00:23.473 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 11.6134ms
+2026-06-10 21:01:03.570 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:01:03.644 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:01:03.644 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:01:03.685 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:01:03.685 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:01:03.685 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:01:04.219 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:01:04.274 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:01:04.281 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:01:04.335 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:01:04.368 +03:30 [INF] Executed ViewResult - view Index executed in 35.1091ms.
+2026-06-10 21:01:04.371 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 90.1035ms
+2026-06-10 21:01:04.372 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:01:04.376 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 158.1794ms
+2026-06-10 21:01:04.387 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s - null null
+2026-06-10 21:01:04.387 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:01:04.387 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:01:04.389 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.6339ms
+2026-06-10 21:01:04.389 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 21:01:04.390 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s - 304 null text/css 2.3867ms
+2026-06-10 21:01:04.404 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.7444ms
+2026-06-10 21:04:14.095 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s&__browserLink_refresh=a5632ed0f0954906b72a74f4f8cc12ae - null null
+2026-06-10 21:04:14.095 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=dd41c8ad50cc4dfa893e082e9bc73be5 - null null
+2026-06-10 21:04:14.100 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:04:14.100 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:04:14.101 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=dd41c8ad50cc4dfa893e082e9bc73be5 - 200 13272 text/css 5.647ms
+2026-06-10 21:04:14.101 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=W2RGfkWkmyq1Ku2NoQ0elyE0yDZTMDnjHUV_WQ2qd5s&__browserLink_refresh=a5632ed0f0954906b72a74f4f8cc12ae - 200 13272 text/css 5.6469ms
+2026-06-10 21:04:16.256 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:04:16.331 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:04:16.331 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:04:16.374 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:04:16.374 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:04:16.374 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:04:16.883 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:04:16.944 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:04:16.950 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:04:17.007 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:04:17.049 +03:30 [INF] Executed ViewResult - view Index executed in 45.0501ms.
+2026-06-10 21:04:17.051 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 100.6225ms
+2026-06-10 21:04:17.051 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:04:17.055 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 172.8539ms
+2026-06-10 21:04:17.067 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - null null
+2026-06-10 21:04:17.068 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:04:17.069 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:04:17.070 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.1952ms
+2026-06-10 21:04:17.075 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:04:17.075 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - 200 13272 text/css 8.0485ms
+2026-06-10 21:04:17.083 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.0205ms
+2026-06-10 21:04:56.196 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:04:56.270 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:04:56.270 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:04:56.312 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:04:56.312 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:04:56.312 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:04:56.772 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:04:56.827 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:04:56.833 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:04:56.888 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:04:56.923 +03:30 [INF] Executed ViewResult - view Index executed in 36.7125ms.
+2026-06-10 21:04:56.926 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 93.0994ms
+2026-06-10 21:04:56.926 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:04:56.930 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 159.0688ms
+2026-06-10 21:04:56.942 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - null null
+2026-06-10 21:04:56.942 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:04:56.945 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:04:56.946 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 3.3442ms
+2026-06-10 21:04:56.946 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 21:04:56.946 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - 304 null text/css 4.0777ms
+2026-06-10 21:04:56.960 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 14.4963ms
+2026-06-10 21:05:29.333 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - null null
+2026-06-10 21:05:29.334 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 21:05:29.334 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA - 304 null text/css 0.8908ms
+2026-06-10 21:05:29.349 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 21:05:29.354 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 5.39ms
+2026-06-10 21:05:29.355 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 21:05:29.370 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 21:05:29.376 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 5.2392ms
+2026-06-10 21:05:29.376 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 21:05:29.633 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 21:05:29.634 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 1.5244ms
+2026-06-10 21:05:29.634 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 21:10:34.942 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA&__browserLink_refresh=ce69fa3de5f74a98975aa94c85c0c3a3 - null null
+2026-06-10 21:10:34.942 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=9c6aa80ecfc94231b06ba2e46d14bbe2 - null null
+2026-06-10 21:10:34.947 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:10:34.947 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:10:34.947 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=9c6aa80ecfc94231b06ba2e46d14bbe2 - 200 13510 text/css 5.5803ms
+2026-06-10 21:10:34.947 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=heMP_5WbCO4KCYbAwcCHJsWWZyzrEOxhcY2rTnaPDWA&__browserLink_refresh=ce69fa3de5f74a98975aa94c85c0c3a3 - 200 13510 text/css 5.5906ms
+2026-06-10 21:10:37.157 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:10:37.235 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:10:37.236 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:10:37.278 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:10:37.278 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:10:37.278 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:10:37.775 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:10:37.841 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:10:37.848 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:10:37.905 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:10:37.942 +03:30 [INF] Executed ViewResult - view Index executed in 38.8659ms.
+2026-06-10 21:10:37.944 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 94.9047ms
+2026-06-10 21:10:37.945 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:10:37.948 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 174.1234ms
+2026-06-10 21:10:37.962 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=Mu5-dHxBbq9wSXJnmFvyRjQuQnQoedQWcvfCkt6rKhQ - null null
+2026-06-10 21:10:37.962 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 21:10:37.962 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:10:37.964 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:10:37.965 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 3.0368ms
+2026-06-10 21:10:37.965 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.5658ms
+2026-06-10 21:10:37.965 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 21:10:37.970 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:10:37.971 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=Mu5-dHxBbq9wSXJnmFvyRjQuQnQoedQWcvfCkt6rKhQ - 200 13510 text/css 8.84ms
+2026-06-10 21:10:37.980 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.0801ms
+2026-06-10 21:10:38.021 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 21:10:38.023 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.4685ms
+2026-06-10 21:10:38.023 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 21:10:38.051 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 21:10:38.051 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.4851ms
+2026-06-10 21:10:38.051 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 21:14:02.781 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=Mu5-dHxBbq9wSXJnmFvyRjQuQnQoedQWcvfCkt6rKhQ&__browserLink_refresh=a7c8c9db48e54c47a00a51f1adacf6d6 - null null
+2026-06-10 21:14:02.781 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=17ad12e66ab24a53bb164b4512a4a8cd - null null
+2026-06-10 21:14:02.783 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:02.783 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:02.783 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=17ad12e66ab24a53bb164b4512a4a8cd - 200 13864 text/css 1.6645ms
+2026-06-10 21:14:02.783 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=Mu5-dHxBbq9wSXJnmFvyRjQuQnQoedQWcvfCkt6rKhQ&__browserLink_refresh=a7c8c9db48e54c47a00a51f1adacf6d6 - 200 13864 text/css 1.7239ms
+2026-06-10 21:14:03.468 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:14:03.544 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:14:03.544 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:14:03.584 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:14:03.585 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:14:03.585 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:14:03.856 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:14:03.912 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:14:03.919 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:14:03.985 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:14:04.023 +03:30 [INF] Executed ViewResult - view Index executed in 38.3535ms.
+2026-06-10 21:14:04.024 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 105.0881ms
+2026-06-10 21:14:04.025 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:14:04.028 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 172.1525ms
+2026-06-10 21:14:04.042 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw - null null
+2026-06-10 21:14:04.042 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:14:04.042 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:14:04.044 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.6871ms
+2026-06-10 21:14:04.048 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:04.049 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw - 200 13864 text/css 6.5859ms
+2026-06-10 21:14:04.056 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.6984ms
+2026-06-10 21:14:55.864 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=236eb1e5d23344db8d3b10f1112562f7 - null null
+2026-06-10 21:14:55.864 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw&__browserLink_refresh=a9db49e71c054e0f9bd526e44c2fa31f - null null
+2026-06-10 21:14:55.866 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:55.866 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:55.866 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw&__browserLink_refresh=a9db49e71c054e0f9bd526e44c2fa31f - 200 13865 text/css 1.646ms
+2026-06-10 21:14:55.866 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=236eb1e5d23344db8d3b10f1112562f7 - 200 13865 text/css 1.7171ms
+2026-06-10 21:14:56.581 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:14:56.656 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:14:56.657 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:14:56.699 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:14:56.699 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:14:56.699 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:14:56.984 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:14:57.041 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:14:57.047 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:14:57.100 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:14:57.130 +03:30 [INF] Executed ViewResult - view Index executed in 32.4475ms.
+2026-06-10 21:14:57.132 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 84.7099ms
+2026-06-10 21:14:57.132 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:14:57.135 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 151.6601ms
+2026-06-10 21:14:57.176 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=AXF3R-zDBWap-T5DcjnLt_uWlfavsmnbbcxOFvjDa7A - null null
+2026-06-10 21:14:57.183 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:14:57.184 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=AXF3R-zDBWap-T5DcjnLt_uWlfavsmnbbcxOFvjDa7A - 200 13865 text/css 7.5425ms
+2026-06-10 21:14:57.207 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:14:57.210 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.7721ms
+2026-06-10 21:14:57.223 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:14:57.239 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.0608ms
+2026-06-10 21:15:42.911 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=AXF3R-zDBWap-T5DcjnLt_uWlfavsmnbbcxOFvjDa7A&__browserLink_refresh=1f07f936cbf84a3ba8193c9844f43be9 - null null
+2026-06-10 21:15:42.911 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=c1fbb668c41c422d9512178bf07aff65 - null null
+2026-06-10 21:15:42.912 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:15:42.912 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:15:42.912 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=c1fbb668c41c422d9512178bf07aff65 - 200 13867 text/css 1.2167ms
+2026-06-10 21:15:42.912 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=AXF3R-zDBWap-T5DcjnLt_uWlfavsmnbbcxOFvjDa7A&__browserLink_refresh=1f07f936cbf84a3ba8193c9844f43be9 - 200 13867 text/css 1.2414ms
+2026-06-10 21:15:43.648 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:15:43.722 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:15:43.723 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:15:43.765 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:15:43.765 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:15:43.765 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:15:44.026 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:15:44.080 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:15:44.086 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:15:44.138 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:15:44.170 +03:30 [INF] Executed ViewResult - view Index executed in 33.8721ms.
+2026-06-10 21:15:44.171 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 85.6741ms
+2026-06-10 21:15:44.172 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:15:44.174 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 149.6352ms
+2026-06-10 21:15:44.209 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc - null null
+2026-06-10 21:15:44.216 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:15:44.217 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc - 200 13867 text/css 7.5022ms
+2026-06-10 21:15:44.225 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:15:44.227 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.3989ms
+2026-06-10 21:15:44.236 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:15:44.249 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 12.9696ms
+2026-06-10 21:16:05.661 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc - null null
+2026-06-10 21:16:05.662 +03:30 [INF] The file /css/home.css was not modified
+2026-06-10 21:16:05.662 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc - 304 null text/css 1.199ms
+2026-06-10 21:16:05.673 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 21:16:05.676 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 3.2772ms
+2026-06-10 21:16:05.676 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 21:16:05.699 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 21:16:05.704 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 5.7346ms
+2026-06-10 21:16:05.705 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
+2026-06-10 21:16:05.901 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 21:16:05.902 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 0.7005ms
+2026-06-10 21:16:05.902 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 21:16:19.347 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=47c26ef349ff4145a4813f2f3a75fe13 - null null
+2026-06-10 21:16:19.347 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc&__browserLink_refresh=3353f8bcf77f4bf791cda563a7074df6 - null null
+2026-06-10 21:16:19.347 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:16:19.347 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:16:19.347 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=ot0bnO48OdQBq-IyHP8Ghap2PX86fCjLLnQDEHR4RmE&__browserLink_refresh=47c26ef349ff4145a4813f2f3a75fe13 - 200 13864 text/css 0.796ms
+2026-06-10 21:16:19.347 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=4aKS6GwIagmCjN5SadQX9X_XCmo3-wGjVxKCgg3f3pc&__browserLink_refresh=3353f8bcf77f4bf791cda563a7074df6 - 200 13864 text/css 0.6896ms
+2026-06-10 21:16:20.017 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-10 21:16:20.093 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-10 21:16:20.094 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-10 21:16:20.135 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-10 21:16:20.135 +03:30 [INF] Hosting environment: Development
+2026-06-10 21:16:20.135 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-10 21:16:20.339 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-10 21:16:20.394 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:16:20.400 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-10 21:16:20.457 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-10 21:16:20.492 +03:30 [INF] Executed ViewResult - view Index executed in 37.264ms.
+2026-06-10 21:16:20.493 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 93.0102ms
+2026-06-10 21:16:20.493 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-10 21:16:20.497 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 158.8409ms
+2026-06-10 21:16:20.515 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw - null null
+2026-06-10 21:16:20.518 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - null null
+2026-06-10 21:16:20.520 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json - 404 0 null 2.0683ms
+2026-06-10 21:16:20.521 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+2026-06-10 21:16:20.522 +03:30 [INF] Sending file. Request path: '/css/home.css'. Physical path: 'D:\aspnet projects\resturanyar\resturanyar_webservice_version2\wwwroot\css\home.css'
+2026-06-10 21:16:20.522 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=lW2SPbzYheGjtz12MzhMXKu13W17aMnLTOrv7Hdyfhw - 200 13864 text/css 6.5831ms
+2026-06-10 21:16:20.530 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-10 21:16:20.531 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 1.6133ms
+2026-06-10 21:16:20.535 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-10 21:16:20.549 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 13.7889ms
+2026-06-10 21:16:20.571 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - null null
+2026-06-10 21:16:20.572 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - null null
+2026-06-10 21:16:20.573 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js.map - 404 0 null 1.2052ms
+2026-06-10 21:16:20.573 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap.rtl.min.css.map - 404 0 null 2.3161ms
+2026-06-10 21:16:20.573 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/js/bootstrap.bundle.min.js.map, Response status code: 404
+2026-06-10 21:16:20.573 +03:30 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:7171/css/bootstrap.rtl.min.css.map, Response status code: 404
