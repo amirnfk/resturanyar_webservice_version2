@@ -1,4 +1,18 @@
-﻿ 
+﻿@font-face {
+    font-family: 'Iran Yekan';
+    src: url('/fonts/iranyekan/iranyekanwebregularfanum.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Iran Yekan';
+    src: url('/fonts/iranyekan/iranyekanwebboldfanum.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+} 
 header {
     --nb-primary: #ff7a00;
     --nb-primary-2: #ff5400;
@@ -6,7 +20,7 @@ header {
     --nb-white: #ffffff;
 }
 html {
-    font-family: "IRANYekan", IRANYekan,IRANYekan, Segoe UI, Roboto, sans-serif;
+    font-family: Iran Yekan, Segoe UI, Roboto, sans-serif;
 }
 
 body {
@@ -435,36 +449,14 @@ header .navbar .container-fluid {
         font-size: 1.5rem;
     }
 
-/* Actions Section */
+
 .topbar-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    background: var(--sidebar-bg);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(6px) saturate(130%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    color: var(--nb-white);
-    font-size: 1.1rem;
-}
 
-    .theme-toggle:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: rotate(15deg);
-    }
 
 
 
@@ -687,10 +679,10 @@ header .navbar .container-fluid {
 
 /* کارت اصلی محتوای صفحات */
 .content-card {
-    background: #ffffff;
+    background: var(--bg-page);
     border-radius: 24px;
-    padding: 30px;
-    margin-top: 10px;
+    
+   
     min-height: calc(100vh );
     border: 1px solid #eef2f7;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px rgba(0, 0, 0, 0.08);
@@ -760,4 +752,189 @@ header .navbar .container-fluid {
     padding: 0.25rem 1rem;
 }
 
- 
+/* ============================================
+   GLOBAL SCROLLBAR STYLES – رستورانیار دلاویتا
+   ============================================ */
+
+:root {
+    --scrollbar-track: #1a2540; /* light neutral background */
+    --scrollbar-thumb: #1a2540; /* primary brand orange */
+    --scrollbar-thumb-hover: #ff5400; /* darker orange on hover */
+    --scrollbar-radius: 12px;
+    --scrollbar-width: 8px;
+}
+
+/* Firefox – thin scrollbar with brand colors */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* WebKit (Chrome, Safari, Edge) – global scrollbar */
+::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: var(--scrollbar-radius);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--scrollbar-radius);
+    transition: background 0.2s ease;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
+    }
+
+/* ------------------------------------------------------------
+   SIDEBAR SPECIFIC – keep it semi-transparent light on dark bg
+   ------------------------------------------------------------ */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.08);
+}
+
+    .sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--scrollbar-radius);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: var(--scrollbar-radius);
+    }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+/* ------------------------------------------------------------
+   MODALS, DROPDOWNS & CUSTOM OVERFLOW CONTAINERS
+   ------------------------------------------------------------ */
+.modal-content,
+.dropdown-menu,
+.custom-scroll {
+    scrollbar-width: none;
+}
+
+    .modal-content::-webkit-scrollbar,
+    .dropdown-menu::-webkit-scrollbar,
+    .custom-scroll::-webkit-scrollbar {
+        width: none /* slightly thinner for small overlays */
+    }
+
+    .modal-content::-webkit-scrollbar-track,
+    .dropdown-menu::-webkit-scrollbar-track {
+        background: var(--scrollbar-track);
+        border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb,
+    .dropdown-menu::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 10px;
+    }
+/* Hide sidebar scrollbar - WebKit (Chrome, Edge, Safari) */
+.sidebar::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+/* Firefox */
+.sidebar {
+    scrollbar-width: none; /* hides scrollbar in Firefox */
+}
+/* ========== DARK MODE SUPPORT ========== */
+:root {
+  --login-bg: #fff;
+  --login-card-bg: #ffffff;
+  --login-text: #1a1a2e;
+  --login-muted: #6d7385;
+  --login-border: rgba(0,0,0,0.08);
+  --login-orange-light: #fff5e6;
+}
+
+[data-theme="dark"] {
+  --login-bg: #0a0c12;
+  --login-card-bg: #11151f;
+  --login-text: #e9eef7;
+  --login-muted: #8b92a8;
+  --login-border: rgba(255,255,255,0.08);
+  --login-orange-light: rgba(255,136,0,0.15);
+}
+
+/* اعمال متغیرها روی المان‌ها */
+body.bg-white {
+  background: var(--login-bg) !important;
+}
+
+.bg-orange {
+  background-color: var(--login-card-bg) !important;
+  background-image: none;
+}
+
+.card {
+  background-color: var(--login-card-bg) !important;
+  border-color: var(--login-border);
+}
+
+.card-body, .modal-content {
+  background-color: var(--login-card-bg);
+  color: var(--login-text);
+}
+
+.form-control {
+  background-color: var(--login-card-bg);
+  border-color: var(--login-border);
+  color: var(--login-text);
+}
+.form-control:focus {
+  background-color: var(--login-card-bg);
+  color: var(--login-text);
+}
+
+.text-muted {
+  color: var(--login-muted) !important;
+}
+
+.btn-modern-switch, .btn-link-custom, .btn-edit-phone {
+  color: var(--login-muted);
+}
+.btn-modern-switch:hover, .btn-link-custom:hover, .btn-edit-phone:hover {
+  background-color: var(--login-orange-light);
+  color: #ff8800;
+}
+
+.alert-info {
+  background-color: rgba(0,194,168,0.1);
+  border-color: var(--login-border);
+  color: var(--login-text);
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+[data-theme="dark"] .modal-header .btn-close {
+  filter: invert(0);
+}
+
+.text-orange {
+  color: #ff8800 !important;
+}
+
+/* در صورت استفاده از دکمه btn-chip */
+.btn-chip {
+  background: var(--login-card-bg);
+  border-color: var(--login-border);
+  color: var(--login-text);
+}
+.btn-chip:hover {
+  background: #ff8800;
+  color: white;
+}

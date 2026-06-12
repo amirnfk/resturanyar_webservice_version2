@@ -1,4 +1,8 @@
-﻿@model resturanyar.Models.OwnerLoginRequest
+﻿@{
+    Layout = "_Layout_dashboard";
+}
+
+@model resturanyar.Models.OwnerLoginRequest
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -110,7 +114,7 @@
             </div>
         </div>
        
-        <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" />
+        @* <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" /> *@
     </div>
 
     <!-- مودال ثبت‌نام -->
@@ -149,5 +153,20 @@
         </div>
     </div>
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
+    <script>
+        (function() {
+          const html = document.documentElement;
+          const storageKey = "ry-theme";
+          try {
+            const saved = localStorage.getItem(storageKey);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved) {
+              html.setAttribute('data-theme', saved);
+            } else if (prefersDark) {
+              html.setAttribute('data-theme', 'dark');
+            }
+          } catch(e) {}
+        })();
+    </script>
 </body>
 </html>

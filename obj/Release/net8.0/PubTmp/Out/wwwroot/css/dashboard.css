@@ -20,7 +20,7 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dd, figure, blockquote, pre {
 button, input, optgroup, select, textarea {
     margin: 0;
     padding: 0;
-    font-family: inherit;
+  
     font-size: inherit;
     line-height: inherit;
     border: none;
@@ -63,6 +63,17 @@ i, .fas, .far, .fab, .bi, .fa, .material-icons, [class*="icon"] {
     --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(255, 255, 255, 0.1);
 }
+ 
+
+body {
+    background: var(--bg-page);
+    direction: rtl;
+    font-family: "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 [data-theme="dark"] {
     --bg: #0a0c12;
@@ -102,7 +113,15 @@ h1, h2, h3, h4, h5, h6,
 p, span, div, a, li, label {
     font-family: 'IRANYekan', 'Vazirmatn', 'IRANSans', 'Tahoma', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
-
+body {
+    background: var(--bg-page);
+    direction: rtl;
+    font-family: "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
@@ -816,3 +835,39 @@ p, span, div, a, li, label {
         }
     }
 }
+/* Professional ورود مدیر button */
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--card); /* uses your card background for solid, clean look */
+    border: 1px solid var(--border-light, rgba(0,0,0,0.1));
+    border-radius: 40px;
+    padding: 8px 24px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+    .btn-ghost:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+/* Dark mode adjustments */
+[data-theme="dark"] .btn-ghost {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.12);
+}
+
+    [data-theme="dark"] .btn-ghost:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }

@@ -1,0 +1,58 @@
+﻿.filter-card {
+    background: #fff;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 3px 20px rgba(0,0,0,.04);
+    transition: .3s;
+}
+
+    .filter-card:hover {
+        box-shadow: 0 3px 25px rgba(0,0,0,.07);
+    }
+
+.btn-primary {
+    background: linear-gradient(90deg,#008cff,#0061ff);
+    border: none;
+    font-weight: 600;
+    padding: .6rem 1.3rem;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg,#0061ff,#008cff);
+    }
+
+.quick-filter-btn {
+    border-radius: 30px;
+    font-size: .9rem;
+    transition: .2s;
+}
+
+    .quick-filter-btn.active, .quick-filter-btn:hover {
+        background: #0d6efd !important;
+        color: #fff !important;
+        transform: scale(1.05);
+    }
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 18px;
+}
+
+.no-data-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+#reportFilterForm .btn {
+    height: 38px;
+}

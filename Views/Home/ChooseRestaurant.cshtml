@@ -19,6 +19,7 @@
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
     <link href="~/css/all.min.css" rel="stylesheet">
     <link href="~/css/chooserestaurant.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/simple_share.css" rel="stylesheet" asp-append-version="true">
     
 </head>
 <body class="bg-white">
@@ -36,7 +37,7 @@
         <div class="card mt-4 shadow rounded-4">
             <div class="card-body px-4 py-5 text-start">
 
-                <h5 class="text-orange fw-bold text-center mb-4">انتخاب کافه/رستوران</h5>
+                <h5 class="text-orange fw-bold text-center mb-4">انتخاب کافه | رستوران</h5>
 
                 @if (restaurants != null && restaurants.Count > 0)
                 {
@@ -61,7 +62,7 @@
                 {
                     <div class="alert alert-info mt-3 text-center">هیچ کافه یا رستورانی ثبت نشده است.</div>
                     <button type="button" id="btnShowAdd" class="btn btn-orange w-100 mt-2 fw-bold">
-                        <i class="fa-solid fa-plus"></i> افزودن  کافه / رستوران
+                        <i class="fa-solid fa-plus"></i> افزودن  کافه | رستوران
 
                     </button>
                 }
@@ -69,7 +70,7 @@
                 
                 <form id="addRestaurantForm" class="mt-3 text-start" style="display:none;">
                     <div class="mb-3">
-                        <label class="form-label">نام کافه / رستوران</label>
+                        <label class="form-label">نام کافه | رستوران</label>
                         <input type="text" id="restaurantName" class="form-control text-end" placeholder="نام کافه یا رستوران را وارد کنید" />
                         <div id="nameError" class="text-danger small mt-1" style="display:none;"></div>
                     </div>
@@ -79,11 +80,26 @@
         </div>
 
         
-        <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" />
+        @* <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" /> *@
     </div>
     <script>
         
         var currentOwnerId = "@(ViewBag.ownerId ?? 0)";
+    </script>
+    <script>
+        (function() {
+          const html = document.documentElement;
+          const storageKey = "ry-theme";
+          try {
+            const saved = localStorage.getItem(storageKey);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved) {
+              html.setAttribute('data-theme', saved);
+            } else if (prefersDark) {
+              html.setAttribute('data-theme', 'dark');
+            }
+          } catch(e) {}
+        })();
     </script>
     <script src="~/js/jquery_3.6.0.min.js"></script>
     <script src="~/js/chooserestaurant.js" asp-append-version="true"></script>

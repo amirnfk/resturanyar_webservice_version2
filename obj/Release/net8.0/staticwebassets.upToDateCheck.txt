@@ -6,7 +6,7 @@ wwwroot\css\bootstrap_icons.css
 wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\chooserestaurant.css
-wwwroot\css\dashboard.css
+wwwroot\js\dashboard.js
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
 wwwroot\css\fonts\iranyekan\iranyekanwebblackfanum.eot
@@ -23,11 +23,12 @@ wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.woff
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
+wwwroot\css\site.css
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\css\managerlogin.css
 wwwroot\css\ownerlogin.css
+wwwroot\css\dashboard.css
 wwwroot\css\share.css
-wwwroot\css\site.css
 wwwroot\css\toastr.min.css
 wwwroot\css\Vazirmatn_font_face.css
 wwwroot\favicon.ico
@@ -78,7 +79,7 @@ wwwroot\js\bootstrap.bundle.min.js
 wwwroot\js\bootstrap_bundle_min_poper.js
 wwwroot\js\chart.umd.min.js
 wwwroot\js\chooserestaurant.js
-wwwroot\js\dashboard.js
+wwwroot\css\home.css
 wwwroot\js\home.js
 wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
@@ -150,4 +151,8 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\css\home.css
+wwwroot\css\simple_share.css
+wwwroot\css\manager_report.css
+wwwroot\css\manager_report_partial.css
+wwwroot\js\manager_report.js
+wwwroot\js\manager_report_partial.js

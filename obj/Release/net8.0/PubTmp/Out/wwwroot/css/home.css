@@ -1,4 +1,18 @@
-﻿ 
+﻿@font-face {
+    font-family: 'Iran Yekan';
+    src: url('/fonts/iranyekan/iranyekanwebregularfanum.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Iran Yekan';
+    src: url('/fonts/iranyekan/iranyekanwebboldfanum.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
 :root {
     --primary: #ff7a1a;
     --primary-2: #ff9e53;
@@ -44,7 +58,7 @@ html {
 }
 
 body {
-    font-family: "IRANYekan", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family: 'Iran Yekan', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     background: radial-gradient(1800px 800px at 85% -10%, rgba(255,122,26,.07), transparent 60%), radial-gradient(1400px 700px at 0% 110%, rgba(0,194,168,.06), transparent 60%), var(--bg);
     color: var(--text);
     line-height: 1.9;
@@ -402,6 +416,23 @@ body {
 
     .store-btn i {
         color: #1bbd5c;
+        margin:6px;
+    }
+.store-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    color: var(--primary);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+    .store-btn:hover {
+        background: var(--primary);
+        color: #fff;
     }
 
 /* ثابت کردن جای آیکون + / - در آکاردئون FAQ */
@@ -476,18 +507,28 @@ footer {
     color: var(--muted);
 }
 
-/* Theme toggle */
 .theme-toggle {
-    border: 0;
-    background: var(--card);
-    color: var(--text);
-    width: 42px;
-    height: 42px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(6px) saturate(130%);
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    display: none;
-    place-items: center;
-    border: 1px solid rgba(0,0,0,.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--nb-white);
+    font-size: 1.1rem;
 }
+
+    .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(15deg);
+    }
 
 [data-theme="dark"] .theme-toggle {
     border-color: rgba(255,255,255,.12);
@@ -541,4 +582,55 @@ footer {
     }
 }
 
- 
+
+.btn-manager {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+    transition: 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .btn-manager:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: #fff;
+        box-shadow: 0 12px 24px rgba(46, 204, 113, 0.4);
+    }
+
+.nav-item .btn-manager {
+    margin: 8px 16px;
+    justify-content: center;
+}
+.text-green {
+    color: #2ecc71; /* همان سبز اصلی دکمه */
+}
+
+/* در صورت تمایل می‌توانید حالت hover یا تیره‌تر هم اضافه کنید */
+.text-green-dark {
+    color: #27ae60;
+}
+.store-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    color: var(--primary);
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+    .store-btn:hover {
+        background: var(--primary);
+        color: #fff;
+    }

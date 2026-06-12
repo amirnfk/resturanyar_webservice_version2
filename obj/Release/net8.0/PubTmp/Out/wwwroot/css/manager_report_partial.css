@@ -1,0 +1,68 @@
+﻿.kpi-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    padding: 20px;
+    background: #fff;
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+.kpi-title {
+    font-size: .9rem;
+    color: #6c757d;
+    margin-bottom: .25rem;
+    font-weight: 600;
+}
+
+.kpi-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #2c3e50;
+}
+
+.kpi-badge {
+    font-size: .8rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.chart-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.05);
+    background: #fff;
+    padding: 20px;
+    height: 100%;
+    margin-bottom: 1rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.no-data-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* تنظیم کل صفحه به راست‌چین و فونت فارسی */
+body, html {
+    direction: rtl;
+    font-family: 'IRANYekan', 'Tahoma', sans-serif;
+}
+
+/* برای اعداد داخل نمودارها اگر فارسی می‌خواهید (اختیاری) */
+.latin-numbers {
+    font-feature-settings: "ss02"; /* برای نمایش اعداد لاتین در برخی فونت‌ها */
+}

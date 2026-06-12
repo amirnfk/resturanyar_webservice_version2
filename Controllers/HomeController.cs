@@ -791,12 +791,171 @@ namespace resturanyar.Controllers
             return View("ManagerReports", vm);
         }
 
+        //   [HttpGet("ExportOrdersToExcel")]
+        //   public IActionResult ExportOrdersToExcel(
+        //int statusId = -1,
+        //string? period = null,
+        //DateTime? from = null,
+        //DateTime? to = null)
+        //   {
+        //       try
+        //       {
+        //           int? restaurantId = User.GetRestaurantId();
+        //           if (restaurantId == null)
+        //               return BadRequest("شناسه رستوران مشخص نیست.");
+
+
+        //           var today = DateTime.Today;
+
+        //           if (!string.IsNullOrEmpty(period))
+        //           {
+
+        //               if (period.Equals("today", StringComparison.OrdinalIgnoreCase))
+        //               {
+        //                   from = today;
+        //                   to = today.AddDays(1).AddTicks(-1);
+        //               }
+        //               else if (period.Equals("week", StringComparison.OrdinalIgnoreCase))
+        //               {
+        //                   from = today.AddDays(-7);
+        //                   to = DateTime.Now;
+        //               }
+        //               else if (period.Equals("month", StringComparison.OrdinalIgnoreCase))
+        //               {
+        //                   from = new DateTime(today.Year, today.Month, 1);
+        //                   to = DateTime.Now;
+        //               }
+        //               else if (period.Equals("quarter", StringComparison.OrdinalIgnoreCase))
+        //               {
+        //                   from = today.AddMonths(-3);
+        //                   to = DateTime.Now;
+        //               }
+        //               else if (period.Equals("year", StringComparison.OrdinalIgnoreCase))
+        //               {
+        //                   from = today.AddYears(-1);
+        //                   to = DateTime.Now;
+        //               }
+        //           }
+
+        //           // 🟢 If still missing dates (no filter or quick period), default to last 30 days
+        //           if (!from.HasValue || !to.HasValue)
+        //           {
+        //               from = today.AddDays(-30);
+        //               to = DateTime.Now;
+        //           }
+
+        //           // Normalize "to" date (end of the selected day)
+        //           if (to.Value.TimeOfDay == TimeSpan.Zero)
+        //               to = to.Value.Date.AddDays(1).AddTicks(-1);
+
+        //           var fromDate = from.Value;
+        //           var toDate = to.Value;
+
+        //           // 🟢 Apply filters consistently
+        //           var ordersQuery = _context.Orders
+        //               .Include(o => o.OrderItems)
+        //                .Include(o => o.Customer)
+        //               .Where(o => o.RestaurantId == restaurantId)
+        //               .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate);
+
+        //           if (statusId > 0)
+        //               ordersQuery = ordersQuery.Where(o => o.StatusId == statusId);
+
+        //           var orders = ordersQuery.OrderByDescending(o => o.CreatedAt).ToList();
+
+        //           if (!orders.Any())
+        //               return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
+
+        //           using (var workbook = new XLWorkbook())
+        //           {
+        //               // === Sheet 1: Orders Summary ===
+        //               var wsOrders = workbook.Worksheets.Add("خلاصه سفارش‌ها");
+        //               wsOrders.Cell(1, 1).Value = "شناسه سفارش";
+        //               wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
+        //               wsOrders.Cell(1, 3).Value = "شماره میز";
+        //               wsOrders.Cell(1, 4).Value = "وضعیت";
+
+        //               wsOrders.Cell(1, 5).Value = "نام مشتری";
+        //               wsOrders.Cell(1, 6).Value = "شماره موبایل";
+        //               wsOrders.Cell(1, 7).Value = "توضیحات";
+        //               wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
+        //               wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
+        //               int row = 2;
+
+        //               foreach (var o in orders)
+        //               {
+        //                   var totalPrice = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
+        //                   wsOrders.Cell(row, 1).Value = o.OrderId;
+        //                   wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
+        //                   wsOrders.Cell(row, 3).Value = o.TableNumber;
+        //                   wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
+
+        //                   wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "-";
+        //                   wsOrders.Cell(row, 6).Value = o.Customer?.Mobile ?? "-";
+        //                   wsOrders.Cell(row, 7).Value = o.Description ?? "-";
+        //                   wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
+        //                   wsOrders.Cell(row, 9).Value = totalPrice;
+        //                   row++;
+        //               }
+
+        //               var headerRange1 = wsOrders.Range("A1:G1");
+        //               headerRange1.Style.Font.Bold = true;
+        //               headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
+        //               wsOrders.Columns().AdjustToContents();
+
+        //               // === Sheet 2: Items Details ===
+        //               var wsItems = workbook.Worksheets.Add("جزئیات سفارش‌ها");
+        //               wsItems.Cell(1, 1).Value = "شناسه سفارش";
+        //               wsItems.Cell(1, 2).Value = "شناسه آیتم";
+        //               wsItems.Cell(1, 3).Value = "نام غذا";
+        //               wsItems.Cell(1, 4).Value = "تعداد";
+        //               wsItems.Cell(1, 5).Value = "قیمت واحد";
+        //               wsItems.Cell(1, 6).Value = "قیمت با تخفیف";
+        //               wsItems.Cell(1, 7).Value = "مبلغ کل";
+        //               int itemRow = 2;
+
+        //               foreach (var o in orders)
+        //               {
+        //                   foreach (var i in o.OrderItems)
+        //                   {
+        //                       var total = GetFinalPrice(i) * i.Quantity;
+        //                       wsItems.Cell(itemRow, 1).Value = o.OrderId;
+        //                       wsItems.Cell(itemRow, 2).Value = i.OrderItemId;
+        //                       wsItems.Cell(itemRow, 3).Value = i.FoodName ?? "-";
+        //                       wsItems.Cell(itemRow, 4).Value = i.Quantity;
+        //                       wsItems.Cell(itemRow, 5).Value = i.UnitPrice;
+        //                       wsItems.Cell(itemRow, 6).Value = GetFinalPrice(i);
+        //                       wsItems.Cell(itemRow, 7).Value = total;
+        //                       itemRow++;
+        //                   }
+        //               }
+
+        //               var headerRange2 = wsItems.Range("A1:G1");
+        //               headerRange2.Style.Font.Bold = true;
+        //               headerRange2.Style.Fill.BackgroundColor = XLColor.LightGray;
+        //               wsItems.Columns().AdjustToContents();
+
+        //               using (var stream = new MemoryStream())
+        //               {
+        //                   workbook.SaveAs(stream);
+        //                   var content = stream.ToArray();
+        //                   string fileName = $"OrdersReport_{restaurantId}_{fromDate:yyyyMMdd}_{toDate:yyyyMMdd}.xlsx";
+        //                   return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        //               }
+        //           }
+        //       }
+        //       catch (Exception ex)
+        //       {
+        //           return BadRequest($"خطا در تولید گزارش: {ex.Message}");
+        //       }
+        //   }
+
         [HttpGet("ExportOrdersToExcel")]
         public IActionResult ExportOrdersToExcel(
-     int statusId = -1,
-     string? period = null,
-     DateTime? from = null,
-     DateTime? to = null)
+    int statusId = -1,
+    string? period = null,
+    DateTime? from = null,
+    DateTime? to = null)
         {
             try
             {
@@ -804,12 +963,10 @@ namespace resturanyar.Controllers
                 if (restaurantId == null)
                     return BadRequest("شناسه رستوران مشخص نیست.");
 
-               
                 var today = DateTime.Today;
 
                 if (!string.IsNullOrEmpty(period))
                 {
-                    
                     if (period.Equals("today", StringComparison.OrdinalIgnoreCase))
                     {
                         from = today;
@@ -837,23 +994,22 @@ namespace resturanyar.Controllers
                     }
                 }
 
-                // 🟢 If still missing dates (no filter or quick period), default to last 30 days
                 if (!from.HasValue || !to.HasValue)
                 {
                     from = today.AddDays(-30);
                     to = DateTime.Now;
                 }
 
-                // Normalize "to" date (end of the selected day)
                 if (to.Value.TimeOfDay == TimeSpan.Zero)
                     to = to.Value.Date.AddDays(1).AddTicks(-1);
 
                 var fromDate = from.Value;
                 var toDate = to.Value;
 
-                // 🟢 Apply filters consistently
+                // ✅ اضافه کردن Include برای Customer
                 var ordersQuery = _context.Orders
                     .Include(o => o.OrderItems)
+                    .Include(o => o.Customer)   // <-- این خط اضافه شده
                     .Where(o => o.RestaurantId == restaurantId)
                     .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate);
 
@@ -873,11 +1029,14 @@ namespace resturanyar.Controllers
                     wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
                     wsOrders.Cell(1, 3).Value = "شماره میز";
                     wsOrders.Cell(1, 4).Value = "وضعیت";
-                    wsOrders.Cell(1, 5).Value = "توضیحات";
-                    wsOrders.Cell(1, 6).Value = "تعداد آیتم‌ها";
-                    wsOrders.Cell(1, 7).Value = "جمع مبلغ کل (تومان)";
-                    int row = 2;
+                    // ✅ ستون‌های جدید مشتری
+                    wsOrders.Cell(1, 5).Value = "نام مشتری";
+                    wsOrders.Cell(1, 6).Value = "شماره موبایل";
+                    wsOrders.Cell(1, 7).Value = "توضیحات";
+                    wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
+                    wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
 
+                    int row = 2;
                     foreach (var o in orders)
                     {
                         var totalPrice = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
@@ -885,18 +1044,22 @@ namespace resturanyar.Controllers
                         wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
                         wsOrders.Cell(row, 3).Value = o.TableNumber;
                         wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
-                        wsOrders.Cell(row, 5).Value = o.Description ?? "-";
-                        wsOrders.Cell(row, 6).Value = o.OrderItems.Count;
-                        wsOrders.Cell(row, 7).Value = totalPrice;
+                        // ✅ مقداردهی ستون‌های مشتری
+                        wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "مشتری مهمان";
+                        wsOrders.Cell(row, 6).Value = o.Customer?.Mobile ?? "-";
+                        wsOrders.Cell(row, 7).Value = o.Description ?? "-";
+                        wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
+                        wsOrders.Cell(row, 9).Value = totalPrice;
                         row++;
                     }
 
-                    var headerRange1 = wsOrders.Range("A1:G1");
+                    // تنظیم استایل هدر (با توجه به تعداد ستون‌های جدید)
+                    var headerRange1 = wsOrders.Range($"A1:I1");
                     headerRange1.Style.Font.Bold = true;
                     headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
                     wsOrders.Columns().AdjustToContents();
 
-                    // === Sheet 2: Items Details ===
+                    // === Sheet 2: Items Details (بدون تغییر) ===
                     var wsItems = workbook.Worksheets.Add("جزئیات سفارش‌ها");
                     wsItems.Cell(1, 1).Value = "شناسه سفارش";
                     wsItems.Cell(1, 2).Value = "شناسه آیتم";
@@ -942,8 +1105,6 @@ namespace resturanyar.Controllers
                 return BadRequest($"خطا در تولید گزارش: {ex.Message}");
             }
         }
-
-
 
         private decimal GetFinalPrice(OrderItem item)
         {

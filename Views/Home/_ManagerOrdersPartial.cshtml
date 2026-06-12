@@ -186,7 +186,7 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
                 <div class="order-header">
-                    📦 سفارش #@order.OrderId.ToString().ToPersianDigits()
+                     سفارش #@order.OrderId.ToString().ToPersianDigits()
                     | میز: @order.TableNumber?.ToPersianDigits()
                     <span class="status-badge bg-@(Model.StatusColors.GetValueOrDefault(order.StatusId, "secondary")) text-white ms-2">
                         @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
@@ -211,7 +211,7 @@
 
                 <button class="btn btn-sm btn-dark"
                         onclick="printInvoice(@order.OrderId)">
-                    🖨 چاپ فاکتور
+                     چاپ فاکتور
                 </button>
 
                 <div>

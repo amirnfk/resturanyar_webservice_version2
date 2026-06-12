@@ -47,4 +47,95 @@ body {
     height: 1rem;
 }
 
- 
+/* ========== DARK MODE SUPPORT ========== */
+:root {
+    --login-bg: #fff;
+    --login-card-bg: #ffffff;
+    --login-text: #1a1a2e;
+    --login-muted: #6d7385;
+    --login-border: rgba(0,0,0,0.08);
+    --login-orange-light: #fff5e6;
+}
+
+[data-theme="dark"] {
+    --login-bg: #0a0c12;
+    --login-card-bg: #11151f;
+    --login-text: #e9eef7;
+    --login-muted: #8b92a8;
+    --login-border: rgba(255,255,255,0.08);
+    --login-orange-light: rgba(255,136,0,0.15);
+}
+
+/* اعمال متغیرها روی المان‌ها */
+body.bg-white {
+    background: var(--login-bg) !important;
+}
+
+.bg-orange {
+    background-color: var(--login-card-bg) !important;
+    background-image: none;
+}
+
+.card {
+    background-color: var(--login-card-bg) !important;
+    border-color: var(--login-border);
+}
+
+.card-body, .modal-content {
+    background-color: var(--login-card-bg);
+    color: var(--login-text);
+}
+
+.form-control {
+    background-color: var(--login-card-bg);
+    border-color: var(--login-border);
+    color: var(--login-text);
+}
+
+    .form-control:focus {
+        background-color: var(--login-card-bg);
+        color: var(--login-text);
+    }
+
+.text-muted {
+    color: var(--login-muted) !important;
+}
+
+.btn-modern-switch, .btn-link-custom, .btn-edit-phone {
+    color: var(--login-muted);
+}
+
+    .btn-modern-switch:hover, .btn-link-custom:hover, .btn-edit-phone:hover {
+        background-color: var(--login-orange-light);
+        color: #ff8800;
+    }
+
+.alert-info {
+    background-color: rgba(0,194,168,0.1);
+    border-color: var(--login-border);
+    color: var(--login-text);
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+[data-theme="dark"] .modal-header .btn-close {
+    filter: invert(0);
+}
+
+.text-orange {
+    color: #ff8800 !important;
+}
+
+/* در صورت استفاده از دکمه btn-chip */
+.btn-chip {
+    background: var(--login-card-bg);
+    border-color: var(--login-border);
+    color: var(--login-text);
+}
+
+    .btn-chip:hover {
+        background: #ff8800;
+        color: white;
+    }

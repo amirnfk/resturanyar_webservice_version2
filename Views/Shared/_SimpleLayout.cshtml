@@ -7,9 +7,9 @@
     <title>@ViewData["Title"] - رستورانیار دلاویتا</title>
     <link rel="icon" type="image/png" href="~/images/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+ <link rel="stylesheet" href="~/css/all.min.css" /> 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" /> 
     @await RenderSectionAsync("Styles", required: false)
 </head>
  
@@ -24,7 +24,7 @@
                 </div>
                 <form method="post" asp-controller="Home" asp-action="Logout" class="logout-form">
                     <button type="submit" class="btn btn-sm btn-outline-danger">
-                        <i class="fas fa-sign-out-alt"></i> خروج
+                         خروج
                     </button>
                 </form>
             </div>
@@ -39,6 +39,21 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        (function() {
+          const html = document.documentElement;
+          const storageKey = "ry-theme";
+          try {
+            const saved = localStorage.getItem(storageKey);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved) {
+              html.setAttribute('data-theme', saved);
+            } else if (prefersDark) {
+              html.setAttribute('data-theme', 'dark');
+            }
+          } catch(e) {}
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

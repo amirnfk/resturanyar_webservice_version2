@@ -1,6 +1,6 @@
 ﻿ 
 
-    (function(){
+
       const html = document.documentElement;
     const key = "ry-theme";
     try{
@@ -8,7 +8,10 @@
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (saved) html.setAttribute('data-theme', saved);
     else if (prefersDark) html.setAttribute('data-theme', 'dark');
-      }catch(e){ }
+        } catch (e) { }
+
+
+
     const btn = document.getElementById('themeToggle');
       const setIcon = () => {
         if (!btn) return;
@@ -23,9 +26,16 @@
     try{localStorage.setItem(key, next); }catch(e){ }
     setIcon();
       });
-    })();
 
-    // Live clock (fa-IR)
+
+
+
+
+
+
+
+
+  
     (function clock(){
       const el = document.getElementById('dashClock');
     if (!el) return;
