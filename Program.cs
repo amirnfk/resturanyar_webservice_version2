@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using resturanyar.Controllers.Api;
+using resturanyar.Utility;
 using Resturanyar.Data;
+using Resturanyar.Hubs;
 using Serilog;
 using System.Text.Json;
-using Microsoft.AspNetCore.SignalR;
-using Resturanyar.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,6 +71,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 // using Microsoft.AspNetCore.Authentication.Cookies;
+builder.Services.AddHostedService<WarmupService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

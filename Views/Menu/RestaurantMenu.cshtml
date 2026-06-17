@@ -4,9 +4,10 @@
     var placeholder = Url.Content("~/images/food_placeholder.jpg");
 
     var groups = Model
-        .GroupBy(f => new { f.CategoryId, f.CategoryName })
-        .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, Items = g.ToList() })
-        .OrderBy(g => g.CategoryName)
+        .GroupBy(f => new { f.CategoryId, f.CategoryName, f.CategoryDisplayOrder })
+        .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, g.Key.CategoryDisplayOrder, Items = g.ToList() })
+        .OrderBy(g => g.CategoryDisplayOrder)       
+        .ThenBy(g => g.CategoryName)                
         .ToList();
 
     var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);

@@ -1029,7 +1029,7 @@ namespace resturanyar.Controllers
                     wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
                     wsOrders.Cell(1, 3).Value = "شماره میز";
                     wsOrders.Cell(1, 4).Value = "وضعیت";
-                    // ✅ ستون‌های جدید مشتری
+                    
                     wsOrders.Cell(1, 5).Value = "نام مشتری";
                     wsOrders.Cell(1, 6).Value = "شماره موبایل";
                     wsOrders.Cell(1, 7).Value = "توضیحات";
@@ -1044,9 +1044,12 @@ namespace resturanyar.Controllers
                         wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
                         wsOrders.Cell(row, 3).Value = o.TableNumber;
                         wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
-                        // ✅ مقداردهی ستون‌های مشتری
+                        
                         wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "مشتری مهمان";
-                        wsOrders.Cell(row, 6).Value = o.Customer?.Mobile ?? "-";
+                        string mobile = o.Customer?.Mobile ?? "-";
+                        if (!string.IsNullOrEmpty(mobile) && mobile.StartsWith("991"))
+                            mobile = "-";
+                        wsOrders.Cell(row, 6).Value = mobile;
                         wsOrders.Cell(row, 7).Value = o.Description ?? "-";
                         wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
                         wsOrders.Cell(row, 9).Value = totalPrice;
@@ -1223,7 +1226,7 @@ namespace resturanyar.Controllers
                     Description = f.Description ?? "",
                     ImageUrl = f.ImageUrl ?? "",
                     CategoryId = f.CategoryId,
-                    CategoryName = f.Category != null ? f.Category.CategoryName : "", // ✅ مقداردهی نام دسته‌بندی
+                    CategoryName = f.Category != null ? f.Category.CategoryName : "", 
                     Price = f.Price,
                     DiscountPrice = f.DiscountPrice ?? 0,
                     CostPrice = f.CostPrice ?? 0,
@@ -1252,7 +1255,7 @@ namespace resturanyar.Controllers
             var items = await _context.FoodItems
                        .Where(f => f.RestaurantId == restaurantId && f.IsActive) // فقط غذاهای فعال
 
-                .Include(f => f.Category) // ✅ اضافه شد برای دسترسی به نام دسته‌بندی
+                .Include(f => f.Category)  
                 .Select(f => new FoodItemViewModel
                 {
                     FoodItemId = f.FoodItemId,
@@ -1755,20 +1758,55 @@ namespace resturanyar.Controllers
 
             var categories = await _context.Categories
                 .Where(c => c.RestaurantId == restaurantId)
-                .OrderByDescending(c => c.CreatedAt)
+                .OrderBy(c => c.DisplayOrder)
+                .ThenBy(c => c.CreatedAt)
                 .Select(c => new CategoryViewModel
                 {
                     CategoryId = c.CategoryId,
                     CategoryName = c.CategoryName,
-                    CreatedAt = c.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                    CreatedAt = c.CreatedAt.ToString("yyyy-MM-dd HH:mm"),
+                          DisplayOrder = c.DisplayOrder
                 })
                 .ToListAsync();
 
             ViewBag.RestaurantId = restaurantId.Value;
             return View(categories);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCategoriesOrder([FromBody] List<CategoryOrderDto> items)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized();
 
-        // GET: /Home/TableList
+            if (items == null || !items.Any())
+                return BadRequest();
+
+            foreach (var item in items)
+            {
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.CategoryId == item.CategoryId && c.RestaurantId == restaurantId);
+                if (category != null)
+                {
+                    category.DisplayOrder = item.DisplayOrder;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true });
+        }
+
+        // DTO کمکی
+        public class CategoryOrderDto
+        {
+            public int CategoryId { get; set; }
+            public int DisplayOrder { get; set; }
+        }
+
+
+       
+
         public async Task<IActionResult> TableList()
         {
             int? restaurantId = User.GetRestaurantId();

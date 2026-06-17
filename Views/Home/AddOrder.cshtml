@@ -1361,9 +1361,7 @@
         });
     }
 
-    // ══════════════════════════════════════════════════════════
-    //  NEW CUSTOMER MODAL
-    // ══════════════════════════════════════════════════════════
+  
     $('#newCustomerModal').on('show.bs.modal', function(e) {
         var btn = $(e.relatedTarget);
         activeModalContext = btn.data('context') || 'desktop';
@@ -1379,20 +1377,27 @@
         isSubmittingCustomer = false;
     });
 
-    $('#saveNewCustomerBtn').on('click', function() {
+        $('#saveNewCustomerBtn').on('click', function() {
         if (isSubmittingCustomer) return;
-        var mobile = $('#newCustomerMobile').val().trim();
-        if (!/^09[0-9]{9}$/.test(mobile)) {
-            showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
-            return;
-        }
-        var fullName    = $('#newCustomerFullName').val().trim();
-        if (!fullName) {
-            fullName = "مشتری مهمان";  // یا "مشتری " + mobile.substring(0, 4)
-            // toastr.info("نام وارد نشده، شماره موبایل به عنوان نام ثبت شد");
+
+        var fullName = $('#newCustomerFullName').val().trim();
+        var mobile;
+        var description = $('#newCustomerDesc').val().trim();
+
+        if (fullName !== "") {
+            // نام وارد شده: تولید خودکار شماره موبایل
+            mobile = generateAutoMobile();
+            // اعتبارسنجی شماره موبایل انجام نمی‌شود
+        } else {
+            // نام خالی: شماره موبایل الزامی و باید معتبر باشد
+            mobile = $('#newCustomerMobile').val().trim();
+            if (!/^09[0-9]{9}$/.test(mobile)) {
+                showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
+                return;
+            }
+            fullName = "مشتری مهمان";
         }
 
-        var description = $('#newCustomerDesc').val().trim();
         var $btn = $(this);
         var originalHtml = $btn.html();
         $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
@@ -1405,46 +1410,19 @@
             data: JSON.stringify({ restaurantId: restaurantId, mobile: mobile, fullName: fullName, description: description }),
             success: function(res) {
                 if (res.success) {
-                   showToast('مشتری با موفقیت ثبت شد', 'success');
+                    showToast('مشتری با موفقیت ثبت شد', 'success');
 
+                    var modalEl = document.getElementById('newCustomerModal');
+                    var bsModal = bootstrap.Modal.getInstance(modalEl);
+                    if (bsModal) bsModal.hide();
 
-
-                     var modalEl = document.getElementById('newCustomerModal');
-                var bsModal = bootstrap.Modal.getInstance(modalEl);
-                if (bsModal) bsModal.hide();
-
-                // Manually remove any lingering backdrops
-                setTimeout(function() {
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');
-                    $('body').css({ overflow: '', paddingRight: '' });
-                }, 150);
-
-
-
-
-
-
-
-
-
-
-
-         
+                    setTimeout(function() {
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+                        $('body').css({ overflow: '', paddingRight: '' });
+                    }, 150);
 
                     selectCustomer(res.customerId, mobile, fullName);
-
-
-
-
-
-
-                    
-
-
-
-
-
                 } else {
                     showToast(res.message || 'خطا در ثبت مشتری', 'error');
                     $btn.html(originalHtml).prop('disabled', false);
@@ -1461,13 +1439,89 @@
         });
     });
 
-    $(document).on('click', '.btn-change-customer', function() {
+    function generateAutoMobile() {
+        const prefix = '991';
+        const timestamp = Date.now().toString();
+        const eightDigits = timestamp.slice(2, 10);
+        const random = Math.floor(Math.random() * 10);
+        return prefix + eightDigits + random;
+    }
+
+    // $('#saveNewCustomerBtn').on('click', function() {
+    //     if (isSubmittingCustomer) return;
+
+    //     var mobile = $('#newCustomerMobile').val().trim();
+    //     if (!/^09[0-9]{9}$/.test(mobile)) {
+    //         showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
+    //         return;
+    //     }
+    //     var fullName    = $('#newCustomerFullName').val().trim();
+    //     if (!fullName) {
+    //         fullName = "مشتری مهمان";   
+             
+    //     }
+
+    //     var description = $('#newCustomerDesc').val().trim();
+    //     var $btn = $(this);
+    //     var originalHtml = $btn.html();
+    //     $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
+    //     isSubmittingCustomer = true;
+
+    //     $.ajax({
+    //         url: API_CUSTOMERS + '/addcustomer',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify({ restaurantId: restaurantId, mobile: mobile, fullName: fullName, description: description }),
+    //         success: function(res) {
+    //             if (res.success) {
+    //                showToast('مشتری با موفقیت ثبت شد', 'success');
+
+
+
+    //                  var modalEl = document.getElementById('newCustomerModal');
+    //             var bsModal = bootstrap.Modal.getInstance(modalEl);
+    //             if (bsModal) bsModal.hide();
+
+            
+    //             setTimeout(function() {
+    //                 $('.modal-backdrop').remove();
+    //                 $('body').removeClass('modal-open');
+    //                 $('body').css({ overflow: '', paddingRight: '' });
+    //             }, 150);
+
+
+    //                 selectCustomer(res.customerId, mobile, fullName);
+
+
+    //             } else {
+    //                 showToast(res.message || 'خطا در ثبت مشتری', 'error');
+    //                 $btn.html(originalHtml).prop('disabled', false);
+    //                 isSubmittingCustomer = false;
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             var msg = 'خطا در ارتباط با سرور';
+    //             if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+    //             showToast(msg, 'error');
+    //             $btn.html(originalHtml).prop('disabled', false);
+    //             isSubmittingCustomer = false;
+    //         }
+    //     });
+    // });
+
+   
+
+    // function generateAutoMobile() {
+    //     const prefix = '991';
+    //     const timestamp = Date.now().toString();
+    //     const eightDigits = timestamp.slice(2, 10);
+    //     const random = Math.floor(Math.random() * 10);  
+    //     return prefix + eightDigits + random;  
+    // }
+
+     $(document).on('click', '.btn-change-customer', function() {
         clearCustomerForContext($(this).data('context'));
     });
-
-    // ══════════════════════════════════════════════════════════
-    //  CART
-    // ══════════════════════════════════════════════════════════
     function renderCart() {
         var itemCount  = cart.reduce(function(s,i){ return s + i.quantity; }, 0);
         var cartTotal  = cart.reduce(function(s,i){ return s + i.price * i.quantity; }, 0);
@@ -1699,9 +1753,7 @@
         visible.forEach(function(el) { $container.append(el); });
     }
 
-    // ══════════════════════════════════════════════════════════
-    //  INIT
-    // ══════════════════════════════════════════════════════════
+ 
     $(function() {
         populateFilterCategories();
         loadTables();

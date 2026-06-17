@@ -113,6 +113,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetCustomerInsights",
+    "RelativePath": "api/Customers/getcustomerinsights/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
     "Method": "GetCustomers",
     "RelativePath": "api/Customers/getcustomers/{restaurantId}",
     "HttpMethod": "GET",
@@ -146,6 +162,73 @@
     "ContainingType": "resturanyar.Controllers.Api.CustomersController",
     "Method": "GetCustomersStats",
     "RelativePath": "api/Customers/getcustomersstats/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetCustomersWithStats",
+    "RelativePath": "api/Customers/getcustomerswithstats/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.CustomersController",
+    "Method": "GetCustomerDashboardStats",
+    "RelativePath": "api/Customers/getdashboardstats/{restaurantId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

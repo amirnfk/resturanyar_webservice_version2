@@ -13,7 +13,8 @@ namespace resturanyar.Models
         [MaxLength(100)]
         public string CategoryName { get; set; }
 
-        // 📌 ارتباط با رستوران
+        public int DisplayOrder { get; set; } = 0;
+
         [Required]
         public int RestaurantId { get; set; }
         [Required]

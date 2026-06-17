@@ -74,6 +74,7 @@ public class MenuController : Controller
             .Join(_context.Categories,
                   f => f.CategoryId,
                   c => c.CategoryId,
+
                   (f, c) => new FoodItemViewModel
                   {
                       FoodItemId = f.FoodItemId,
@@ -87,6 +88,7 @@ public class MenuController : Controller
                       DiscountPrice = f.DiscountPrice ?? 0,
                       CostPrice = f.CostPrice ?? 0,
                       IsAvailable = f.IsAvailable,
+                      CategoryDisplayOrder = c.DisplayOrder,
                       CreatedAt = f.CreatedAt.HasValue
                           ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")
                           : ""
@@ -194,6 +196,7 @@ public class MenuController : Controller
                      ImageUrl = f.ImageUrl ?? "",
                      CategoryId = f.CategoryId,
                      CategoryName = c.CategoryName ?? "",
+                     CategoryDisplayOrder = c.DisplayOrder,
                      Price = f.Price,
                      DiscountPrice = f.DiscountPrice ?? 0,
                      CostPrice = f.CostPrice ?? 0,

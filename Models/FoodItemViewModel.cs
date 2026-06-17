@@ -9,6 +9,7 @@
         public string ImageUrl { get; set; }
         public int CategoryId { get; set; }  // Foreign Key to Categories
         public string CategoryName { get; set; }  // Foreign Key to Categories
+        public int CategoryDisplayOrder { get; set; }
 
         public decimal Price { get; set; }
         public decimal DiscountPrice { get; set; }

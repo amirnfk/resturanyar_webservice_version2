@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.ViewModels;
+using resturanyar.Utility;
 using Resturanyar.Data;
 using Resturanyar.Hubs;
 
@@ -371,5 +374,348 @@ namespace resturanyar.Controllers.Api
             }
         }
 
+
+        [HttpGet("getcustomerswithstats/{restaurantId}")]
+        public async Task<IActionResult> GetCustomersWithStats(
+            int restaurantId,
+            int page = 1,
+            int pageSize = 12,
+            string search = "",
+            string sortBy = "TotalSpent",    
+            string period = "all",           
+            DateTime? from = null,
+            DateTime? to = null)
+        {
+            // تعیین بازه زمانی
+            DateTime startDate, endDate;
+            if (period != "all" && !from.HasValue)
+            {
+                var now = DateTime.Now;
+                if (period == "today")
+                { startDate = now.Date; endDate = now.Date.AddDays(1).AddTicks(-1); }
+                else if (period == "week")
+                { startDate = now.Date.AddDays(-7); endDate = now; }
+                else if (period == "month")
+                { startDate = new DateTime(now.Year, now.Month, 1); endDate = now; }
+                else if (period == "year")
+                { startDate = now.Date.AddYears(-1); endDate = now; }
+                else
+                { startDate = DateTime.MinValue; endDate = DateTime.MaxValue; }
+            }
+            else
+            {
+                startDate = from ?? DateTime.MinValue;
+                endDate = to ?? DateTime.MaxValue;
+                if (endDate.TimeOfDay == TimeSpan.Zero)
+                    endDate = endDate.Date.AddDays(1).AddTicks(-1);
+            }
+
+            // کوئری مشتریان (فقط فعال‌ها - بنا به نیاز می‌توانید IsActive را حذف کنید)
+            var customersQuery = _context.Customers
+                .Where(c => c.RestaurantId == restaurantId && c.IsActive)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                customersQuery = customersQuery.Where(c =>
+                    c.FullName.ToLower().Contains(searchLower) ||
+                    c.Mobile.Contains(search));
+            }
+
+            var customers = await customersQuery.ToListAsync();
+            var customerIds = customers.Select(c => c.CustomerId).ToList();
+
+            // کوئری سفارشات (فقط وضعیت نهایی - عدد 11 را با وضعیت خودتان جایگزین کنید)
+            var ordersQuery = _context.Orders
+                .Where(o => customerIds.Contains(o.CustomerId.Value) &&
+                            o.RestaurantId == restaurantId &&
+                            o.CreatedAt >= startDate && o.CreatedAt <= endDate &&
+                            o.StatusId == 11) // وضعیت "بسته شده" یا هر وضعیت نهایی دیگر
+                .Include(o => o.OrderItems)
+                .AsQueryable();
+
+            var orders = await ordersQuery.ToListAsync();
+
+            // محاسبه آمار برای هر مشتری
+            var stats = customers.Select(c => new CustomerStatsViewModel
+            {
+                CustomerId = c.CustomerId,
+                FullName = c.FullName,
+                Mobile = c.Mobile,
+                Description = c.Description,
+                IsActive = c.IsActive,
+                CreatedAt = c.CreatedAt,
+                CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
+
+                TotalOrders = orders.Where(o => o.CustomerId == c.CustomerId).Count(),
+                TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
+                                           .Select(o => o.CreatedAt.Date).Distinct().Count(),
+                TotalSpent = orders.Where(o => o.CustomerId == c.CustomerId)
+                                   .Sum(o => o.OrderItems.Sum(oi =>
+                                       (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+
+                LastOrderDate = orders.Where(o => o.CustomerId == c.CustomerId)
+                                      .Max(o => (DateTime?)o.CreatedAt),
+
+                // ✅ محاسبه مبلغ آخرین خرید
+                LastOrderAmount = orders.Where(o => o.CustomerId == c.CustomerId)
+                                        .OrderByDescending(o => o.CreatedAt)
+                                        .Take(1)
+                                        .Select(o => o.OrderItems.Sum(oi =>
+                                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity))
+                                        .FirstOrDefault()
+            }).ToList();
+
+            // محاسبه میانگین و تاریخ شمسی آخرین سفارش
+            foreach (var s in stats)
+            {
+                s.AverageOrderValue = s.TotalOrders > 0 ? s.TotalSpent / s.TotalOrders : 0;
+                s.LastOrderDateShamsi = s.LastOrderDate.HasValue ? DateHelper.ToShamsi(s.LastOrderDate.Value) : "-";
+                // اگر مقدار LastOrderAmount صفر باشد (یعنی سفارشی ندارد) می‌توانید آن را null کنید، اما عدد 0 هم قابل قبول است
+            }
+
+            // مرتب‌سازی (اختیاری اضافه کردن LastOrderAmount)
+            var orderedStats = sortBy switch
+            {
+                "TotalOrders" => stats.OrderByDescending(x => x.TotalOrders),
+                "TotalDistinctDays" => stats.OrderByDescending(x => x.TotalDistinctDays),
+                "LastOrderAmount" => stats.OrderByDescending(x => x.LastOrderAmount),
+                _ => stats.OrderByDescending(x => x.TotalSpent)
+            };
+
+            // صفحه‌بندی
+            var totalItems = orderedStats.Count();
+            var pagedStats = orderedStats.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return Ok(new
+            {
+                success = true,
+                data = pagedStats,
+                totalCount = totalItems,
+                currentPage = page,
+                pageSize = pageSize,
+                totalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            });
+        }
+
+        [HttpGet("getdashboardstats/{restaurantId}")]
+        public async Task<IActionResult> GetCustomerDashboardStats(int restaurantId)
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var startOfWeek = today.AddDays(-(int)today.DayOfWeek + 1); // فرض شروع هفته از شنبه (1=Monday? باید تنظیم کنید)
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                // مشتریان کل
+                var allActiveCustomers = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                var newToday = await allActiveCustomers.CountAsync(c => c.CreatedAt >= today);
+                var newThisWeek = await allActiveCustomers.CountAsync(c => c.CreatedAt >= startOfWeek);
+                var newThisMonth = await allActiveCustomers.CountAsync(c => c.CreatedAt >= startOfMonth);
+                var totalActive = await allActiveCustomers.CountAsync();
+
+                // سفارشات بسته شده (وضعیت نهایی 11)
+                var closedOrders = _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11)
+                    .Include(o => o.OrderItems);
+
+                var totalOrders = await closedOrders.CountAsync();
+                var totalRevenue = await closedOrders
+                    .SumAsync(o => o.OrderItems.Sum(oi =>
+                        (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity));
+
+                var avgRevenuePerCustomer = totalActive > 0 ? totalRevenue / totalActive : 0;
+                var avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+                // مشتری با بیشترین خرید
+                var customerSpending = await _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11 && o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                        OrderCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .FirstOrDefaultAsync();
+
+                string topCustomerName = "-";
+                decimal topCustomerTotal = 0;
+                int topCustomerOrders = 0;
+
+                if (customerSpending != null)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == customerSpending.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    topCustomerName = customer ?? "مشتری ناشناس";
+                    topCustomerTotal = customerSpending.TotalSpent;
+                    topCustomerOrders = customerSpending.OrderCount;
+                }
+
+                // آمار ۷ روز اخیر (برای نمودار)
+                var last7Days = new List<DailyCustomerStat>();
+                for (int i = 6; i >= 0; i--)
+                {
+                    var day = today.AddDays(-i);
+                    var nextDay = day.AddDays(1);
+                    var newCustomers = await _context.Customers
+                        .CountAsync(c => c.RestaurantId == restaurantId &&
+                                         c.CreatedAt >= day && c.CreatedAt < nextDay);
+                    var revenue = await _context.Orders
+                        .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11 &&
+                                    o.CreatedAt >= day && o.CreatedAt < nextDay)
+                        .SumAsync(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity));
+
+                    last7Days.Add(new DailyCustomerStat
+                    {
+                        Date = day,
+                        PersianDate = DateHelper.ToShamsi(day),
+                        NewCustomers = newCustomers,
+                        Revenue = revenue
+                    });
+                }
+
+                var stats = new CustomerDashboardStatsViewModel
+                {
+                    NewCustomersToday = newToday,
+                    NewCustomersThisWeek = newThisWeek,
+                    NewCustomersThisMonth = newThisMonth,
+                    TotalActiveCustomers = totalActive,
+                    TotalRevenue = totalRevenue,
+                    AverageRevenuePerCustomer = avgRevenuePerCustomer,
+                    AverageOrderValue = avgOrderValue,
+                    TotalOrders = totalOrders,
+                    TopCustomerName = topCustomerName,
+                    TopCustomerTotalSpent = topCustomerTotal,
+                    TopCustomerOrders = topCustomerOrders,
+                    Last7DaysStats = last7Days
+                };
+
+                return Ok(new { success = true, data = stats });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("getcustomerinsights/{restaurantId}")]
+        public async Task<IActionResult> GetCustomerInsights(int restaurantId)
+        {
+            try
+            {
+               
+                var today = DateTime.Today;
+                var last7DaysStart = today.AddDays(-7);
+                var last30DaysStart = today.AddDays(-30);
+
+               
+                var allActiveCustomers = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                // سفارشات بسته شده (وضعیت نهایی)
+                var closedOrders = _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11)
+                    .Include(o => o.OrderItems)
+                    .AsQueryable();
+
+                // ---------- کارت اول: رشد مشتریان ۷ روزه (سه مشتری با بیشترین خرید در ۷ روز اخیر) ----------
+                var topCustomersLast7Days = await closedOrders
+                    .Where(o => o.CreatedAt >= last7DaysStart && o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                        OrdersCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .Take(3)
+                    .ToListAsync();
+
+                var growthCustomers = new List<object>();
+                foreach (var item in topCustomersLast7Days)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == item.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    growthCustomers.Add(new
+                    {
+                        Name = customer ?? "مشتری ناشناس",
+                        Amount = item.TotalSpent,
+                        OrderCount = item.OrdersCount
+                    });
+                }
+
+                // ---------- کارت دوم: نرخ بازگشت مشتری (درصد مشتریانی که حداقل ۲ بار، ۳ بار و ۵ بار خرید کرده‌اند) ----------
+                var customerPurchaseCounts = await closedOrders
+                    .Where(o => o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new { CustomerId = g.Key, OrderCount = g.Count() })
+                    .ToListAsync();
+
+                int totalBuyingCustomers = customerPurchaseCounts.Count;
+                int moreThan1 = customerPurchaseCounts.Count(x => x.OrderCount >= 2);
+                int moreThan2 = customerPurchaseCounts.Count(x => x.OrderCount >= 3);
+                int moreThan4 = customerPurchaseCounts.Count(x => x.OrderCount >= 5);
+
+                double rate2 = totalBuyingCustomers > 0 ? (moreThan1 * 100.0 / totalBuyingCustomers) : 0;
+                double rate3 = totalBuyingCustomers > 0 ? (moreThan2 * 100.0 / totalBuyingCustomers) : 0;
+                double rate5 = totalBuyingCustomers > 0 ? (moreThan4 * 100.0 / totalBuyingCustomers) : 0;
+
+                // ---------- کارت سوم: بهترین مشتریان (سه مشتری با بیشترین خرید کل) ----------
+                var topCustomersOverall = await closedOrders
+                    .Where(o => o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity))
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .Take(3)
+                    .ToListAsync();
+
+                var bestCustomers = new List<object>();
+                foreach (var item in topCustomersOverall)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == item.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    bestCustomers.Add(new
+                    {
+                        Name = customer ?? "مشتری ناشناس",
+                        Amount = item.TotalSpent
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        growthCustomers,      // لیست سه مشتری برتر ۷ روزه
+                        returnRates = new { rate2, rate3, rate5 }, // نرخ بازگشت ۲،۳،۵ بار
+                        bestCustomers         // سه مشتری برتر کل
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
     }
 }

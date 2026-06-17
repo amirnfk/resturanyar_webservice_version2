@@ -298,7 +298,96 @@
             }
         </div>
     }
-}
+    // ---------- PAGINATION ----------
+    int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
+    if (totalPages > 1)
+    {
+        int currentPage = Model.Page;
+        int maxPagesToShow = 5;
+        int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
+        int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+        if (endPage - startPage + 1 < maxPagesToShow && startPage > 1)
+        {
+            startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+        }
+
+        // Helper to build URL with all filters
+        string BuildPaginationUrl(int page)
+        {
+            var queryParams = new List<string>();
+
+            // Status filter
+            if (Model.FilterStatusId.HasValue && Model.FilterStatusId != 0)
+                queryParams.Add($"statusId={Model.FilterStatusId.Value}");
+            else
+                queryParams.Add($"statusId=0");
+
+            // Date range
+            if (Model.FromDate.HasValue)
+                queryParams.Add($"from={Model.FromDate.Value:yyyy-MM-dd}");
+            if (Model.ToDate.HasValue)
+                queryParams.Add($"to={Model.ToDate.Value:yyyy-MM-dd}");
+
+            // Search text
+            if (!string.IsNullOrWhiteSpace(Model.Search))
+                queryParams.Add($"search={Uri.EscapeDataString(Model.Search)}");
+
+            // Page size & current page
+            queryParams.Add($"pageSize={Model.PageSize}");
+            queryParams.Add($"page={page}");
+
+            return $"{Url.Action("ManagerOrderList", "Home")}?{string.Join("&", queryParams)}";
+        }
+
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="صفحه‌بندی سفارش‌ها">
+                <ul class="pagination">
+                    @if (currentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@BuildPaginationUrl(currentPage - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        if (i == currentPage)
+                        {
+                            <li class="page-item active"><span class="page-link">@i.ToString().ToPersianDigits()</span></li>
+                        }
+                        else
+                        {
+                            <li class="page-item"><a class="page-link" href="@BuildPaginationUrl(i)">@i.ToString().ToPersianDigits()</a></li>
+                        }
+                    }
+
+                    @if (currentPage < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@BuildPaginationUrl(currentPage + 1)" aria-label="Next">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+    }
 else
 {
     <div class="alert alert-warning text-center fs-5">📭 هیچ سفارشی یافت نشد.</div>

@@ -1,320 +1,575 @@
 ﻿@{
-    ViewData["Title"] = "لیست مشتریان";
+    ViewData["Title"] = "مدیریت و آنالیز مشتریان";
     var placeholder = Url.Content("~/images/customer_placeholder.png");
 }
-
 <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/css/all.min.css" />
 <link rel="stylesheet" href="~/css/toastr.min.css" />
- 
-
 <style>
     :root {
         --primary: #ff7a00;
         --primary-hover: #e66900;
-        --primary-light: rgba(255,122,0,0.08);
-        --bg-page: #f6f8fc;
+        --primary-light: rgba(255, 122, 0, 0.08);
+        --bg-page: #f4f6fa;
         --card-bg: #ffffff;
-        --card-border: #e9eef5;
-        --shadow-sm: 0 4px 12px rgba(15,23,42,0.04);
-        --shadow-md: 0 8px 24px rgba(15,23,42,0.06);
-        --shadow-lg: 0 16px 40px rgba(15,23,42,0.08);
-        --text-dark: #1e293b;
+        --card-border: #eef2f6;
+        --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.03);
+        --shadow-md: 0 10px 25px rgba(15, 23, 42, 0.05);
+        --shadow-lg: 0 20px 35px rgba(15, 23, 41, 0.08);
+        --text-dark: #0f172a;
         --text-muted: #64748b;
-        --radius-sm: 10px;
-        --radius-md: 16px;
-        --radius-lg: 20px;
+        --radius-sm: 12px;
+        --radius-md: 18px;
+        --radius-lg: 24px;
         --radius-pill: 999px;
-        --transition: 0.2s ease;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body {
         background: var(--bg-page);
         direction: rtl;
-      
-        
-        
-        
-        font-family: "IRANYekan", "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-family: "IRANYekan", system-ui, -apple-system, sans-serif;
         color: var(--text-dark);
-        line-height: 1.5;
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
     }
 
-    .fw-black {
-        font-weight: 900;
+    /* استایل‌های کارت‌های بالایی */
+    .insights-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        overflow: hidden;
     }
 
-   
+        .insights-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+    .insights-card-header {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        border-bottom: 1px solid #f1f5f9;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .icon-box-primary {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-sm);
+        background: var(--primary-light);
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        transition: var(--transition);
+    }
+
+    .insights-card:hover .icon-box-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .icon-box-warning {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-sm);
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        transition: var(--transition);
+    }
+
+    .insights-card:hover .icon-box-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    /* لیست‌های داخل کارتها */
+    .scrollable-list {
+        max-height: 210px;
+        overflow-y: auto;
+        padding: 8px 16px 16px 16px;
+    }
+
+        .scrollable-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .scrollable-list::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        .scrollable-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: var(--radius-pill);
+        }
+
+    .list-item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+        transition: var(--transition);
+    }
+
+        .list-item-row:last-child {
+            border-bottom: none;
+        }
+
+    /* پیشرفت بار سفارشی در نرخ بازگشت */
+    .progress-wrapper {
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .progress-wrapper:last-child {
+            border-bottom: none;
+        }
+
+    .progress-item-label {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    .progress {
+        height: 8px;
+        background-color: #f1f5f9;
+        border-radius: var(--radius-pill);
+    }
+
+    .progress-bar {
+        border-radius: var(--radius-pill);
+        background: linear-gradient(90deg, #ff9e43, var(--primary));
+    }
+
+    /* نمودار پرمیوم */
+    .premium-chart-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        padding: 24px;
+        transition: var(--transition);
+    }
+
+        .premium-chart-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+    .chart-legend-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    /* نوار ابزار */
     .customers-toolbar {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
         border-radius: var(--radius-md);
         box-shadow: var(--shadow-sm);
-        padding: 16px;
-        margin-bottom: 24px;
+        padding: 24px;
+        margin-bottom: 28px;
     }
 
         .customers-toolbar .form-control,
         .customers-toolbar .form-select {
             border-radius: var(--radius-sm);
             border: 1px solid #e2e8f0;
-            padding: 8px 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
+            .customers-toolbar .form-control:focus,
+            .customers-toolbar .form-select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(255,122,0,0.12);
+            }
+
     .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #f97316);
+        background: linear-gradient(135deg, var(--primary), #ff9100);
         border: none;
         border-radius: var(--radius-sm);
         font-weight: 700;
-        padding: 8px 20px;
-        box-shadow: 0 6px 16px rgba(255,122,0,0.25);
-        transition: all var(--transition);
+        padding: 10px 24px;
+        box-shadow: 0 8px 20px rgba(255, 122, 0, 0.2);
+        transition: var(--transition);
     }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #f97316, var(--primary-hover));
+            background: linear-gradient(135deg, #ff9100, var(--primary-hover));
             transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(255, 122, 0, 0.3);
         }
 
-    /* کارت مشتری */
+    .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+    }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+    /* کارت‌های تکی مشتریان */
     .customer-card {
         border: 1px solid var(--card-border);
         border-radius: var(--radius-md);
         background: var(--card-bg);
         box-shadow: var(--shadow-sm);
-        transition: all 0.25s ease;
+        transition: var(--transition);
         height: 100%;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
     }
 
         .customer-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
         }
 
     .customer-header {
-        background: linear-gradient(135deg, #f1f5f9, #ffffff);
-        padding: 16px;
+        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        padding: 24px 20px 16px 20px;
         text-align: center;
         border-bottom: 1px solid var(--card-border);
     }
 
     .avatar-icon {
-        width: 70px;
-        height: 70px;
-        background: var(--primary-light);
+        width: 76px;
+        height: 76px;
+        background: linear-gradient(135deg, var(--primary-light), rgba(255,122,0,0.2));
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 10px;
-        font-size: 2rem;
+        margin-bottom: 12px;
+        font-size: 2.2rem;
         color: var(--primary);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .customer-name {
         font-weight: 900;
         font-size: 1.15rem;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        color: var(--text-dark);
     }
 
     .customer-mobile {
         color: var(--text-muted);
         font-size: 0.85rem;
         direction: ltr;
+        letter-spacing: 0.5px;
+        display: inline-block;
     }
 
     .customer-body {
-        padding: 12px 14px;
+        padding: 16px 20px;
         flex: 1;
     }
 
     .info-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
+        align-items: center;
+        margin-bottom: 12px;
         font-size: 0.85rem;
         border-bottom: 1px dashed #f1f5f9;
-        padding-bottom: 6px;
+        padding-bottom: 8px;
     }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
 
     .info-label {
-        font-weight: 700;
-    }
-
-    .info-value {
+        font-weight: 600;
         color: var(--text-muted);
     }
 
+    .info-value {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
     .customer-footer {
-        padding: 12px 14px;
-        background: #fafbfc;
-        border-top: 1px solid #f1f5f9;
+        padding: 16px 20px;
+        background: #fafdff;
+        border-top: 1px solid var(--card-border);
         display: flex;
-        gap: 8px;
+        gap: 10px;
     }
 
         .customer-footer .btn {
             flex: 1;
-            font-size: 0.8rem;
-            padding: 6px 0;
-        }
-
-    /* صفحه‌بندی */
-    .pagination {
-        margin-top: 30px;
-    }
-
-        .pagination .page-link {
+            font-size: 0.82rem;
+            padding: 8px 0;
             border-radius: var(--radius-sm);
-            margin: 0 4px;
-            color: var(--text-dark);
-            border: 1px solid #e2e8f0;
+            font-weight: 600;
         }
 
-        .pagination .page-item.active .page-link {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-    /* مودال */
-    .modal-content {
-        border-radius: var(--radius-lg);
+    /* مخفی کردن نوار اسکرول در لیست‌های کشویی (رشد جدید و بهترین مشتریان) */
+    .scrollable-list {
+        overflow-y: auto; /* قابلیت اسکرول حفظ می‌شود */
+        scrollbar-width: none; /* برای فایرفاکس: نوار اسکرول مخفی */
+        -ms-overflow-style: none; /* برای اینترنت اکسپلورر و اج قدیم */
     }
 
-    .modal-header {
-        background: linear-gradient(135deg, #f8fafc, #ffffff);
-        border-bottom: 1px solid var(--card-border);
-    }
-    /* کارت آمار */
-    .card {
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg) !important;
+        /* برای مرورگرهای وب‌کیت (کروم، اج جدید، سافاری) */
+        .scrollable-list::-webkit-scrollbar {
+            display: none;
         }
-
-        .card .rounded-circle {
-            transition: all 0.3s ease;
-        }
-
-        .card:hover .rounded-circle {
-            transform: scale(1.05);
-        }
-
-    #totalCustomersCount {
-        font-size: 2.5rem;
-        background: linear-gradient(135deg, var(--primary), #f97316);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
 </style>
 
 <div class="container py-4">
+    <!-- هدر صفحه -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-     
+        <h4 class="mb-0 fw-black">   </h4>
         <button class="btn btn-primary" id="btnAddCustomer">
-            </i> مشتری جدید
+            <i class="fas fa-plus me-1"></i> مشتری جدید
         </button>
     </div>
-    <!-- کارت آمار مشتریان -->
-    <div class="row mb-4">
-        <div class="col-md-6 col-lg-4 mx-auto">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="text-muted small text-uppercase">تعداد کل مشتریان</span>
-                            <h2 class="mb-0 fw-black mt-2" id="totalCustomersCount">0</h2>
-                            <span class="text-muted small" id="totalCustomersDate"></span>
-                        </div>
-                        <div class="rounded-circle p-3" style="background: var(--primary-light);">
-                            <i class="fas fa-users fa-2x" style="color: var(--primary);"></i>
-                        </div>
+
+    <!-- ========== بخش اینفوگرافیک پرمیوم ========== -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4 mb-4" id="infographicsRow">
+        <!-- کارت ۱: کل مشتریان فعال -->
+        <div class="col">
+            <div class="insights-card h-100 d-flex flex-column justify-content-between p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="text-muted small fw-semibold">کل مشتریان فعال</span>
+                        <h1 class="mb-0 fw-black mt-2 text-dark" id="totalCustomers">0</h1>
                     </div>
-                    <div class="mt-3 pt-2 border-top">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="small text-muted">
-                                <i class="fas fa-user-plus"></i> مشتریان فعال
-                            </span>
-                            <span class="fw-bold" id="activeCustomersCount">0</span>
-                        </div>
+                    <div class="icon-box-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div>
+                    <hr class="my-2" style="opacity: 0.08;">
+                    <div class="d-flex justify-content-between small text-muted">
+                        <span>امروز: <strong class="text-dark" id="newToday">0</strong></span>
+                        <span>این هفته: <strong class="text-dark" id="newWeek">0</strong></span>
+                        <span>این ماه: <strong class="text-dark" id="newMonth">0</strong></span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- کارت ۲: مشتری ویژه ماه -->
+        <div class="col">
+            <div class="insights-card h-100 d-flex flex-column justify-content-between p-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="text-muted small fw-semibold">مشتری ویژه ماه</span>
+                        <h6 class="mb-0 fw-bold mt-2 text-truncate" id="topCustomerName" style="max-width: 130px;">-</h6>
+                        <span class="small fw-black text-primary mt-1 d-block" id="topCustomerAmount">0 تومان</span>
+                    </div>
+                    <div class="icon-box-warning">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                </div>
+                <div>
+                    <hr class="my-2" style="opacity: 0.08;">
+                    <div class="small text-muted d-flex justify-content-between">
+                        <span>تعداد سفارش:</span>
+                        <strong class="text-dark" id="topCustomerOrders">0</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- کارت ۳: رشد مشتریان ۷ روزه -->
+        <div class="col">
+            <div class="insights-card h-100">
+                <div class="insights-card-header">
+                    <i class="fas fa-chart-line text-success"></i> رشد جدید (۷ روز اخیر)
+                </div>
+                <div class="scrollable-list" id="growthCustomersList">
+                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- کارت ۴: نرخ بازگشت مشتری -->
+        <div class="col">
+            <div class="insights-card h-100">
+                <div class="insights-card-header">
+                    <i class="fas fa-history text-info"></i> نرخ بازگشت مشتری
+                </div>
+                <div class="scrollable-list" id="returnRatesList" style="padding: 12px 16px;">
+                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- کارت ۵: بهترین مشتریان -->
+        <div class="col">
+            <div class="insights-card h-100">
+                <div class="insights-card-header">
+                    <i class="fas fa-award text-warning"></i> بهترین مشتریان 
+                </div>
+                <div class="scrollable-list" id="bestCustomersList">
+                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- ========== نمودار روند جدید پرمیوم ========== -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="premium-chart-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h6 class="mb-1 fw-bold text-dark"><i class="far fa-chart-bar text-primary me-1"></i> روند هفتگی فروش و جذب جذب مشتری</h6>
+                        <span class="text-muted small">فروش رستوران و مشتریان جدید در ۷ روز اخیر</span>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <span class="chart-minimal-card chart-legend-indicator">
+                            <span class="legend-dot" style="background: #ff7a00;"></span> مشتریان جدید
+                        </span>
+                        <span class="chart-minimal-card chart-legend-indicator">
+                            <span class="legend-dot" style="background: #10b981;"></span> مجموع فروش (هزار تومان)
+                        </span>
+                    </div>
+                </div>
+                <div style="position: relative; width: 100%;">
+                    <canvas id="trendChart" height="90" style="max-height: 220px; width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نوار ابزار جستجو و فیلتر -->
     <div class="customers-toolbar">
-        <div class="row g-3 align-items-end">
+        <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label fw-semibold">جستجو</label>
-                <input type="text" id="searchInput" class="form-control" placeholder="نام یا شماره موبایل ..." />
+                <label class="form-label fw-bold text-dark small">جستجو عمومی</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="نام، شماره موبایل  ..." />
+                </div>
             </div>
             <div class="col-md-3">
+                <label class="form-label fw-bold text-dark small">&nbsp;</label>
                 <button id="btnSearch" class="btn btn-primary w-100">
-                    <i class="fas fa-search"></i> جستجو
+                    اعمال فیلتر جستجو
                 </button>
             </div>
             <div class="col-md-3">
-                <button id="btnResetSearch" class="btn btn-outline-secondary w-100">
-                    <i class="fas fa-undo-alt"></i> نمایش همه
+                <label class="form-label fw-bold text-dark small">&nbsp;</label>
+                <button id="btnResetSearch" class="btn btn-outline-secondary w-100" style="padding: 10px 0; border-radius: var(--radius-sm);">
+                    <i class="fas fa-undo-alt me-1"></i> بازنشانی کامل
                 </button>
             </div>
-            <div id="customersList"></div>
-            <div id="totalRecordsInfo" class="text-muted text-center mt-2 mb-2" style="display: none;"></div>
+        </div>
+        <hr class="my-4" style="opacity: 0.1;">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-dark small">بازه زمانی ثبت سفارش</label>
+                <select id="periodSelect" class="form-select">
+                    <option value="all">همه زمان‌ها</option>
+                    <option value="today">امروز</option>
+                    <option value="week">هفته گذشته</option>
+                    <option value="month">ماه جاری</option>
+                    <option value="year">سال گذشته</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-dark small">مرتب‌سازی بر اساس</label>
+                <select id="sortBySelect" class="form-select">
+                    <option value="TotalSpent">بیشترین مبلغ خرید</option>
+                    <option value="TotalOrders">بیشترین تعداد سفارش</option>
+                    <option value="TotalDistinctDays">بیشترین روزهای حضور</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-dark small">&nbsp;</label>
+                <button id="btnApplyFilter" class="btn btn-dark w-100" style="padding: 10px 0; border-radius: var(--radius-sm); font-weight: 700;">
+                    <i class="fas fa-sliders-h me-1"></i> اعمال فیلتر و رتبه‌بندی
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- بارگذاری و نشانگر لودینگ -->
     <div id="loadingSpinner" class="text-center py-5 d-none">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="visually-hidden">در حال بارگذاری...</span>
         </div>
     </div>
 
     <!-- لیست مشتریان -->
     <div id="customersList"></div>
-    <div id="totalRecordsInfo" class="text-muted text-center mt-2 mb-2" style="display: none;"></div>
+    <div id="totalRecordsInfo" class="text-muted text-center mt-3 mb-2" style="display: none; font-weight: 600;"></div>
 
     <!-- صفحه‌بندی -->
-    <div id="paginationContainer" class="d-flex justify-content-center mt-4"></div>
+    <div id="paginationContainer" class="d-flex justify-content-center mt-5"></div>
 </div>
 
 <!-- مودال افزودن/ویرایش مشتری -->
 <div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content border-0 shadow-lg">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">افزودن مشتری جدید</h5>
+                <h5 class="modal-title fw-bold" id="modalTitle">افزودن مشتری جدید</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="customerForm">
                     <input type="hidden" id="customerId" value="0" />
                     <div class="mb-3">
-                        <label class="form-label">نام کامل</label>
-                        <input type="text" id="fullName" class="form-control" required />
+                        <label class="form-label fw-semibold">نام کامل</label>
+                        <input type="text" id="fullName" class="form-control" placeholder="مثال: علیرضا شایان" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">شماره موبایل</label>
-                        <input type="tel" id="mobile" class="form-control" required dir="ltr" />
+                        <label class="form-label fw-semibold">شماره موبایل</label>
+                        <input type="tel" id="mobile" class="form-control" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required dir="ltr" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">توضیحات (اختیاری)</label>
-                        <textarea id="description" class="form-control" rows="2"></textarea>
+                        <label class="form-label fw-semibold">توضیحات (اختیاری)</label>
+                        <textarea id="description" class="form-control" placeholder="یادداشت در خصوص ترجیحات مشتری..." rows="3"></textarea>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" id="btnSaveCustomer" class="btn btn-primary">ذخیره</button>
+            <div class="modal-footer" style="background: #f8fafc;">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: var(--radius-sm);">انصراف</button>
+                <button type="button" id="btnSaveCustomer" class="btn btn-primary px-4">ذخیره اطلاعات</button>
             </div>
         </div>
     </div>
@@ -322,18 +577,18 @@
 
 <!-- مودال تأیید حذف -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">حذف مشتری</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> حذف مشتری</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                آیا از حذف این مشتری اطمینان دارید؟
+            <div class="modal-body p-4 text-center">
+                آیا از حذف این مشتری و کل تاریخچه اطلاعات او اطمینان دارید؟
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" id="confirmDelete" class="btn btn-danger">حذف</button>
+            <div class="modal-footer justify-content-center border-0 pt-0" style="background: #ffffff;">
+                <button type="button" class="btn btn-light px-3" data-bs-dismiss="modal" style="border-radius: var(--radius-sm);">لغو عملیات</button>
+                <button type="button" id="confirmDelete" class="btn btn-danger px-4" style="border-radius: var(--radius-sm);">بله، حذف شود</button>
             </div>
         </div>
     </div>
@@ -342,9 +597,8 @@
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/toastr.min.js"></script>
-
+<script src="~/js/chart.umd.min.js"></script>
 <script>
-    // تنظیمات toastr
     toastr.options = {
         "positionClass": "toast-top-left",
         "timeOut": "3000",
@@ -352,131 +606,287 @@
         "progressBar": true,
         "rtl": true
     };
-
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
     var currentPage = 1;
     var pageSize = 12;
     var currentSearch = "";
     var editingCustomerId = 0;
+    var currentPeriod = "all";
+    var currentSortBy = "TotalSpent";
 
-    function loadCustomers(page, search) {
+    function loadInsightsCards() {
+        $.ajax({
+            url: `/api/Customers/getcustomerinsights/${restaurantId}`,
+            type: "GET",
+            success: function(response) {
+                if (response.success) {
+                    const data = response.data;
+
+                    // ۱. رشد مشتریان جدید (۷ روز اخیر)
+                    let growthHtml = '';
+                    data.growthCustomers.forEach(c => {
+                        growthHtml += `
+                            <div class="list-item-row">
+                                <div>
+                                    <strong class="text-dark d-block" style="font-size:0.87rem;">${escapeHtml(c.name)}</strong>
+                                    <span class="small text-muted">${c.orderCount} سفارش در هفته</span>
+                                </div>
+                                <div class="fw-black text-primary small">${c.amount.toLocaleString('fa-IR')} ت</div>
+                            </div>
+                        `;
+                    });
+                    if (growthHtml === '') growthHtml = '<div class="text-center py-5 text-muted small">خریدی در ۷ روز اخیر ثبت نشده</div>';
+                    $("#growthCustomersList").html(growthHtml);
+
+                    // ۲. نرخ بازگشت (پیاده‌سازی نوارهای زیبا و مدرن پیشرفت)
+                    const rates = data.returnRates;
+                    const returnHtml = `
+                        <div class="progress-wrapper">
+                            <div class="progress-item-label">
+                                <span>حداقل ۲ بار خرید</span>
+                                <span class="fw-black text-dark">${Math.round(rates.rate2)}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate2}%" aria-valuenow="${rates.rate2}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-item-label">
+                                <span>حداقل ۳ بار خرید</span>
+                                <span class="fw-black text-dark">${Math.round(rates.rate3)}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate3}%; background: linear-gradient(90deg, #10b981, #34d399);" aria-valuenow="${rates.rate3}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-item-label">
+                                <span>خرید وفادار (حداقل ۵ بار)</span>
+                                <span class="fw-black text-dark">${Math.round(rates.rate5)}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate5}%; background: linear-gradient(90deg, #6366f1, #818cf8);" aria-valuenow="${rates.rate5}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    `;
+                    $("#returnRatesList").html(returnHtml);
+
+                    // ۳. بهترین مشتریان کل
+                    let bestHtml = '';
+                    data.bestCustomers.forEach(c => {
+                        bestHtml += `
+                            <div class="list-item-row">
+                                <strong style="font-size:0.87rem;">${escapeHtml(c.name)}</strong>
+                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1 fw-bold" style="background:#e6fbf4">${c.amount.toLocaleString('fa-IR')} تومان</span>
+                            </div>
+                        `;
+                    });
+                    if (bestHtml === '') bestHtml = '<div class="text-center py-5 text-muted small">مشتری دارای سفارش یافت نشد</div>';
+                    $("#bestCustomersList").html(bestHtml);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function() {
+                toastr.error("خطا در دریافت اطلاعات کارت‌ها");
+            }
+        });
+    }
+
+    function loadCustomers(page, search, period, sortBy) {
         currentPage = page || 1;
         currentSearch = search !== undefined ? search : currentSearch;
-
+        currentPeriod = period !== undefined ? period : currentPeriod;
+        currentSortBy = sortBy !== undefined ? sortBy : currentSortBy;
         $("#loadingSpinner").removeClass("d-none");
         $("#customersList").empty();
-        $("#totalRecordsInfo").hide().empty();
 
         $.ajax({
-            url: `/api/Customers/getcustomers/${restaurantId}`,
+            url: `/api/Customers/getcustomerswithstats/${restaurantId}`,
             type: "GET",
             data: {
                 page: currentPage,
                 pageSize: pageSize,
-                search: currentSearch
+                search: currentSearch,
+                period: currentPeriod,
+                sortBy: currentSortBy
             },
-            success: function (response) {
+            success: function(response) {
                 if (response.success) {
                     if (response.data && response.data.length > 0) {
-                        renderCustomers(response.data);
+                        renderCustomersWithStats(response.data);
                         renderPagination(response.currentPage, response.totalPages);
-
-                         loadCustomersStats();
-                        if (response.totalCount) {
-                            $("#totalRecordsInfo")
-                                .html(`<i class="fas fa-users"></i> ${response.totalCount} مشتری یافت شد`)
-                                .show();
-                        }
+                        // if (response.totalCount) {
+                        //     $("#totalRecordsInfo").html(`<i class="fas fa-chart-line text-primary"></i> تعداد کل نتایج یافت شده: ${response.totalCount.toLocaleString('fa-IR')} مشتری`).show();
+                        // }
                     } else {
-                        $("#customersList").html(`
-                            <div class="alert alert-info text-center p-5">
-                                <i class="fas fa-user-slash fa-3x mb-3"></i>
-                                <h5>مشتری‌ای یافت نشد</h5>
-                                ${currentSearch ? '<p class="mt-2">نتیجه‌ای برای عبارت جستجو یافت نشد</p>' : ''}
-                            </div>
-                        `);
+                        $("#customersList").html(`<div class="alert alert-info border-0 text-center py-4" style="border-radius:var(--radius-sm)"><i class="fas fa-info-circle me-1"></i> مشتری با شرایط فیلتر در بازه انتخابی یافت نشد.</div>`);
                         $("#paginationContainer").empty();
+                        $("#totalRecordsInfo").hide();
                     }
                 } else {
-                    toastr.error(response.message || "خطا در دریافت اطلاعات");
+                    toastr.error(response.message);
                 }
             },
-            error: function (xhr) {
-                console.error(xhr);
-                toastr.error("خطا در ارتباط با سرور");
-            },
-            complete: function () {
-                $("#loadingSpinner").addClass("d-none");
-            }
+            error: function() { toastr.error("خطا در دریافت لیست مشتریان"); },
+            complete: function() { $("#loadingSpinner").addClass("d-none"); }
         });
     }
-        // دکمه نمایش همه (ریست جستجو)
-    $("#btnResetSearch").click(function () {
-        $("#searchInput").val("");  // خالی کردن فیلد جستجو
-        currentSearch = "";         // ریست متغیر جستجو
-        loadCustomers(1, "");       // 
-        
-        toastr.info("نمایش همه مشتریان");
-    });
-        // دریافت آمار مشتریان
-    function loadCustomersStats() {
+
+    let trendChart = null;
+    function loadDashboardStats() {
         $.ajax({
-            url: `/api/Customers/getcustomersstats/${restaurantId}`,
+            url: `/api/Customers/getdashboardstats/${restaurantId}`,
             type: "GET",
-            success: function (response) {
+            success: function(response) {
                 if (response.success) {
-                    // نمایش تعداد کل
-                    $("#totalCustomersCount").text(response.totalCount.toLocaleString('fa-IR'));
+                    const s = response.data;
+                    $("#totalCustomers").text(s.totalActiveCustomers.toLocaleString('fa-IR'));
+                    $("#newToday").text(s.newCustomersToday.toLocaleString('fa-IR'));
+                    $("#newWeek").text(s.newCustomersThisWeek.toLocaleString('fa-IR'));
+                    $("#newMonth").text(s.newCustomersThisMonth.toLocaleString('fa-IR'));
+                    $("#topCustomerName").text(s.topCustomerName || "ثبت نشده");
+                    $("#topCustomerAmount").text(s.topCustomerTotalSpent.toLocaleString('fa-IR') + " تومان");
+                    $("#topCustomerOrders").text(s.topCustomerOrders.toLocaleString('fa-IR'));
 
-                    // نمایش تعداد فعال (اگر API این رو برگردونه)
-                    if (response.activeCount !== undefined) {
-                        $("#activeCustomersCount").text(response.activeCount.toLocaleString('fa-IR'));
-                    }
+                    if (trendChart) trendChart.destroy();
+                    const ctx = document.getElementById('trendChart').getContext('2d');
 
-                    // نمایش تاریخ امروز
-                    const today = new Date().toLocaleDateString('fa-IR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                    // ایجاد گرادینت زیر خطوط نمودار برای زیبایی دوچندان محیط گراف
+                    const orangeGradient = ctx.createLinearGradient(0, 0, 0, 200);
+                    orangeGradient.addColorStop(0, 'rgba(255, 122, 0, 0.25)');
+                    orangeGradient.addColorStop(1, 'rgba(255, 122, 0, 0.00)');
+
+                    const emeraldGradient = ctx.createLinearGradient(0, 0, 0, 200);
+                    emeraldGradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+                    emeraldGradient.addColorStop(1, 'rgba(16, 185, 129, 0.00)');
+
+                    trendChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: s.last7DaysStats.map(d => d.persianDate),
+                            datasets: [
+                                {
+                                    label: 'مشتریان جدید',
+                                    data: s.last7DaysStats.map(d => d.newCustomers),
+                                    borderColor: '#ff7a00',
+                                    backgroundColor: orangeGradient,
+                                    borderWidth: 3,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    pointBackgroundColor: '#ff7a00',
+                                    pointBorderColor: '#ffffff',
+                                    pointBorderWidth: 1.5,
+                                    tension: 0.4, // خمیدگی سافت و زیبا
+                                    fill: true,
+                                    yAxisID: 'y'
+                                },
+                                {
+                                    label: 'فروش (هزار تومان)',
+                                    data: s.last7DaysStats.map(d => d.revenue / 1000),
+                                    borderColor: '#10b981',
+                                    backgroundColor: emeraldGradient,
+                                    borderWidth: 3,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    pointBackgroundColor: '#10b981',
+                                    pointBorderColor: '#ffffff',
+                                    pointBorderWidth: 1.5,
+                                    tension: 0.4,
+                                    fill: true,
+                                    yAxisID: 'y1'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#1e293b',
+                                    titleColor: '#ffffff',
+                                    bodyColor: '#e2e8f0',
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    rtl: true,
+                                    callbacks: {
+                                        label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toLocaleString('fa-IR')}`
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { color: 'rgba(226, 232, 240, 0.4)' },
+                                    ticks: { color: '#94a3b8', font: { size: 10 } }
+                                },
+                                y1: {
+                                    position: 'right',
+                                    beginAtZero: true,
+                                    grid: { display: false },
+                                    ticks: { color: '#94a3b8', callback: (val) => val.toLocaleString('fa-IR'), font: { size: 10 } }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#94a3b8', font: { size: 11 } }
+                                }
+                            }
+                        }
                     });
-                    $("#totalCustomersDate").text(`آخرین به‌روزرسانی: ${today}`);
+                } else {
+                    toastr.error(response.message);
                 }
             },
-            error: function () {
-                console.log("خطا در دریافت آمار");
-                $("#totalCustomersCount").text("?");
+            error: function() {
+                toastr.error("خطا در دریافت اطلاعات داشبورد");
             }
         });
     }
-    // رندر کارت‌های مشتری
-    function renderCustomers(customers) {
+
+    function renderCustomersWithStats(customers) {
         let html = '<div class="row g-4">';
         customers.forEach(c => {
-            let createdAtShamsi = new Date(c.createdAt).toLocaleDateString('fa-IR');
             html += `
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="customer-card">
                         <div class="customer-header">
                             <div class="avatar-icon"><i class="fas fa-user-circle"></i></div>
-                            <div class="customer-name">${escapeHtml(c.fullName || 'مشتری مهمان')}</div>
-                            <div class="customer-mobile"> ${escapeHtml(c.mobile)}</div>
+                            <div class="customer-name text-truncate">${escapeHtml(c.fullName)}</div>
+                            <span class="customer-mobile">${escapeHtml(c.mobile)}</span>
                         </div>
                         <div class="customer-body">
                             <div class="info-row">
-                                <span class="info-label">تاریخ عضویت:</span>
-                                <span class="info-value">${createdAtShamsi}</span>
+                                <span class="info-label">عضویت:</span>
+                                <span class="info-value">${c.createdAtShamsi}</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">توضیحات:</span>
-                                <span class="info-value">${escapeHtml(c.description || '-')}</span>
+                                <span class="info-label">سفارش‌ها:</span>
+                                <span class="info-value text-primary font-bold">${c.totalOrders} بار</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">تعداد روز حضور:</span>
+                                <span class="info-value">${c.totalDistinctDays} روز</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">مجموع خرید:</span>
+                                <span class="info-value text-success">${c.totalSpent.toLocaleString('fa-IR')} ت</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">میانگین خرید:</span>
+                                <span class="info-value">${c.averageOrderValue.toLocaleString('fa-IR')} ت</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">آخرین تراکنش:</span>
+                                <span class="info-value text-muted small">${c.lastOrderDateShamsi}</span>
                             </div>
                         </div>
                         <div class="customer-footer">
-                            <button class="btn btn-outline-primary btn-sm edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">
-                                <i class="fas fa-edit"></i> ویرایش
+                            <button class="btn btn-outline-primary edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">
+                                <i class="fas fa-edit me-1"></i> ویرایش
                             </button>
-                            <button class="btn btn-outline-danger btn-sm delete-customer" data-id="${c.customerId}">
-                                <i class="fas fa-trash"></i> حذف
+                            <button class="btn btn-outline-danger delete-customer" data-id="${c.customerId}">
+                                <i class="fas fa-trash me-1"></i> حذف
                             </button>
                         </div>
                     </div>
@@ -492,25 +902,17 @@
             $("#paginationContainer").empty();
             return;
         }
-
-        let html = '<ul class="pagination">';
+        let html = '<ul class="pagination shadow-sm">';
 
         // دکمه قبلی
         if (current > 1) {
             html += `<li class="page-item">
-                        <a class="page-link" href="#" data-page="${current - 1}">
-                            <i class="fas fa-chevron-right"></i> قبلی
-                        </a>
+                        <a class="page-link" href="#" data-page="${current - 1}"><i class="fas fa-chevron-right me-1"></i> قبلی</a>
                      </li>`;
         } else {
-            html += `<li class="page-item disabled">
-                        <a class="page-link" href="#">
-                            <i class="fas fa-chevron-right"></i> قبلی
-                        </a>
-                     </li>`;
+            html += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-chevron-right me-1"></i> قبلی</a></li>`;
         }
 
-        // نمایش صفحات (حداکثر 5 صفحه)
         let startPage = Math.max(1, current - 2);
         let endPage = Math.min(total, current + 2);
 
@@ -536,26 +938,48 @@
             html += `<li class="page-item"><a class="page-link" href="#" data-page="${total}">${total}</a></li>`;
         }
 
-        // دکمه بعدی
         if (current < total) {
             html += `<li class="page-item">
-                        <a class="page-link" href="#" data-page="${current + 1}">
-                            بعدی <i class="fas fa-chevron-left"></i>
-                        </a>
+                        <a class="page-link" href="#" data-page="${current + 1}">بعدی <i class="fas fa-chevron-left ms-1"></i></a>
                      </li>`;
         } else {
-            html += `<li class="page-item disabled">
-                        <a class="page-link" href="#">
-                            بعدی <i class="fas fa-chevron-left"></i>
-                        </a>
-                     </li>`;
+            html += `<li class="page-item disabled"><a class="page-link" href="#">بعدی <i class="fas fa-chevron-left ms-1"></i></a></li>`;
         }
 
         html += '</ul>';
         $("#paginationContainer").html(html);
     }
 
-    // اضافه کردن مشتری
+    // ایونت لیسنرهای باتن‌ها و فیلترها
+    $("#btnApplyFilter").click(function () {
+        currentPeriod = $("#periodSelect").val();
+        currentSortBy = $("#sortBySelect").val();
+        loadCustomers(1, currentSearch, currentPeriod, currentSortBy);
+    });
+
+    $("#btnResetSearch").click(function () {
+        $("#searchInput").val("");
+        $("#periodSelect").val("all");
+        $("#sortBySelect").val("TotalSpent");
+        currentSearch = "";
+        currentPeriod = "all";
+        currentSortBy = "TotalSpent";
+        loadCustomers(1, "", "all", "TotalSpent");
+        toastr.info("فیلترها و مرتب‌سازی بازنشانی شدند");
+    });
+
+    $("#btnSearch").click(function () {
+        let rawSearch = $("#searchInput").val().trim();
+        currentSearch = toEnglishDigits(rawSearch);
+        loadCustomers(1, currentSearch);
+    });
+
+    $("#searchInput").on("keypress", function (e) {
+        if (e.which === 13) {
+            $("#btnSearch").click();
+        }
+    });
+
     $("#btnAddCustomer").click(function () {
         editingCustomerId = 0;
         $("#modalTitle").text("افزودن مشتری جدید");
@@ -566,10 +990,9 @@
         $("#customerModal").modal("show");
     });
 
-    // ویرایش مشتری (با استفاده از دیتای کارت)
     $(document).on("click", ".edit-customer", function () {
         editingCustomerId = $(this).data("id");
-        $("#modalTitle").text("ویرایش مشتری");
+        $("#modalTitle").text("ویرایش حساب مشتری");
         $("#customerId").val(editingCustomerId);
         $("#fullName").val($(this).data("name"));
         $("#mobile").val($(this).data("mobile"));
@@ -577,23 +1000,50 @@
         $("#customerModal").modal("show");
     });
 
-    $("#btnSaveCustomer").click(function () {
+      $("#btnSaveCustomer").click(function () {
         const id = $("#customerId").val();
         let fullName = $("#fullName").val().trim();
-        const mobile = $("#mobile").val().trim();
+        let mobile = $("#mobile").val().trim();
         const description = $("#description").val().trim();
 
-        // فقط شماره موبایل الزامی است
-        if (!mobile) {
-            toastr.warning("شماره موبایل الزامی است");
-            $("#mobile").focus();
-            return;
-        }
-
-        // اگر نام خالی بود، از شماره موبایل استفاده کن
-        if (!fullName) {
-            fullName = "مشتری مهمان";  // یا "مشتری " + mobile.substring(0, 4)
-            // toastr.info("نام وارد نشده، شماره موبایل به عنوان نام ثبت شد");
+        // منطق جدید فقط برای ثبت مشتری جدید (نه ویرایش)
+        if (id === "0") {
+            if (fullName !== "") {
+                // کاربر نام وارد کرده است
+                if (mobile === "") {
+                    // شماره وارد نکرده → تولید خودکار
+                    mobile = generateAutoMobile();
+                }
+                // اگر شماره هم وارد کرده باشد، همان شماره حفظ می‌شود
+            } else {
+                // نام خالی: شماره موبایل الزامی است
+                if (!mobile) {
+                    toastr.warning("شماره موبایل الزامی است");
+                    $("#mobile").focus();
+                    return;
+                }
+                if (!/^09[0-9]{9}$/.test(mobile)) {
+                    toastr.warning("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید");
+                    $("#mobile").focus();
+                    return;
+                }
+                fullName = "مشتری مهمان";
+            }
+        } else {
+            // ویرایش مشتری موجود: شماره موبایل الزامی و معتبر (در صورت تغییر)
+            if (!mobile) {
+                toastr.warning("شماره موبایل الزامی است");
+                $("#mobile").focus();
+                return;
+            }
+            if (!/^09[0-9]{9}$/.test(mobile)) {
+                toastr.warning("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید");
+                $("#mobile").focus();
+                return;
+            }
+            if (!fullName) {
+                fullName = "مشتری مهمان";
+            }
         }
 
         const url = id === "0" ? "/api/Customers/addcustomer" : "/api/Customers/editcustomer";
@@ -619,19 +1069,24 @@
                 if (res.success) {
                     toastr.success(res.message);
                     $("#customerModal").modal("hide");
-                    loadCustomers(1, currentSearch);
-                     
+                    loadCustomers(currentPage, currentSearch);
+                    loadDashboardStats();
                 } else {
                     toastr.error(res.message);
                 }
             },
             error: function () {
-                toastr.error("خطا در ذخیره اطلاعات");
+                toastr.error("خطا در برقراری ارتباط با سرور");
             }
         });
     });
-
-    // حذف مشتری
+      function generateAutoMobile() {
+        const prefix = '991';
+        const timestamp = Date.now().toString();
+        const eightDigits = timestamp.slice(2, 10);
+        const random = Math.floor(Math.random() * 10);
+        return prefix + eightDigits + random;
+    }
     let deleteId = 0;
     $(document).on("click", ".delete-customer", function () {
         deleteId = $(this).data("id");
@@ -652,36 +1107,23 @@
                     toastr.success(res.message);
                     $("#deleteModal").modal("hide");
                     loadCustomers(currentPage, currentSearch);
+                    loadDashboardStats();
                 } else {
                     toastr.error(res.message);
                 }
             },
             error: function () {
-                toastr.error("خطا در حذف مشتری");
+                toastr.error("خطا در حذف اطلاعات مشتری");
             }
         });
     });
 
-      $("#btnSearch").click(function () {
-        let rawSearch = $("#searchInput").val().trim();
-        currentSearch = toEnglishDigits(rawSearch);   
-        loadCustomers(1, currentSearch);
-    });
-
-    $("#searchInput").on("keypress", function (e) {
-        if (e.which === 13) {
-            $("#btnSearch").click();
-        }
-    });
-
-    // صفحه‌بندی کلیک
     $(document).on("click", ".page-link", function (e) {
         e.preventDefault();
         const page = $(this).data("page");
-        if (page) loadCustomers(page, currentSearch);
+        if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy);
     });
 
-    // تابع escape برای جلوگیری از XSS
     function escapeHtml(str) {
         if (!str) return "";
         return str.replace(/[&<>]/g, function (m) {
@@ -689,39 +1131,26 @@
             if (m === "<") return "&lt;";
             if (m === ">") return "&gt;";
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function (c) {
-            return c;
         });
     }
 
-        function toEnglishDigits(str) {
+    function toEnglishDigits(str) {
         if (!str) return "";
-        // تبدیل اعداد فارسی و عربی به انگلیسی
-        const persianMap = {
-            '۰': '0', '۱': '1', '۲': '2', '۳': '3', '۴': '4',
-            '۵': '5', '۶': '6', '۷': '7', '۸': '8', '۹': '9'
-        };
-        const arabicMap = {
-            '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-            '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-        };
+        const arabicMap = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
+        const persianMap = { '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9' };
         let result = str;
-        for (let [key, value] of Object.entries(persianMap)) {
-            result = result.split(key).join(value);
-        }
-        for (let [key, value] of Object.entries(arabicMap)) {
-            result = result.split(key).join(value);
-        }
+        for (let [key, value] of Object.entries(persianMap)) result = result.split(key).join(value);
+        for (let [key, value] of Object.entries(arabicMap)) result = result.split(key).join(value);
         return result;
     }
-
-    // بارگذاری اولیه
+    
     $(document).ready(function () {
         if (restaurantId > 0) {
-            loadCustomers(1, "");
-            
+            loadCustomers(1, "", "all", "TotalSpent");
+            loadDashboardStats();
+            loadInsightsCards();
         } else {
-            $("#customersList").html('<div class="alert alert-danger">شناسه رستوران نامعتبر است</div>');
+            $("#customersList").html('<div class="alert alert-danger text-center">شناسه رستوران نامعتبر است</div>');
         }
     });
 </script>
