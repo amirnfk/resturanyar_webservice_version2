@@ -92,6 +92,7 @@ wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
 wwwroot\js\persian-date.min.js
 wwwroot\js\site.js
+wwwroot\js\Sortable.min.js
 wwwroot\js\sweetalert2@11.js
 wwwroot\js\toastr.min.js
 wwwroot\js\upgrade.js
@@ -156,4 +157,3 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\js\Sortable.min.js

@@ -1,11 +1,13 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Controllers",
+    "\\Controllers\\Api",
     "\\Views",
     "\\Views\\Home",
     "\\wwwroot",
     "\\wwwroot\\css"
   ],
-  "SelectedNode": "\\Program.cs",
+  "SelectedNode": "\\Controllers\\Api\\UserApiController.cs",
   "PreviewInSolutionExplorer": false
 }

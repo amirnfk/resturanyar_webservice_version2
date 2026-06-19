@@ -1,0 +1,154 @@
+﻿@model resturanyar.Models.ViewModels.Admin.AdminLoginViewModel
+@{
+    ViewData["Title"] = "ورود به پنل مدیریت";
+    Layout = null; // بدون لایه‌بندی برای صفحه لاگین
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 420px;
+            width: 100%;
+        }
+
+            .login-card h2 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: #333;
+                font-weight: 600;
+            }
+
+            .login-card .form-group {
+                margin-bottom: 20px;
+            }
+
+            .login-card label {
+                font-weight: 500;
+                color: #555;
+            }
+
+            .login-card .form-control {
+                border-radius: 10px;
+                padding: 12px 15px;
+                border: 2px solid #e0e0e0;
+                transition: all 0.3s;
+            }
+
+                .login-card .form-control:focus {
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+                }
+
+            .login-card .btn-login {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                font-weight: 600;
+                width: 100%;
+                font-size: 18px;
+                transition: all 0.3s;
+            }
+
+                .login-card .btn-login:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+                }
+
+            .login-card .error-message {
+                color: #dc3545;
+                font-size: 14px;
+                margin-top: 10px;
+                text-align: center;
+            }
+
+            .login-card .alert {
+                border-radius: 10px;
+            }
+
+        .login-icon {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .login-card .form-check-label {
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+       
+        <h2>پنل مدیریت</h2>
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-action="AdminLogin" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="Username">نام کاربری</label>
+                <input asp-for="Username" class="form-control" placeholder="نام کاربری خود را وارد کنید" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">رمز عبور</label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="رمز عبور خود را وارد کنید" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">مرا به خاطر بسپار</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">ورود به پنل</button>
+
+             
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

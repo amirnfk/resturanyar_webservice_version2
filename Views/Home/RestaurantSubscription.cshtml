@@ -1,0 +1,608 @@
+﻿@{
+    ViewData["Title"] = "اشتراک";
+}
+
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    :root {
+        --primary: #f97316;
+        --primary-light: #fff7ed;
+        --primary-soft: #fed7aa;
+        --gold: #f59e0b;
+        --gold-dark: #d97706;
+        --bg-page: #faf9f6;
+        --card-bg: #ffffff;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+        --shadow-md: 0 8px 30px rgba(249, 115, 22, 0.10);
+        --radius-lg: 20px;
+        --radius-md: 14px;
+    }
+
+    body {
+        background: var(--bg-page);
+        direction: rtl;
+        font-family: "IRANYekan", "Vazir", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+
+    .subscription-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 2rem 1.8rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(249, 115, 22, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .subscription-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.05), transparent 70%);
+            pointer-events: none;
+            border-radius: 0 0 0 100%;
+        }
+
+    .sub-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .sub-title-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #dcfce7;
+        color: var(--success);
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.25rem 1rem 0.25rem 1.2rem;
+        border-radius: 999px;
+        width: fit-content;
+    }
+
+        .status-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+
+    @@keyframes pulse-dot {
+        0%, 100%
+
+    {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+
+    }
+
+    .plan-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+        letter-spacing: -0.3px;
+    }
+
+    .plan-expiry {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+        .plan-expiry span {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+    /* نمایش روزهای باقی‌مانده در هدر */
+    .days-remaining-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.15rem 0;
+        margin-top: 0.15rem;
+    }
+
+        .days-remaining-badge i {
+            font-size: 0.9rem;
+        }
+
+        .days-remaining-badge .days-number {
+            font-size: 1.05rem;
+            margin: 0 0.1rem;
+        }
+
+    .text-days-green {
+        color: var(--success);
+    }
+
+    .text-days-orange {
+        color: var(--warning);
+    }
+
+    .text-days-red {
+        color: var(--danger);
+    }
+
+    .crown-wrapper {
+        flex-shrink: 0;
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(145deg, #fbbf24, #f59e0b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100%
+
+    {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    }
+
+    .auto-renew-btn {
+        background: #fef3c7;
+        border: none;
+        color: var(--gold-dark);
+        font-weight: 600;
+        padding: 0.4rem 1.2rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: 0.2s;
+        margin-bottom: 1rem;
+    }
+
+        .auto-renew-btn:hover {
+            background: #fde68a;
+            transform: scale(1.02);
+        }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        background: var(--bg-page);
+        border-radius: var(--radius-md);
+        padding: 1.2rem 1.5rem;
+        margin-top: 0.5rem;
+        border: 1px solid #f1f0ec;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.25rem 0;
+    }
+
+    .info-icon {
+        width: 38px;
+        height: 38px;
+        background: #ffffff;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: var(--primary);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        flex-shrink: 0;
+    }
+
+    .info-content .label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-weight: 500;
+    }
+
+    .info-content .value {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+    }
+
+        .info-content .value.success {
+            color: var(--success);
+        }
+
+        .info-content .value.danger {
+            color: var(--danger);
+        }
+
+        .info-content .value.warning {
+            color: var(--warning);
+        }
+
+    .empty-state {
+        padding: 3rem 1rem;
+        text-align: center;
+    }
+
+        .empty-state .icon-big {
+            font-size: 4.5rem;
+            opacity: 0.25;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h5 {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            max-width: 280px;
+            margin: 0.5rem auto 1.5rem;
+        }
+
+    .btn-primary-custom {
+        background: var(--primary);
+        border: none;
+        color: #fff;
+        padding: 0.6rem 2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-primary-custom:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+            color: #fff;
+        }
+
+    .spinner-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+    }
+
+    @@media (max-width: 576px) {
+        .subscription-card
+
+    {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+    }
+
+    .plan-name {
+        font-size: 1.3rem;
+    }
+
+    .crown-wrapper {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    .info-item {
+        gap: 0.5rem;
+    }
+
+    .info-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .info-content .value {
+        font-size: 0.85rem;
+    }
+
+    .auto-renew-btn {
+        font-size: 0.8rem;
+        padding: 0.3rem 1rem;
+    }
+
+    .sub-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.8rem 0.15rem 1rem;
+    }
+
+    .days-remaining-badge {
+        font-size: 0.8rem;
+    }
+
+        .days-remaining-badge .days-number {
+            font-size: 0.95rem;
+        }
+
+    }
+
+    @@media (max-width: 400px) {
+        .info-grid
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+
+<div class="container py-4">
+    <div class="subscription-card" id="subscriptionContainer">
+
+        <!-- لودینگ -->
+        <div id="loadingState" class="spinner-wrapper">
+            <div class="spinner-border text-warning" role="status" style="width: 2.5rem; height: 2.5rem;">
+                <span class="visually-hidden">در حال بارگذاری...</span>
+            </div>
+        </div>
+
+        <!-- محتوای اشتراک -->
+        <div id="subscriptionContent" style="display: none;">
+
+            <div class="sub-header">
+                <div class="sub-title-group">
+                    @* <div class="status-badge">
+                        <span class="dot"></span>
+                        فعال
+                    </div> *@
+                    <h2 class="plan-name">اشتراک طلایی</h2>
+                    <p class="plan-expiry">
+                        فعال تا <span id="endDateHeader">--</span>
+                    </p>
+                    <!-- نمایش روزهای باقی‌مانده در هدر -->
+                    <div class="days-remaining-badge" id="daysRemainingHeader">
+                        <i class="fas fa-clock"></i>
+                        <span class="days-number" id="daysLeftNumber">--</span>
+                        <span>روز باقی‌مانده</span>
+                    </div>
+                </div>
+                <div class="crown-wrapper">
+                    <i class="fas fa-crown"></i>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button class="auto-renew-btn" id="autoRenewBtn">
+                    <i class="fas fa-sync-alt"></i>
+                    تمدید خودکار فعال
+                </button>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-calendar-plus"></i></div>
+                    <div class="info-content">
+                        <div class="label">تاریخ شروع</div>
+                        <div class="value" id="startDateDisplay">--</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="info-content">
+                        <div class="label">تاریخ پایان</div>
+                        <div class="value" id="endDateDisplay">--</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="info-content">
+                        <div class="label">روزهای باقی‌مانده</div>
+                        <div class="value" id="daysRemainingDisplay">--</div>
+                    </div>
+                </div>
+
+
+
+              
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="info-content">
+                        <div class="label">وضعیت پرداخت</div>
+                        <div class="value success">پرداخت شده</div>
+                    </div>
+                </div>
+              
+            
+            </div>
+        </div>
+
+        <!-- حالت بدون اشتراک -->
+        <div id="noSubscriptionContent" style="display: none;" class="empty-state">
+            <div class="icon-big">📭</div>
+            <h5>هیچ اشتراک فعالی یافت نشد</h5>
+            <p>برای استفاده کامل از امکانات، اشتراک تهیه کنید.</p>
+            <a href="/Subscription/Plans" class="btn-primary-custom">
+                مشاهده پلن‌ها
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script>
+    const API_BASE = '/api/Subscription';
+    var restaurantId = @(ViewBag.RestaurantId ?? 0);
+
+    function toPersianDate(gregorianDate) {
+        if (!gregorianDate) return '--';
+        const date = new Date(gregorianDate);
+        if (isNaN(date.getTime())) return '--';
+        return new Intl.DateTimeFormat('fa-IR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+    }
+
+    // محاسبه تعداد روزهای باقی‌مانده
+    function getDaysRemaining(endDateString) {
+        if (!endDateString) return null;
+        const end = new Date(endDateString);
+        const now = new Date();
+        // پاک کردن ساعت‌ها برای محاسبه دقیق‌تر بر اساس روز
+        now.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        const diffTime = end - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    }
+
+    // تنظیم رنگ و متن بر اساس تعداد روز
+    function applyDaysRemainingStyle(elementId, days) {
+        const $el = $(elementId);
+        if (days === null || days === undefined) {
+            $el.text('--');
+            $el.removeClass('success danger warning');
+            return;
+        }
+
+        let text = days + ' روز';
+        let cssClass = '';
+
+        if (days < 0) {
+            text = 'منقضی شده';
+            cssClass = 'danger';
+        } else if (days === 0) {
+            text = 'امروز به پایان می‌رسد';
+            cssClass = 'danger';
+        } else if (days <= 3) {
+            text = days + ' روز';
+            cssClass = 'danger';
+        } else if (days <= 10) {
+            text = days + ' روز';
+            cssClass = 'warning';
+        } else {
+            text = days + ' روز';
+            cssClass = 'success';
+        }
+
+        $el.text(text);
+        $el.removeClass('success danger warning').addClass(cssClass);
+    }
+
+    function loadSubscription() {
+        $('#loadingState').show();
+        $('#subscriptionContent').hide();
+        $('#noSubscriptionContent').hide();
+
+        $.ajax({
+            url: API_BASE + '/getactivesubscription/' + restaurantId,
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                $('#loadingState').hide();
+                if (response.success && response.data) {
+                    showSubscriptionData(response.data);
+                } else {
+                    $('#noSubscriptionContent').show();
+                }
+            },
+            error: function () {
+                $('#loadingState').hide();
+                $('#noSubscriptionContent').show();
+            }
+        });
+    }
+
+    function showSubscriptionData(data) {
+        const startPersian = toPersianDate(data.startDate);
+        const endPersian = toPersianDate(data.endDate);
+        const daysLeft = getDaysRemaining(data.endDate);
+
+        // پر کردن تاریخ‌ها
+        $('#startDateDisplay').text(startPersian);
+        $('#endDateDisplay').text(endPersian);
+        $('#endDateHeader').text(endPersian);
+
+        // نمایش روزهای باقی‌مانده در دو مکان
+        if (daysLeft !== null && daysLeft >= 0) {
+            $('#daysLeftNumber').text(daysLeft);
+            // رنگ‌آمیزی هدر
+            const $headerBadge = $('#daysRemainingHeader');
+            $headerBadge.removeClass('text-days-green text-days-orange text-days-red');
+            if (daysLeft <= 3) $headerBadge.addClass('text-days-red');
+            else if (daysLeft <= 10) $headerBadge.addClass('text-days-orange');
+            else $headerBadge.addClass('text-days-green');
+        } else if (daysLeft !== null && daysLeft < 0) {
+            $('#daysLeftNumber').text('منقضی');
+            $('#daysRemainingHeader').removeClass('text-days-green text-days-orange').addClass('text-days-red');
+        } else {
+            $('#daysLeftNumber').text('--');
+        }
+
+        // اعمال روی آیتم گرید
+        applyDaysRemainingStyle('#daysRemainingDisplay', daysLeft);
+
+        $('#subscriptionContent').show();
+    }
+
+    $(document).ready(function () {
+        if (restaurantId) {
+            loadSubscription();
+        } else {
+            $('#noSubscriptionContent').show();
+            $('#loadingState').hide();
+        }
+    });
+</script>

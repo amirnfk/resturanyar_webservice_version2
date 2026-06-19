@@ -234,7 +234,7 @@ namespace resturanyar.Controllers.Api
                     });
                 }
 
-                // پیدا کردن کاربر در آن رستوران
+              
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u =>
                         u.name == request.name &&
@@ -245,7 +245,7 @@ namespace resturanyar.Controllers.Api
                     return Ok(new { success = false, message = "کاربری با این مشخصات یافت نشد" });
                 }
 
-                // پیدا کردن سابسکریپشن فعال مخصوص همین رستوران
+              
                 var activeSubscription = await _context.Subscriptions
                     .Include(s => s.SubscriptionPlan)
                     .Where(s => s.RestaurantId == restaurant.restaurant_id &&
@@ -266,7 +266,7 @@ namespace resturanyar.Controllers.Api
                     })
                     .FirstOrDefaultAsync();
 
-                // بازگرداندن اطلاعات کاربر همراه با رستوران و سابسکریپشن
+              
                 return Ok(new
                 {
                     success = true,
@@ -279,7 +279,7 @@ namespace resturanyar.Controllers.Api
                         restaurant_id = user.restaurant_id,
                         restaurant_code = restaurant.restaurant_code,
                         restaurant_name = restaurant.name,
-                        // پرمیشن‌ها
+                     
                         order_management_permission = user.order_management_permission,
                         kitchen_management_permission = user.kitchen_management_permission,
                         payment_management_permission = user.payment_management_permission
@@ -326,7 +326,7 @@ namespace resturanyar.Controllers.Api
                 if (restaurant == null)
                     return Ok(new { success = false, message = "رستوران متعلق به این کاربر نمی‌باشد" });
 
-                // اشتراک فعال
+               
                 var activeSubscription = await _context.Subscriptions
                     .Include(s => s.SubscriptionPlan)
                     .Where(s => s.RestaurantId == request.RestaurantId &&

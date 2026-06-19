@@ -79,6 +79,17 @@
                     <i class="fas fa-chart-line"></i>
                     <span>گزارش گیری</span>
                 </a>
+                <!-- آیتم اشتراک رستوران -->
+                <a href="@Url.Action("RestaurantSubscription", "Home")" class="nav-item">
+                    <i class="fas fa-crown"></i>
+                    <span>اشتراک رستوران</span>
+                </a>
+
+                <!-- آیتم پشتیبانی -->
+                <a href="@Url.Action("Support", "Home")" class="nav-item">
+                    <i class="fas fa-headset"></i>
+                    <span>پشتیبانی</span>
+                </a>
                 @* <a href="/Settings" class="nav-item">
                     <i class="fas fa-cog"></i>
                     <span>تنظیمات</span>
@@ -234,7 +245,25 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+                // ذخیره موقعیت اسکرول سایدبار قبل از خروج از صفحه
+        window.addEventListener('beforeunload', function () {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                localStorage.setItem('sidebarScrollPos', sidebar.scrollTop);
+            }
+        });
 
+        // بازیابی موقعیت اسکرول بعد از بارگذاری کامل صفحه
+        window.addEventListener('load', function () {
+            const sidebar = document.getElementById('sidebar');
+            const savedPos = localStorage.getItem('sidebarScrollPos');
+            if (sidebar && savedPos !== null) {
+                sidebar.scrollTop = parseInt(savedPos, 10);
+                localStorage.removeItem('sidebarScrollPos'); // پاک کردن بعد از استفاده
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

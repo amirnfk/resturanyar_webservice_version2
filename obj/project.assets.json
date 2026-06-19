@@ -80,6 +80,19 @@
           }
         }
       },
+      "DNTPersianUtils.Core/6.9.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/DNTPersianUtils.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/DNTPersianUtils.Core.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "DocumentFormat.OpenXml/3.1.1": {
         "type": "package",
         "dependencies": {
@@ -3046,6 +3059,38 @@
         "lib/netstandard2.0/ClosedXML.Parser.xml",
         "lib/netstandard2.1/ClosedXML.Parser.dll",
         "lib/netstandard2.1/ClosedXML.Parser.xml"
+      ]
+    },
+    "DNTPersianUtils.Core/6.9.0": {
+      "sha512": "JW2lPyJ9u6LNu3iOhwICzV0zTc2v+OYhkHqImvx++QAppuw2yyzv77aaCwRVggxUvOZHlRmTH+amEntC6FU9cw==",
+      "type": "package",
+      "path": "dntpersianutils.core/6.9.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "dntpersianutils.core.6.9.0.nupkg.sha512",
+        "dntpersianutils.core.nuspec",
+        "lib/net10.0/DNTPersianUtils.Core.dll",
+        "lib/net10.0/DNTPersianUtils.Core.xml",
+        "lib/net46/DNTPersianUtils.Core.dll",
+        "lib/net46/DNTPersianUtils.Core.xml",
+        "lib/net5.0/DNTPersianUtils.Core.dll",
+        "lib/net5.0/DNTPersianUtils.Core.xml",
+        "lib/net6.0/DNTPersianUtils.Core.dll",
+        "lib/net6.0/DNTPersianUtils.Core.xml",
+        "lib/net7.0/DNTPersianUtils.Core.dll",
+        "lib/net7.0/DNTPersianUtils.Core.xml",
+        "lib/net8.0/DNTPersianUtils.Core.dll",
+        "lib/net8.0/DNTPersianUtils.Core.xml",
+        "lib/net9.0/DNTPersianUtils.Core.dll",
+        "lib/net9.0/DNTPersianUtils.Core.xml",
+        "lib/netstandard1.3/DNTPersianUtils.Core.dll",
+        "lib/netstandard1.3/DNTPersianUtils.Core.xml",
+        "lib/netstandard2.0/DNTPersianUtils.Core.dll",
+        "lib/netstandard2.0/DNTPersianUtils.Core.xml",
+        "lib/netstandard2.1/DNTPersianUtils.Core.dll",
+        "lib/netstandard2.1/DNTPersianUtils.Core.xml"
       ]
     },
     "DocumentFormat.OpenXml/3.1.1": {
@@ -8146,6 +8191,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "ClosedXML >= 0.105.0",
+      "DNTPersianUtils.Core >= 6.9.0",
       "EPPlus >= 8.2.1",
       "EntityFramework >= 6.5.1",
       "Microsoft.AspNet.WebApi.Client >= 6.0.0",
@@ -8165,23 +8211,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\anoorafkan\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\zmi13\\.nuget\\packages\\": {},
+    "D:\\vs shared folder\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar.csproj",
+      "projectUniqueName": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj",
       "projectName": "resturanyar",
-      "projectPath": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar.csproj",
-      "packagesPath": "C:\\Users\\anoorafkan\\.nuget\\packages\\",
-      "outputPath": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\obj\\",
+      "projectPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj",
+      "packagesPath": "C:\\Users\\zmi13\\.nuget\\packages\\",
+      "outputPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "D:\\vs shared folder\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\anoorafkan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\zmi13\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8217,6 +8263,10 @@
           "ClosedXML": {
             "target": "Package",
             "version": "[0.105.0, )"
+          },
+          "DNTPersianUtils.Core": {
+            "target": "Package",
+            "version": "[6.9.0, )"
           },
           "EPPlus": {
             "target": "Package",
@@ -8304,7 +8354,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

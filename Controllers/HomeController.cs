@@ -50,7 +50,7 @@ namespace resturanyar.Controllers
         {
             return View();
         }
-
+       
         public IActionResult Privacy()
         {
             return View();
@@ -1828,6 +1828,40 @@ namespace resturanyar.Controllers
 
             ViewBag.RestaurantId = restaurantId.Value;
             return View(tables);
+        }
+        public async Task<IActionResult> RestaurantSubscription()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            return View();
+        }
+        public async Task<IActionResult> Support()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            var restaurant = _context.Restaurants.Find(restaurantId.Value);
+            ViewBag.RestaurantName = restaurant?.name ?? "";
+
+
+              
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+
+            ViewBag.RestaurantName = restaurant?.name;
+            ViewBag.RestaurantId = restaurantId.Value;
+            return View();
+
+
+
+
+            
+ 
+
         }
 
         [HttpPost]

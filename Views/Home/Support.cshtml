@@ -1,0 +1,596 @@
+﻿@{
+    ViewData["Title"] = "پشتیبانی";
+  
+
+}
+
+<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+    :root {
+        --primary: #f97316;
+        --primary-light: #fff7ed;
+        --primary-soft: #fed7aa;
+        --gold: #f59e0b;
+        --gold-dark: #d97706;
+        --bg-page: #faf9f6;
+        --card-bg: #ffffff;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --success: #16a34a;
+        --danger: #dc2626;
+        --warning: #f59e0b;
+        --shadow-sm: 0 2px 12px rgba(0,0,0,0.04);
+        --shadow-md: 0 8px 30px rgba(249, 115, 22, 0.10);
+        --radius-lg: 20px;
+        --radius-md: 14px;
+        --radius-sm: 10px;
+    }
+
+    body {
+        background: var(--bg-page);
+        direction: rtl;
+        font-family: "IRANYekan", "Vazir", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+
+    /* کارت اصلی */
+    .support-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        padding: 2rem 1.8rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(249, 115, 22, 0.08);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .support-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.04), transparent 70%);
+            pointer-events: none;
+            border-radius: 0 0 100% 0;
+        }
+
+    /* هدر */
+    .support-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+        .support-header .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .support-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .support-header p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+    /* کارت‌های اطلاعات */
+    .info-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-card-item {
+        background: var(--bg-page);
+        border-radius: var(--radius-md);
+        padding: 1.2rem 1.2rem 1.2rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        border: 1px solid #f1f0ec;
+        transition: 0.2s;
+    }
+
+        .info-card-item:hover {
+            border-color: var(--primary-soft);
+            background: #fefcf9;
+        }
+
+        .info-card-item .icon-box {
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--primary);
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .info-card-item .info-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .info-card-item .info-text .label {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                font-weight: 500;
+            }
+
+            .info-card-item .info-text .value {
+                font-weight: 600;
+                font-size: 0.95rem;
+                color: var(--text-dark);
+                direction: ltr;
+                text-align: right;
+            }
+
+                .info-card-item .info-text .value[dir="rtl"] {
+                    direction: rtl;
+                }
+
+    /* بخش چت */
+    .chat-section {
+        background: var(--bg-page);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        border: 1px solid #f1f0ec;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+        .chat-section .chat-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+            .chat-section .chat-info .chat-icon {
+                width: 48px;
+                height: 48px;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 1.4rem;
+            }
+
+            .chat-section .chat-info .chat-text h6 {
+                font-weight: 700;
+                margin: 0;
+                font-size: 1rem;
+            }
+
+            .chat-section .chat-info .chat-text small {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+            }
+
+        .chat-section .chat-buttons {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+    .chat-btn {
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+    }
+
+    .chat-btn-primary {
+        background: var(--primary);
+        color: #fff;
+    }
+
+        .chat-btn-primary:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+        }
+
+    .chat-btn-outline {
+        background: transparent;
+        color: var(--text-dark);
+        border: 1px solid #d1d5db;
+    }
+
+        .chat-btn-outline:hover {
+            background: #f3f4f6;
+            border-color: var(--primary);
+        }
+
+    .chat-btn-success {
+        background: var(--success);
+        color: #fff;
+    }
+
+        .chat-btn-success:hover {
+            background: #15803d;
+        }
+
+    /* سوالات متداول (آکاردئون) */
+    .faq-section {
+        margin-top: 1rem;
+    }
+
+        .faq-section h5 {
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+    .faq-item {
+        border: 1px solid #f1f0ec;
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.6rem;
+        overflow: hidden;
+        transition: 0.2s;
+    }
+
+        .faq-item:hover {
+            border-color: var(--primary-soft);
+        }
+
+    .faq-question {
+        width: 100%;
+        background: transparent;
+        border: none;
+        padding: 1rem 1.2rem;
+        text-align: right;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        gap: 1rem;
+        transition: 0.2s;
+        color: var(--text-dark);
+    }
+
+        .faq-question:hover {
+            background: var(--primary-light);
+        }
+
+        .faq-question .fa-chevron-down {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .faq-question[aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+    .faq-answer {
+        padding: 0 1.2rem 1.2rem 1.2rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.8;
+        display: none;
+    }
+
+        .faq-answer.open {
+            display: block;
+        }
+
+    /* وضعیت آنلاین */
+    .online-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #dcfce7;
+        color: var(--success);
+        font-weight: 600;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.8rem;
+        border-radius: 999px;
+    }
+
+        .online-status .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+
+    @@keyframes pulse-dot {
+        0%, 100%
+
+    {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+
+    }
+
+    /* ریسپانسیو */
+    @@media (max-width: 576px) {
+        .support-card
+
+    {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+    }
+
+    .support-header .icon-circle {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+
+    .support-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-section {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+        .chat-section .chat-info {
+            justify-content: center;
+        }
+
+        .chat-section .chat-buttons {
+            justify-content: center;
+        }
+
+    .chat-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .faq-question {
+        font-size: 0.85rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .faq-answer {
+        font-size: 0.85rem;
+        padding: 0 1rem 1rem 1rem;
+    }
+
+    }
+
+    @@media (max-width: 400px) {
+        .chat-section .chat-buttons
+
+    {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .chat-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    }
+</style>
+
+<div class="container py-4">
+    <div class="support-card">
+
+        <!-- هدر -->
+        <div class="support-header">
+            <div class="icon-circle">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div>
+                <h1>پشتیبانی</h1>
+                <p>ما همیشه در کنار شما هستیم. از طریق راه‌های زیر با ما در ارتباط باشید.</p>
+            </div>
+        </div>
+
+        <!-- کارت‌های اطلاعات تماس -->
+        <div class="info-cards">
+            <div class="info-card-item">
+                <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                <div class="info-text">
+                    <span class="label">تلفن پشتیبانی</span>
+                    <span class="value" dir="ltr">09374422588</span>
+                </div>
+            </div>
+            <div class="info-card-item">
+                <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                <div class="info-text">
+                    <span class="label">ایمیل</span>
+                    <span class="value" dir="ltr">support@resturanyar.com</span>
+                </div>
+            </div>
+            <div class="info-card-item">
+                <div class="icon-box"><i class="fas fa-clock"></i></div>
+                <div class="info-text">
+                    <span class="label">ساعت کاری</span>
+                    <span class="value" dir="rtl">شنبه تا چهارشنبه ۹ تا ۱۸</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش چت آنلاین -->
+        <div class="chat-section">
+            <div class="chat-info">
+                <div class="chat-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <div class="chat-text">
+                    <h6>
+                        چت آنلاین
+                        <span class="online-status">
+                            <span class="dot"></span> آنلاین
+                        </span>
+                    </h6>
+                    <small>پاسخگویی فوری از طریق چت</small>
+                </div>
+            </div>
+            <div class="chat-buttons">
+                <button class="chat-btn chat-btn-primary" id="open_chat">
+                    <i class="fas fa-comment"></i> باز کردن چت
+                </button>
+               
+            </div>
+        </div>
+
+        <!-- سوالات متداول -->
+        <div class="faq-section">
+            <h5>
+                <i class="fas fa-question-circle" style="color: var(--primary);"></i>
+                سوالات متداول
+            </h5>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span> آیا رستورانیار روی همه دستگاه‌ها کار می‌کند؟</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    بله، اپلیکیشن و پنل مدیریت برای موبایل، تبلت و رایانه رومیزی (دسکتاپ) بهینه‌سازی شده‌اند و در تمامی مرورگرهای مدرن اجرا می‌شوند.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span> چطور می‌توانم منوی خود را به مشتری نمایش دهم؟</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    کافیه غذاهای خودتون رو داخل اپلیکیشن یا در پنل مدیریتی ثبت کنید. منوی شما از طریق اسکن کدینه سریع (کیو آر کد) و تحت وب در دسترس خواهد بود.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span>روش‌های پرداخت چیست؟</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    ما از تمام کارت‌های بانکی عضو شتاب، کیف پول الکترونیکی و همچنین پرداخت از طریق درگاه بانکی پشتیبانی می‌کنیم.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    <span>چگونه می‌توانم مشکل فنی را گزارش کنم؟</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    می‌توانید از طریق چت آنلاین یا تماس تلفنی   مشکل خود را با ما در میان بگذارید. تیم فنی ما در اسرع وقت پاسخگو خواهد بود.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/jquery_3.6.0.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+
+<!-- اسکریپت گوفتینو (همان کد قبلی) -->
+<script type="text/javascript">
+    !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+</script>
+
+<script>
+     var restaurantId = @(ViewBag.RestaurantId ?? 0);
+    var restaurantName = @Html.Raw(Json.Serialize(ViewBag.RestaurantName ?? "رستوران"));
+
+    // اتصال دکمه‌ها به گوفتینو
+    window.addEventListener('goftino_ready', function () {
+        // تنظیم کاربر
+        Goftino.setUser({
+            email: 'restaurant ID: ' + restaurantId,
+            name: 'restaurant Name: '+restaurantName+"",
+            about: 'Resturanyar...',
+            phone: '...',
+            avatar: '...',
+            forceUpdate: true
+        });
+
+        // دکمه‌ها
+        document.getElementById("open_chat").addEventListener("click", function () {
+            Goftino.open();
+        });
+        document.getElementById("close_chat").addEventListener("click", function () {
+            Goftino.close();
+        });
+        document.getElementById("toggle_chat").addEventListener("click", function () {
+            Goftino.toggle();
+        });
+    });
+
+    // آکاردئون سوالات متداول (با jQuery)
+    $(document).ready(function () {
+        $('.faq-question').on('click', function () {
+            var $answer = $(this).next('.faq-answer');
+            var isOpen = $answer.hasClass('open');
+
+            // بستن بقیه
+            $('.faq-answer').removeClass('open');
+            $('.faq-question').attr('aria-expanded', 'false');
+
+            // اگر بسته بود، باز کن
+            if (!isOpen) {
+                $answer.addClass('open');
+                $(this).attr('aria-expanded', 'true');
+            }
+        });
+    });
+</script>

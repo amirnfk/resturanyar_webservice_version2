@@ -1,0 +1,726 @@
+﻿@model resturanyar.Models.ViewModels.Admin.AdminDashboardViewModel
+@using DNTPersianUtils.Core
+@{
+    ViewData["Title"] = "داشبورد مدیریت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    :root {
+        --card-radius: 16px;
+        --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        --transition: all 0.25s ease;
+    }
+
+    body {
+        background: #f5f7fc;
+        font-family: 'Vazir', 'Segoe UI', sans-serif;
+    }
+
+    .dashboard-wrapper {
+        direction: rtl;
+        text-align: right;
+        padding: 20px;
+    }
+
+    /* کارت‌های آمار */
+    .stat-card {
+        background: #fff;
+        border-radius: var(--card-radius);
+        padding: 18px 12px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        transition: var(--transition);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid rgba(0,0,0,0.02);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+    .stat-icon {
+        font-size: 1.8rem;
+        margin-bottom: 4px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a2634;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        color: #6c7a8a;
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* کارت‌های جدول با ارتفاع ثابت و اسکرول */
+    .card-table {
+        background: #fff;
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+        padding: 16px 16px 8px 16px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(0,0,0,0.02);
+        height: 340px; /* ارتفاع ثابت برای همه کارت‌ها */
+        display: flex;
+        flex-direction: column;
+    }
+
+        .card-table .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f6;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+            .card-table .card-header h5 {
+                margin: 0;
+                font-weight: 600;
+                font-size: 1rem;
+                color: #1e2a3a;
+            }
+
+            .card-table .card-header .badge-count {
+                background: #eef2f7;
+                border-radius: 30px;
+                padding: 2px 12px;
+                font-size: 0.75rem;
+                color: #2c3e50;
+            }
+
+    /* محتوای جدول با اسکرول */
+    .table-scroll {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin: 0 -4px;
+        padding: 0 4px;
+    }
+
+        .table-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: #c1c9d6;
+            border-radius: 8px;
+        }
+
+        .table-scroll table {
+            width: 100%;
+            font-size: 0.85rem;
+            border-collapse: collapse;
+        }
+
+        .table-scroll th {
+            background: #f8fafd;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 8px 6px;
+            border-bottom: 2px solid #e9edf2;
+            position: sticky;
+            top: 0;
+            background: #f8fafd;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .table-scroll td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #f0f2f5;
+            vertical-align: middle;
+        }
+
+        .table-scroll tr:hover td {
+            background: #fafbfd;
+        }
+
+    .badge-active {
+        background: #e3f5ec;
+        color: #0b7b4b;
+        padding: 3px 12px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-expired {
+        background: #fde8e8;
+        color: #b33c3c;
+        padding: 3px 12px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-none {
+        background: #eef1f5;
+        color: #6f7d8e;
+        padding: 3px 12px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .expiring-warning td {
+        background: #fff9e6 !important;
+        border-left: 3px solid #f5b342;
+    }
+
+    .expiring-warning:hover td {
+        background: #fff3d1 !important;
+    }
+
+    /* چارت‌ها */
+    .chart-card {
+        background: #fff;
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+        padding: 16px;
+        height: 340px;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(0,0,0,0.02);
+    }
+
+        .chart-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f6;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+            .chart-card .card-header h5 {
+                margin: 0;
+                font-weight: 600;
+                font-size: 1rem;
+                color: #1e2a3a;
+            }
+
+        .chart-card .chart-wrapper {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+            .chart-card .chart-wrapper canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+    /* رنگ‌های سفارشی برای چارت‌ها */
+    .chart-color-1 {
+        background: #4a6cf7;
+    }
+
+    .chart-color-2 {
+        background: #f7b731;
+    }
+
+    .chart-color-3 {
+        background: #20c997;
+    }
+
+    .chart-color-4 {
+        background: #e45c5c;
+    }
+
+    /* ریسپانسیو */
+    @@media (max-width: 768px) {
+        .card-table, .chart-card {
+            height: 300px;
+        }
+
+        .stat-number {
+            font-size: 1.6rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .card-table, .chart-card {
+            height: 280px;
+        }
+
+        .table-scroll table {
+            font-size: 0.75rem;
+        }
+
+        .table-scroll th, .table-scroll td {
+            padding: 4px 4px;
+        }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <h1 class="mb-4" style="font-weight: 700; font-size: 1.8rem;">📊 داشبورد مدیریت</h1>
+
+    <!-- ===== ردیف آمار کلی ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-number">@Model.TotalRestaurants</div><div class="stat-label">رستوران‌ها</div></div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-number">@Model.TotalOwners</div><div class="stat-label">مالکین</div></div>
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-number">@Model.TotalSubscriptions</div><div class="stat-label">کل اشتراک‌ها</div></div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card" style="background:#eef7f2;"><div class="stat-icon">✅</div><div class="stat-number">@Model.ActiveSubscriptions</div><div class="stat-label">اشتراک فعال</div></div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card" style="background:#eef4fb;"><div class="stat-icon">💰</div><div class="stat-number">@Model.TotalRevenue.ToString("#,0")</div><div class="stat-label">درآمد کل (تومان)</div></div>
+        </div>
+    </div>
+
+    <!-- ===== ردیف چارت‌ها + اشتراک‌های در حال انقضا ===== -->
+    <div class="row g-3 mb-4">
+        <!-- چارت شماره ۱: وضعیت اشتراک‌ها (ستونی) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <h5>📈 وضعیت اشتراک‌ها</h5>
+                    <span class="badge-count">@Model.TotalSubscriptions مجموع</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="subscriptionStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== چارت درآمد ماهانه (خطی) ===== -->
+        <div class="col-lg-4 col-md-6">
+            <div class="chart-card">
+                <div class="card-header">
+                    <h5>📉 درآمد ماهانه</h5>
+                    <span class="badge-count">۶ ماه اخیر</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- اشتراک‌های در حال انقضا (لیست با اسکرول) -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card-table">
+                <div class="card-header">
+                    <h5>⚠️ در حال انقضا &lt; ۷ روز</h5>
+                    <span class="badge-count">@Model.ExpiringSubscriptions.Count مورد</span>
+                </div>
+                <div class="table-scroll">
+                    @if (Model.ExpiringSubscriptions.Any())
+                    {
+                        <table class="table table-hover">
+                            <thead><tr><th>رستوران</th><th>روز باقی</th></tr></thead>
+                            <tbody>
+                                @foreach (var item in Model.ExpiringSubscriptions)
+                                {
+                                    <tr class="expiring-warning">
+                                        <td>@item.RestaurantName</td>
+                                        <td><strong>@item.DaysLeft روز</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-4">✅ هیچ اشتراک در حال انقضایی وجود ندارد</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== لیست رستوران‌ها ===== -->
+    <!-- ===== لیست رستوران‌ها ===== -->
+    <!-- ===== لیست رستوران‌ها ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card-table">
+                <div class="card-header">
+                    <h5>🏪 لیست رستوران‌ها و وضعیت اشتراک</h5>
+                    <span class="badge-count">@Model.Restaurants.Count رستوران</span>
+                </div>
+
+                <!-- فیلتر و جستجو -->
+                <div class="d-flex flex-wrap gap-2 align-items-center mb-3 px-2">
+                    <div class="flex-grow-1">
+                        <input type="text" id="restaurantSearch"
+                               class="form-control"
+                               placeholder="جستجو در نام رستوران، مالک یا تماس..."
+                               style="max-width: 420px;">
+                    </div>
+
+                    <select id="statusFilter" class="form-select" style="width: auto; min-width: 160px;">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="Active">✅ فعال</option>
+                        <option value="Expired">❌ منقضی</option>
+                        <option value="None">⚪ بدون اشتراک</option>
+                    </select>
+
+                    <select id="planFilter" class="form-select" style="width: auto; min-width: 160px;">
+                        <option value="">همه طرح‌ها</option>
+                        @foreach (var plan in Model.Restaurants.Select(r => r.PlanName).Where(p => !string.IsNullOrEmpty(p)).Distinct())
+                        {
+                            <option value="@plan">@plan</option>
+                        }
+                    </select>
+
+                    <button onclick="resetFilters()" class="btn btn-outline-secondary btn-sm">
+                        پاک کردن فیلترها
+                    </button>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="table table-hover" id="restaurantsTable">
+                        <thead>
+                            <tr>
+                                <th>نام رستوران</th>
+                                <th>مالک</th>
+                                <th>تماس</th>
+                                <th>سفارش</th>
+                                <th>وضعیت</th>
+                                <th>طرح</th>
+                                <th>تاریخ پایان</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Restaurants)
+                            {
+                                <tr data-status="@item.SubscriptionStatus" data-plan="@item.PlanName">
+                                    <td><strong>@item.Name</strong></td>
+                                    <td>@item.OwnerName</td>
+                                    <td>@item.OwnerPhone</td>
+                                    <td>@item.TotalOrders</td>
+                                    <td>
+                                        @if (item.SubscriptionStatus == "Active")
+                                        {
+                                            <span class="badge-active">✅ فعال</span>
+                                        }
+                                        else if (item.SubscriptionStatus == "Expired")
+                                        {
+                                            <span class="badge-expired">❌ منقضی</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-none">⚪ بدون</span>
+                                        }
+                                    </td>
+                                    <td>@item.PlanName</td>
+                                    <td>@(item.SubscriptionEndDate?.ToPersianDateTextify() ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ===== ردیف دو ستونی: لیست مالکین + آخرین اشتراک‌ها ===== -->
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="card-table">
+                <div class="card-header">
+                    <h5>👤 لیست مالکین</h5>
+                    <span class="badge-count">@Model.Owners.Count مالک</span>
+                </div>
+                <div class="table-scroll">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>نام</th>
+                                <th>تماس</th>
+                                <th>تعداد رستوران</th>
+                                <th>اشتراک فعال</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Owners)
+                            {
+                                <tr>
+                                    <td><strong>@item.Name</strong></td>
+                                    <td>@item.Phone</td>
+                                    <td>@item.RestaurantCount</td>
+                                    <td>
+                                        @if (item.ActiveSubscriptionCount > 0)
+                                        {
+                                            <span class="badge-active">@item.ActiveSubscriptionCount</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-none">هیچ</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card-table">
+                <div class="card-header">
+                    <h5>🕐 آخرین اشتراک‌ها</h5>
+                    <span class="badge-count">@Model.RecentSubscriptions.Count مورد</span>
+                </div>
+                <div class="table-scroll">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>رستوران</th>
+                                <th>طرح</th>
+                                <th>تاریخ خرید</th>
+                                <th>وضعیت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RecentSubscriptions)
+                            {
+                                <tr>
+                                    <td>@item.RestaurantName</td>
+                                    <td>@item.PlanName</td>
+                                    <td>@item.PurchaseDate.ToPersianDateTextify()</td>
+                                    <td>
+                                        @if (item.Status == "Active")
+                                        {
+                                            <span class="badge-active">فعال</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-expired">@item.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== اسکریپت چارت‌ها ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // 1. چارت وضعیت اشتراک‌ها (ستونی)
+        const ctx1 = document.getElementById('subscriptionStatusChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['فعال', 'منقضی', 'بدون اشتراک'],
+                datasets: [{
+                    label: 'تعداد',
+                    data: [
+                        @Model.ActiveSubscriptions,
+                        @(Model.TotalSubscriptions - Model.ActiveSubscriptions - 0), // به‌روزرسانی با داده واقعی
+                        0
+                    ],
+                    backgroundColor: ['#20c997', '#e45c5c', '#b0bcc9'],
+                    borderRadius: 6,
+                    barPercentage: 0.6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: { stepSize: 1 }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 2. چارت درآمد ماهانه (خطی) - با داده‌های واقعی
+    const ctx2 = document.getElementById('monthlyRevenueChart').getContext('2d');
+
+           // دریافت داده‌های ماهانه از مدل
+           const monthlyLabels = [];
+           const monthlyData = [];
+
+           @if (Model.MonthlyStats != null)
+           {
+                   foreach (var item in Model.MonthlyStats)
+                   {
+                           @:monthlyLabels.push('@item.Label');
+                           @:monthlyData.push(@item.Revenue);
+                   }
+           }
+
+           // تابع تبدیل تاریخ میلادی به شمسی
+           function gregorianToJalali(gy, gm, gd) {
+               var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+               var jy = (gy <= 1600) ? 0 : 979;
+               gy -= (gy <= 1600) ? 0 : 1600;
+               var gy2 = (gm > 2) ? (gy + 1) : gy;
+               var days = (365 * gy) + (parseInt((gy2 + 3) / 4)) - (parseInt((gy2 + 99) / 100)) + (parseInt((gy2 + 399) / 400)) - 80 + gd + g_d_m[gm - 1];
+               jy += 33 * (parseInt(days / 12053));
+               days %= 12053;
+               jy += 4 * (parseInt(days / 1461));
+               days %= 1461;
+               jy += parseInt((days - 1) / 365);
+               if (days > 365) days = (days - 1) % 365;
+               var jm = (days < 186) ? 1 + parseInt(days / 31) : 7 + parseInt((days - 186) / 30);
+               var jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+               return [jy, jm, jd];
+           }
+
+           // نام ماه‌های شمسی
+           const persianMonths = [
+               'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+               'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+           ];
+
+           // تبدیل لیبل‌های میلادی به شمسی
+           const persianLabels = monthlyLabels.map(label => {
+               // اگر لیبل به فرمت "yyyy/MM" یا "yyyy-MM" باشه
+               if (label.includes('/') || label.includes('-')) {
+                   const parts = label.split(/[\/\-]/);
+                   if (parts.length >= 2) {
+                       const year = parseInt(parts[0]);
+                       const month = parseInt(parts[1]);
+                       const jalali = gregorianToJalali(year, month, 1);
+                       return persianMonths[jalali[1] - 1] + ' ' + jalali[0];
+                   }
+               }
+               // اگر نتونست تبدیل کنه، همون لیبل اصلی رو برمی‌گردونه
+               return label;
+           });
+
+           new Chart(ctx2, {
+               type: 'line',
+               data: {
+                   labels: persianLabels, // استفاده از لیبل‌های شمسی
+                   datasets: [{
+                       label: 'درآمد (تومان)',
+                       data: monthlyData,
+                       borderColor: '#4a6cf7',
+                       backgroundColor: 'rgba(74, 108, 247, 0.06)',
+                       borderWidth: 3,
+                       pointBackgroundColor: '#4a6cf7',
+                       pointRadius: 4,
+                       tension: 0.2,
+                       fill: true,
+                   }]
+               },
+               options: {
+                   responsive: true,
+                   maintainAspectRatio: false,
+                   plugins: {
+                       legend: { display: false },
+                       tooltip: {
+                           callbacks: {
+                               label: function(context) {
+                                   return context.parsed.y.toLocaleString() + ' تومان';
+                               }
+                           }
+                       }
+                   },
+                   scales: {
+                       y: {
+                           beginAtZero: true,
+                           grid: { color: 'rgba(0,0,0,0.04)' },
+                           ticks: {
+                               callback: function(value) {
+                                   if (value >= 1000000) {
+                                       return (value / 1000000).toFixed(1) + 'M';
+                                   } else if (value >= 1000) {
+                                       return (value / 1000).toFixed(0) + 'K';
+                                   }
+                                   return value;
+                               }
+                           }
+                       },
+                       x: {
+                           grid: { display: false }
+                       }
+                   }
+               }
+           });
+       });
+
+</script>
+<script>
+    function filterTable() {
+        const searchText = document.getElementById('restaurantSearch').value.toLowerCase().trim();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const planFilter = document.getElementById('planFilter').value;
+
+        const rows = document.querySelectorAll('#restaurantsTable tbody tr');
+
+        rows.forEach(row => {
+            const name = row.cells[0].textContent.toLowerCase();
+            const owner = row.cells[1].textContent.toLowerCase();
+            const phone = row.cells[2].textContent.toLowerCase();
+            const status = row.getAttribute('data-status');
+            const plan = row.getAttribute('data-plan') || '';
+
+            const matchesSearch = !searchText ||
+                name.includes(searchText) ||
+                owner.includes(searchText) ||
+                phone.includes(searchText);
+
+            const matchesStatus = !statusFilter || status === statusFilter;
+            const matchesPlan = !planFilter || plan === planFilter;
+
+            row.style.display = (matchesSearch && matchesStatus && matchesPlan) ? '' : 'none';
+        });
+    }
+
+    function resetFilters() {
+        document.getElementById('restaurantSearch').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('planFilter').value = '';
+        filterTable();
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('restaurantSearch');
+        const statusSelect = document.getElementById('statusFilter');
+        const planSelect = document.getElementById('planFilter');
+
+        searchInput.addEventListener('input', filterTable);
+        statusSelect.addEventListener('change', filterTable);
+        planSelect.addEventListener('change', filterTable);
+    });
+</script>
