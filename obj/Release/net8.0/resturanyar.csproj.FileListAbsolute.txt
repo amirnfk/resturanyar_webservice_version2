@@ -1586,3 +1586,4 @@ D:\aspnet projects\resturanyar\resturanyar_webservice_version2\resturanyar_webse
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\ref\resturanyar.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\DNTPersianUtils.Core.dll
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\bin\Release\net8.0\DNTPersianUtils.Core.dll

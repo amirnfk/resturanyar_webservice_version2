@@ -8,6 +8,6 @@
     "\\wwwroot",
     "\\wwwroot\\css"
   ],
-  "SelectedNode": "\\Controllers\\Api\\UserApiController.cs",
+  "SelectedNode": "\\Controllers\\AdminController.cs",
   "PreviewInSolutionExplorer": false
 }

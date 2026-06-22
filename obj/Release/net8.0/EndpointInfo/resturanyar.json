@@ -412,6 +412,35 @@
         }
       }
     },
+    "/addrestaurant": {
+      "post": {
+        "tags": [
+          "Home"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/ExportOrdersToExcel": {
       "get": {
         "tags": [
@@ -478,6 +507,68 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateZarinpalPaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/coupon/validate": {
+      "post": {
+        "tags": [
+          "Home"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateCouponRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateCouponRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateCouponRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/coupon/consume": {
+      "post": {
+        "tags": [
+          "Home"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumeCouponRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumeCouponRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumeCouponRequest"
               }
             }
           }
@@ -2628,6 +2719,20 @@
         },
         "additionalProperties": false
       },
+      "ConsumeCouponRequest": {
+        "type": "object",
+        "properties": {
+          "subscriptionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "couponId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateOrderItemRequest": {
         "type": "object",
         "properties": {
@@ -2751,6 +2856,15 @@
           },
           "subscriptionPeriod": {
             "type": "string",
+            "nullable": true
+          },
+          "discountCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "finalPrice": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         },
@@ -3173,6 +3287,28 @@
           "newStatusId": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidateCouponRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "planId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "restaurantId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseAmount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

@@ -81,9 +81,6 @@ namespace Resturanyar.Controllers.Api
         }
 
 
-
-      
-
         [HttpPost("addrestaurant")]
         public IActionResult AddRestaurant(AddRestaurantRequest request)
         {
@@ -94,7 +91,7 @@ namespace Resturanyar.Controllers.Api
                 if (owner == null)
                     return NotFound(new { success = false, message = "مالک با این شناسه یافت نشد" });
 
-               
+
                 bool hasActiveGold = _context.Subscriptions
                     .Include(s => s.SubscriptionPlan)
                     .Any(s =>
@@ -104,10 +101,10 @@ namespace Resturanyar.Controllers.Api
                         s.SubscriptionPlan.Name == "طلایی"
                     );
 
-                
+
                 int restaurantCount = _context.Restaurants.Count(r => r.owner_id == request.owner_id);
 
-                
+
                 if (restaurantCount > 0 && !hasActiveGold)
                 {
                     return Ok(new
@@ -117,7 +114,7 @@ namespace Resturanyar.Controllers.Api
                     });
                 }
 
-                // ⚙️ بررسی تکراری نبودن نام رستوران برای همین مالک
+
                 bool isDuplicate = _context.Restaurants.Any(r =>
                     r.owner_id == request.owner_id &&
                     r.name.ToLower().Trim() == request.name.ToLower().Trim()
@@ -140,9 +137,8 @@ namespace Resturanyar.Controllers.Api
                     restaurant_code = GenerateUniqueRestaurantCode(),
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
                 };
-
                 _context.Restaurants.Add(restaurant);
-                _context.SaveChanges();
+                _context.SaveChanges(); // ذخیره تا ID رستوران تولید شود
 
                 // 👥 افزودن کاربران پیش‌فرض
                 var defaultUsers = new List<User>
@@ -151,7 +147,6 @@ namespace Resturanyar.Controllers.Api
             new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
             new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
         };
-
                 _context.Users.AddRange(defaultUsers);
                 _context.SaveChanges();
 
@@ -165,14 +160,69 @@ namespace Resturanyar.Controllers.Api
                 });
                 _context.SaveChanges();
 
+                // 🆕 ==========================================
+                // 🎁 منطق اعطای اشتراک طلایی رایگان برای اولین رستوران
+                // ==========================================
+
+                // چون قبلاً restaurantCount را گرفتیم، اگر 0 بود یعنی این اولین رستوران است
+                if (restaurantCount == 0)
+                {
+                    // پیدا کردن پلن طلایی (فرض بر اینکه ID=4 است یا نام آن "طلایی" است)
+                    // برای اطمینان بیشتر از نام یا کد استفاده می‌کنیم
+                    var goldPlan = _context.SubscriptionPlans
+                        .FirstOrDefault(p => p.Name == "طلایی" || p.Id == 4);
+
+                    if (goldPlan != null)
+                    {
+                        var freeSubscription = new Subscription
+                        {
+                            RestaurantId = restaurant.restaurant_id,
+                            OwnerId = owner.Id,
+                            SubscriptionPlanId = goldPlan.Id,
+                            SubscriptionPeriod = "3 روز", // ۱ ماهه
+                            Status = "Active",
+                            StartDate = DateTime.Now,
+                            EndDate = DateTime.Now.AddDays(3),
+                            PurchaseDate = DateTime.Now,
+                            PricePaid = 0, // رایگان
+                            DiscountApplied = 0,
+                            PaymentMethod = "FreeTrial", // روش پرداخت آزمایشی
+                            TransactionId = "",
+                            IsPaid = true,
+                            CafeBazarPurchaseToken = "",
+                            CafeBazarOrderId = "",
+                            AutoRenew = false,
+                            NextRenewalDate = null,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            CanceledAt = null // یا null بسته به طراحی دیتابیس شما
+                        };
+
+                        _context.Subscriptions.Add(freeSubscription);
+                        _context.SaveChanges();
+                    }
+                }
+
+
+                bool isFirstRestaurantAndFreeTrialGiven = (restaurantCount == 0);
+
                 transaction.Commit();
+
+
+                string responseMessage = "رستوران جدید با موفقیت ثبت شد.";
+
+                if (isFirstRestaurantAndFreeTrialGiven)
+                {
+                    responseMessage = "تبریک! رستوران شما با موفقیت ثبت شد و یک اشتراک طلایی 3 روزه رایگان به حساب شما اضافه گردید.";
+                }
 
                 return Ok(new
                 {
                     success = true,
-                    message = "رستوران جدید با موفقیت ثبت شد.",
+                    message = responseMessage,
                     restaurant_id = restaurant.restaurant_id,
-                    restaurant_code = restaurant.restaurant_code
+                    restaurant_code = restaurant.restaurant_code,
+                    has_free_trial = isFirstRestaurantAndFreeTrialGiven
                 });
             }
             catch (Exception ex)
@@ -185,6 +235,109 @@ namespace Resturanyar.Controllers.Api
                 });
             }
         }
+
+
+        //[HttpPost("addrestaurant")]
+        //public IActionResult AddRestaurant(AddRestaurantRequest request)
+        //{
+        //    using var transaction = _context.Database.BeginTransaction();
+        //    try
+        //    {
+        //        var owner = _context.Owners.Find(request.owner_id);
+        //        if (owner == null)
+        //            return NotFound(new { success = false, message = "مالک با این شناسه یافت نشد" });
+
+
+        //        bool hasActiveGold = _context.Subscriptions
+        //            .Include(s => s.SubscriptionPlan)
+        //            .Any(s =>
+        //                s.OwnerId == request.owner_id &&
+        //                s.Status == "Active" &&
+        //                s.EndDate > DateTime.Now &&
+        //                s.SubscriptionPlan.Name == "طلایی"
+        //            );
+
+
+        //        int restaurantCount = _context.Restaurants.Count(r => r.owner_id == request.owner_id);
+
+
+        //        if (restaurantCount > 0 && !hasActiveGold)
+        //        {
+        //            return Ok(new
+        //            {
+        //                success = false,
+        //                message = "برای افزودن رستوران جدید، باید حداقل یک اشتراک طلایی فعال داشته باشید."
+        //            });
+        //        }
+
+        //        // ⚙️ بررسی تکراری نبودن نام رستوران برای همین مالک
+        //        bool isDuplicate = _context.Restaurants.Any(r =>
+        //            r.owner_id == request.owner_id &&
+        //            r.name.ToLower().Trim() == request.name.ToLower().Trim()
+        //        );
+
+        //        if (isDuplicate)
+        //        {
+        //            return Ok(new
+        //            {
+        //                success = false,
+        //                message = "رستورانی با این نام قبلاً برای این مالک ثبت شده است."
+        //            });
+        //        }
+
+        //        // ✅ ساخت رستوران جدید
+        //        var restaurant = new Restaurant
+        //        {
+        //            name = request.name.Trim(),
+        //            owner_id = request.owner_id,
+        //            restaurant_code = GenerateUniqueRestaurantCode(),
+        //            PublicMenuToken = Guid.NewGuid().ToString("N"),
+        //        };
+
+        //        _context.Restaurants.Add(restaurant);
+        //        _context.SaveChanges();
+
+        //        // 👥 افزودن کاربران پیش‌فرض
+        //        var defaultUsers = new List<User>
+        //{
+        //    new User { name = "waiter1", role_id = 2, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, order_management_permission = true },
+        //    new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
+        //    new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
+        //};
+
+        //        _context.Users.AddRange(defaultUsers);
+        //        _context.SaveChanges();
+
+        //        // 🍽️ افزودن میز پیش‌فرض
+        //        _context.RestaurantTables.Add(new RestaurantTable
+        //        {
+        //            TableName = "میز اصلی",
+        //            Seats = 1,
+        //            RestaurantId = restaurant.restaurant_id,
+        //            CreatedAt = DateTime.Now
+        //        });
+        //        _context.SaveChanges();
+
+        //        transaction.Commit();
+
+        //        return Ok(new
+        //        {
+        //            success = true,
+        //            message = "رستوران جدید با موفقیت ثبت شد.",
+        //            restaurant_id = restaurant.restaurant_id,
+        //            restaurant_code = restaurant.restaurant_code
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        transaction.Rollback();
+        //        return Ok(new
+        //        {
+        //            success = false,
+        //            message = "خطا در سرور: " + ex.GetBaseException().Message
+        //        });
+        //    }
+        //}
 
 
         [HttpGet("getrestaurantsbyowner/{ownerId}")]

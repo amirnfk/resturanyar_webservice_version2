@@ -80,6 +80,7 @@ wwwroot\images\tablethome.jpg
 wwwroot\images\waiter_2453333.png
 wwwroot\js\bootstrap.bundle.min.js
 wwwroot\js\bootstrap_bundle_min_poper.js
+wwwroot\js\canvasconfetti.js
 wwwroot\js\chart.umd.min.js
 wwwroot\js\chooserestaurant.js
 wwwroot\js\dashboard.js

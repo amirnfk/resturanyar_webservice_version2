@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using resturanyar.Models;
+using resturanyar.Models.Copoun;
 using resturanyar.Models.ViewModels;
 using resturanyar.Utility;
 using Resturanyar.Data;
@@ -15,6 +16,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using static Resturanyar.Controllers.Api.UserApiController;
+using CreateZarinpalPaymentRequest = resturanyar.Models.Copoun.CreateZarinpalPaymentRequest;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 
@@ -335,44 +337,209 @@ namespace resturanyar.Controllers
         }
 
 
-        [HttpPost]
+        //[HttpPost]
+        //public IActionResult AddRestaurant(AddRestaurantRequest request)
+        //{
+        //    int? ownerId = HttpContext.Session.GetInt32("OwnerId");
+        //    if (ownerId == null)
+        //        return RedirectToAction("ManagerLogin", "Home");
+
+
+        //    request.owner_id = ownerId.Value;
+
+        //    bool isDuplicate = _context.Restaurants.Any(r =>
+        //        r.owner_id == request.owner_id &&
+        //        r.name.ToLower().Trim() == request.name.ToLower().Trim()
+        //    );
+
+        //    if (isDuplicate)
+        //    {
+        //        ViewBag.Error = "این رستوران قبلاً ثبت شده است.";
+        //        return RedirectToAction("ChooseRestaurant");
+        //    }
+
+        //    var restaurant = new Restaurant
+        //    {
+        //        name = request.name.Trim(),
+        //        owner_id = request.owner_id,
+        //        restaurant_code = GenerateUniqueRestaurantCode(),
+        //        PublicMenuToken = Guid.NewGuid().ToString("N") // یک مقدار یونیک و رندوم
+        //    };
+
+        //    _context.Restaurants.Add(restaurant);
+        //    _context.SaveChanges();
+
+        //    return RedirectToAction("ChooseRestaurant");
+        //}
+
+        [HttpPost("addrestaurant")]
         public IActionResult AddRestaurant(AddRestaurantRequest request)
         {
-            int? ownerId = HttpContext.Session.GetInt32("OwnerId");
-            if (ownerId == null)
-                return RedirectToAction("ManagerLogin", "Home");
-
-
-            request.owner_id = ownerId.Value;
-
-            bool isDuplicate = _context.Restaurants.Any(r =>
-                r.owner_id == request.owner_id &&
-                r.name.ToLower().Trim() == request.name.ToLower().Trim()
-            );
-
-            if (isDuplicate)
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                ViewBag.Error = "این رستوران قبلاً ثبت شده است.";
-                return RedirectToAction("ChooseRestaurant");
+                var owner = _context.Owners.Find(request.owner_id);
+                if (owner == null)
+                    return NotFound(new { success = false, message = "مالک با این شناسه یافت نشد" });
+
+
+                bool hasActiveGold = _context.Subscriptions
+                    .Include(s => s.SubscriptionPlan)
+                    .Any(s =>
+                        s.OwnerId == request.owner_id &&
+                        s.Status == "Active" &&
+                        s.EndDate > DateTime.Now &&
+                        s.SubscriptionPlan.Name == "طلایی"
+                    );
+
+
+                int restaurantCount = _context.Restaurants.Count(r => r.owner_id == request.owner_id);
+
+
+                if (restaurantCount > 0 && !hasActiveGold)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "برای افزودن رستوران جدید، باید حداقل یک اشتراک طلایی فعال داشته باشید."
+                    });
+                }
+
+
+                bool isDuplicate = _context.Restaurants.Any(r =>
+                    r.owner_id == request.owner_id &&
+                    r.name.ToLower().Trim() == request.name.ToLower().Trim()
+                );
+
+                if (isDuplicate)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "رستورانی با این نام قبلاً برای این مالک ثبت شده است."
+                    });
+                }
+
+                // ✅ ساخت رستوران جدید
+                var restaurant = new Restaurant
+                {
+                    name = request.name.Trim(),
+                    owner_id = request.owner_id,
+                    restaurant_code = GenerateUniqueRestaurantCode(),
+                    PublicMenuToken = Guid.NewGuid().ToString("N"),
+                };
+                _context.Restaurants.Add(restaurant);
+                _context.SaveChanges(); // ذخیره تا ID رستوران تولید شود
+
+                // 👥 افزودن کاربران پیش‌فرض
+                var defaultUsers = new List<User>
+        {
+            new User { name = "waiter1", role_id = 2, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, order_management_permission = true },
+            new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
+            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
+        };
+                _context.Users.AddRange(defaultUsers);
+                _context.SaveChanges();
+
+                // 🍽️ افزودن میز پیش‌فرض
+                _context.RestaurantTables.Add(new RestaurantTable
+                {
+                    TableName = "میز اصلی",
+                    Seats = 1,
+                    RestaurantId = restaurant.restaurant_id,
+                    CreatedAt = DateTime.Now
+                });
+                _context.SaveChanges();
+
+                // 🆕 ==========================================
+                // 🎁 منطق اعطای اشتراک طلایی رایگان برای اولین رستوران
+                // ==========================================
+
+                // چون قبلاً restaurantCount را گرفتیم، اگر 0 بود یعنی این اولین رستوران است
+                if (restaurantCount == 0)
+                {
+                    // پیدا کردن پلن طلایی (فرض بر اینکه ID=4 است یا نام آن "طلایی" است)
+                    // برای اطمینان بیشتر از نام یا کد استفاده می‌کنیم
+                    var goldPlan = _context.SubscriptionPlans
+                        .FirstOrDefault(p => p.Name == "طلایی" || p.Id == 4);
+
+                    if (goldPlan != null)
+                    {
+                        var freeSubscription = new Subscription
+                        {
+                            RestaurantId = restaurant.restaurant_id,
+                            OwnerId = owner.Id,
+                            SubscriptionPlanId = goldPlan.Id,
+                            SubscriptionPeriod = "3 روز", // ۱ ماهه
+                            Status = "Active",
+                            StartDate = DateTime.Now,
+                            EndDate = DateTime.Now.AddDays(3),
+                            PurchaseDate = DateTime.Now,
+                            PricePaid = 0, // رایگان
+                            DiscountApplied = 0,
+                            PaymentMethod = "FreeTrial", // روش پرداخت آزمایشی
+                            TransactionId = "",
+                            IsPaid = true,
+                            CafeBazarPurchaseToken = "",
+                            CafeBazarOrderId = "",
+                            AutoRenew = false,
+                            NextRenewalDate = null,
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                            CanceledAt = null // یا null بسته به طراحی دیتابیس شما
+                        };
+
+                        _context.Subscriptions.Add(freeSubscription);
+                        _context.SaveChanges();
+                    }
+                }
+
+
+                bool isFirstRestaurantAndFreeTrialGiven = (restaurantCount == 0);
+
+                transaction.Commit();
+
+
+                string responseMessage = "رستوران جدید با موفقیت ثبت شد.";
+
+                if (isFirstRestaurantAndFreeTrialGiven)
+                {
+                    responseMessage = "تبریک! رستوران شما با موفقیت ثبت شد و یک اشتراک طلایی 3 روزه رایگان به حساب شما اضافه گردید.";
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = responseMessage,
+                    restaurant_id = restaurant.restaurant_id,
+                    restaurant_code = restaurant.restaurant_code,
+                    has_free_trial = isFirstRestaurantAndFreeTrialGiven
+                });
             }
-
-            var restaurant = new Restaurant
+            catch (Exception ex)
             {
-                name = request.name.Trim(),
-                owner_id = request.owner_id,
-                restaurant_code = GenerateUniqueRestaurantCode(),
-                PublicMenuToken = Guid.NewGuid().ToString("N") // یک مقدار یونیک و رندوم
-            };
-
-            _context.Restaurants.Add(restaurant);
-            _context.SaveChanges();
-
-            return RedirectToAction("ChooseRestaurant");
+                transaction.Rollback();
+                return Ok(new
+                {
+                    success = false,
+                    message = "خطا در سرور: " + ex.GetBaseException().Message
+                });
+            }
         }
 
+        private static string EncodePassword(string plainPassword)
+        {
+            if (string.IsNullOrEmpty(plainPassword)) return null;
+            byte[] bytes = Encoding.UTF8.GetBytes(plainPassword);
+            return Convert.ToBase64String(bytes);
+        }
 
-
-
+        private static string DecodePassword(string encodedPassword)
+        {
+            if (string.IsNullOrEmpty(encodedPassword)) return null;
+            byte[] bytes = Convert.FromBase64String(encodedPassword);
+            return Encoding.UTF8.GetString(bytes);
+        }
         private string GenerateUniqueRestaurantCode()
         {
             Random rnd = new Random();
@@ -422,12 +589,7 @@ namespace resturanyar.Controllers
         }
 
 
-        private static string DecodePassword(string encodedPassword)
-        {
-            if (string.IsNullOrEmpty(encodedPassword)) return null;
-            byte[] bytes = Convert.FromBase64String(encodedPassword);
-            return Encoding.UTF8.GetString(bytes);
-        }
+      
 
      
 
@@ -1940,46 +2102,278 @@ namespace resturanyar.Controllers
 
 
 
+        //[Authorize(Roles = "Owner")]
+        //[HttpPost("/zarinpal/create")]
+        //public async Task<IActionResult> CreateZarinpalPayment([FromBody] CreateZarinpalPaymentRequest request)
+        //{
+        //    try
+        //    {
+        //        // --- 1) اعتبارسنجی ورودی
+        //        if (request == null)
+        //            return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
+        //        if (request.RestaurantId <= 0 || request.SubscriptionPlanId <= 0)
+        //            return BadRequest(new { success = false, message = "پارامترهای ورودی معتبر نیست." });
+
+        //        // --- 2) OwnerId فقط از Claims
+        //        var ownerIdClaim = User.FindFirstValue("OwnerId");
+        //        if (string.IsNullOrWhiteSpace(ownerIdClaim) || !int.TryParse(ownerIdClaim, out var ownerId))
+        //            return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+        //        // --- 3) بررسی مالکیت رستوران
+        //        var restaurant = await _context.Restaurants
+        //            .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerId);
+        //        if (restaurant == null)
+        //            return BadRequest(new { success = false, message = "شما به این رستوران دسترسی ندارید یا رستوران یافت نشد." });
+
+        //        // --- 4) بررسی و دریافت پلن اشتراک
+        //        var plan = await _context.SubscriptionPlans
+        //            .FirstOrDefaultAsync(p => p.Id == request.SubscriptionPlanId && p.IsActive);
+        //        if (plan == null)
+        //            return BadRequest(new { success = false, message = "پلن اشتراک یافت نشد یا غیرفعال است." });
+
+        //        // --- 5) نرمال‌سازی دوره
+        //        var period = NormalizePeriod(request.SubscriptionPeriod);
+
+        //        // --- 6) محاسبه مبلغ
+        //        (decimal standardPrice, decimal amount) = CalculatePlanAmount(plan, period);
+        //        if (amount <= 0)
+        //            return BadRequest(new { success = false, message = "مبلغ پلن معتبر نیست." });
+
+        //        var discountApplied = Math.Max(0, standardPrice - amount);
+
+        //        // --- 7) حذف Paymentهای Pending قدیمی
+        //        var pendings = await _context.Subscriptions
+        //            .Where(s => s.RestaurantId == request.RestaurantId &&
+        //                        s.OwnerId == ownerId &&
+        //                        s.Status == "PendingPayment" &&
+        //                        s.PaymentMethod == "Zarinpal")
+        //            .ToListAsync();
+        //        if (pendings.Any())
+        //        {
+        //            _context.Subscriptions.RemoveRange(pendings);
+        //            await _context.SaveChangesAsync();
+        //        }
+
+        //        // --- 8) ارسال درخواست به زرین‌پال
+        //        var merchantId = _configuration["Zarinpal:MerchantId"];
+        //        var callbackUrl = _configuration["Zarinpal:CallbackUrl"];
+
+        //        // بررسی نال نبودن (اختیاری ولی توصیه می‌شود)
+        //        if (string.IsNullOrEmpty(merchantId) || string.IsNullOrEmpty(callbackUrl))
+        //        {
+        //            return BadRequest(new { success = false, message = "پیکربندی درگاه پرداخت ناقص است." });
+        //        }
+
+        //        var owner = await _context.Owners.FindAsync(ownerId);
+        //        using var client = new HttpClient();
+
+
+        //            var zarinReq = new
+        //            {
+        //                merchant_id = merchantId,   
+        //                amount = (long)amount,
+        //                currency = "IRT",
+        //                description = $"خرید اشتراک {plan.Name} - {period}",
+        //                callback_url = callbackUrl,   
+        //                metadata = new { mobile = owner?.Phone?.Trim() ?? "", auto_verify = false }
+        //            };
+
+
+        //        var zarinResponse = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/request.json", zarinReq);
+        //        var rawResponse = await zarinResponse.Content.ReadAsStringAsync();
+        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
+
+        //        if (json?.data?.code != 100 || string.IsNullOrWhiteSpace(json?.data?.authority?.ToString()))
+        //            return BadRequest(new { success = false, message = "خطا در ارتباط با زرین‌پال." });
+
+        //        string authority = json.data.authority.ToString();
+
+        //        // --- 9) ثبت رکورد اشتراک Pending
+        //        var now = DateTime.Now;
+        //        var endDate = CalculateEndDate(now, period);
+
+        //        var subscription = new Subscription
+        //        {
+        //            RestaurantId = request.RestaurantId,
+        //            OwnerId = ownerId,
+        //            SubscriptionPlanId = request.SubscriptionPlanId,
+        //            SubscriptionPeriod = period,
+        //            Status = "PendingPayment",
+        //            StartDate = now,
+        //            EndDate = endDate,
+        //            PurchaseDate = now,
+        //            PricePaid = amount,
+        //            DiscountApplied = discountApplied,
+        //            PaymentMethod = "Zarinpal",
+        //            TransactionId = authority,
+        //            IsPaid = false,
+        //            CafeBazarPurchaseToken = "Zarinpal" + authority,
+        //            CafeBazarOrderId = "Zarinpal" + authority,
+        //            AutoRenew = false,
+        //            NextRenewalDate = endDate,
+        //            CreatedAt = now,
+        //            UpdatedAt = now
+        //        };
+
+        //        _context.Subscriptions.Add(subscription);
+        //        await _context.SaveChangesAsync();
+
+        //        // --- 10) بازگرداندن لینک پرداخت
+        //        return Ok(new
+        //        {
+        //            success = true,
+        //            url = $"https://payment.zarinpal.com/pg/StartPay/{authority}",
+        //            subscriptionId = subscription.Id
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "خطا در ایجاد پرداخت زرین‌پال.", detail = ex.Message });
+        //    }
+
+        //    // === Helper functions ===
+        //    static string NormalizePeriod(string? p)
+        //    {
+        //        p = (p ?? "").Trim();
+        //        return p switch
+        //        {
+        //            "1" or "Monthly" or "ماهانه" => "Monthly",
+        //            "3" or "3Monthly" or "سه ماهه" => "3Monthly",
+        //            "6" or "6Monthly" or "شش ماهه" => "6Monthly",
+        //            _ => "Monthly"
+        //        };
+        //    }
+
+        //    static (decimal standardPrice, decimal amount) CalculatePlanAmount(dynamic plan, string period)
+        //    {
+        //        return period switch
+        //        {
+        //            "Monthly" => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly)),
+        //            "3Monthly" => (plan.Price3Monthly, (plan.DiscountPrice3Monthly > 0 ? plan.DiscountPrice3Monthly : plan.Price3Monthly)),
+        //            "6Monthly" => (plan.Price6Monthly, (plan.DiscountPrice6Monthly > 0 ? plan.DiscountPrice6Monthly : plan.Price6Monthly)),
+        //            _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
+        //        };
+        //    }
+        //}
+
+
+
+
         [Authorize(Roles = "Owner")]
         [HttpPost("/zarinpal/create")]
         public async Task<IActionResult> CreateZarinpalPayment([FromBody] CreateZarinpalPaymentRequest request)
         {
             try
             {
-                // --- 1) اعتبارسنجی ورودی
+                // --- 1) اعتبارسنجی ورودی ---
                 if (request == null)
                     return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
                 if (request.RestaurantId <= 0 || request.SubscriptionPlanId <= 0)
                     return BadRequest(new { success = false, message = "پارامترهای ورودی معتبر نیست." });
 
-                // --- 2) OwnerId فقط از Claims
+                // --- 2) دریافت OwnerId از Claims ---
                 var ownerIdClaim = User.FindFirstValue("OwnerId");
                 if (string.IsNullOrWhiteSpace(ownerIdClaim) || !int.TryParse(ownerIdClaim, out var ownerId))
                     return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
 
-                // --- 3) بررسی مالکیت رستوران
+                // --- 3) بررسی مالکیت رستوران ---
                 var restaurant = await _context.Restaurants
                     .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerId);
                 if (restaurant == null)
-                    return BadRequest(new { success = false, message = "شما به این رستوران دسترسی ندارید یا رستوران یافت نشد." });
+                    return BadRequest(new { success = false, message = "شما به این رستوران دسترسی ندارید." });
 
-                // --- 4) بررسی و دریافت پلن اشتراک
+                // --- 4) دریافت پلن اشتراک ---
                 var plan = await _context.SubscriptionPlans
                     .FirstOrDefaultAsync(p => p.Id == request.SubscriptionPlanId && p.IsActive);
                 if (plan == null)
-                    return BadRequest(new { success = false, message = "پلن اشتراک یافت نشد یا غیرفعال است." });
+                    return BadRequest(new { success = false, message = "پلن اشتراک یافت نشد." });
 
-                // --- 5) نرمال‌سازی دوره
+                // --- 5) نرمال‌سازی دوره ---
                 var period = NormalizePeriod(request.SubscriptionPeriod);
 
-                // --- 6) محاسبه مبلغ
-                (decimal standardPrice, decimal amount) = CalculatePlanAmount(plan, period);
-                if (amount <= 0)
+                // --- 6) محاسبه مبلغ پایه (قبل از تخفیف کد) ---
+                (decimal standardPrice, decimal baseAmount) = CalculatePlanAmount(plan, period);
+                if (baseAmount <= 0)
                     return BadRequest(new { success = false, message = "مبلغ پلن معتبر نیست." });
 
-                var discountApplied = Math.Max(0, standardPrice - amount);
+                decimal finalAmount = baseAmount;
+                decimal discountApplied = 0;
+                int? couponId = null;
+                var now = DateTime.Now;
+                // ========== اعمال کد تخفیف (با استفاده از دیتابیس) ==========
+                if (!string.IsNullOrWhiteSpace(request.DiscountCode))
+                {
+                    var code = request.DiscountCode.Trim().ToUpper();
+                    var coupon = await _context.Coupons
+                        .FirstOrDefaultAsync(c => c.Code == code && c.IsActive);
 
-                // --- 7) حذف Paymentهای Pending قدیمی
+                    if (coupon == null)
+                        return BadRequest(new { success = false, message = "کد تخفیف نامعتبر است." });
+
+                    // اعتبارسنجی تاریخ
+               
+                    if (now < coupon.StartDate || now > coupon.EndDate)
+                        return BadRequest(new { success = false, message = "کد تخفیف منقضی شده یا هنوز فعال نشده است." });
+
+                    // بررسی محدودیت کلی تعداد استفاده
+                    if (coupon.UsageLimit.HasValue && coupon.UsedCount >= coupon.UsageLimit)
+                        return BadRequest(new { success = false, message = "تعداد استفاده از این کد به پایان رسیده است." });
+
+                    // بررسی محدودیت برای مالک (LimitPerOwner)
+                    if (coupon.LimitPerOwner > 0)
+                    {
+                        var ownerUsageCount = await _context.CouponUsages
+                            .Where(u => u.CouponId == coupon.Id && u.OwnerId == ownerId && u.Status == "Success")
+                            .CountAsync();
+
+                        if (ownerUsageCount >= coupon.LimitPerOwner)
+                            return BadRequest(new { success = false, message = "شما قبلاً از این کد تخفیف استفاده کرده‌اید." });
+                    }
+
+                    // بررسی مالک خاص
+                    if (coupon.SpecificOwnerId.HasValue && coupon.SpecificOwnerId != ownerId)
+                        return BadRequest(new { success = false, message = "این کد تخفیف مخصوص شما نیست." });
+
+                    // بررسی رستوران خاص
+                    if (coupon.SpecificRestaurantId.HasValue && coupon.SpecificRestaurantId != request.RestaurantId)
+                        return BadRequest(new { success = false, message = "این کد تخفیف برای این رستوران معتبر نیست." });
+
+                    // بررسی حداقل مبلغ خرید
+                    if (coupon.MinPurchaseAmount.HasValue && baseAmount < coupon.MinPurchaseAmount)
+                        return BadRequest(new { success = false, message = $"حداقل مبلغ برای استفاده از این کد {coupon.MinPurchaseAmount:N0} تومان است." });
+
+                    // محاسبه تخفیف
+                    decimal discountValue = 0;
+                    if (coupon.DiscountType == "Percentage")
+                    {
+                        discountValue = baseAmount * (coupon.DiscountValue / 100);
+                        if (coupon.MaxDiscountAmount.HasValue)
+                            discountValue = Math.Min(discountValue, coupon.MaxDiscountAmount.Value);
+                    }
+                    else // FixedAmount
+                    {
+                        discountValue = Math.Min(coupon.DiscountValue, baseAmount);
+                    }
+
+                    discountApplied = Math.Round(discountValue, 0);
+                    finalAmount = baseAmount - discountApplied;
+                    if (finalAmount < 0) finalAmount = 0;
+
+                    couponId = coupon.Id;
+                }
+                else
+                {
+                    // اگر تخفیف دوره‌ای وجود دارد (مثل تخفیف ۳ و ۶ ماهه)
+                    discountApplied = Math.Max(0, standardPrice - baseAmount);
+                }
+
+                // (اختیاری) اگر کلاینت FinalPrice ارسال کرده، با مقدار محاسبه‌شده مقایسه کنید
+                if (request.FinalPrice.HasValue && Math.Abs(request.FinalPrice.Value - finalAmount) > 1)
+                {
+                    // می‌توانید خطا دهید یا نادیده بگیرید - برای امنیت مقدار سرور را نگه دارید
+                }
+
+                // --- 7) حذف پرداخت‌های Pending قبلی ---
                 var pendings = await _context.Subscriptions
                     .Where(s => s.RestaurantId == request.RestaurantId &&
                                 s.OwnerId == ownerId &&
@@ -1992,30 +2386,26 @@ namespace resturanyar.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // --- 8) ارسال درخواست به زرین‌پال
+                // --- 8) ارسال درخواست به زرین‌پال ---
                 var merchantId = _configuration["Zarinpal:MerchantId"];
                 var callbackUrl = _configuration["Zarinpal:CallbackUrl"];
 
-                // بررسی نال نبودن (اختیاری ولی توصیه می‌شود)
                 if (string.IsNullOrEmpty(merchantId) || string.IsNullOrEmpty(callbackUrl))
-                {
                     return BadRequest(new { success = false, message = "پیکربندی درگاه پرداخت ناقص است." });
-                }
 
                 var owner = await _context.Owners.FindAsync(ownerId);
                 using var client = new HttpClient();
 
-               
-                    var zarinReq = new
-                    {
-                        merchant_id = merchantId,   
-                        amount = (long)amount,
-                        currency = "IRT",
-                        description = $"خرید اشتراک {plan.Name} - {period}",
-                        callback_url = callbackUrl,   
-                        metadata = new { mobile = owner?.Phone?.Trim() ?? "", auto_verify = false }
-                    };
-            
+                var zarinReq = new
+                {
+                    merchant_id = merchantId,
+                    amount = (long)finalAmount,
+                    currency = "IRT",
+                    description = $"خرید اشتراک {plan.Name} - {period}" +
+                                  (discountApplied > 0 ? $" (تخفیف: {discountApplied} تومان)" : ""),
+                    callback_url = callbackUrl,
+                    metadata = new { mobile = owner?.Phone?.Trim() ?? "", auto_verify = false }
+                };
 
                 var zarinResponse = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/request.json", zarinReq);
                 var rawResponse = await zarinResponse.Content.ReadAsStringAsync();
@@ -2026,8 +2416,8 @@ namespace resturanyar.Controllers
 
                 string authority = json.data.authority.ToString();
 
-                // --- 9) ثبت رکورد اشتراک Pending
-                var now = DateTime.Now;
+                // --- 9) ثبت رکورد اشتراک Pending ---
+                
                 var endDate = CalculateEndDate(now, period);
 
                 var subscription = new Subscription
@@ -2040,8 +2430,9 @@ namespace resturanyar.Controllers
                     StartDate = now,
                     EndDate = endDate,
                     PurchaseDate = now,
-                    PricePaid = amount,
+                    PricePaid = finalAmount,
                     DiscountApplied = discountApplied,
+                    CouponId = couponId,  // ذخیره آی‌دی کوپن (حتی اگر null باشد)
                     PaymentMethod = "Zarinpal",
                     TransactionId = authority,
                     IsPaid = false,
@@ -2056,7 +2447,7 @@ namespace resturanyar.Controllers
                 _context.Subscriptions.Add(subscription);
                 await _context.SaveChangesAsync();
 
-                // --- 10) بازگرداندن لینک پرداخت
+                // --- 10) بازگرداندن لینک پرداخت ---
                 return Ok(new
                 {
                     success = true,
@@ -2068,81 +2459,521 @@ namespace resturanyar.Controllers
             {
                 return StatusCode(500, new { success = false, message = "خطا در ایجاد پرداخت زرین‌پال.", detail = ex.Message });
             }
-
-            // === Helper functions ===
-            static string NormalizePeriod(string? p)
-            {
-                p = (p ?? "").Trim();
-                return p switch
-                {
-                    "1" or "Monthly" or "ماهانه" => "Monthly",
-                    "3" or "3Monthly" or "سه ماهه" => "3Monthly",
-                    "6" or "6Monthly" or "شش ماهه" => "6Monthly",
-                    _ => "Monthly"
-                };
-            }
-
-            static (decimal standardPrice, decimal amount) CalculatePlanAmount(dynamic plan, string period)
-            {
-                return period switch
-                {
-                    "Monthly" => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly)),
-                    "3Monthly" => (plan.Price3Monthly, (plan.DiscountPrice3Monthly > 0 ? plan.DiscountPrice3Monthly : plan.Price3Monthly)),
-                    "6Monthly" => (plan.Price6Monthly, (plan.DiscountPrice6Monthly > 0 ? plan.DiscountPrice6Monthly : plan.Price6Monthly)),
-                    _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
-                };
-            }
         }
 
 
-       
+
+        [HttpPost("/coupon/validate")]
+        public async Task<IActionResult> ValidateCoupon([FromBody] ValidateCouponRequest request)
+        {
+            try
+            {
+                // اعتبارسنجی ورودی
+                if (request == null || string.IsNullOrWhiteSpace(request.Code))
+                    return Ok(new { success = false, message = "کد تخفیف وارد نشده است." });
+
+                if (request.PlanId <= 0 || request.BaseAmount <= 0)
+                    return Ok(new { success = false, message = "اطلاعات اشتراک معتبر نیست." });
+
+                // دریافت OwnerId از Claims
+                var ownerIdClaim = User.FindFirstValue("OwnerId");
+                if (string.IsNullOrWhiteSpace(ownerIdClaim) || !int.TryParse(ownerIdClaim, out var ownerId))
+                    return Ok(new { success = false, message = "احراز هویت نامعتبر است." });
+
+                // بررسی وجود رستوران و دسترسی مالک
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerId);
+                if (restaurant == null)
+                    return Ok(new { success = false, message = "شما به این رستوران دسترسی ندارید." });
+
+                // پیدا کردن کوپن
+                var coupon = await _context.Coupons
+                    .FirstOrDefaultAsync(c => c.Code == request.Code.ToUpper() && c.IsActive);
+
+                if (coupon == null)
+                    return Ok(new { success = false, message = "کد تخفیف نامعتبر است." });
+
+                // بررسی تاریخ اعتبار
+                var now = DateTime.Now;
+                if (now < coupon.StartDate || now > coupon.EndDate)
+                    return Ok(new { success = false, message = "کد تخفیف منقضی شده یا هنوز فعال نشده است." });
+
+                // بررسی محدودیت کلی تعداد استفاده
+                if (coupon.UsageLimit.HasValue && coupon.UsedCount >= coupon.UsageLimit)
+                    return Ok(new { success = false, message = "تعداد استفاده از این کد به پایان رسیده است." });
+
+                // بررسی محدودیت برای مالک (LimitPerOwner)
+                if (coupon.LimitPerOwner > 0)
+                {
+                    var ownerUsageCount = await _context.CouponUsages
+                        .Where(u => u.CouponId == coupon.Id && u.OwnerId == ownerId && u.Status == "Success")
+                        .CountAsync();
+
+                    if (ownerUsageCount >= coupon.LimitPerOwner)
+                        return Ok(new { success = false, message = "شما قبلاً از این کد تخفیف استفاده کرده‌اید." });
+                }
+
+                // بررسی مالک خاص
+                if (coupon.SpecificOwnerId.HasValue && coupon.SpecificOwnerId != ownerId)
+                    return Ok(new { success = false, message = "این کد تخفیف مخصوص شما نیست." });
+
+                // بررسی رستوران خاص
+                if (coupon.SpecificRestaurantId.HasValue && coupon.SpecificRestaurantId != request.RestaurantId)
+                    return Ok(new { success = false, message = "این کد تخفیف برای این رستوران معتبر نیست." });
+
+                // بررسی حداقل مبلغ خرید
+                if (coupon.MinPurchaseAmount.HasValue && request.BaseAmount < coupon.MinPurchaseAmount)
+                    return Ok(new { success = false, message = $"حداقل مبلغ برای استفاده از این کد {coupon.MinPurchaseAmount:N0} تومان است." });
+
+                // محاسبه مبلغ تخفیف
+                decimal discountAmount = 0;
+                if (coupon.DiscountType == "Percentage")
+                {
+                    discountAmount = request.BaseAmount * (coupon.DiscountValue / 100);
+                    if (coupon.MaxDiscountAmount.HasValue)
+                        discountAmount = Math.Min(discountAmount, coupon.MaxDiscountAmount.Value);
+                }
+                else // FixedAmount
+                {
+                    discountAmount = Math.Min(coupon.DiscountValue, request.BaseAmount);
+                }
+
+                discountAmount = Math.Round(discountAmount, 0);
+
+                if (discountAmount <= 0)
+                    return Ok(new { success = false, message = "تخفیف قابل اعمال نیست (مبلغ صفر)." });
+
+                // برگرداندن اطلاعات تخفیف
+                return Ok(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        Id = coupon.Id,
+                        Code = coupon.Code,
+                        DiscountAmount = discountAmount,
+                        FinalPrice = request.BaseAmount - discountAmount
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = false, message = "خطا در اعتبارسنجی کد تخفیف: " + ex.Message });
+            }
+        }
+
+        [HttpPost("/coupon/consume")]
+        public async Task<IActionResult> ConsumeCoupon([FromBody] ConsumeCouponRequest request)
+        {
+            try
+            {
+                // اعتبارسنجی ورودی
+                if (request == null || request.SubscriptionId <= 0 || request.CouponId <= 0)
+                    return BadRequest(new { success = false, message = "اطلاعات نامعتبر است." });
+
+                // دریافت OwnerId از Claims
+                var ownerIdClaim = User.FindFirstValue("OwnerId");
+                if (string.IsNullOrWhiteSpace(ownerIdClaim) || !int.TryParse(ownerIdClaim, out var ownerId))
+                    return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+                // دریافت اشتراک
+                var subscription = await _context.Subscriptions
+                    .Include(s => s.Restaurant)
+                    .FirstOrDefaultAsync(s => s.Id == request.SubscriptionId);
+
+                if (subscription == null)
+                    return NotFound(new { success = false, message = "اشتراک یافت نشد." });
+
+                // بررسی مالکیت اشتراک
+                if (subscription.OwnerId != ownerId)
+                    return BadRequest(new { success = false, message = "شما به این اشتراک دسترسی ندارید." });
+
+                // دریافت کوپن
+                var coupon = await _context.Coupons.FindAsync(request.CouponId);
+                if (coupon == null)
+                    return NotFound(new { success = false, message = "کوپن یافت نشد." });
+
+                // بررسی اینکه آیا کوپن قبلاً برای این اشتراک ثبت شده است؟
+                var existingUsage = await _context.CouponUsages
+                    .FirstOrDefaultAsync(u => u.SubscriptionId == request.SubscriptionId);
+
+                if (existingUsage != null)
+                    return Ok(new { success = false, message = "این اشتراک قبلاً با کوپن ثبت شده است." });
+
+                // بررسی محدودیت استفاده برای مالک
+                if (coupon.LimitPerOwner > 0)
+                {
+                    var ownerUsageCount = await _context.CouponUsages
+                        .Where(u => u.CouponId == coupon.Id && u.OwnerId == ownerId && u.Status == "Success")
+                        .CountAsync();
+
+                    if (ownerUsageCount >= coupon.LimitPerOwner)
+                        return Ok(new { success = false, message = "شما قبلاً از این کد تخفیف استفاده کرده‌اید." });
+                }
+
+                // بررسی محدودیت کلی
+                if (coupon.UsageLimit.HasValue && coupon.UsedCount >= coupon.UsageLimit)
+                    return Ok(new { success = false, message = "تعداد استفاده از این کد به پایان رسیده است." });
+
+                // ثبت استفاده
+                var usage = new CouponUsage
+                {
+                    CouponId = coupon.Id,
+                    SubscriptionId = subscription.Id,
+                    OwnerId = ownerId,
+                    RestaurantId = subscription.RestaurantId,
+                    UsedAt = DateTime.Now,
+                    DiscountAmount = subscription.DiscountApplied ?? 0,
+                    AppliedPrice = subscription.PricePaid,
+                    Status = "Success",
+                    TransactionId = subscription.TransactionId
+                };
+
+                _context.CouponUsages.Add(usage);
+
+                // افزایش شمارنده استفاده
+                coupon.UsedCount++;
+                coupon.UpdatedAt = DateTime.Now;
+
+                // به‌روزرسانی اشتراک با CouponId
+                subscription.CouponId = coupon.Id;
+                subscription.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "کوپن با موفقیت مصرف شد.",
+                    data = new
+                    {
+                        usage.Id,
+                        coupon.Code,
+                        coupon.UsedCount,
+                        usage.DiscountAmount,
+                        usage.AppliedPrice
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در مصرف کوپن.", detail = ex.Message });
+            }
+        }
+
+        static string NormalizePeriod(string? p)
+        {
+            p = (p ?? "").Trim();
+            return p switch
+            {
+                "1" or "Monthly" or "ماهانه" => "Monthly",
+                "3" or "3Monthly" or "سه ماهه" => "3Monthly",
+                "6" or "6Monthly" or "شش ماهه" => "6Monthly",
+                _ => "Monthly"
+            };
+        }
+
+        static (decimal standardPrice, decimal amount) CalculatePlanAmount(dynamic plan, string period)
+        {
+            return period switch
+            {
+                "Monthly" => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly)),
+                "3Monthly" => (plan.Price3Monthly, (plan.DiscountPrice3Monthly > 0 ? plan.DiscountPrice3Monthly : plan.Price3Monthly)),
+                "6Monthly" => (plan.Price6Monthly, (plan.DiscountPrice6Monthly > 0 ? plan.DiscountPrice6Monthly : plan.Price6Monthly)),
+                _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
+            };
+        }
+        //[HttpGet("zarinpal/verify")]
+        //public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
+        //{
+
+
+
+
+        //    try
+        //    {
+
+
+        //        if (string.IsNullOrWhiteSpace(Authority))
+        //        {
+
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "کد Authority معتبر نیست." });
+        //        }
+
+        //        // 1) پیدا کردن پرداخت Pending مربوط به authority
+        //        var payment = await _context.Subscriptions.FirstOrDefaultAsync(x => x.TransactionId == Authority);
+
+        //        if (payment == null)
+        //        {
+
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
+        //        }
+
+
+
+        //        // اگر قبلاً فعال شده
+        //        if (payment.Status == "Active" && payment.IsPaid)
+        //        {
+
+        //            return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
+        //        }
+
+        //        // 2) اگر کاربر درگاه را cancel کرده باشد
+        //        if (!string.Equals(Status, "OK", StringComparison.OrdinalIgnoreCase))
+        //        {
+
+        //            payment.Status = "Canceled";
+        //            payment.UpdatedAt = DateTime.Now;
+        //            await _context.SaveChangesAsync();
+
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت لغو شد." });
+        //        }
+
+
+        //        var merchantId = _configuration["Zarinpal:MerchantId"];
+        //        long amountInToman = (long)payment.PricePaid;
+
+        //        var verifyRequest = new
+        //        {
+        //            merchant_id = merchantId,
+        //            amount = amountInToman,
+        //            authority = Authority
+        //        };
+
+
+
+        //        using var client = new HttpClient();
+        //        var response = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/verify.json", verifyRequest);
+        //        var rawResponse = await response.Content.ReadAsStringAsync();
+
+
+
+        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
+
+        //        if (json?.data == null)
+        //        {
+        //            payment.Status = "Failed";
+        //            payment.UpdatedAt = DateTime.Now;
+        //            await _context.SaveChangesAsync();
+
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پاسخ نامعتبر از درگاه." });
+        //        }
+
+        //        int code = Convert.ToInt32(json.data.code);
+        //        long? refId = json.data.ref_id != null ? Convert.ToInt64(json.data.ref_id) : (long?)null;
+
+
+
+        //        // 100: تایید موفق، 101: قبلاً تایید شده
+        //        if (code == 100 || code == 101)
+        //        {
+        //            var now = DateTime.Now;
+
+        //            payment.Status = "Active";
+        //            payment.IsPaid = true;
+        //            payment.PurchaseDate = now;
+        //            payment.StartDate = now;
+        //            payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
+        //            payment.UpdatedAt = now;
+
+        //            // (اختیاری ولی مفید) اگر فیلدی برای refId دارید ذخیره کنید:
+        //            // payment.RefId = refId?.ToString();
+
+        //            await _context.SaveChangesAsync();
+
+        //            return RedirectToAction("PaymentResult", new
+        //            {
+        //                success = true,
+        //                message = $"پرداخت موفق. شماره پیگیری: {refId}"
+        //            });
+        //        }
+
+        //        payment.Status = "Failed";
+        //        payment.UpdatedAt = DateTime.Now;
+        //        await _context.SaveChangesAsync();
+
+        //        return RedirectToAction("PaymentResult", new
+        //        {
+        //            success = false,
+        //            message = $"پرداخت ناموفق. کد خطا: {code}"
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+
+        //        return RedirectToAction("PaymentResult", new
+        //        {
+        //            success = false,
+        //            message = $"خطا: {ex.Message}"
+        //        });
+        //    }
+        //}
+
+        //[HttpGet("zarinpal/verify")]
+        //public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrWhiteSpace(Authority))
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "کد Authority معتبر نیست." });
+
+        //        // 1) پیدا کردن پرداخت Pending مربوط به authority
+        //        var payment = await _context.Subscriptions
+        //            .FirstOrDefaultAsync(x => x.TransactionId == Authority);
+
+        //        if (payment == null)
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
+
+        //        // اگر قبلاً فعال شده
+        //        if (payment.Status == "Active" && payment.IsPaid)
+        //            return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
+
+        //        // 2) اگر کاربر درگاه را cancel کرده باشد
+        //        if (!string.Equals(Status, "OK", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            payment.Status = "Canceled";
+        //            payment.UpdatedAt = DateTime.Now;
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت لغو شد." });
+        //        }
+
+        //        // 3) تایید پرداخت با زرین‌پال
+        //        var merchantId = _configuration["Zarinpal:MerchantId"];
+        //        long amountInToman = (long)payment.PricePaid;
+
+        //        var verifyRequest = new
+        //        {
+        //            merchant_id = merchantId,
+        //            amount = amountInToman,
+        //            authority = Authority
+        //        };
+
+        //        using var client = new HttpClient();
+        //        var response = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/verify.json", verifyRequest);
+        //        var rawResponse = await response.Content.ReadAsStringAsync();
+        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
+
+        //        if (json?.data == null)
+        //        {
+        //            payment.Status = "Failed";
+        //            payment.UpdatedAt = DateTime.Now;
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction("PaymentResult", new { success = false, message = "پاسخ نامعتبر از درگاه." });
+        //        }
+
+        //        int code = Convert.ToInt32(json.data.code);
+        //        long? refId = json.data.ref_id != null ? Convert.ToInt64(json.data.ref_id) : (long?)null;
+
+        //        // 4) پرداخت موفق
+        //        if (code == 100 || code == 101)
+        //        {
+        //            var now = DateTime.Now;
+
+        //            // فعال‌سازی اشتراک
+        //            payment.Status = "Active";
+        //            payment.IsPaid = true;
+        //            payment.PurchaseDate = now;
+        //            payment.StartDate = now;
+        //            payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
+        //            payment.UpdatedAt = now;
+
+        //            // ========== مصرف کوپن (اگر وجود داشته باشد) ==========
+        //            if (payment.CouponId.HasValue)
+        //            {
+        //                var coupon = await _context.Coupons.FindAsync(payment.CouponId.Value);
+        //                if (coupon != null)
+        //                {
+        //                    // بررسی مجدد اعتبار کوپن (برای امنیت)
+        //                    var isValid = await CheckCouponValidityForConsume(coupon, payment.OwnerId, payment.RestaurantId);
+
+        //                    var usage = new CouponUsage
+        //                    {
+        //                        CouponId = coupon.Id,
+        //                        SubscriptionId = payment.Id,
+        //                        OwnerId = payment.OwnerId,
+        //                        RestaurantId = payment.RestaurantId,
+        //                        UsedAt = DateTime.Now,
+        //                        DiscountAmount = payment.DiscountApplied ?? 0,
+        //                        AppliedPrice = payment.PricePaid,
+        //                        Status = isValid ? "Success" : "Failed",
+        //                        TransactionId = payment.TransactionId
+        //                    };
+
+        //                    _context.CouponUsages.Add(usage);
+
+        //                    if (isValid)
+        //                    {
+        //                        coupon.UsedCount++;
+        //                        coupon.UpdatedAt = DateTime.Now;
+        //                    }
+        //                    else
+        //                    {
+        //                        // در صورت نامعتبر بودن، لاگ ثبت می‌شود ولی اشتراک فعال می‌ماند
+        //                        // می‌توانید به تیم پشتیبانی اطلاع دهید یا کوپن را غیرفعال کنید
+        //                    }
+        //                }
+        //            }
+
+        //            await _context.SaveChangesAsync();
+
+        //            return RedirectToAction("PaymentResult", new
+        //            {
+        //                success = true,
+        //                message = $"پرداخت موفق. شماره پیگیری: {refId}"
+        //            });
+        //        }
+
+        //        // 5) پرداخت ناموفق
+        //        payment.Status = "Failed";
+        //        payment.UpdatedAt = DateTime.Now;
+        //        await _context.SaveChangesAsync();
+
+        //        return RedirectToAction("PaymentResult", new
+        //        {
+        //            success = false,
+        //            message = $"پرداخت ناموفق. کد خطا: {code}"
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return RedirectToAction("PaymentResult", new
+        //        {
+        //            success = false,
+        //            message = $"خطا: {ex.Message}"
+        //        });
+        //    }
+        //}
+
         [HttpGet("zarinpal/verify")]
         public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
         {
-            
-
-            
-
             try
             {
-                 
-
                 if (string.IsNullOrWhiteSpace(Authority))
-                {
-                    
                     return RedirectToAction("PaymentResult", new { success = false, message = "کد Authority معتبر نیست." });
-                }
 
                 // 1) پیدا کردن پرداخت Pending مربوط به authority
-                var payment = await _context.Subscriptions.FirstOrDefaultAsync(x => x.TransactionId == Authority);
+                var payment = await _context.Subscriptions
+                    .FirstOrDefaultAsync(x => x.TransactionId == Authority);
 
                 if (payment == null)
-                {
-                   
                     return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
-                }
-
-               
 
                 // اگر قبلاً فعال شده
                 if (payment.Status == "Active" && payment.IsPaid)
-                {
-                    
                     return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
-                }
 
                 // 2) اگر کاربر درگاه را cancel کرده باشد
                 if (!string.Equals(Status, "OK", StringComparison.OrdinalIgnoreCase))
                 {
-                    
                     payment.Status = "Canceled";
                     payment.UpdatedAt = DateTime.Now;
                     await _context.SaveChangesAsync();
-
                     return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت لغو شد." });
                 }
 
-                
+                // 3) تایید پرداخت با زرین‌پال
                 var merchantId = _configuration["Zarinpal:MerchantId"];
                 long amountInToman = (long)payment.PricePaid;
 
@@ -2153,14 +2984,9 @@ namespace resturanyar.Controllers
                     authority = Authority
                 };
 
-            
-
                 using var client = new HttpClient();
                 var response = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/verify.json", verifyRequest);
                 var rawResponse = await response.Content.ReadAsStringAsync();
-
-               
-
                 dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
 
                 if (json?.data == null)
@@ -2168,39 +2994,114 @@ namespace resturanyar.Controllers
                     payment.Status = "Failed";
                     payment.UpdatedAt = DateTime.Now;
                     await _context.SaveChangesAsync();
-
                     return RedirectToAction("PaymentResult", new { success = false, message = "پاسخ نامعتبر از درگاه." });
                 }
 
                 int code = Convert.ToInt32(json.data.code);
                 long? refId = json.data.ref_id != null ? Convert.ToInt64(json.data.ref_id) : (long?)null;
 
-               
-
-                // 100: تایید موفق، 101: قبلاً تایید شده
+                // 4) پرداخت موفق
                 if (code == 100 || code == 101)
                 {
-                    var now = DateTime.Now;
-
-                    payment.Status = "Active";
-                    payment.IsPaid = true;
-                    payment.PurchaseDate = now;
-                    payment.StartDate = now;
-                    payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
-                    payment.UpdatedAt = now;
-
-                    // (اختیاری ولی مفید) اگر فیلدی برای refId دارید ذخیره کنید:
-                    // payment.RefId = refId?.ToString();
-
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction("PaymentResult", new
+                    // ===== شروع تراکنش =====
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
                     {
-                        success = true,
-                        message = $"پرداخت موفق. شماره پیگیری: {refId}"
-                    });
+                        var now = DateTime.Now;
+
+                        // فعال‌سازی اشتراک
+                        payment.Status = "Active";
+                        payment.IsPaid = true;
+                        payment.PurchaseDate = now;
+                        payment.StartDate = now;
+                        payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
+                        payment.UpdatedAt = now;
+
+                        _logger.LogInformation($"✅ اشتراک {payment.Id} در حال فعال‌سازی. CouponId: {payment.CouponId}");
+
+                        // ========== مصرف کوپن ==========
+                        if (payment.CouponId.HasValue)
+                        {
+                            _logger.LogInformation($"🔍 شروع مصرف کوپن برای SubscriptionId: {payment.Id}, CouponId: {payment.CouponId}");
+
+                            var coupon = await _context.Coupons.FindAsync(payment.CouponId.Value);
+                            if (coupon != null)
+                            {
+                                _logger.LogInformation($"✅ کوپن پیدا شد: {coupon.Code}, UsedCount: {coupon.UsedCount}");
+
+                                // بررسی اعتبار کوپن
+                                var isValid = await CheckCouponValidityForConsume(coupon, payment.OwnerId, payment.RestaurantId);
+                                _logger.LogInformation($"✅ اعتبار کوپن: {isValid}");
+
+                                var usage = new CouponUsage
+                                {
+                                    CouponId = coupon.Id,
+                                    SubscriptionId = payment.Id,
+                                    OwnerId = payment.OwnerId,
+                                    RestaurantId = payment.RestaurantId,
+                                    UsedAt = DateTime.Now,
+                                    DiscountAmount = payment.DiscountApplied ?? 0,
+                                    AppliedPrice = payment.PricePaid,
+                                    Status = isValid ? "Success" : "Failed",
+                                    TransactionId = payment.TransactionId
+                                };
+
+                                _context.CouponUsages.Add(usage);
+                                _logger.LogInformation($"✅ CouponUsage ساخته شد. Status: {usage.Status}");
+
+                                if (isValid)
+                                {
+                                    coupon.UsedCount++;
+                                    coupon.UpdatedAt = DateTime.Now;
+                                    _logger.LogInformation($"✅ UsedCount افزایش یافت: {coupon.UsedCount}");
+                                }
+                                else
+                                {
+                                    _logger.LogWarning($"⚠️ کوپن نامعتبر است: {coupon.Code}");
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogWarning($"⚠️ کوپن با Id {payment.CouponId} یافت نشد.");
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"⚠️ CouponId برای SubscriptionId: {payment.Id} وجود ندارد.");
+                        }
+
+                        // ===== ذخیره همه تغییرات در تراکنش =====
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+
+                        _logger.LogInformation($"✅ تراکنش با موفقیت انجام شد. SubscriptionId: {payment.Id}");
+
+                        return RedirectToAction("PaymentResult", new
+                        {
+                            success = true,
+                            message = $"پرداخت موفق. شماره پیگیری: {refId}"
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // ===== برگرداندن تراکنش در صورت خطا =====
+                        await transaction.RollbackAsync();
+                        _logger.LogError(ex, $"❌ خطا در تراکنش مصرف کوپن برای SubscriptionId: {payment.Id}");
+
+                        // اشتراک را Failed کنید تا کاربر متوجه شود
+                        payment.Status = "Failed";
+                        payment.UpdatedAt = DateTime.Now;
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToAction("PaymentResult", new
+                        {
+                            success = false,
+                            message = $"خطا در ثبت کوپن: {ex.Message}"
+                        });
+                    }
                 }
 
+                // 5) پرداخت ناموفق از سمت زرین‌پال
                 payment.Status = "Failed";
                 payment.UpdatedAt = DateTime.Now;
                 await _context.SaveChangesAsync();
@@ -2213,8 +3114,7 @@ namespace resturanyar.Controllers
             }
             catch (Exception ex)
             {
-                 
-
+                _logger.LogError(ex, "❌ خطای کلی در ZarinpalVerify");
                 return RedirectToAction("PaymentResult", new
                 {
                     success = false,
@@ -2223,9 +3123,38 @@ namespace resturanyar.Controllers
             }
         }
 
+        private async Task<bool> CheckCouponValidityForConsume(Coupon coupon, int ownerId, int restaurantId)
+        {
+            // بررسی تاریخ
+            var now = DateTime.Now;
+            if (now < coupon.StartDate || now > coupon.EndDate)
+                return false;
 
-      
+            // بررسی محدودیت کلی
+            if (coupon.UsageLimit.HasValue && coupon.UsedCount >= coupon.UsageLimit)
+                return false;
 
+            // بررسی محدودیت برای مالک
+            if (coupon.LimitPerOwner > 0)
+            {
+                var ownerUsageCount = await _context.CouponUsages
+                    .Where(u => u.CouponId == coupon.Id && u.OwnerId == ownerId && u.Status == "Success")
+                    .CountAsync();
+
+                if (ownerUsageCount >= coupon.LimitPerOwner)
+                    return false;
+            }
+
+            // بررسی مالک خاص
+            if (coupon.SpecificOwnerId.HasValue && coupon.SpecificOwnerId != ownerId)
+                return false;
+
+            // بررسی رستوران خاص
+            if (coupon.SpecificRestaurantId.HasValue && coupon.SpecificRestaurantId != restaurantId)
+                return false;
+
+            return true;
+        }
 
 
 

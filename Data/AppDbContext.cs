@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
+using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
 
 
@@ -28,7 +29,8 @@ namespace Resturanyar.Data
         public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
 
         public DbSet<Subscription> Subscriptions { get; set; }
-
+        public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<CouponUsage> CouponUsages { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -148,6 +150,91 @@ namespace Resturanyar.Data
                     .HasDefaultValueSql("GETDATE()");
             });
 
+            // ========== تنظیمات جدول Coupons ==========
+            modelBuilder.Entity<Coupon>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                // ایندکس یکتا روی Code
+                entity.HasIndex(c => c.Code)
+                      .IsUnique()
+                      .HasDatabaseName("IX_Coupons_Code");
+
+                // روابط با Owner و Restaurant (اختیاری)
+                entity.HasOne(c => c.SpecificOwner)
+                      .WithMany()  // اگر Owner مجموعه‌ای از Coupon نداشته باشد
+                      .HasForeignKey(c => c.SpecificOwnerId)
+                      .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف Owner در صورت وجود Coupon
+
+                entity.HasOne(c => c.SpecificRestaurant)
+                      .WithMany()  // اگر Restaurant مجموعه‌ای از Coupon نداشته باشد
+                      .HasForeignKey(c => c.SpecificRestaurantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // مقادیر پیش‌فرض (هماهنگ با دیتابیس)
+                entity.Property(c => c.IsActive)
+                      .HasDefaultValue(true);
+                entity.Property(c => c.UsedCount)
+                      .HasDefaultValue(0);
+                entity.Property(c => c.LimitPerOwner)
+                      .HasDefaultValue(1);
+                entity.Property(c => c.CreatedAt)
+                      .HasDefaultValueSql("GETDATE()");
+                entity.Property(c => c.UpdatedAt)
+                      .HasDefaultValueSql("GETDATE()");
+
+                // اعتبارسنجی نوع تخفیف
+                entity.HasCheckConstraint("CK_Coupon_DiscountType",
+                    "[DiscountType] IN ('Percentage', 'FixedAmount')");
+            });
+
+            // ========== تنظیمات جدول CouponUsages ==========
+            modelBuilder.Entity<CouponUsage>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                // روابط
+                entity.HasOne(u => u.Coupon)
+                      .WithMany(c => c.Usages)  // اگر در Coupon مجموعه‌ای تعریف کرده‌اید
+                      .HasForeignKey(u => u.CouponId)
+                      .OnDelete(DeleteBehavior.Restrict); // جلوگیری از حذف Coupon در صورت وجود استفاده
+
+                entity.HasOne(u => u.Subscription)
+                      .WithMany()  // اگر Subscription مجموعه‌ای از CouponUsage نداشته باشد
+                      .HasForeignKey(u => u.SubscriptionId)
+                      .OnDelete(DeleteBehavior.Cascade); // با حذف اشتراک، استفاده‌ها هم حذف شوند
+
+                entity.HasOne(u => u.Owner)
+                      .WithMany()
+                      .HasForeignKey(u => u.OwnerId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(u => u.Restaurant)
+                      .WithMany()
+                      .HasForeignKey(u => u.RestaurantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // ایندکس‌ها
+                entity.HasIndex(u => new { u.CouponId, u.OwnerId })
+                      .HasDatabaseName("IX_CouponUsages_CouponId_OwnerId");
+
+                entity.HasIndex(u => u.SubscriptionId)
+                      .HasDatabaseName("IX_CouponUsages_SubscriptionId");
+
+                // ایندکس یکتا برای جلوگیری از استفاده‌ی تکراری توسط یک مالک (در صورت Success)
+                entity.HasIndex(u => new { u.CouponId, u.OwnerId })
+                      .HasDatabaseName("IX_CouponUsages_UniquePerOwner")
+                      .HasFilter("[Status] = 'Success' AND [CouponId] IS NOT NULL AND [OwnerId] IS NOT NULL")
+                      .IsUnique(); // این ایندکس یکتا تضمین می‌کند هر مالک فقط یک بار از هر کد استفاده کند
+
+                // مقادیر پیش‌فرض
+                entity.Property(u => u.UsedAt)
+                      .HasDefaultValueSql("GETDATE()");
+                entity.Property(u => u.Status)
+                      .HasDefaultValue("Success");
+            });
+
+
             ConfigureSubscriptionEntities(modelBuilder);
 
          
@@ -208,6 +295,20 @@ namespace Resturanyar.Data
                 // Ensure EndDate is after StartDate
                 entity.HasCheckConstraint("CK_Subscription_Dates",
                     "[EndDate] > [StartDate]");
+
+
+                entity.Property(s => s.CouponId)
+             .IsRequired(false); // قابل‌تهی (برای سازگاری با داده‌های قبلی)
+
+                entity.HasOne(s => s.Coupon)
+                      .WithMany()  // اگر Coupon مجموعه‌ای از Subscription نداشته باشد
+                      .HasForeignKey(s => s.CouponId)
+                      .OnDelete(DeleteBehavior.SetNull); // اگر کوپن حذف شود، مقدار NULL شود
+
+                // ایندکس روی CouponId برای گزارش‌گیری سریع
+                entity.HasIndex(s => s.CouponId)
+                      .HasDatabaseName("IX_Subscriptions_CouponId");
+
             });
 
             // 📌 Configuration for SubscriptionPlan entity (اگر قبلاً نبود)

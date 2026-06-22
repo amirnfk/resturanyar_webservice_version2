@@ -8,6 +8,7 @@ E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\ClosedXML.dll
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\ClosedXML.Parser.dll
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\DNTPersianUtils.Core.dll
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\DocumentFormat.OpenXml.dll
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\DocumentFormat.OpenXml.Framework.dll
 E:\myAspProjects\Work at home\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\EntityFramework.SqlServer.dll

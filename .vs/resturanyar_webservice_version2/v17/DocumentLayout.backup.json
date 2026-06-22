@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\",
+  "WorkspaceRootPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\",
   "Documents": [],
   "DocumentGroupContainers": [
     {
@@ -11,6 +11,10 @@
           "DockedWidth": 200,
           "SelectedChildIndex": -1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:11:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"

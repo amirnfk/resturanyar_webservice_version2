@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebce566d42edbeba95ca26821863a34fca6c1fb5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8de26e509a15709d7afc2208646c208d7f109bb6")]
 [assembly: System.Reflection.AssemblyProductAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

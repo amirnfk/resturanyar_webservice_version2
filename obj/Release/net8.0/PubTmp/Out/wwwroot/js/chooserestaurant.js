@@ -22,7 +22,46 @@ var currentOwnerId = parseInt(currentOwnerId) || 0;
         e.preventDefault();
     addRestaurant();
                 }
+    });
+        function redirectAfterAdd(restaurantId) {
+            if (restaurantId) {
+                window.location.href = '/Home/Dashboard/' + restaurantId;
+            } else {
+                location.reload();
+            }
+        }
+
+        function showFreeTrialModal(message, onClose) {
+            var modalHtml =
+                '<div class="modal fade" id="freeTrialModal" tabindex="-1">' +
+                '  <div class="modal-dialog modal-dialog-centered">' +
+                '    <div class="modal-content text-center rounded-4 shadow border-0 p-3">' +
+                '      <div class="modal-body">' +
+                '        <div class="mb-3"><i class="fa-solid fa-gift fa-3x text-orange"></i></div>' +
+                '        <h5 class="fw-bold text-orange mb-2">تبریک! 🎉</h5>' +
+                '        <p class="mb-3">' + message + '</p>' +
+                '        <button type="button" class="btn btn-orange w-100 fw-bold" id="closeTrialModalBtn">متوجه شدم</button>' +
+                '      </div>' +
+                '    </div>' +
+                '  </div>' +
+                '</div>';
+
+            $("#freeTrialModal").remove();
+            $("body").append(modalHtml);
+
+            var modalEl = document.getElementById("freeTrialModal");
+            var modal = new bootstrap.Modal(modalEl);
+            modal.show();
+
+            $("#closeTrialModalBtn").on("click", function () {
+                modal.hide();
             });
+
+            modalEl.addEventListener("hidden.bs.modal", function () {
+                $(this).remove();
+                if (onClose) onClose();
+            });
+        }
 
     function addRestaurant() {
                 var restaurantName = $("#restaurantName").val().trim();
@@ -72,23 +111,23 @@ var currentOwnerId = parseInt(currentOwnerId) || 0;
         'X-Requested-With': 'XMLHttpRequest'
                     },
     data: JSON.stringify(payload),
-    success: function (res) {
-                        if (res.success) {
-        alert("✅ " + res.message);
-    // انتقال به صفحه مدیریت یا رفرش
-    setTimeout(function() {
-                                if (res.restaurant_id) {
-        // انتقال به صفحه مدیریت رستوران جدید
-        window.location.href = '/Home/Dashboard/' + res.restaurant_id;
-                                } else {
-        location.reload();
-                                }
-                            }, 1500);
-                        } else {
-        alert("❌ " + res.message);
-    errorDiv.text(res.message).show();
-                        }
-                    },
+        success: function (res) {
+            if (res.success) {
+                if (res.has_free_trial) {
+                    showFreeTrialModal(res.message, function () {
+                        redirectAfterAdd(res.restaurant_id);
+                    });
+                } else {
+                    alert("✅ " + res.message);
+                    setTimeout(function () {
+                        redirectAfterAdd(res.restaurant_id);
+                    }, 1500);
+                }
+            } else {
+                alert("❌ " + res.message);
+                errorDiv.text(res.message).show();
+            }
+        }, 
     error: function (xhr, status, error) {
                         var errorMessage = "خطا در ارتباط با سرور";
     try {

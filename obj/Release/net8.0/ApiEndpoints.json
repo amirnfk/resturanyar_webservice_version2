@@ -1,5 +1,26 @@
 [
   {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "AddRestaurant",
+    "RelativePath": "addrestaurant",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "owner_id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.Api.CustomersController",
     "Method": "AddAddress",
     "RelativePath": "api/Customers/addaddress",
@@ -1326,6 +1347,38 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ConsumeCoupon",
+    "RelativePath": "coupon/consume",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Copoun.ConsumeCouponRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ValidateCoupon",
+    "RelativePath": "coupon/validate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Copoun.ValidateCouponRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
     "Method": "ExportOrdersToExcel",
     "RelativePath": "ExportOrdersToExcel",
     "HttpMethod": "GET",
@@ -1391,7 +1444,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "resturanyar.Models.CreateZarinpalPaymentRequest",
+        "Type": "resturanyar.Models.Copoun.CreateZarinpalPaymentRequest",
         "IsRequired": true
       }
     ],

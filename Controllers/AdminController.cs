@@ -179,7 +179,8 @@ namespace resturanyar.Controllers
                                               RestaurantName = r.name,
                                               OwnerName = o.Name,
                                               PlanName = p.Name,
-                                              s.EndDate
+                                              s.EndDate,
+                                              s.PaymentMethod
                                           })
                                           .ToListAsync();
 
@@ -191,7 +192,8 @@ namespace resturanyar.Controllers
                         OwnerName = item.OwnerName,
                         PlanName = item.PlanName,
                         EndDate = item.EndDate,
-                        DaysLeft = (int)(item.EndDate - today).TotalDays
+                        DaysLeft = (int)(item.EndDate - today).TotalDays,
+                        PaymentMethod = item.PaymentMethod
                     })
                     .OrderBy(s => s.DaysLeft)
                     .ToList();
@@ -211,7 +213,8 @@ namespace resturanyar.Controllers
                                        PlanName = p.Name,
                                        PricePaid = s.PricePaid,
                                        PurchaseDate = s.PurchaseDate,
-                                       Status = s.Status
+                                       Status = s.Status,
+                                          PaymentMethod = s.PaymentMethod
                                    })
                                    .Take(10);
 
@@ -468,6 +471,78 @@ namespace resturanyar.Controllers
             HttpContext.Session.Clear();
             Response.Cookies.Delete("AdminRemember");
             return RedirectToAction("AdminLogin");
+        }
+
+        // ===== دریافت آمار سفارش‌ها و غذاهای ثبت‌شده در بازه‌های زمانی =====
+        // ===== دریافت آمار فعالیت به تفکیک هر رستوران =====
+        [HttpGet]
+        public async Task<IActionResult> GetRestaurantActivityStatsDetailed()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return Unauthorized();
+
+                var excludedIds = GetExcludedOwnerIds();
+                var now = DateTime.Now;
+
+                // دریافت لیست رستوران‌ها (با فیلتر مالک‌های حذف‌شده)
+                var restaurants = await _context.Restaurants
+                    .Where(r => !excludedIds.Contains(r.owner_id))
+                    .Select(r => new { r.restaurant_id, r.name })
+                    .ToListAsync();
+
+                var result = new List<object>();
+
+                foreach (var r in restaurants)
+                {
+                    // محاسبه تعداد سفارش‌ها
+                    var orders1Day = await _context.Orders
+                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-1))
+                        .CountAsync();
+
+                    var orders7Day = await _context.Orders
+                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-7))
+                        .CountAsync();
+
+                    var orders30Day = await _context.Orders
+                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-30))
+                        .CountAsync();
+
+                    // محاسبه تعداد غذاهای ثبت‌شده
+                    var foodItems1Day = await _context.FoodItems
+                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-1))
+                        .CountAsync();
+
+                    var foodItems7Day = await _context.FoodItems
+                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-7))
+                        .CountAsync();
+
+                    var foodItems30Day = await _context.FoodItems
+                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-30))
+                        .CountAsync();
+
+                    // اضافه کردن شیء نهایی به لیست نتیجه
+                    result.Add(new
+                    {
+                        RestaurantId = r.restaurant_id,
+                        RestaurantName = r.name,
+                        Orders1Day = orders1Day,
+                        Orders7Day = orders7Day,
+                        Orders30Day = orders30Day,
+                        FoodItems1Day = foodItems1Day,
+                        FoodItems7Day = foodItems7Day,
+                        FoodItems30Day = foodItems30Day
+                    });
+                }
+
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت آمار جزئی رستوران‌ها");
+                return Json(new { success = false, message = "خطا در دریافت داده‌ها" });
+            }
         }
     }
 }

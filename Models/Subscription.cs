@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using resturanyar.Models.Copoun;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using static Azure.Core.HttpHeader;
 
 namespace resturanyar.Models
 {
@@ -41,6 +43,8 @@ namespace resturanyar.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? DiscountApplied { get; set; }
 
+        public int? CouponId { get; set; }
+
         [StringLength(50)]
         public string PaymentMethod { get; set; }
 
@@ -69,7 +73,7 @@ namespace resturanyar.Models
         [Required]
         public DateTime UpdatedAt { get; set; }
 
-        // Navigation Properties
+        
         [ForeignKey("RestaurantId")]
         public virtual Restaurant Restaurant { get; set; }
 
@@ -78,6 +82,9 @@ namespace resturanyar.Models
 
         [ForeignKey("SubscriptionPlanId")]
         public virtual SubscriptionPlan SubscriptionPlan { get; set; }
+
+        [ForeignKey(nameof(CouponId))]
+        public Coupon Coupon { get; set; }
     }
 }
  
