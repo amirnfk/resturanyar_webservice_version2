@@ -465,17 +465,31 @@
                         <div class="value success">پرداخت شده</div>
                     </div>
                 </div>
-              
-            
-            </div>
+
+                @if (ViewBag.RestaurantId != null && (int)ViewBag.RestaurantId > 0)
+                {
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("PrepareUpgrade", "home", new { restaurantId = ViewBag.RestaurantId })" class="btn-primary-custom">
+                            <i class="fas fa-credit-card ms-2"></i>
+                            تمدید اشتراک
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center mt-4 text-muted">
+                        <span>برای تمدید، لطفاً ابتدا رستوران خود را انتخاب کنید.</span>
+                    </div>
+                }
+      
         </div>
 
-        <!-- حالت بدون اشتراک -->
+        
         <div id="noSubscriptionContent" style="display: none;" class="empty-state">
             <div class="icon-big">📭</div>
             <h5>هیچ اشتراک فعالی یافت نشد</h5>
             <p>برای استفاده کامل از امکانات، اشتراک تهیه کنید.</p>
-            <a href="/Subscription/Plans" class="btn-primary-custom">
+            <a href="/home/Upgrade?restaurantId=@ViewBag.RestaurantId" class="btn-primary-custom">
                 مشاهده پلن‌ها
             </a>
         </div>

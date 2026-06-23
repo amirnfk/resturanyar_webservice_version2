@@ -1,5 +1,7 @@
-﻿@{
+﻿@using resturanyar.Models.ViewModels.DashboardStat
+@{
     Layout = "_Layout_dashboard";
+ 
 }
 
 @model DashboardStatsViewModel
@@ -7,195 +9,413 @@
     ViewData["Title"] = "داشبورد";
     var restaurant = Model?.RestaurantName ?? "مجموعه شما";
     var publicToken = Model?.PublicMenuToken;
+
+    var orderChangeClass = Model.OrdersChangePercent > 0 ? "up" : (Model.OrdersChangePercent < 0 ? "down" : "zero");
+    var revenueChangeClass = Model.RevenueChangePercent > 0 ? "up" : (Model.RevenueChangePercent < 0 ? "down" : "zero");
+    var orderArrow = Model.OrdersChangePercent > 0 ? "up" : (Model.OrdersChangePercent < 0 ? "down" : "right");
+    var revenueArrow = Model.RevenueChangePercent > 0 ? "up" : (Model.RevenueChangePercent < 0 ? "down" : "right");
 }
+
 <link rel="stylesheet" href="~/css/all.min.css">
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
+<!-- کتابخانه چارت‌ها -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="dashboard-frame">
-<section class="dash-hero">
+    <!-- هدر -->
+    <section class="dash-hero">
+        <div class="dash-hero__bg"></div>
+        <div class="dash-hero__card">
+            <div class="dash-hero__row">
+                <div class="dash-hero__brand">
+                    <img src="~/images/logo.png" alt="لوگوی رستوران" class="dash-hero__logo">
+                    <div class="dash-hero__info">
+                        <h1 class="dash-hero__title">رستورانیار</h1>
+                        <p class="dash-hero__subtitle">
+                            <strong>@restaurant</strong>
+                            <span class="dash-hero__dot">•</span>
+                            <span id="dashClock" class="dash-hero__clock" aria-live="polite"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="dash-hero__actions">
+                    <button id="themeToggle" class="btn-chip" aria-label="تغییر تم">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <a href="@Url.Action("PublicMenuQRCode", "Menu", new { token = publicToken })" class="btn-chip" title="منوی عمومی (QR)">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== ردیف آمار و چارت‌ها (5 ستونه) ===== -->
+            <!-- ===== ردیف آمار (3 کارته) ===== -->
+            <div class="dash-stats--grid">
+
+                <!-- کارت ۱: پرفروش‌ترین غذاها -->
+                <div class="kpi-card kpi-card--top-foods fade-up">
+                    <div class="kpi-card__header">
+                        <span class="kpi-card__label" style="font-weight:bold;">پرفروش‌ترین‌ها</span>
+                       
+                    </div>
+                    <div class="kpi-card__body">
+                        @if (Model.TopFoods != null && Model.TopFoods.Any())
+                        {
+                            foreach (var food in Model.TopFoods.Take(3))
+                            {
+                                <div class="top-food-mini">
+                                    <img src="@food.ImageUrl" alt="@food.FoodName" class="top-food__img" onerror="this.src='/images/food_default.jpg'">
+                                    <div class="top-food-info">
+                                        <span class="top-food-name">@food.FoodName</span>
+                                        <span class="top-food-qty">@food.TotalQuantity سفارش</span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">اطلاعاتی موجود نیست</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- کارت ۲: وضعیت سفارشات (نمودار دونات) -->
+                <div class="kpi-card kpi-card--chart fade-up">
+                    <div class="kpi-card__header">
+                        <span class="kpi-card__label" style="font-weight:bold;">توزیع سفارشات</span>
+                        
+                    </div>
+                    <div class="kpi-card__body chart-body">
+                        <div class="chart-container donut-chart">
+                            <canvas id="orderStatusChart"></canvas>
+                            <div class="donut-center-text">@Model.TotalOrdersToday</div>
+                        </div>
+                        <div class="legend-grid">
+                            <span><span class="legend-dot pending"></span> دریافت شده <strong class="hide-number">@Model.WaiterOrdersCount</strong></span>
+                            <span><span class="legend-dot preparing"></span> در حال آماده سازی <strong class="hide-number">@Model.ChefOrdersCount</strong></span>
+                            <span><span class="legend-dot delivered"></span> تحویل شده <strong class="hide-number">@Model.CashierOrdersCount</strong></span>
+                        </div>
+                        <div class="pipeline">
+                            <div class="pipeline__node pipeline__node--waiter">
+                                <div class="pipeline__circle">
+                                    <span class="pipeline__count num" data-count="@Model.WaiterOrdersCount">0</span>
+                                </div>
+                               
+                               
+                            </div>
+                            <div class="pipeline__connector">
+                                <i class="fa-solid fa-arrow-left-long"></i>
+                            </div>
+                            <div class="pipeline__node pipeline__node--chef">
+                                <div class="pipeline__circle">
+                                    <span class="pipeline__count num" data-count="@Model.ChefOrdersCount">0</span>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="pipeline__connector">
+                                <i class="fa-solid fa-arrow-left-long"></i>
+                            </div>
+                            <div class="pipeline__node pipeline__node--cashier">
+                                <div class="pipeline__circle">
+                                    <span class="pipeline__count num" data-count="@Model.CashierOrdersCount">0</span>
+                                </div>
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- کارت ۳: فروش امروز -->
+                <!-- کارت ۳: فروش امروز + نمودار ساعتی -->
+                <div class="kpi-card kpi-card--revenue fade-up" style="flex: 1 1 300px; min-width: 250px;">
+                    <div class="kpi-card__header">
+                        <span class="kpi-card__label" style="font-weight:bold;">فروش امروز (تومان)</span>
+                        <span class="change-badge @revenueChangeClass">
+                            <i class="fa-solid fa-arrow-@revenueArrow"></i>
+                            <span>@Math.Abs(Model.RevenueChangePercent).ToString("0.0")٪</span>
+                        </span>
+                    </div>
+                    <div class="kpi-card__body">
+                        <span class="kpi-card__value num" data-count="@Model.TodayRevenue" data-type="revenue">0</span>
+
+                        <!-- نمودار فروش ساعتی (امروز و دیروز) -->
+                        <div style="margin-top: 15px; height: 100px;">
+                            <canvas id="hourlySalesChart"></canvas>
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.75rem; color: #6c757d; margin-top: 5px;">
+                            <span><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:50%;"></span> امروز</span>
+                            <span><span style="display:inline-block; width:12px; height:12px; background:#f59e0b; border-radius:50%;"></span> دیروز</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
    
-    <div class="dash-hero__card">
-        <div class="dash-hero__row">
-            <div class="dash-hero__brand">
-                <img src="~/images/logo.png" alt="لوگوی کافه | رستوران" class="dash-hero__logo">
-                <div class="dash-hero__info">
-                    <h1 class="dash-hero__title">خوش آمدید</h1>
-                    <p class="dash-hero__subtitle">
-                         <strong>@restaurant</strong>
-                        <span class="dash-hero__dot">•</span>
-                        <span id="dashClock" class="dash-hero__clock" aria-live="polite"></span>
-                    </p>
-                    <p class="dash-hero__note">مدیریت سریع، هوشمند و لذت‌بخش</p>
+    @* @if (Model.ChefOrdersCount > 0 || Model.WaiterOrdersCount > 0)
+    {
+        <section class="alert-banner fade-up">
+            <div class="alert-header">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>نیاز به توجه</span>
+            </div>
+            <div class="alert-item">
+                <i class="fa-solid fa-clock alert-icon"></i>
+                <span>5 سفارش در انتظار آماده‌سازی</span>
+            </div>
+            <div class="alert-item">
+                <i class="fa-solid fa-calendar alert-icon"></i>
+                <span>اشتراک شما 12 روز دیگر منقضی می‌شود</span>
+            </div>
+            <div class="alert-item">
+                <i class="fa-solid fa-image alert-icon"></i>
+                <span>3 غذای بدون تصویر</span>
+            </div>
+           
+        </section>
+    } *@
+
+    <!-- ===== شبکه منوها (Grid Tiles) ===== -->
+    <main class="dash-main">
+        <div class="tiles">
+            <a class="tile fade-up tilt" href="@Url.Action("ManageUsers", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-users"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت کارکنان</h3>
+                    <p class="tile__desc">تعریف نقش‌ها، اضافه/حذف و کنترل دسترسی‌ها</p>
                 </div>
-            </div>
-            <div class="dash-hero__actions">
-                <button id="themeToggle" class="btn-chip" aria-label="تغییر تم">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <a href="@Url.Action("PublicMenuQRCode","Menu", new { token = publicToken })" class="btn-chip" title="منوی عمومی (QR)">
-                    <i class="fa-solid fa-qrcode"></i>
-                </a>
-            </div>
-        </div>
-        <div class="dash-stats">
-            <div class="stat-card fade-up" data-hint="کاربران">
-                <i class="fa-solid fa-users stat-card__icon"></i>
-                <div class="stat-card__meta">
-                    <span class="stat-card__label">کاربران</span>
-                    <span class="stat-card__value num" data-count="@Model.UsersCount">0</span>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("AddOrder", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-cart-plus"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">ثبت سفارش جدید</h3>
+                    <p class="tile__desc">ثبت سفارش حضوری و تلفنی</p>
                 </div>
-            </div>
-            <div class="stat-card fade-up" data-hint="آیتم‌های منو">
-                <i class="fa-solid fa-utensils stat-card__icon"></i>
-                <div class="stat-card__meta">
-                    <span class="stat-card__label">آیتم‌های منو</span>
-                    <span class="stat-card__value num" data-count="@Model.MenuItemsCount">0</span>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("FoodList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">لیست غذاها</h3>
+                    <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
                 </div>
-            </div>
-            <div class="stat-card fade-up" data-hint="سفارشات امروز">
-                <i class="fa-solid fa-receipt stat-card__icon"></i>
-                <div class="stat-card__meta">
-                    <span class="stat-card__label">سفارشات امروز</span>
-                    <span class="stat-card__value num" data-count="@Model.OrdersTodayCount">0</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
 
-<main class="dash-main">
-    <div class="tiles">
-        <a class="tile fade-up tilt" href="@Url.Action("ManageUsers","Home")" title="مدیریت کارکنان" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-users"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">مدیریت کارکنان</h3>
-                <p class="tile__desc">تعریف نقش‌ها، اضافه/حذف و کنترل دسترسی‌ها</p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-
-        <a class="tile fade-up tilt" href="@Url.Action("FoodList","Home")" title="لیست غذاها" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">لیست غذاها</h3>
-                <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
-            </div>
-
-
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-        <a class="tile fade-up tilt" href="@Url.Action("AddOrder", "Home")" title="ثبت سفارش جدید" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-cart-plus"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">ثبت سفارش جدید</h3>
-                <p class="tile__desc">ثبت سفارش جدید</p>
-            </div>
-
-
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-
-         <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" title="لیست سفارشات" role="button" tabindex="0">
+            <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
                 <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
                 <div class="tile__body">
                     <h3 class="tile__title">لیست سفارشات</h3>
                     <p class="tile__desc">پیگیری لحظه‌ای ثبت تا تسویه سفارش‌ها</p>
                 </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-        <a class="tile fade-up tilt" href="@Url.Action("TableList","Home")" title="لیست میزها" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-chair"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">مدیریت میزها  </h3>
-                    <p class="tile__desc"> مدیریت میزها </p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-        <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" title="مدیریت مشتریان" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-address-book"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">مدیریت مشتریان</h3>
-                <p class="tile__desc">مدیریت و آنالیز مشتریان </p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-            <a class="tile fade-up tilt" href="@Url.Action("CategoryList", "Home")" title="مدیریت دسته بندی ها" role="button" tabindex="0">
-
-            <div class="tile__icon"><i class="fa-solid fa-clipboard-check"></i></div>
-       
-                <div class="tile__body">
-                    <h3 class="tile__title">مدیریت دسته بندی ها</h3>
-                    <p class="tile__desc">مدیریت دسته بندی های غذا</p>
-                </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-
-        <a class="tile fade-up tilt" href="@Url.Action("RestaurantMenu","Menu")" title="منو " role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-book-open"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">منو</h3>
-                <p class="tile__desc">ویرایش ساختار منو و نمایش برای مشتری</p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-
-        <a class="tile fade-up tilt" href="@Url.Action("PublicMenuQRCode","Menu", new { token = publicToken })" title="منوی عمومی (QR)" role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-qrcode"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">منوی عمومی</h3>
-                <p class="tile__desc">اشتراک QR منو برای مشتریان</p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-        <a class="tile fade-up tilt" href="@Url.Action("ManagerReports","Home")" title="گزارش گیری " role="button" tabindex="0">
-            <div class="tile__icon"><i class="fa-solid fa-receipt"></i></div>
-            <div class="tile__body">
-                <h3 class="tile__title">گزارش گیری</h3>
-                <p class="tile__desc">گزارش سفارشات </p>
-            </div>
-            <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            <span class="ripple"></span>
-        </a>
-            <a class="tile fade-up tilt" href="@Url.Action("RestaurantSubscription", "Home")" title="اشتراک رستوران" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">اشتراک رستوران</h3>
-                    <p class="tile__desc">مدیریت پلن‌ها، تمدید و وضعیت اشتراک</p>
-                </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-                <span class="ripple"></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("Support", "Home")" title="پشتیبانی" role="button" tabindex="0">
+            <a class="tile fade-up tilt" href="@Url.Action("RestaurantMenu", "Menu")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-book-open"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">منو دیجیتال</h3>
+                    <p class="tile__desc">ویرایش ساختار منو و نمایش برای مشتری</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("CategoryList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت دسته‌بندی‌ها</h3>
+                    <p class="tile__desc">مدیریت دسته‌بندی‌های غذا</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-address-book"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت مشتریان</h3>
+                    <p class="tile__desc">مدیریت و آنالیز مشتریان</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("TableList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-chair"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت میزها</h3>
+                    <p class="tile__desc">مدیریت میزها</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("Support", "Home")" role="button" tabindex="0">
                 <div class="tile__icon"><i class="fa-solid fa-headset"></i></div>
                 <div class="tile__body">
                     <h3 class="tile__title">پشتیبانی</h3>
                     <p class="tile__desc">تماس با پشتیبان، گزارش مشکل و راهنما</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-                <span class="ripple"></span>
             </a>
-    </div>
-</main>
 
-<footer class="dash-footer">
-    <div class="dash-footer__overlay"></div>
-    <div class="dash-footer__content">
-        <img src="~/images/logo_circle.png" alt="لوگو" class="dash-footer__logo">
-        <p class="dash-footer__text">با رستوران‌یار دلاویتا، مدیریت کافه | رستوران شما ساده، دقیق و لذت‌بخش است.</p>
-    </div>
-</footer>
+            <a class="tile fade-up tilt" href="@Url.Action("RestaurantSubscription", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">اشتراک رستوران</h3>
+                    <p class="tile__desc">مدیریت پلن‌ها، تمدید و وضعیت اشتراک</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
 
+            <a class="tile fade-up tilt" href="@Url.Action("ManagerReports", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">گزارش‌گیری</h3>
+                    <p class="tile__desc">گزارش سفارشات، فروش و عملکرد</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("PublicMenuQRCode", "Menu", new { token = publicToken })" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">منوی عمومی (QR)</h3>
+                    <p class="tile__desc">اشتراک QR منو برای مشتریان</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+        </div>
+    </main>
+    
+    <footer class="dash-footer">
+        <div class="dash-footer__overlay"></div>
+        <div class="dash-footer__content">
+            <img src="~/images/logo_circle.png" alt="لوگو" class="dash-footer__logo">
+            <p class="dash-footer__text">با رستوران‌یار دلاویتا، مدیریت کافه | رستوران شما ساده، دقیق و لذت‌بخش است.</p>
+        </div>
+    </footer>
 </div>
 
 <script src="~/js/dashboard.js" asp-append-version="true"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartCanvas = document.getElementById('hourlySalesChart');
+        if (!chartCanvas) {
+            console.warn('عنوان hourlySalesChart در صفحه یافت نشد.');
+            return;
+        }
+
+        const parentContainer = chartCanvas.parentElement;
+        parentContainer.innerHTML = '<p style="text-align:center;color:#6c757d;font-size:0.8rem;">در حال بارگذاری داده‌ها...</p>';
+
+        fetch('@Url.Action("GetHourlySales", "Home")')
+            .then(response => {
+                if (!response.ok) throw new Error('خطا در دریافت داده');
+                return response.json();
+            })
+            .then(data => {
+                // بررسی وجود داده‌های معتبر
+                if (!data || typeof data !== 'object' || !data.today || !data.yesterday || !data.labels) {
+                    parentContainer.innerHTML = '<p style="text-align:center;color:#999;font-size:0.8rem;">داده‌ای برای نمایش وجود ندارد</p>';
+                    return;
+                }
+
+                // اگر امروز یا دیروز آرایه نباشند یا طولشان صفر باشد (عملاً نباید رخ دهد)
+                if (!Array.isArray(data.today) || !Array.isArray(data.yesterday) || data.today.length === 0) {
+                    parentContainer.innerHTML = '<p style="text-align:center;color:#999;font-size:0.8rem;">داده‌ای برای نمایش وجود ندارد</p>';
+                    return;
+                }
+
+                // بازگرداندن کانواس و تنظیم ارتفاع
+                parentContainer.innerHTML = '';
+                parentContainer.appendChild(chartCanvas);
+                chartCanvas.style.height = '100px';
+                chartCanvas.style.width = '100%';
+
+                // رسم نمودار (حتی اگر همه مقادیر صفر باشند)
+                const ctx = chartCanvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            {
+                                label: 'امروز',
+                                data: data.today,
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 1,
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'دیروز',
+                                data: data.yesterday,
+                                borderColor: '#f59e0b',
+                                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                                tension: 0.3,
+                                fill: true,
+                                pointRadius: 1,
+                                borderWidth: 2,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' تومان';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                grid: { display: false },
+                                ticks: {
+                                    font: { size: 8 },
+                                    maxTicksLimit: 8,
+                                    callback: function (value, index, ticks) {
+                                        return index % 2 === 0 ? this.getLabelForValue(value) : '';
+                                    }
+                                }
+                            },
+                            y: {
+                                display: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: {
+                                    font: { size: 8 },
+                                    callback: function (value) {
+                                        return value >= 1000 ? (value / 1000) + 'k' : value;
+                                    }
+                                },
+                                beginAtZero: true
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('خطا در دریافت داده‌های فروش ساعتی:', error);
+                parentContainer.innerHTML = '<p style="text-align:center;color:#dc3545;font-size:0.8rem;">خطا در بارگذاری نمودار</p>';
+            });
+    });
+</script>

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using resturanyar.Models;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.ViewModels;
+using resturanyar.Models.ViewModels.DashboardStat;
 using resturanyar.Utility;
 using Resturanyar.Data;
 using System.Diagnostics;
@@ -58,40 +59,32 @@ namespace resturanyar.Controllers
             return View();
         }
 
-      [Authorize]
-        public IActionResult Upgrade(int? restaurantId)
+        [Authorize]
+        public IActionResult PrepareUpgrade(int restaurantId)
         {
-            // اگر پارامتر ارسال نشده، از Session بخوان
-            if (restaurantId == null)
-            {
-                restaurantId = HttpContext.Session.GetInt32("UpgradeRestaurantId");
-                var restaurantName = HttpContext.Session.GetString("UpgradeRestaurantName");
-                ViewBag.RestaurantName = restaurantName ?? "";
-            }
-            else
-            {
-                // اگر پارامتر وجود دارد (مثلاً در صورت رفرش صفحه)، دوباره در Session ذخیره کن
-                HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId.Value);
-                var restaurant = _context.Restaurants.Find(restaurantId.Value);
-                ViewBag.RestaurantName = restaurant?.name ?? "";
-                if (restaurant != null)
-                    HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
-            }
+            
+            HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId);
 
+            var restaurant = _context.Restaurants.Find(restaurantId);
+            if (restaurant != null)
+                HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
+
+           
+            return RedirectToAction("Upgrade");
+        }
+
+        [Authorize]
+        public IActionResult Upgrade()
+        {
+            var restaurantId = HttpContext.Session.GetInt32("UpgradeRestaurantId");
             if (restaurantId == null)
             {
                 return RedirectToAction("ChooseRestaurant", "Home");
             }
-            else
-            {
-                ViewBag.RestaurantId = restaurantId.Value;
-                
-                if (string.IsNullOrEmpty(ViewBag.RestaurantName))
-                {
-                    var restaurant = _context.Restaurants.Find(restaurantId.Value);
-                    ViewBag.RestaurantName = restaurant?.name ?? "";
-                }
-            }
+
+            var restaurant = _context.Restaurants.Find(restaurantId.Value);
+            ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.RestaurantName = restaurant?.name ?? "";
 
             return View();
         }
@@ -176,6 +169,8 @@ namespace resturanyar.Controllers
             return View();
         }
 
+ 
+
         public async Task<IActionResult> Dashboard()
         {
             int? restaurantId = User.GetRestaurantId();
@@ -183,69 +178,182 @@ namespace resturanyar.Controllers
                 return RedirectToAction("ChooseRestaurant");
 
             var restaurant = await _context.Restaurants
-            .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
 
             if (restaurant == null)
                 return RedirectToAction("ChooseRestaurant");
 
-            // بازه امروز (بر مبنای زمان سرور)
+            // ========== تعریف بازه‌های زمانی ==========
+            var now = DateTime.Now;
             var today = DateTime.Today;
             var tomorrow = today.AddDays(1);
+            var yesterday = today.AddDays(-1);
+            var yesterdaySameTime = now.AddDays(-1); // دیروز همین ساعت
 
-            // 1) کاربران
-            var usersCount = await _context.Users
-            .AsNoTracking()
-            .Where(u => u.restaurant_id == restaurantId)
-            .CountAsync();
+            // بازه هفت روز گذشته برای پرفروش‌ترین‌ها
+            var sevenDaysAgo = today.AddDays(-7);
 
-            // 2) آیتم‌های منو (در صورت تمایل شرط موجود/فعال)
-            var menuItemsCount = await _context.FoodItems
-            .AsNoTracking()
-            .Where(f => f.RestaurantId == restaurantId && f.IsActive == true && f.IsAvailable == true)
-            .CountAsync();
+            // ========== ۱. پرفروش‌ترین سه غذا ==========
+            var topFoods = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.Order.RestaurantId == restaurantId
+                             && oi.Order.CreatedAt >= sevenDaysAgo
+                             && oi.Order.CreatedAt <= now)
+                .GroupBy(oi => new { oi.FoodItemId, oi.FoodName, oi.FoodImageUrl })
+                .Select(g => new TopFoodDto
+                {
+                    FoodItemId = g.Key.FoodItemId,
+                    FoodName = g.Key.FoodName ?? "بدون نام",
+                    ImageUrl = g.Key.FoodImageUrl ?? "/uploads/food_default.jpg",
+                    TotalQuantity = g.Sum(x => x.Quantity)
+                })
+                .OrderByDescending(x => x.TotalQuantity)
+                .Take(3)
+                .ToListAsync();
 
-            // 3) سفارشات امروز
-            var ordersTodayCount = await _context.Orders
-            .AsNoTracking()
-            .Where(o => o.RestaurantId == restaurantId
-            && o.CreatedAt >= today
-            && o.CreatedAt < tomorrow)
-            .CountAsync();
+            // ========== ۲. وضعیت سفارش‌ها (امروز) ==========
+            // ۲-۱. تعداد کل سفارش‌های امروز
+            var totalOrdersToday = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && o.CreatedAt >= today
+                            && o.CreatedAt < tomorrow)
+                .CountAsync();
 
+            // ۲-۲. تفکیک وضعیت‌ها به سه گروه
+            // گروه‌بندی پیشنهادی (قابل ویرایش)
+            var waiterStatuses = new[] { 3, 5 };
+            var chefStatuses = new[] { 5, 4 };
+            var cashierStatuses = new[] { 6, 7, 8,  11 };
+
+            var statusGroups = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && o.CreatedAt >= today
+                            && o.CreatedAt < tomorrow)
+                .GroupBy(o => o.StatusId)
+                .Select(g => new { StatusId = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            int waiterCount = statusGroups.Where(x => waiterStatuses.Contains(x.StatusId)).Sum(x => x.Count);
+            int chefCount = statusGroups.Where(x => chefStatuses.Contains(x.StatusId)).Sum(x => x.Count);
+            int cashierCount = statusGroups.Where(x => cashierStatuses.Contains(x.StatusId)).Sum(x => x.Count);
+
+            // ۲-۳. تغییر نسبت به دیروز همین ساعت
+            var ordersTodayUpToNow = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && o.CreatedAt >= today
+                            && o.CreatedAt <= now)
+                .CountAsync();
+
+            var ordersYesterdaySameTime = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && o.CreatedAt >= yesterday
+                            && o.CreatedAt <= yesterdaySameTime)
+                .CountAsync();
+
+            int changeCount = ordersTodayUpToNow - ordersYesterdaySameTime;
+            double changePercent = 0;
+            if (ordersYesterdaySameTime > 0)
+                changePercent = Math.Round((double)changeCount / ordersYesterdaySameTime * 100, 2);
+
+            // ========== ۳. وضعیت فروش ==========
+            // ۳-۱. مبلغ فروش امروز
+            var todayRevenue = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.Order.RestaurantId == restaurantId
+                             && oi.Order.CreatedAt >= today
+                             && oi.Order.CreatedAt < tomorrow)
+                .SumAsync(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice));
+
+            // ۳-۲. مبلغ فروش دیروز تا همین ساعت
+            var yesterdayRevenue = await _context.OrderItems
+                .AsNoTracking()
+                .Where(oi => oi.Order.RestaurantId == restaurantId
+                             && oi.Order.CreatedAt >= yesterday
+                             && oi.Order.CreatedAt <= yesterdaySameTime)
+                .SumAsync(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice));
+
+            decimal revenueChange = todayRevenue - yesterdayRevenue;
+            double revenueChangePercent = 0;
+            if (yesterdayRevenue > 0)
+                revenueChangePercent = Math.Round((double)(revenueChange / yesterdayRevenue * 100), 2);
+
+            // ========== ساخت ViewModel ==========
             var vm = new DashboardStatsViewModel
             {
                 RestaurantName = restaurant.name,
-                UsersCount = usersCount,
-                MenuItemsCount = menuItemsCount,
-                OrdersTodayCount = ordersTodayCount,
-                PublicMenuToken = ViewBag.PublicMenuToken // اگر دارید
+                
+                TopFoods = topFoods,
+               
+                TotalOrdersToday = totalOrdersToday,
+                WaiterOrdersCount = waiterCount,
+                ChefOrdersCount = chefCount,
+                CashierOrdersCount = cashierCount,
+                OrdersChangeCount = changeCount,
+                OrdersChangePercent = changePercent,
+                // بخش فروش
+                TodayRevenue = todayRevenue,
+                RevenueChange = revenueChange,
+                RevenueChangePercent = revenueChangePercent,
+                // (اختیاری) اطلاعات قبلی را هم می‌توانید نگه دارید یا حذف کنید
+                UsersCount = 0, // یا حذف کنید
+                MenuItemsCount = 0,
+                OrdersTodayCount = totalOrdersToday, // این همان است
+                PublicMenuToken = ViewBag.PublicMenuToken
             };
 
             return View(vm);
         }
 
-        //public IActionResult Dashboard()
-        //{
-        //    int? restaurantId = User.GetRestaurantId();
-        //    if (restaurantId == null)
-        //    {
-        //        return RedirectToAction("ChooseRestaurant");
-        //    }
-        //    var restaurant = _context.Restaurants
-        //        .FirstOrDefault(r => r.restaurant_id == restaurantId);
+        [HttpGet]
+        public async Task<IActionResult> GetHourlySales()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized();
 
-        //    if (restaurant == null)
-        //    {
-        //        return RedirectToAction("ChooseRestaurant");
-        //    }
+            var now = DateTime.Now;
+            var todayStart = DateTime.Today;
+            var yesterdayStart = todayStart.AddDays(-1);
 
-        //    ViewBag.RestaurantName = restaurant.name;
+            // امروز: از ابتدای روز تا همین لحظه
+            var todayQuery = await _context.OrderItems
+                .Where(oi => oi.Order.RestaurantId == restaurantId &&
+                             oi.Order.CreatedAt >= todayStart &&
+                             oi.Order.CreatedAt <= now)
+                .GroupBy(oi => oi.Order.CreatedAt.Hour)
+                .Select(g => new { Hour = g.Key, Total = g.Sum(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice)) })
+                .ToListAsync();
 
-        //    return View();
-        //}
+            // دیروز: کامل
+            var yesterdayQuery = await _context.OrderItems
+                .Where(oi => oi.Order.RestaurantId == restaurantId &&
+                             oi.Order.CreatedAt >= yesterdayStart &&
+                             oi.Order.CreatedAt < todayStart)
+                .GroupBy(oi => oi.Order.CreatedAt.Hour)
+                .Select(g => new { Hour = g.Key, Total = g.Sum(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice)) })
+                .ToListAsync();
 
+            // پر کردن آرایه‌های ۲۴ ساعته
+            var todayTotals = new decimal[24];
+            foreach (var item in todayQuery)
+                todayTotals[item.Hour] = item.Total;
 
+            var yesterdayTotals = new decimal[24];
+            foreach (var item in yesterdayQuery)
+                yesterdayTotals[item.Hour] = item.Total;
+
+            return Json(new
+            {
+                today = todayTotals,
+                yesterday = yesterdayTotals,
+                labels = Enumerable.Range(0, 24).Select(h => $"{h:00}:00").ToArray()
+            });
+        }
 
 
         public IActionResult ManageUsers(int? restaurantId = null)
@@ -953,164 +1061,7 @@ namespace resturanyar.Controllers
             return View("ManagerReports", vm);
         }
 
-        //   [HttpGet("ExportOrdersToExcel")]
-        //   public IActionResult ExportOrdersToExcel(
-        //int statusId = -1,
-        //string? period = null,
-        //DateTime? from = null,
-        //DateTime? to = null)
-        //   {
-        //       try
-        //       {
-        //           int? restaurantId = User.GetRestaurantId();
-        //           if (restaurantId == null)
-        //               return BadRequest("شناسه رستوران مشخص نیست.");
-
-
-        //           var today = DateTime.Today;
-
-        //           if (!string.IsNullOrEmpty(period))
-        //           {
-
-        //               if (period.Equals("today", StringComparison.OrdinalIgnoreCase))
-        //               {
-        //                   from = today;
-        //                   to = today.AddDays(1).AddTicks(-1);
-        //               }
-        //               else if (period.Equals("week", StringComparison.OrdinalIgnoreCase))
-        //               {
-        //                   from = today.AddDays(-7);
-        //                   to = DateTime.Now;
-        //               }
-        //               else if (period.Equals("month", StringComparison.OrdinalIgnoreCase))
-        //               {
-        //                   from = new DateTime(today.Year, today.Month, 1);
-        //                   to = DateTime.Now;
-        //               }
-        //               else if (period.Equals("quarter", StringComparison.OrdinalIgnoreCase))
-        //               {
-        //                   from = today.AddMonths(-3);
-        //                   to = DateTime.Now;
-        //               }
-        //               else if (period.Equals("year", StringComparison.OrdinalIgnoreCase))
-        //               {
-        //                   from = today.AddYears(-1);
-        //                   to = DateTime.Now;
-        //               }
-        //           }
-
-        //           // 🟢 If still missing dates (no filter or quick period), default to last 30 days
-        //           if (!from.HasValue || !to.HasValue)
-        //           {
-        //               from = today.AddDays(-30);
-        //               to = DateTime.Now;
-        //           }
-
-        //           // Normalize "to" date (end of the selected day)
-        //           if (to.Value.TimeOfDay == TimeSpan.Zero)
-        //               to = to.Value.Date.AddDays(1).AddTicks(-1);
-
-        //           var fromDate = from.Value;
-        //           var toDate = to.Value;
-
-        //           // 🟢 Apply filters consistently
-        //           var ordersQuery = _context.Orders
-        //               .Include(o => o.OrderItems)
-        //                .Include(o => o.Customer)
-        //               .Where(o => o.RestaurantId == restaurantId)
-        //               .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate);
-
-        //           if (statusId > 0)
-        //               ordersQuery = ordersQuery.Where(o => o.StatusId == statusId);
-
-        //           var orders = ordersQuery.OrderByDescending(o => o.CreatedAt).ToList();
-
-        //           if (!orders.Any())
-        //               return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
-
-        //           using (var workbook = new XLWorkbook())
-        //           {
-        //               // === Sheet 1: Orders Summary ===
-        //               var wsOrders = workbook.Worksheets.Add("خلاصه سفارش‌ها");
-        //               wsOrders.Cell(1, 1).Value = "شناسه سفارش";
-        //               wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
-        //               wsOrders.Cell(1, 3).Value = "شماره میز";
-        //               wsOrders.Cell(1, 4).Value = "وضعیت";
-
-        //               wsOrders.Cell(1, 5).Value = "نام مشتری";
-        //               wsOrders.Cell(1, 6).Value = "شماره موبایل";
-        //               wsOrders.Cell(1, 7).Value = "توضیحات";
-        //               wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
-        //               wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
-        //               int row = 2;
-
-        //               foreach (var o in orders)
-        //               {
-        //                   var totalPrice = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
-        //                   wsOrders.Cell(row, 1).Value = o.OrderId;
-        //                   wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
-        //                   wsOrders.Cell(row, 3).Value = o.TableNumber;
-        //                   wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
-
-        //                   wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "-";
-        //                   wsOrders.Cell(row, 6).Value = o.Customer?.Mobile ?? "-";
-        //                   wsOrders.Cell(row, 7).Value = o.Description ?? "-";
-        //                   wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
-        //                   wsOrders.Cell(row, 9).Value = totalPrice;
-        //                   row++;
-        //               }
-
-        //               var headerRange1 = wsOrders.Range("A1:G1");
-        //               headerRange1.Style.Font.Bold = true;
-        //               headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
-        //               wsOrders.Columns().AdjustToContents();
-
-        //               // === Sheet 2: Items Details ===
-        //               var wsItems = workbook.Worksheets.Add("جزئیات سفارش‌ها");
-        //               wsItems.Cell(1, 1).Value = "شناسه سفارش";
-        //               wsItems.Cell(1, 2).Value = "شناسه آیتم";
-        //               wsItems.Cell(1, 3).Value = "نام غذا";
-        //               wsItems.Cell(1, 4).Value = "تعداد";
-        //               wsItems.Cell(1, 5).Value = "قیمت واحد";
-        //               wsItems.Cell(1, 6).Value = "قیمت با تخفیف";
-        //               wsItems.Cell(1, 7).Value = "مبلغ کل";
-        //               int itemRow = 2;
-
-        //               foreach (var o in orders)
-        //               {
-        //                   foreach (var i in o.OrderItems)
-        //                   {
-        //                       var total = GetFinalPrice(i) * i.Quantity;
-        //                       wsItems.Cell(itemRow, 1).Value = o.OrderId;
-        //                       wsItems.Cell(itemRow, 2).Value = i.OrderItemId;
-        //                       wsItems.Cell(itemRow, 3).Value = i.FoodName ?? "-";
-        //                       wsItems.Cell(itemRow, 4).Value = i.Quantity;
-        //                       wsItems.Cell(itemRow, 5).Value = i.UnitPrice;
-        //                       wsItems.Cell(itemRow, 6).Value = GetFinalPrice(i);
-        //                       wsItems.Cell(itemRow, 7).Value = total;
-        //                       itemRow++;
-        //                   }
-        //               }
-
-        //               var headerRange2 = wsItems.Range("A1:G1");
-        //               headerRange2.Style.Font.Bold = true;
-        //               headerRange2.Style.Fill.BackgroundColor = XLColor.LightGray;
-        //               wsItems.Columns().AdjustToContents();
-
-        //               using (var stream = new MemoryStream())
-        //               {
-        //                   workbook.SaveAs(stream);
-        //                   var content = stream.ToArray();
-        //                   string fileName = $"OrdersReport_{restaurantId}_{fromDate:yyyyMMdd}_{toDate:yyyyMMdd}.xlsx";
-        //                   return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-        //               }
-        //           }
-        //       }
-        //       catch (Exception ex)
-        //       {
-        //           return BadRequest($"خطا در تولید گزارش: {ex.Message}");
-        //       }
-        //   }
+        
 
         [HttpGet("ExportOrdersToExcel")]
         public IActionResult ExportOrdersToExcel(
@@ -1301,69 +1252,7 @@ namespace resturanyar.Controllers
                 _ => "-"
             };
         }
-        //[HttpGet]
-        //public async Task<IActionResult> ManagerReportsExport(
-        //int statusId = -1,
-        //string? period = null,
-        //DateTime? from = null,
-        //DateTime? to = null)
-        //{
-        //    int? restaurantId = User.GetRestaurantId();
-        //    if (restaurantId == null) return RedirectToAction("ChooseRestaurant");
-
-        //    // فعال‌ها (همگام با اکشن اصلی)
-        //    var activeStatuses = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 12 };
-
-        //    // بازه زمانی
-        //    if (!string.IsNullOrEmpty(period))
-        //    {
-        //        var today = DateTime.Today;
-        //        if (period == "today") { from = today; to = today.AddDays(1).AddTicks(-1); }
-        //        else if (period == "week") { from = today.AddDays(-7); to = DateTime.Now; }
-        //        else if (period == "month") { from = new DateTime(today.Year, today.Month, 1); to = DateTime.Now; }
-        //        else if (period == "quarter") { from = today.AddMonths(-3); to = DateTime.Now; }
-        //        else if (period == "year") { from = today.AddYears(-1); to = DateTime.Now; }
-        //    }
-
-        //    if (to.HasValue && to.Value.TimeOfDay == TimeSpan.Zero)
-        //        to = to.Value.Date.AddDays(1).AddTicks(-1);
-
-        //    var orderItemsQuery = _context.OrderItems
-        //    .Where(oi => oi.Order.RestaurantId == restaurantId);
-
-        //    if (statusId > 0)
-        //        orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.StatusId == statusId);
-        //    else if (statusId == -1)
-        //    {
-        //        // همه
-        //    }
-        //    else
-        //    {
-        //        orderItemsQuery = orderItemsQuery.Where(oi => activeStatuses.Contains(oi.Order.StatusId));
-        //    }
-
-        //    if (from.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt >= from.Value);
-        //    if (to.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt <= to.Value);
-
-        //    var rows = await orderItemsQuery
-        //    .GroupBy(oi => oi.Order.CreatedAt.Date)
-        //    .Select(g => new
-        //    {
-        //        Day = g.Key,
-        //        Orders = g.Select(oi => oi.OrderId).Distinct().Count(),
-        //        Revenue = g.Sum(oi => (decimal)oi.Quantity * (decimal)(oi.UnitPriceWithDiscount ?? oi.UnitPrice))
-        //    })
-        //    .OrderBy(x => x.Day)
-        //    .ToListAsync();
-
-        //    var sb = new StringBuilder();
-        //    sb.AppendLine("Date,Orders,Revenue");
-        //    foreach (var r in rows)
-        //        sb.AppendLine($"{r.Day:yyyy-MM-dd},{r.Orders},{r.Revenue}");
-
-        //    var bytes = Encoding.UTF8.GetBytes(sb.ToString());
-        //    return File(bytes, "text/csv", $"reports_{DateTime.Now:yyyyMMddHHmmss}.csv");
-        //}
+       
 
         public async Task<IActionResult> FoodList()
         {
@@ -2102,159 +1991,7 @@ namespace resturanyar.Controllers
 
 
 
-        //[Authorize(Roles = "Owner")]
-        //[HttpPost("/zarinpal/create")]
-        //public async Task<IActionResult> CreateZarinpalPayment([FromBody] CreateZarinpalPaymentRequest request)
-        //{
-        //    try
-        //    {
-        //        // --- 1) اعتبارسنجی ورودی
-        //        if (request == null)
-        //            return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
-        //        if (request.RestaurantId <= 0 || request.SubscriptionPlanId <= 0)
-        //            return BadRequest(new { success = false, message = "پارامترهای ورودی معتبر نیست." });
-
-        //        // --- 2) OwnerId فقط از Claims
-        //        var ownerIdClaim = User.FindFirstValue("OwnerId");
-        //        if (string.IsNullOrWhiteSpace(ownerIdClaim) || !int.TryParse(ownerIdClaim, out var ownerId))
-        //            return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
-
-        //        // --- 3) بررسی مالکیت رستوران
-        //        var restaurant = await _context.Restaurants
-        //            .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerId);
-        //        if (restaurant == null)
-        //            return BadRequest(new { success = false, message = "شما به این رستوران دسترسی ندارید یا رستوران یافت نشد." });
-
-        //        // --- 4) بررسی و دریافت پلن اشتراک
-        //        var plan = await _context.SubscriptionPlans
-        //            .FirstOrDefaultAsync(p => p.Id == request.SubscriptionPlanId && p.IsActive);
-        //        if (plan == null)
-        //            return BadRequest(new { success = false, message = "پلن اشتراک یافت نشد یا غیرفعال است." });
-
-        //        // --- 5) نرمال‌سازی دوره
-        //        var period = NormalizePeriod(request.SubscriptionPeriod);
-
-        //        // --- 6) محاسبه مبلغ
-        //        (decimal standardPrice, decimal amount) = CalculatePlanAmount(plan, period);
-        //        if (amount <= 0)
-        //            return BadRequest(new { success = false, message = "مبلغ پلن معتبر نیست." });
-
-        //        var discountApplied = Math.Max(0, standardPrice - amount);
-
-        //        // --- 7) حذف Paymentهای Pending قدیمی
-        //        var pendings = await _context.Subscriptions
-        //            .Where(s => s.RestaurantId == request.RestaurantId &&
-        //                        s.OwnerId == ownerId &&
-        //                        s.Status == "PendingPayment" &&
-        //                        s.PaymentMethod == "Zarinpal")
-        //            .ToListAsync();
-        //        if (pendings.Any())
-        //        {
-        //            _context.Subscriptions.RemoveRange(pendings);
-        //            await _context.SaveChangesAsync();
-        //        }
-
-        //        // --- 8) ارسال درخواست به زرین‌پال
-        //        var merchantId = _configuration["Zarinpal:MerchantId"];
-        //        var callbackUrl = _configuration["Zarinpal:CallbackUrl"];
-
-        //        // بررسی نال نبودن (اختیاری ولی توصیه می‌شود)
-        //        if (string.IsNullOrEmpty(merchantId) || string.IsNullOrEmpty(callbackUrl))
-        //        {
-        //            return BadRequest(new { success = false, message = "پیکربندی درگاه پرداخت ناقص است." });
-        //        }
-
-        //        var owner = await _context.Owners.FindAsync(ownerId);
-        //        using var client = new HttpClient();
-
-
-        //            var zarinReq = new
-        //            {
-        //                merchant_id = merchantId,   
-        //                amount = (long)amount,
-        //                currency = "IRT",
-        //                description = $"خرید اشتراک {plan.Name} - {period}",
-        //                callback_url = callbackUrl,   
-        //                metadata = new { mobile = owner?.Phone?.Trim() ?? "", auto_verify = false }
-        //            };
-
-
-        //        var zarinResponse = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/request.json", zarinReq);
-        //        var rawResponse = await zarinResponse.Content.ReadAsStringAsync();
-        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
-
-        //        if (json?.data?.code != 100 || string.IsNullOrWhiteSpace(json?.data?.authority?.ToString()))
-        //            return BadRequest(new { success = false, message = "خطا در ارتباط با زرین‌پال." });
-
-        //        string authority = json.data.authority.ToString();
-
-        //        // --- 9) ثبت رکورد اشتراک Pending
-        //        var now = DateTime.Now;
-        //        var endDate = CalculateEndDate(now, period);
-
-        //        var subscription = new Subscription
-        //        {
-        //            RestaurantId = request.RestaurantId,
-        //            OwnerId = ownerId,
-        //            SubscriptionPlanId = request.SubscriptionPlanId,
-        //            SubscriptionPeriod = period,
-        //            Status = "PendingPayment",
-        //            StartDate = now,
-        //            EndDate = endDate,
-        //            PurchaseDate = now,
-        //            PricePaid = amount,
-        //            DiscountApplied = discountApplied,
-        //            PaymentMethod = "Zarinpal",
-        //            TransactionId = authority,
-        //            IsPaid = false,
-        //            CafeBazarPurchaseToken = "Zarinpal" + authority,
-        //            CafeBazarOrderId = "Zarinpal" + authority,
-        //            AutoRenew = false,
-        //            NextRenewalDate = endDate,
-        //            CreatedAt = now,
-        //            UpdatedAt = now
-        //        };
-
-        //        _context.Subscriptions.Add(subscription);
-        //        await _context.SaveChangesAsync();
-
-        //        // --- 10) بازگرداندن لینک پرداخت
-        //        return Ok(new
-        //        {
-        //            success = true,
-        //            url = $"https://payment.zarinpal.com/pg/StartPay/{authority}",
-        //            subscriptionId = subscription.Id
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "خطا در ایجاد پرداخت زرین‌پال.", detail = ex.Message });
-        //    }
-
-        //    // === Helper functions ===
-        //    static string NormalizePeriod(string? p)
-        //    {
-        //        p = (p ?? "").Trim();
-        //        return p switch
-        //        {
-        //            "1" or "Monthly" or "ماهانه" => "Monthly",
-        //            "3" or "3Monthly" or "سه ماهه" => "3Monthly",
-        //            "6" or "6Monthly" or "شش ماهه" => "6Monthly",
-        //            _ => "Monthly"
-        //        };
-        //    }
-
-        //    static (decimal standardPrice, decimal amount) CalculatePlanAmount(dynamic plan, string period)
-        //    {
-        //        return period switch
-        //        {
-        //            "Monthly" => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly)),
-        //            "3Monthly" => (plan.Price3Monthly, (plan.DiscountPrice3Monthly > 0 ? plan.DiscountPrice3Monthly : plan.Price3Monthly)),
-        //            "6Monthly" => (plan.Price6Monthly, (plan.DiscountPrice6Monthly > 0 ? plan.DiscountPrice6Monthly : plan.Price6Monthly)),
-        //            _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
-        //        };
-        //    }
-        //}
+      
 
 
 
@@ -2683,267 +2420,7 @@ namespace resturanyar.Controllers
                 _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
             };
         }
-        //[HttpGet("zarinpal/verify")]
-        //public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
-        //{
-
-
-
-
-        //    try
-        //    {
-
-
-        //        if (string.IsNullOrWhiteSpace(Authority))
-        //        {
-
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "کد Authority معتبر نیست." });
-        //        }
-
-        //        // 1) پیدا کردن پرداخت Pending مربوط به authority
-        //        var payment = await _context.Subscriptions.FirstOrDefaultAsync(x => x.TransactionId == Authority);
-
-        //        if (payment == null)
-        //        {
-
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
-        //        }
-
-
-
-        //        // اگر قبلاً فعال شده
-        //        if (payment.Status == "Active" && payment.IsPaid)
-        //        {
-
-        //            return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
-        //        }
-
-        //        // 2) اگر کاربر درگاه را cancel کرده باشد
-        //        if (!string.Equals(Status, "OK", StringComparison.OrdinalIgnoreCase))
-        //        {
-
-        //            payment.Status = "Canceled";
-        //            payment.UpdatedAt = DateTime.Now;
-        //            await _context.SaveChangesAsync();
-
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت لغو شد." });
-        //        }
-
-
-        //        var merchantId = _configuration["Zarinpal:MerchantId"];
-        //        long amountInToman = (long)payment.PricePaid;
-
-        //        var verifyRequest = new
-        //        {
-        //            merchant_id = merchantId,
-        //            amount = amountInToman,
-        //            authority = Authority
-        //        };
-
-
-
-        //        using var client = new HttpClient();
-        //        var response = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/verify.json", verifyRequest);
-        //        var rawResponse = await response.Content.ReadAsStringAsync();
-
-
-
-        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
-
-        //        if (json?.data == null)
-        //        {
-        //            payment.Status = "Failed";
-        //            payment.UpdatedAt = DateTime.Now;
-        //            await _context.SaveChangesAsync();
-
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پاسخ نامعتبر از درگاه." });
-        //        }
-
-        //        int code = Convert.ToInt32(json.data.code);
-        //        long? refId = json.data.ref_id != null ? Convert.ToInt64(json.data.ref_id) : (long?)null;
-
-
-
-        //        // 100: تایید موفق، 101: قبلاً تایید شده
-        //        if (code == 100 || code == 101)
-        //        {
-        //            var now = DateTime.Now;
-
-        //            payment.Status = "Active";
-        //            payment.IsPaid = true;
-        //            payment.PurchaseDate = now;
-        //            payment.StartDate = now;
-        //            payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
-        //            payment.UpdatedAt = now;
-
-        //            // (اختیاری ولی مفید) اگر فیلدی برای refId دارید ذخیره کنید:
-        //            // payment.RefId = refId?.ToString();
-
-        //            await _context.SaveChangesAsync();
-
-        //            return RedirectToAction("PaymentResult", new
-        //            {
-        //                success = true,
-        //                message = $"پرداخت موفق. شماره پیگیری: {refId}"
-        //            });
-        //        }
-
-        //        payment.Status = "Failed";
-        //        payment.UpdatedAt = DateTime.Now;
-        //        await _context.SaveChangesAsync();
-
-        //        return RedirectToAction("PaymentResult", new
-        //        {
-        //            success = false,
-        //            message = $"پرداخت ناموفق. کد خطا: {code}"
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-
-        //        return RedirectToAction("PaymentResult", new
-        //        {
-        //            success = false,
-        //            message = $"خطا: {ex.Message}"
-        //        });
-        //    }
-        //}
-
-        //[HttpGet("zarinpal/verify")]
-        //public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrWhiteSpace(Authority))
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "کد Authority معتبر نیست." });
-
-        //        // 1) پیدا کردن پرداخت Pending مربوط به authority
-        //        var payment = await _context.Subscriptions
-        //            .FirstOrDefaultAsync(x => x.TransactionId == Authority);
-
-        //        if (payment == null)
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
-
-        //        // اگر قبلاً فعال شده
-        //        if (payment.Status == "Active" && payment.IsPaid)
-        //            return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
-
-        //        // 2) اگر کاربر درگاه را cancel کرده باشد
-        //        if (!string.Equals(Status, "OK", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            payment.Status = "Canceled";
-        //            payment.UpdatedAt = DateTime.Now;
-        //            await _context.SaveChangesAsync();
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت لغو شد." });
-        //        }
-
-        //        // 3) تایید پرداخت با زرین‌پال
-        //        var merchantId = _configuration["Zarinpal:MerchantId"];
-        //        long amountInToman = (long)payment.PricePaid;
-
-        //        var verifyRequest = new
-        //        {
-        //            merchant_id = merchantId,
-        //            amount = amountInToman,
-        //            authority = Authority
-        //        };
-
-        //        using var client = new HttpClient();
-        //        var response = await client.PostAsJsonAsync("https://payment.zarinpal.com/pg/v4/payment/verify.json", verifyRequest);
-        //        var rawResponse = await response.Content.ReadAsStringAsync();
-        //        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(rawResponse);
-
-        //        if (json?.data == null)
-        //        {
-        //            payment.Status = "Failed";
-        //            payment.UpdatedAt = DateTime.Now;
-        //            await _context.SaveChangesAsync();
-        //            return RedirectToAction("PaymentResult", new { success = false, message = "پاسخ نامعتبر از درگاه." });
-        //        }
-
-        //        int code = Convert.ToInt32(json.data.code);
-        //        long? refId = json.data.ref_id != null ? Convert.ToInt64(json.data.ref_id) : (long?)null;
-
-        //        // 4) پرداخت موفق
-        //        if (code == 100 || code == 101)
-        //        {
-        //            var now = DateTime.Now;
-
-        //            // فعال‌سازی اشتراک
-        //            payment.Status = "Active";
-        //            payment.IsPaid = true;
-        //            payment.PurchaseDate = now;
-        //            payment.StartDate = now;
-        //            payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
-        //            payment.UpdatedAt = now;
-
-        //            // ========== مصرف کوپن (اگر وجود داشته باشد) ==========
-        //            if (payment.CouponId.HasValue)
-        //            {
-        //                var coupon = await _context.Coupons.FindAsync(payment.CouponId.Value);
-        //                if (coupon != null)
-        //                {
-        //                    // بررسی مجدد اعتبار کوپن (برای امنیت)
-        //                    var isValid = await CheckCouponValidityForConsume(coupon, payment.OwnerId, payment.RestaurantId);
-
-        //                    var usage = new CouponUsage
-        //                    {
-        //                        CouponId = coupon.Id,
-        //                        SubscriptionId = payment.Id,
-        //                        OwnerId = payment.OwnerId,
-        //                        RestaurantId = payment.RestaurantId,
-        //                        UsedAt = DateTime.Now,
-        //                        DiscountAmount = payment.DiscountApplied ?? 0,
-        //                        AppliedPrice = payment.PricePaid,
-        //                        Status = isValid ? "Success" : "Failed",
-        //                        TransactionId = payment.TransactionId
-        //                    };
-
-        //                    _context.CouponUsages.Add(usage);
-
-        //                    if (isValid)
-        //                    {
-        //                        coupon.UsedCount++;
-        //                        coupon.UpdatedAt = DateTime.Now;
-        //                    }
-        //                    else
-        //                    {
-        //                        // در صورت نامعتبر بودن، لاگ ثبت می‌شود ولی اشتراک فعال می‌ماند
-        //                        // می‌توانید به تیم پشتیبانی اطلاع دهید یا کوپن را غیرفعال کنید
-        //                    }
-        //                }
-        //            }
-
-        //            await _context.SaveChangesAsync();
-
-        //            return RedirectToAction("PaymentResult", new
-        //            {
-        //                success = true,
-        //                message = $"پرداخت موفق. شماره پیگیری: {refId}"
-        //            });
-        //        }
-
-        //        // 5) پرداخت ناموفق
-        //        payment.Status = "Failed";
-        //        payment.UpdatedAt = DateTime.Now;
-        //        await _context.SaveChangesAsync();
-
-        //        return RedirectToAction("PaymentResult", new
-        //        {
-        //            success = false,
-        //            message = $"پرداخت ناموفق. کد خطا: {code}"
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return RedirectToAction("PaymentResult", new
-        //        {
-        //            success = false,
-        //            message = $"خطا: {ex.Message}"
-        //        });
-        //    }
-        //}
+        
 
         [HttpGet("zarinpal/verify")]
         public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
