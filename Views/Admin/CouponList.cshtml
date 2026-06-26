@@ -1,0 +1,710 @@
+﻿@model List<resturanyar.Models.ViewModels.CopounViewModel.CouponListViewModel>
+
+@{
+    ViewData["Title"] = "لیست کدهای تخفیف";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalCoupons = Model.Count;
+    var activeCoupons = Model.Count(c => c.StatusColor == "success");
+    var totalUsage = Model.Sum(c => c.UsedCount);
+}
+
+<div class="coupon-page" dir="rtl">
+
+    <!-- Page Header -->
+    <div class="coupon-hero">
+        <div class="coupon-hero-text">
+            <h1><i class="fas fa-ticket-alt"></i> کدهای تخفیف</h1>
+            <p>مدیریت و پیگیری تمام کدهای تخفیف فروشگاه شما</p>
+        </div>
+        <a href="@Url.Action("CreateCoupon")" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span>کد تخفیف جدید</span>
+        </a>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="coupon-stats">
+        <div class="stat-card stat-purple">
+            <div class="stat-icon"><i class="fas fa-tags"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@totalCoupons.ToString("N0")</span>
+                <span class="stat-label">کل کدها</span>
+            </div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@activeCoupons.ToString("N0")</span>
+                <span class="stat-label">کدهای فعال</span>
+            </div>
+        </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@totalUsage.ToString("N0")</span>
+                <span class="stat-label">تعداد استفاده</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="coupon-alert alert-success-modern">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="coupon-alert alert-danger-modern">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@TempData["ErrorMessage"]</span>
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+    }
+
+    <!-- Main Card -->
+    <div class="coupon-card">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-ticket-alt"></i></div>
+                <h3>هیچ کد تخفیفی ثبت نشده است</h3>
+                <p>برای شروع، اولین کد تخفیف خود را ایجاد کنید.</p>
+                <a href="@Url.Action("CreateCoupon")" class="btn-create">
+                    <i class="fas fa-plus"></i> ایجاد اولین کد تخفیف
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table coupon-table" id="couponTable">
+                    <thead>
+                        <tr>
+                            <th>کد</th>
+                            <th>نوع تخفیف</th>
+                            <th>مقدار</th>
+                            <th>حداکثر مبلغ</th>
+                            <th>حداقل خرید</th>
+                            <th>محدوده</th>
+                            <th>تاریخ شروع</th>
+                            <th>تاریخ پایان</th>
+                            <th>وضعیت</th>
+                            <th>استفاده</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="coupon-code">@item.Code</span>
+                                </td>
+                                <td>@item.DiscountTypeDisplay</td>
+                                <td>
+                                    @if (item.DiscountType == "Percentage")
+                                    {
+                                        <span class="value-chip value-percent">@item.DiscountValue%</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="value-chip value-amount">@item.DiscountValue.ToString("N0") تومان</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.MaxDiscountAmount.HasValue)
+                                    {
+                                        <span>@item.MaxDiscountAmount.Value.ToString("N0") تومان</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted-modern">ندارد</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.MinPurchaseAmount.HasValue)
+                                    {
+                                        <span>@item.MinPurchaseAmount.Value.ToString("N0") تومان</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted-modern">ندارد</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="scope-badge">@item.ScopeDisplay</span>
+                                </td>
+                                <td><span class="date-text">@item.StartDate.ToString("yyyy/MM/dd HH:mm")</span></td>
+                                <td><span class="date-text">@item.EndDate.ToString("yyyy/MM/dd HH:mm")</span></td>
+                                <td>
+                                    <span class="status-badge status-@item.StatusColor">
+                                        <span class="status-dot"></span>
+                                        @item.StatusDisplay
+                                        @if (item.DaysRemaining.HasValue && item.DaysRemaining.Value > 0)
+                                        {
+                                            <span class="status-days">(@item.DaysRemaining.Value روز)</span>
+                                        }
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="usage-cell">
+                                        <span class="usage-numbers">
+                                            <strong>@item.UsedCount</strong>
+                                            @if (item.UsageLimit.HasValue)
+                                            {
+                                                <span class="usage-limit">/ @item.UsageLimit.Value</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted-modern">(نامحدود)</span>
+                                            }
+                                        </span>
+                                        @if (item.UsageLimit.HasValue && item.UsagePercentage.HasValue)
+                                        {
+                                            <div class="usage-bar">
+                                                <div class="usage-fill" style="width: @item.UsagePercentage.Value%;"></div>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="@Url.Action("EditCoupon", new { id = item.Id })"
+                                           class="action-btn btn-edit" title="ویرایش">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="action-btn btn-delete"
+                                                data-id="@item.Id" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .coupon-page {
+            --c-primary: #6366f1;
+            --c-primary-dark: #4f46e5;
+            font-family: inherit;
+            padding: 8px 4px 40px;
+        }
+
+        /* Hero */
+        .coupon-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            border-radius: 20px;
+            padding: 28px 32px;
+            color: #fff;
+            box-shadow: 0 12px 30px rgba(99, 102, 241, .35);
+            margin-bottom: 24px;
+        }
+
+        .coupon-hero-text h1 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coupon-hero-text p {
+            margin: 0;
+            opacity: .9;
+            font-size: .95rem;
+        }
+
+        .btn-create {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,.95);
+            color: var(--c-primary-dark);
+            font-weight: 700;
+            padding: 12px 22px;
+            border-radius: 14px;
+            text-decoration: none;
+            border: none;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 6px 18px rgba(0,0,0,.15);
+        }
+
+            .btn-create:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 26px rgba(0,0,0,.22);
+                color: var(--c-primary-dark);
+                text-decoration: none;
+            }
+
+        /* Stat cards */
+        .coupon-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #fff;
+            border-radius: 18px;
+            padding: 20px 22px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.06);
+            transition: transform .2s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+            }
+
+        .stat-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .stat-purple .stat-icon {
+            background: linear-gradient(135deg,#6366f1,#8b5cf6);
+        }
+
+        .stat-green .stat-icon {
+            background: linear-gradient(135deg,#10b981,#059669);
+        }
+
+        .stat-blue .stat-icon {
+            background: linear-gradient(135deg,#0ea5e9,#2563eb);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: .85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* Alerts */
+        .coupon-alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-weight: 600;
+            animation: slideDown .3s ease;
+        }
+
+        .alert-success-modern {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger-modern {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-close {
+            margin-right: auto;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: inherit;
+            opacity: .6;
+            line-height: 1;
+        }
+
+            .alert-close:hover {
+                opacity: 1;
+            }
+
+        @@keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* Card */
+        .coupon-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.07);
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        /* Table */
+        .coupon-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .coupon-table thead th {
+                background: #f8fafc;
+                color: #475569;
+                font-weight: 700;
+                font-size: .82rem;
+                padding: 14px 12px;
+                border: none !important;
+                white-space: nowrap;
+                text-align: right;
+            }
+
+            .coupon-table tbody td {
+                padding: 14px 12px;
+                border: none !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+                vertical-align: middle;
+                font-size: .88rem;
+                color: #334155;
+            }
+
+            .coupon-table tbody tr {
+                transition: background .15s ease;
+            }
+
+                .coupon-table tbody tr:hover {
+                    background: #f8faff;
+                }
+
+        .coupon-code {
+            display: inline-block;
+            font-family: 'Courier New', monospace;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg,#1e293b,#334155);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+
+        .value-chip {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: .82rem;
+        }
+
+        .value-percent {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .value-amount {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .scope-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: .8rem;
+        }
+
+        .date-text {
+            color: #64748b;
+            font-size: .83rem;
+            white-space: nowrap;
+        }
+
+        .text-muted-modern {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        /* Status */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: .8rem;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-days {
+            font-weight: 500;
+            opacity: .8;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-secondary, .status-info {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .status-primary {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        /* Usage */
+        .usage-cell {
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .usage-numbers {
+            font-size: .85rem;
+            color: #475569;
+        }
+
+            .usage-numbers strong {
+                color: #1e293b;
+                font-size: 1rem;
+            }
+
+        .usage-limit {
+            color: #94a3b8;
+        }
+
+        .usage-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            margin: 6px auto 0;
+            width: 70px;
+            overflow: hidden;
+        }
+
+        .usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg,#6366f1,#8b5cf6);
+            border-radius: 6px;
+            transition: width .6s ease;
+        }
+
+        /* Actions */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            font-size: .85rem;
+            transition: transform .15s ease, box-shadow .15s ease;
+            text-decoration: none;
+        }
+
+            .action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 14px rgba(0,0,0,.18);
+            }
+
+        .btn-edit {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+            .btn-edit:hover {
+                background: #fde68a;
+                color: #b45309;
+            }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+            .btn-delete:hover {
+                background: #fecaca;
+                color: #b91c1c;
+            }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 18px;
+            border-radius: 24px;
+            background: linear-gradient(135deg,#eef2ff,#f5f3ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            color: #8b5cf6;
+        }
+
+        .empty-state h3 {
+            color: #1e293b;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        /* DataTables tweaks */
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 12px;
+            outline: none;
+        }
+
+            .dataTables_wrapper .dataTables_filter input:focus {
+                border-color: var(--c-primary);
+            }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--c-primary) !important;
+            border-color: var(--c-primary) !important;
+            color: #fff !important;
+            border-radius: 8px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 8px !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length {
+            padding: 14px;
+        }
+
+        @@media (max-width: 768px) {
+            .coupon-hero {
+                padding: 22px;
+                text-align: center;
+                justify-content: center;
+            }
+
+            .coupon-hero-text h1 {
+                justify-content: center;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#couponTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Persian.json"
+                },
+                "order": [[7, "desc"]],
+                "pageLength": 25,
+                "responsive": true
+            });
+        });
+
+                     $(document).on('click', '.btn-delete', function () {
+            var id = $(this).data('id');
+            if (!id) {
+                alert('شناسه کد تخفیف نامعتبر است');
+                return;
+            }
+
+            if (confirm('آیا از حذف این کد تخفیف اطمینان دارید؟')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteCoupon", "Admin")',
+                    type: 'POST',
+                    contentType: 'application/json',  // مهم
+                    data: JSON.stringify(id),         // مهم: تبدیل به JSON
+                    success: function (result) {
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert(result.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert('خطا در حذف کد تخفیف (' + xhr.status + ')');
+                    }
+                });
+            }
+        });
+
+    </script>
+}

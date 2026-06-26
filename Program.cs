@@ -17,15 +17,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
-        policy =>
-        {
-            policy.WithOrigins("https://localhost:7171", "http://delavita.ir/")  
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                   .AllowCredentials(); ;
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins(
+            "https://delavita.ir",
+            "https://www.delavita.ir",
+            "https://resturanyar.ir",
+            "https://localhost:7171"
+        )
+        .AllowAnyHeader()   // ← این اجازه می‌دهد همه هدرها از جمله Authorization
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
 });
+
+// بعد در app:
+
 
 // ✳️ افزودن کنترلرهای API و MVC
 builder.Services.AddControllers();               
@@ -96,7 +103,7 @@ builder.Host.UseSerilog(); // جایگزین ILogger پیش‌فرض
 
 var app = builder.Build();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowAll");
 
 // ✅ Middleware برای هندل‌کردن تمام exceptionها به صورت JSON با status 200
 app.Use(async (context, next) =>

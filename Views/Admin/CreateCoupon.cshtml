@@ -1,0 +1,910 @@
+﻿@model resturanyar.Models.ViewModels.CopounViewModel.CouponViewModel
+
+@{
+    ViewData["Title"] = "ایجاد کد تخفیف جدید";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد کد تخفیف جدید | مدیریت مدرن</title>
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Font: Vazir -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazir', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf5 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container-modern {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card-modern {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 20, 30, 0.12), 0 8px 24px rgba(0, 0, 0, 0.04);
+            padding: 2rem 2.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card-header-modern {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .card-title-modern {
+            font-weight: 700;
+            font-size: 1.9rem;
+            color: #1a2639;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .card-title-modern i {
+                color: #4361ee;
+                background: rgba(67, 97, 238, 0.12);
+                padding: 0.6rem;
+                border-radius: 18px;
+                font-size: 1.6rem;
+            }
+
+        .btn-return {
+            background: #f0f3f8;
+            color: #2c3e50;
+            border: none;
+            padding: 0.7rem 1.6rem;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+            .btn-return i {
+                font-size: 1rem;
+            }
+
+            .btn-return:hover {
+                background: #e2e8f0;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+                color: #1a2639;
+            }
+
+        .alert-modern {
+            background: #fff5f5;
+            border-right: 6px solid #e53e3e;
+            border-radius: 20px;
+            padding: 1rem 1.6rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #9b2c2c;
+            font-weight: 400;
+            box-shadow: 0 4px 10px rgba(229, 62, 62, 0.06);
+        }
+
+            .alert-modern i {
+                font-size: 1.5rem;
+                color: #e53e3e;
+            }
+
+            .alert-modern .close-btn {
+                margin-right: auto;
+                background: none;
+                border: none;
+                font-size: 1.6rem;
+                cursor: pointer;
+                color: #9b2c2c;
+                opacity: 0.5;
+                transition: 0.2s;
+            }
+
+                .alert-modern .close-btn:hover {
+                    opacity: 1;
+                }
+
+        .form-group-modern {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-label-modern {
+            display: block;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3px;
+        }
+
+            .form-label-modern i {
+                margin-left: 0.4rem;
+                color: #4361ee;
+                width: 1.4rem;
+            }
+
+        .form-control-modern {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: #f8faff;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            font-size: 1rem;
+            font-family: 'Vazir', sans-serif;
+            transition: 0.25s ease;
+            color: #1a202c;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+        }
+
+            .form-control-modern:focus {
+                border-color: #4361ee;
+                background: #ffffff;
+                box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.12);
+            }
+
+            .form-control-modern::placeholder {
+                color: #a0aec0;
+                font-weight: 300;
+            }
+
+        select.form-control-modern {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%234361ee" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: left 1rem center;
+            background-size: 1.2rem;
+        }
+
+        .input-group-modern {
+            display: flex;
+            align-items: stretch;
+            background: #f8faff;
+            border-radius: 24px;
+            border: 2px solid #e2e8f0;
+            transition: 0.2s;
+        }
+
+            .input-group-modern:focus-within {
+                border-color: #4361ee;
+                box-shadow: 0 0 0 5px rgba(67, 97, 238, 0.12);
+            }
+
+            .input-group-modern .form-control-modern {
+                border: none;
+                background: transparent;
+                box-shadow: none;
+                border-radius: 24px 0 0 24px;
+            }
+
+            .input-group-modern .input-group-text-modern {
+                background: transparent;
+                border: none;
+                padding: 0 1.2rem;
+                display: flex;
+                align-items: center;
+                font-weight: 500;
+                color: #4a5568;
+                font-size: 0.95rem;
+            }
+
+        .input-group-prepend-modern .input-group-text-modern {
+            border-radius: 0 24px 24px 0;
+            padding-right: 1.2rem;
+        }
+
+        .input-group-append-modern .input-group-text-modern {
+            border-radius: 24px 0 0 24px;
+        }
+
+        .form-text-modern {
+            display: block;
+            margin-top: 0.4rem;
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .text-danger-modern {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 0.3rem;
+        }
+
+        .custom-switch-modern {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.6rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 28px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e0;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .3s;
+                border-radius: 50%;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+
+        .switch input:checked + .slider {
+            background-color: #4361ee;
+        }
+
+            .switch input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
+        .switch-label {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .radio-group-modern {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem 2rem;
+            margin-top: 0.3rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #f8faff;
+            padding: 0.45rem 1.2rem 0.45rem 1rem;
+            border-radius: 60px;
+            border: 2px solid transparent;
+            transition: 0.15s;
+            cursor: pointer;
+        }
+
+            .radio-item input[type="radio"] {
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #cbd5e0;
+                border-radius: 50%;
+                margin: 0;
+                position: relative;
+                transition: 0.15s;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+                .radio-item input[type="radio"]:checked {
+                    border-color: #4361ee;
+                    background-color: #4361ee;
+                    box-shadow: inset 0 0 0 4px #fff, 0 0 0 2px #4361ee;
+                }
+
+                .radio-item input[type="radio"]:focus {
+                    outline: none;
+                }
+
+            .radio-item label {
+                font-weight: 500;
+                color: #2d3748;
+                cursor: pointer;
+                margin: 0;
+            }
+
+            .radio-item.active-radio {
+                border-color: #4361ee;
+                background: #edf2ff;
+            }
+
+        .search-section {
+            background: #f1f6fe;
+            border-radius: 30px;
+            padding: 1.5rem 1.8rem;
+            margin: 1rem 0 1.8rem 0;
+            border: 1px solid rgba(67, 97, 238, 0.08);
+        }
+
+        .search-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 1.5rem;
+            align-items: flex-end;
+        }
+
+        .search-item {
+            flex: 1 1 180px;
+            min-width: 150px;
+        }
+
+            .search-item .form-control-modern {
+                padding: 0.7rem 1.2rem;
+                background: white;
+            }
+
+        .btn-search-modern {
+            background: #4361ee;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 60px;
+            color: white;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .btn-search-modern:hover {
+                background: #3651d4;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+            }
+
+            .btn-search-modern i {
+                font-size: 1rem;
+            }
+
+        .btn-submit-modern {
+            background: linear-gradient(145deg, #4361ee, #3b56d4);
+            border: none;
+            padding: 1rem 2.8rem;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.25);
+            transition: 0.25s;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+            .btn-submit-modern:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 14px 32px rgba(67, 97, 238, 0.35);
+                background: linear-gradient(145deg, #3b56d4, #2f48c2);
+            }
+
+        .btn-outline-modern {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            padding: 0.9rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+            color: #4a5568;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+            .btn-outline-modern:hover {
+                background: #f0f4ff;
+                border-color: #4361ee;
+                color: #1a2639;
+            }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .section-hidden {
+            display: none;
+        }
+
+        .search-result-badge {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            color: #2d3748;
+            margin-left: 0.5rem;
+        }
+
+        @@media (max-width: 768px) {
+            .card-modern
+
+        {
+            padding: 1.5rem;
+        }
+
+        .card-title-modern {
+            font-size: 1.5rem;
+        }
+
+        .radio-group-modern {
+            gap: 0.8rem;
+        }
+
+        .radio-item {
+            padding: 0.3rem 0.9rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container-modern">
+        <div class="card-modern">
+
+            <!-- ===== HEADER ===== -->
+            <div class="card-header-modern">
+                <div class="card-title-modern">
+                    <i class="fas fa-ticket-alt"></i>
+                    ایجاد کد تخفیف جدید
+                </div>
+                <a href="@Url.Action("CouponList")" class="btn-return">
+                    <i class="fas fa-arrow-right"></i> بازگشت به لیست
+                </a>
+            </div>
+
+            <!-- ===== ALERT ===== -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert-modern" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>@TempData["ErrorMessage"]</span>
+                    <button class="close-btn" type="button" onclick="this.parentElement.style.display='none'" aria-label="Close">&times;</button>
+                </div>
+            }
+
+            <!-- ===== FORM ===== -->
+            <form asp-action="CreateCoupon" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger-modern"></div>
+
+                <!-- ===== بخش جستجو ===== -->
+                <div class="search-section">
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; flex-wrap: wrap;">
+                        <i class="fas fa-search" style="color: #4361ee; font-size: 1.2rem;"></i>
+                        <span style="font-weight: 600; color: #1a2639;">جستجوی پیشرفته</span>
+                        <span style="color: #718096; font-size: 0.9rem; margin-right: 0.5rem;">(رستوران / مالک)</span>
+                        <span id="searchResultBadges" style="margin-right: auto;">
+                            <span class="search-result-badge" id="restaurantCountBadge">رستوران‌ها: ۰</span>
+                            <span class="search-result-badge" id="ownerCountBadge">مالکان: ۰</span>
+                        </span>
+                    </div>
+                    <div class="search-grid">
+                        <div class="search-item">
+                            <label class="form-label-modern" style="font-size: 0.85rem;"><i class="fas fa-utensils"></i> جستجوی رستوران</label>
+                            <input type="text" class="form-control-modern" id="searchRestaurantInput" placeholder="نام رستوران..." onkeyup="filterRestaurants()" />
+                        </div>
+                        <div class="search-item">
+                            <label class="form-label-modern" style="font-size: 0.85rem;"><i class="fas fa-user-tie"></i> جستجوی مالک</label>
+                            <input type="text" class="form-control-modern" id="searchOwnerInput" placeholder="نام مالک..." onkeyup="filterOwners()" />
+                        </div>
+                        <div class="search-item" style="flex: 0 1 auto;">
+                            <button class="btn-search-modern" type="button" onclick="performSearch()"><i class="fas fa-sliders-h"></i> فیلتر</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.8rem;">
+                    <!-- ستون راست -->
+                    <div>
+                        <div class="form-group-modern">
+                            <label asp-for="Code" class="form-label-modern"><i class="fas fa-hashtag"></i> کد تخفیف</label>
+                            <input asp-for="Code" class="form-control-modern" placeholder="مثال: WELCOME2026" />
+                            <span asp-validation-for="Code" class="text-danger-modern"></span>
+                            <small class="form-text-modern">کد تخفیف باید منحصر به فرد باشد</small>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="DiscountType" class="form-label-modern"><i class="fas fa-percent"></i> نوع تخفیف</label>
+                            <select asp-for="DiscountType" class="form-control-modern" id="DiscountType">
+                                <option value="">انتخاب کنید</option>
+                                @foreach (var item in Model.DiscountTypes)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="DiscountType" class="text-danger-modern"></span>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="DiscountValue" class="form-label-modern"><i class="fas fa-coins"></i> مقدار تخفیف</label>
+                            <div class="input-group-modern">
+                                <input asp-for="DiscountValue" class="form-control-modern" type="number" step="0.01" />
+                                <span class="input-group-text-modern input-group-append-modern" id="discountUnit">%</span>
+                            </div>
+                            <span asp-validation-for="DiscountValue" class="text-danger-modern"></span>
+                            <small class="form-text-modern" id="discountHint">برای تخفیف درصدی، عدد بین 1 تا 100 وارد کنید</small>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="MaxDiscountAmount" class="form-label-modern"><i class="fas fa-ban"></i> حداکثر مبلغ تخفیف</label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern input-group-prepend-modern">تومان</span>
+                                <input asp-for="MaxDiscountAmount" class="form-control-modern" type="number" step="1000" />
+                            </div>
+                            <span asp-validation-for="MaxDiscountAmount" class="text-danger-modern"></span>
+                            <small class="form-text-modern">فقط برای تخفیف درصدی</small>
+                        </div>
+                    </div>
+
+                    <!-- ستون چپ -->
+                    <div>
+                        <div class="form-group-modern">
+                            <label asp-for="MinPurchaseAmount" class="form-label-modern"><i class="fas fa-shopping-cart"></i> حداقل مبلغ خرید</label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern input-group-prepend-modern">تومان</span>
+                                <input asp-for="MinPurchaseAmount" class="form-control-modern" type="number" step="1000" />
+                            </div>
+                            <span asp-validation-for="MinPurchaseAmount" class="text-danger-modern"></span>
+                            <small class="form-text-modern">حداقل مبلغ خرید برای استفاده از کد</small>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="UsageLimit" class="form-label-modern"><i class="fas fa-users"></i> محدودیت استفاده</label>
+                            <input asp-for="UsageLimit" class="form-control-modern" type="number" placeholder="خالی = نامحدود" />
+                            <span asp-validation-for="UsageLimit" class="text-danger-modern"></span>
+                            <small class="form-text-modern">خالی = نامحدود</small>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="StartDate" class="form-label-modern"><i class="fas fa-calendar-alt"></i> تاریخ شروع</label>
+                            <input asp-for="StartDate" class="form-control-modern" type="datetime-local" />
+                            <span asp-validation-for="StartDate" class="text-danger-modern"></span>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label asp-for="EndDate" class="form-label-modern"><i class="fas fa-calendar-check"></i> تاریخ پایان</label>
+                            <input asp-for="EndDate" class="form-control-modern" type="datetime-local" />
+                            <span asp-validation-for="EndDate" class="text-danger-modern"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== ردیف محدودیت هر مالک و وضعیت ===== -->
+                <div style="display: flex; flex-wrap: wrap; gap: 2rem 3rem; margin: 0.5rem 0 1.5rem;">
+                    <div style="flex: 1 1 200px;">
+                        <label asp-for="LimitPerOwner" class="form-label-modern"><i class="fas fa-user-cog"></i> محدودیت هر مالک</label>
+                        <input asp-for="LimitPerOwner" class="form-control-modern" type="number" placeholder="تعداد دفعات" />
+                        <span asp-validation-for="LimitPerOwner" class="text-danger-modern"></span>
+                        <small class="form-text-modern">تعداد دفعات استفاده هر مالک از این کد</small>
+                    </div>
+                    <div style="flex: 1 1 200px; display: flex; align-items: center;">
+                        <div class="custom-switch-modern">
+                            <label class="switch">
+                                <input asp-for="IsActive" type="checkbox" checked />
+                                <span class="slider"></span>
+                            </label>
+                            <span class="switch-label">فعال</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== نوع کد تخفیف (رادیو) ===== -->
+                <div class="form-group-modern">
+                    <label class="form-label-modern"><i class="fas fa-tag"></i> نوع کد تخفیف</label>
+                    <div class="radio-group-modern">
+                        <div class="radio-item active-radio">
+                            <input type="radio" id="scopeGeneral" name="CouponScope" value="General" checked="@(Model.CouponScope == "General")" />
+                            <label for="scopeGeneral">عمومی (همه رستوران‌ها)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="scopeOwner" name="CouponScope" value="Owner" checked="@(Model.CouponScope == "Owner")" />
+                            <label for="scopeOwner">اختصاصی برای مالک</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="scopeRestaurant" name="CouponScope" value="Restaurant" checked="@(Model.CouponScope == "Restaurant")" />
+                            <label for="scopeRestaurant">اختصاصی برای رستوران</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== بخش مالک ===== -->
+                <div id="ownerSection" style="display: @(Model.CouponScope == "Owner" ? "block" : "none"); margin: 0.5rem 0 1rem;">
+                    <div class="form-group-modern">
+                        <label asp-for="SpecificOwnerId" class="form-label-modern"><i class="fas fa-user-tie"></i> انتخاب مالک</label>
+                        <select asp-for="SpecificOwnerId" class="form-control-modern" id="ownerSelect">
+                            <option value="">انتخاب مالک</option>
+                            @foreach (var item in Model.Owners)
+                            {
+                                if (item.Value != "")
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="SpecificOwnerId" class="text-danger-modern"></span>
+                    </div>
+                </div>
+
+                <!-- ===== بخش رستوران ===== -->
+                <div id="restaurantSection" style="display: @(Model.CouponScope == "Restaurant" ? "block" : "none"); margin: 0.5rem 0 1rem;">
+                    <div class="form-group-modern">
+                        <label asp-for="SpecificRestaurantId" class="form-label-modern"><i class="fas fa-store"></i> انتخاب رستوران</label>
+                        <select asp-for="SpecificRestaurantId" class="form-control-modern" id="restaurantSelect">
+                            <option value="">انتخاب رستوران</option>
+                            @foreach (var item in Model.Restaurants)
+                            {
+                                if (item.Value != "")
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="SpecificRestaurantId" class="text-danger-modern"></span>
+                    </div>
+                </div>
+
+                <!-- ===== دکمه‌های اقدام ===== -->
+                <div class="action-row">
+                    <button type="submit" class="btn-submit-modern">
+                        <i class="fas fa-save"></i> ذخیره کد تخفیف
+                    </button>
+                    <a href="@Url.Action("CouponList")" class="btn-outline-modern">انصراف</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- اسکریپت‌ها در انتهای صفحه برای اطمینان از بارگذاری -->
+    <!-- ============================================ -->
+    <script>
+        // ============================================
+        // 1. نمایش/مخفی کردن بخش‌های مالک و رستوران
+        // ============================================
+        (function() {
+            // صبر کنید تا DOM کامل بارگذاری شود
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            function init() {
+                // رادیوها
+                const radioButtons = document.querySelectorAll('input[name="CouponScope"]');
+                const ownerSection = document.getElementById('ownerSection');
+                const restaurantSection = document.getElementById('restaurantSection');
+
+                if (!radioButtons.length || !ownerSection || !restaurantSection) return;
+
+                function toggleSections(value) {
+                    if (value === 'Owner') {
+                        ownerSection.style.display = 'block';
+                        restaurantSection.style.display = 'none';
+                    } else if (value === 'Restaurant') {
+                        ownerSection.style.display = 'none';
+                        restaurantSection.style.display = 'block';
+                    } else {
+                        ownerSection.style.display = 'none';
+                        restaurantSection.style.display = 'none';
+                    }
+                }
+
+                // تنظیم اولیه
+                const checkedRadio = document.querySelector('input[name="CouponScope"]:checked');
+                if (checkedRadio) {
+                    toggleSections(checkedRadio.value);
+                }
+
+                // رویداد تغییر رادیو
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', function(e) {
+                        toggleSections(e.target.value);
+                        // به‌روزرسانی کلاس active
+                        document.querySelectorAll('.radio-item').forEach(item => item.classList.remove('active-radio'));
+                        const parentLabel = e.target.closest('.radio-item');
+                        if (parentLabel) parentLabel.classList.add('active-radio');
+                    });
+                });
+
+                // ============================================
+                // 2. تغییر واحد نمایشی بر اساس نوع تخفیف
+                // ============================================
+                const discountType = document.getElementById('DiscountType');
+                const discountUnit = document.getElementById('discountUnit');
+                const discountHint = document.getElementById('discountHint');
+                const maxDiscountAmount = document.querySelector('[asp-for="MaxDiscountAmount"]');
+
+                function updateDiscountFields() {
+                    if (!discountType) return;
+                    const val = discountType.value;
+                    if (val === 'Percentage') {
+                        if (discountUnit) discountUnit.textContent = '%';
+                        if (discountHint) discountHint.textContent = 'برای تخفیف درصدی، عدد بین 1 تا 100 وارد کنید';
+                        if (maxDiscountAmount) {
+                            maxDiscountAmount.disabled = false;
+                        }
+                    } else if (val === 'FixedAmount') {
+                        if (discountUnit) discountUnit.textContent = 'تومان';
+                        if (discountHint) discountHint.textContent = 'مبلغ تخفیف به تومان';
+                        if (maxDiscountAmount) {
+                            maxDiscountAmount.disabled = true;
+                            maxDiscountAmount.value = '';
+                        }
+                    } else {
+                        if (discountUnit) discountUnit.textContent = '';
+                        if (discountHint) discountHint.textContent = 'نوع تخفیف را انتخاب کنید';
+                        if (maxDiscountAmount) {
+                            maxDiscountAmount.disabled = true;
+                        }
+                    }
+                }
+
+                if (discountType) {
+                    discountType.addEventListener('change', updateDiscountFields);
+                    updateDiscountFields();
+                }
+
+                // ============================================
+                // 3. جستجوی رستوران‌ها
+                // ============================================
+                window.filterRestaurants = function() {
+                    const input = document.getElementById('searchRestaurantInput');
+                    const select = document.getElementById('restaurantSelect');
+                    if (!input || !select) return;
+
+                    const filter = input.value.toUpperCase().trim();
+                    const options = select.getElementsByTagName('option');
+                    let visibleCount = 0;
+
+                    for (let i = 0; i < options.length; i++) {
+                        const option = options[i];
+                        // گزینه اول (انتخاب رستوران) را همیشه نمایش بده
+                        if (i === 0) {
+                            option.style.display = '';
+                            continue;
+                        }
+                        const txt = option.textContent || option.innerText;
+                        if (filter === '' || txt.toUpperCase().indexOf(filter) > -1) {
+                            option.style.display = '';
+                            visibleCount++;
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    }
+
+                    const badge = document.getElementById('restaurantCountBadge');
+                    if (badge) badge.textContent = `رستوران‌ها: ${visibleCount}`;
+                };
+
+                // ============================================
+                // 4. جستجوی مالکان
+                // ============================================
+                window.filterOwners = function() {
+                    const input = document.getElementById('searchOwnerInput');
+                    const select = document.getElementById('ownerSelect');
+                    if (!input || !select) return;
+
+                    const filter = input.value.toUpperCase().trim();
+                    const options = select.getElementsByTagName('option');
+                    let visibleCount = 0;
+
+                    for (let i = 0; i < options.length; i++) {
+                        const option = options[i];
+                        if (i === 0) {
+                            option.style.display = '';
+                            continue;
+                        }
+                        const txt = option.textContent || option.innerText;
+                        if (filter === '' || txt.toUpperCase().indexOf(filter) > -1) {
+                            option.style.display = '';
+                            visibleCount++;
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    }
+
+                    const badge = document.getElementById('ownerCountBadge');
+                    if (badge) badge.textContent = `مالکان: ${visibleCount}`;
+                };
+
+                // ============================================
+                // 5. دکمه جستجو
+                // ============================================
+                window.performSearch = function() {
+                    window.filterRestaurants();
+                    window.filterOwners();
+                };
+
+                // ============================================
+                // 6. مقداردهی اولیه تعداد آیتم‌ها
+                // ============================================
+                function updateInitialCounts() {
+                    const restSelect = document.getElementById('restaurantSelect');
+                    const ownerSelect = document.getElementById('ownerSelect');
+
+                    if (restSelect) {
+                        let restCount = 0;
+                        for (let opt of restSelect.options) {
+                            if (opt.value !== "" && opt.style.display !== 'none') restCount++;
+                        }
+                        const badge = document.getElementById('restaurantCountBadge');
+                        if (badge) badge.textContent = `رستوران‌ها: ${restCount}`;
+                    }
+
+                    if (ownerSelect) {
+                        let ownerCount = 0;
+                        for (let opt of ownerSelect.options) {
+                            if (opt.value !== "" && opt.style.display !== 'none') ownerCount++;
+                        }
+                        const badge = document.getElementById('ownerCountBadge');
+                        if (badge) badge.textContent = `مالکان: ${ownerCount}`;
+                    }
+                }
+
+                updateInitialCounts();
+            }
+        })();
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+</body>
+</html>

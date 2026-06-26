@@ -29,7 +29,7 @@
     // ========== دریافت لیست اشتراک‌ها از API ==========
     function fetchSubscriptions() {
         return $.ajax({
-            url: 'https://resturanyar.ir/api/UserApi/getallsubscriptions',
+            url: '/api/UserApi/getallsubscriptions',
             method: 'GET'
         }).then(function (data) {
             if (Array.isArray(data) && data.length > 0) {

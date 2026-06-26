@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using resturanyar.Models.Copoun;
 using resturanyar.Models.ViewModels.Admin;
+using resturanyar.Models.ViewModels.CopounViewModel;
 using Resturanyar.Data;
 using System;
 using System.Collections.Generic;
@@ -66,7 +69,7 @@ namespace resturanyar.Controllers
                     .Where(o => !excludedIds.Contains(o.Id))
                     .CountAsync();
 
-               
+
 
                 viewModel.TotalSubscriptions = await _context.Subscriptions
                     .Where(s => !excludedIds.Contains(s.OwnerId))
@@ -107,7 +110,7 @@ namespace resturanyar.Controllers
                                                        orderby s.EndDate descending
                                                        select p.Name).FirstOrDefault()
                                        };
-                 
+
                 var startDate = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
 
                 var monthlyStats = new List<MonthlyStatsViewModel>();
@@ -214,7 +217,7 @@ namespace resturanyar.Controllers
                                        PricePaid = s.PricePaid,
                                        PurchaseDate = s.PurchaseDate,
                                        Status = s.Status,
-                                          PaymentMethod = s.PaymentMethod
+                                       PaymentMethod = s.PaymentMethod
                                    })
                                    .Take(10);
 
@@ -225,7 +228,7 @@ namespace resturanyar.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "خطا در بارگذاری AdminPanel");
-                return StatusCode(500, "خطای داخلی سرور");
+                return StatusCode(500, "خطای داخلی سرور"+ex.ToString);
             }
         }
 
@@ -267,6 +270,212 @@ namespace resturanyar.Controllers
         }
 
         // ===== متد برای به‌روزرسانی لیست Ownerهای حذف شده =====
+        // در فایل AdminController.cs اضافه کنید
+
+        // ===== دریافت آمار اشتراک‌ها به تفکیک پلن و روش پرداخت =====
+        [HttpGet]
+        public async Task<IActionResult> GetSubscriptionStats()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return Unauthorized();
+                }
+
+                var excludedIds = GetExcludedOwnerIds();
+                var today = DateTime.Now;
+
+                // دریافت همه اشتراک‌های فعال با اطلاعات پلن
+                var activeSubscriptions = await _context.Subscriptions
+                    .Where(s => s.Status == "Active"
+                        && s.EndDate >= today
+                        && s.IsPaid == true
+                        && !excludedIds.Contains(s.OwnerId))
+                    .Join(_context.SubscriptionPlans,
+                        s => s.SubscriptionPlanId,
+                        p => p.Id,
+                        (s, p) => new
+                        {
+                            s.Id,
+                            s.PaymentMethod,
+                            PlanName = p.Name,
+                            s.PricePaid,
+                            s.OwnerId,
+                            s.RestaurantId
+                        })
+                    .ToListAsync();
+
+                // تعریف رنگ‌ها برای هر ترکیب
+                var colorMap = new Dictionary<string, string>
+        {
+            { "رایگان-FreeTrial", "#94a3b8" },
+            { "رایگان-CafeBazar", "#94a3b8" },
+            { "رایگان-Zarinpal", "#94a3b8" },
+            { "رایگان-نامشخص", "#94a3b8" },
+
+            { "برنزی-FreeTrial", "#cd7f32" },
+            { "برنزی-CafeBazar", "#cd7f32" },
+            { "برنزی-Zarinpal", "#cd7f32" },
+            { "برنزی-نامشخص", "#cd7f32" },
+
+            { "نقره‌ای-FreeTrial", "#c0c0c0" },
+            { "نقره‌ای-CafeBazar", "#c0c0c0" },
+            { "نقره‌ای-Zarinpal", "#c0c0c0" },
+            { "نقره‌ای-نامشخص", "#c0c0c0" },
+
+            { "طلایی-FreeTrial", "#ffd700" },
+            { "طلایی-CafeBazar", "#ffd700" },
+            { "طلایی-Zarinpal", "#ffd700" },
+            { "طلایی-نامشخص", "#ffd700" }
+        };
+
+                // دسته‌بندی بر اساس پلن و روش پرداخت
+                var stats = new List<SubscriptionStatsViewModel>();
+
+                var planNames = new[] { "رایگان", "برنزی", "نقره‌ای", "طلایی" };
+                var paymentMethods = new[] { "FreeTrial", "CafeBazar", "Zarinpal" };
+
+                foreach (var plan in planNames)
+                {
+                    foreach (var method in paymentMethods)
+                    {
+                        var items = activeSubscriptions
+                            .Where(s => s.PlanName == plan && s.PaymentMethod == method)
+                            .ToList();
+
+                        if (items.Any())
+                        {
+                            var key = $"{plan}-{method}";
+                            stats.Add(new SubscriptionStatsViewModel
+                            {
+                                PlanName = plan,
+                                PaymentMethod = method,
+                                Count = items.Count,
+                                TotalRevenue = items.Sum(s => s.PricePaid),
+                                DisplayName = GetDisplayName(plan, method),
+                                Color = colorMap.ContainsKey(key) ? colorMap[key] : "#e2e8f0"
+                            });
+                        }
+                    }
+
+                    // اشتراک‌هایی که PaymentMethod ندارند یا null هستند
+                    var nullMethodItems = activeSubscriptions
+                        .Where(s => s.PlanName == plan && string.IsNullOrEmpty(s.PaymentMethod))
+                        .ToList();
+
+                    if (nullMethodItems.Any())
+                    {
+                        var key = $"{plan}-نامشخص";
+                        stats.Add(new SubscriptionStatsViewModel
+                        {
+                            PlanName = plan,
+                            PaymentMethod = "نامشخص",
+                            Count = nullMethodItems.Count,
+                            TotalRevenue = nullMethodItems.Sum(s => s.PricePaid),
+                            DisplayName = $"{plan} (نامشخص)",
+                            Color = colorMap.ContainsKey(key) ? colorMap[key] : "#e2e8f0"
+                        });
+                    }
+                }
+
+                // محاسبه مجموع کل
+                var totalActive = activeSubscriptions.Count;
+                var totalRevenue = activeSubscriptions.Sum(s => s.PricePaid);
+
+                return Json(new
+                {
+                    success = true,
+                    data = stats,
+                    summary = new
+                    {
+                        totalActiveSubscriptions = totalActive,
+                        totalRevenue = totalRevenue
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت آمار اشتراک‌ها");
+                return Json(new { success = false, message = "خطا در دریافت آمار" });
+            }
+        }
+
+
+        // متد کمکی برای تولید نام نمایشی
+        private string GetDisplayName(string planName, string paymentMethod)
+        {
+            var displayNames = new Dictionary<string, string>
+    {
+        { "FreeTrial", "فری‌ترایال" },
+        { "CafeBazar", "کافه‌بازار" },
+        { "Zarinpal", "زرین‌پال" }
+    };
+
+            var methodDisplay = displayNames.ContainsKey(paymentMethod)
+                ? displayNames[paymentMethod]
+                : paymentMethod;
+
+            return $"{planName} - {methodDisplay}";
+        }
+
+        // ===== دریافت آمار خلاصه اشتراک‌ها به تفکیک پلن =====
+        [HttpGet]
+        public async Task<IActionResult> GetSubscriptionSummary()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return Unauthorized();
+                }
+
+                var excludedIds = GetExcludedOwnerIds();
+                var today = DateTime.Now;
+
+                var query = from s in _context.Subscriptions
+                            join p in _context.SubscriptionPlans on s.SubscriptionPlanId equals p.Id
+                            where s.Status == "Active"
+                                && s.EndDate >= today
+                                && s.IsPaid == true
+                                && !excludedIds.Contains(s.OwnerId)
+                            group s by new { PlanName = p.Name, s.PaymentMethod } into g
+                            select new
+                            {
+                                PlanName = g.Key.PlanName,
+                                PaymentMethod = g.Key.PaymentMethod ?? "نامشخص",
+                                Count = g.Count(),
+                                TotalRevenue = g.Sum(s => s.PricePaid)
+                            };
+
+                var result = await query.ToListAsync();
+
+                // مرتب‌سازی بر اساس پلن
+                var planOrder = new Dictionary<string, int>
+        {
+            { "رایگان", 1 },
+            { "برنزی", 2 },
+            { "نقره‌ای", 3 },
+            { "طلایی", 4 }
+        };
+
+                var sortedResult = result
+                    .OrderBy(x => planOrder.ContainsKey(x.PlanName) ? planOrder[x.PlanName] : 999)
+                    .ThenBy(x => x.PaymentMethod)
+                    .ToList();
+
+                return Json(new
+                {
+                    success = true,
+                    data = sortedResult
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت خلاصه آمار اشتراک‌ها");
+                return Json(new { success = false, message = "خطا در دریافت آمار" });
+            }
+        }
         [HttpPost]
         public IActionResult UpdateExcludedOwners([FromBody] List<int> ownerIds)
         {
@@ -439,8 +648,8 @@ namespace resturanyar.Controllers
                 return View(model);
             }
 
-            var adminUsername = "anoorafkan";
-            var adminPassword = "24602460";
+            var adminUsername = "a";
+            var adminPassword = "a";
 
             if (model.Username == adminUsername && model.Password == adminPassword)
             {
@@ -485,56 +694,26 @@ namespace resturanyar.Controllers
 
                 var excludedIds = GetExcludedOwnerIds();
                 var now = DateTime.Now;
+                var oneDayAgo = now.AddDays(-1);
+                var sevenDaysAgo = now.AddDays(-7);
+                var thirtyDaysAgo = now.AddDays(-30);
 
-                // دریافت لیست رستوران‌ها (با فیلتر مالک‌های حذف‌شده)
-                var restaurants = await _context.Restaurants
-                    .Where(r => !excludedIds.Contains(r.owner_id))
-                    .Select(r => new { r.restaurant_id, r.name })
-                    .ToListAsync();
+                // یک کوئری واحد برای دریافت اطلاعات تمام رستوران‌ها و شمارش‌های مورد نیاز
+                var query = from r in _context.Restaurants
+                            where !excludedIds.Contains(r.owner_id)
+                            select new
+                            {
+                                RestaurantId = r.restaurant_id,
+                                RestaurantName = r.name,
+                                Orders1Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= oneDayAgo),
+                                Orders7Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= sevenDaysAgo),
+                                Orders30Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= thirtyDaysAgo),
+                                FoodItems1Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= oneDayAgo),
+                                FoodItems7Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= sevenDaysAgo),
+                                FoodItems30Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= thirtyDaysAgo)
+                            };
 
-                var result = new List<object>();
-
-                foreach (var r in restaurants)
-                {
-                    // محاسبه تعداد سفارش‌ها
-                    var orders1Day = await _context.Orders
-                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-1))
-                        .CountAsync();
-
-                    var orders7Day = await _context.Orders
-                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-7))
-                        .CountAsync();
-
-                    var orders30Day = await _context.Orders
-                        .Where(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= now.AddDays(-30))
-                        .CountAsync();
-
-                    // محاسبه تعداد غذاهای ثبت‌شده
-                    var foodItems1Day = await _context.FoodItems
-                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-1))
-                        .CountAsync();
-
-                    var foodItems7Day = await _context.FoodItems
-                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-7))
-                        .CountAsync();
-
-                    var foodItems30Day = await _context.FoodItems
-                        .Where(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= now.AddDays(-30))
-                        .CountAsync();
-
-                    // اضافه کردن شیء نهایی به لیست نتیجه
-                    result.Add(new
-                    {
-                        RestaurantId = r.restaurant_id,
-                        RestaurantName = r.name,
-                        Orders1Day = orders1Day,
-                        Orders7Day = orders7Day,
-                        Orders30Day = orders30Day,
-                        FoodItems1Day = foodItems1Day,
-                        FoodItems7Day = foodItems7Day,
-                        FoodItems30Day = foodItems30Day
-                    });
-                }
+                var result = await query.AsNoTracking().ToListAsync();
 
                 return Json(new { success = true, data = result });
             }
@@ -542,6 +721,425 @@ namespace resturanyar.Controllers
             {
                 _logger.LogError(ex, "خطا در دریافت آمار جزئی رستوران‌ها");
                 return Json(new { success = false, message = "خطا در دریافت داده‌ها" });
+            }
+        }
+
+
+        // در AdminController.cs اضافه کنید
+
+        // ===== نمایش فرم ایجاد کد تخفیف =====
+        // ===== نمایش فرم ایجاد کد تخفیف =====
+        [HttpGet]
+        public async Task<IActionResult> CreateCoupon()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return RedirectToAction("AdminLogin");
+                }
+
+                var model = new CouponViewModel
+                {
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddMonths(1),
+                    CouponScope = "General",
+                    IsActive = true,
+                    LimitPerOwner = 1
+                };
+
+                // بارگذاری لیست‌ها
+                await LoadCouponSelectLists(model);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در بارگذاری فرم ایجاد کد تخفیف");
+                TempData["ErrorMessage"] = $"خطا در بارگذاری فرم: {ex.Message}";
+                return RedirectToAction("AdminPanel");
+            }
+        }
+
+        // ===== ذخیره کد تخفیف جدید =====
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCoupon(CouponViewModel model)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return RedirectToAction("AdminLogin");
+                }
+
+                // اعتبارسنجی دستی
+                if (model.StartDate >= model.EndDate)
+                {
+                    ModelState.AddModelError("", "تاریخ شروع باید قبل از تاریخ پایان باشد");
+                }
+
+                if (model.DiscountType == "Percentage" && model.DiscountValue > 100)
+                {
+                    ModelState.AddModelError("DiscountValue", "مقدار تخفیف درصدی نمی‌تواند بیشتر از 100 باشد");
+                }
+
+                if (model.DiscountType == "Percentage" && model.DiscountValue <= 0)
+                {
+                    ModelState.AddModelError("DiscountValue", "مقدار تخفیف درصدی باید بین 1 تا 100 باشد");
+                }
+
+                if (model.DiscountType == "FixedAmount" && model.DiscountValue <= 0)
+                {
+                    ModelState.AddModelError("DiscountValue", "مقدار تخفیف باید بیشتر از صفر باشد");
+                }
+
+                // بررسی تکراری نبودن کد
+                var existingCoupon = await _context.Coupons
+                    .FirstOrDefaultAsync(c => c.Code == model.Code && c.EndDate > DateTime.Now);
+
+                if (existingCoupon != null)
+                {
+                    ModelState.AddModelError("Code", "این کد تخفیف قبلاً ثبت شده است");
+                }
+
+                // اگر مدل معتبر نبود
+                if (!ModelState.IsValid)
+                {
+                    await LoadCouponSelectLists(model);
+                    return View(model);
+                }
+
+                // ایجاد کد تخفیف جدید
+                var coupon = new Coupon
+                {
+                    Code = model.Code.Trim().ToUpper(), // ذخیره کد به صورت بزرگ
+                    DiscountType = model.DiscountType,
+                    DiscountValue = model.DiscountValue,
+                    MaxDiscountAmount = model.DiscountType == "Percentage" ? model.MaxDiscountAmount : null,
+                    MinPurchaseAmount = model.MinPurchaseAmount,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate,
+                    IsActive = model.IsActive,
+                    UsageLimit = model.UsageLimit,
+                    UsedCount = 0,
+                    LimitPerOwner = model.LimitPerOwner,
+                    SpecificOwnerId = model.CouponScope == "Owner" ? model.SpecificOwnerId : null,
+                    SpecificRestaurantId = model.CouponScope == "Restaurant" ? model.SpecificRestaurantId : null,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.Coupons.Add(coupon);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"کد تخفیف {coupon.Code} با موفقیت ایجاد شد";
+                return RedirectToAction("CouponList");
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "خطای دیتابیس در ایجاد کد تخفیف");
+                ModelState.AddModelError("", "خطا در ذخیره‌سازی در دیتابیس: " + dbEx.InnerException?.Message ?? dbEx.Message);
+                await LoadCouponSelectLists(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در ایجاد کد تخفیف");
+                ModelState.AddModelError("", "خطا در ایجاد کد تخفیف: " + ex.Message);
+                await LoadCouponSelectLists(model);
+                return View(model);
+            }
+        }
+
+        // ===== متد کمکی برای بارگذاری لیست‌های انتخاب =====
+        private async Task LoadCouponSelectLists(CouponViewModel model)
+        {
+            try
+            {
+               
+
+                // لیست انواع تخفیف
+                model.DiscountTypes = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "Percentage", Text = "درصدی" },
+            new SelectListItem { Value = "FixedAmount", Text = "مبلغ ثابت" }
+        };
+
+                // لیست مالکان
+                var owners = await _context.Owners
+                   
+                    .OrderBy(o => o.Name)
+                    .Select(o => new SelectListItem
+                    {
+                        Value = o.Id.ToString(),
+                        Text = $"{o.Name} - {o.Phone}"
+                    })
+                    .ToListAsync();
+
+                model.Owners = new List<SelectListItem>();
+                model.Owners.Add(new SelectListItem { Value = "", Text = "همه مالکان" });
+                model.Owners.AddRange(owners);
+
+                // لیست رستوران‌ها
+                var restaurants = await _context.Restaurants
+                   
+                    .OrderBy(r => r.name)
+                    .Select(r => new SelectListItem
+                    {
+                        Value = r.restaurant_id.ToString(),
+                        Text = r.name
+                    })
+                    .ToListAsync();
+
+                model.Restaurants = new List<SelectListItem>();
+                model.Restaurants.Add(new SelectListItem { Value = "", Text = "همه رستوران‌ها" });
+                model.Restaurants.AddRange(restaurants);
+
+                // تنظیم مقادیر انتخاب شده (برای ویرایش)
+                if (!string.IsNullOrEmpty(model.CouponScope))
+                {
+                    if (model.CouponScope == "Owner" && model.SpecificOwnerId.HasValue)
+                    {
+                        // مقدار انتخاب شده در لیست مالکان تنظیم می‌شود
+                    }
+                    else if (model.CouponScope == "Restaurant" && model.SpecificRestaurantId.HasValue)
+                    {
+                        // مقدار انتخاب شده در لیست رستوران‌ها تنظیم می‌شود
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در بارگذاری لیست‌های انتخاب");
+                throw;
+            }
+        }
+
+        // ===== متد کمکی برای بارگذاری لیست‌های انتخاب =====
+        
+
+        // ===== نمایش لیست کدهای تخفیف =====
+        [HttpGet]
+        public async Task<IActionResult> CouponList()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return RedirectToAction("AdminLogin");
+                }
+
+             
+
+                // ✅ روش صحیح: دریافت کوپن‌ها و سپس دریافت نام‌ها به صورت جداگانه
+                var coupons = await _context.Coupons
+                    
+                    .OrderByDescending(c => c.CreatedAt)
+                    .ToListAsync();
+
+                // دریافت لیست OwnerId و RestaurantId برای یکبار Query
+                var ownerIds = coupons.Where(c => c.SpecificOwnerId.HasValue).Select(c => c.SpecificOwnerId.Value).Distinct().ToList();
+                var restaurantIds = coupons.Where(c => c.SpecificRestaurantId.HasValue).Select(c => c.SpecificRestaurantId.Value).Distinct().ToList();
+
+                // دریافت همه Ownerها و Restaurantها با یک کوئری
+                var owners = await _context.Owners
+                    .Where(o => ownerIds.Contains(o.Id))
+                    .ToDictionaryAsync(o => o.Id, o => o.Name);
+
+                var restaurants = await _context.Restaurants
+                    .Where(r => restaurantIds.Contains(r.restaurant_id))
+                    .ToDictionaryAsync(r => r.restaurant_id, r => r.name);
+
+                // ساخت ViewModel
+                var couponViewModels = coupons.Select(c => new CouponListViewModel
+                {
+                    Id = c.Id,
+                    Code = c.Code,
+                    DiscountType = c.DiscountType,
+                    DiscountValue = c.DiscountValue,
+                    MaxDiscountAmount = c.MaxDiscountAmount,
+                    MinPurchaseAmount = c.MinPurchaseAmount,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    IsActive = c.IsActive,
+                    UsedCount = c.UsedCount,
+                    UsageLimit = c.UsageLimit,
+                    SpecificOwnerName = c.SpecificOwnerId.HasValue && owners.ContainsKey(c.SpecificOwnerId.Value)
+                        ? owners[c.SpecificOwnerId.Value]
+                        : "همه مالکان",
+                    SpecificRestaurantName = c.SpecificRestaurantId.HasValue && restaurants.ContainsKey(c.SpecificRestaurantId.Value)
+                        ? restaurants[c.SpecificRestaurantId.Value]
+                        : "همه رستوران‌ها",
+                    IsExpired = c.EndDate < DateTime.Now,
+                    DaysRemaining = c.EndDate > DateTime.Now ? (int?)(c.EndDate - DateTime.Now).TotalDays : null,
+                    UsagePercentage = c.UsageLimit.HasValue && c.UsageLimit.Value > 0
+                        ? (double)c.UsedCount / c.UsageLimit.Value * 100
+                        : null
+                }).ToList();
+
+                return View(couponViewModels);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت لیست کدهای تخفیف");
+                TempData["ErrorMessage"] = $"خطا در دریافت لیست کدهای تخفیف: {ex.Message}";
+                return View(new List<CouponListViewModel>());
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCoupon([FromBody] int id) // ← افزودن [FromBody]
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return Unauthorized();
+
+                // ۱. بررسی وجود کوپن
+                var coupon = await _context.Coupons.FindAsync(id);
+                if (coupon == null)
+                    return Json(new { success = false, message = $"کد تخفیف با ID {id} یافت نشد" });
+
+                // ۲. بررسی وابستگی‌ها (وجود در CouponUsages)
+                bool hasUsages = await _context.CouponUsages.AnyAsync(u => u.CouponId == id);
+                if (hasUsages)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "این کد تخفیف قبلاً در سفارش‌ها استفاده شده و قابل حذف نیست. ابتدا استفاده‌های آن را حذف کنید."
+                    });
+                }
+
+                // ۳. حذف کوپن
+                _context.Coupons.Remove(coupon);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "کد تخفیف با موفقیت حذف شد" });
+            }
+            catch (DbUpdateException dbEx)
+            {
+                var inner = dbEx.InnerException?.Message ?? dbEx.Message;
+                _logger.LogError(dbEx, "خطای دیتابیس در حذف کد تخفیف");
+
+                if (inner.Contains("REFERENCE") || inner.Contains("FK_CouponUsages_Coupons"))
+                    return Json(new { success = false, message = "این کد تخفیف در جدول استفاده‌ها وجود دارد و قابل حذف نیست." });
+
+                return Json(new { success = false, message = $"خطای دیتابیس: {inner}" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در حذف کد تخفیف");
+                return Json(new { success = false, message = "خطا در حذف کد تخفیف: " + ex.Message });
+            }
+        }
+
+        // ===== ویرایش کد تخفیف =====
+        [HttpGet]
+        public async Task<IActionResult> EditCoupon(int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return RedirectToAction("AdminLogin");
+                }
+
+                var coupon = await _context.Coupons.FindAsync(id);
+                if (coupon == null)
+                {
+                    return NotFound();
+                }
+
+                var model = new CouponViewModel
+                {
+                    Id = coupon.Id,
+                    Code = coupon.Code,
+                    DiscountType = coupon.DiscountType,
+                    DiscountValue = coupon.DiscountValue,
+                    MaxDiscountAmount = coupon.MaxDiscountAmount,
+                    MinPurchaseAmount = coupon.MinPurchaseAmount,
+                    StartDate = coupon.StartDate,
+                    EndDate = coupon.EndDate,
+                    IsActive = coupon.IsActive,
+                    UsageLimit = coupon.UsageLimit,
+                    LimitPerOwner = coupon.LimitPerOwner,
+                    SpecificOwnerId = coupon.SpecificOwnerId,
+                    SpecificRestaurantId = coupon.SpecificRestaurantId,
+                    CouponScope = coupon.SpecificOwnerId.HasValue ? "Owner" :
+                                 coupon.SpecificRestaurantId.HasValue ? "Restaurant" : "General"
+                };
+
+                await LoadCouponSelectLists(model);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در بارگذاری فرم ویرایش کد تخفیف");
+                return StatusCode(500, "خطای داخلی سرور");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCoupon(CouponViewModel model)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                {
+                    return RedirectToAction("AdminLogin");
+                }
+
+                // اعتبارسنجی‌ها
+                if (model.StartDate >= model.EndDate)
+                {
+                    ModelState.AddModelError("", "تاریخ شروع باید قبل از تاریخ پایان باشد");
+                }
+
+                if (model.DiscountType == "Percentage" && model.DiscountValue > 100)
+                {
+                    ModelState.AddModelError("DiscountValue", "مقدار تخفیف درصدی نمی‌تواند بیشتر از 100 باشد");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    await LoadCouponSelectLists(model);
+                    return View(model);
+                }
+
+                var coupon = await _context.Coupons.FindAsync(model.Id);
+                if (coupon == null)
+                {
+                    return NotFound();
+                }
+
+                // به‌روزرسانی اطلاعات
+                coupon.Code = model.Code;
+                coupon.DiscountType = model.DiscountType;
+                coupon.DiscountValue = model.DiscountValue;
+                coupon.MaxDiscountAmount = model.DiscountType == "Percentage" ? model.MaxDiscountAmount : null;
+                coupon.MinPurchaseAmount = model.MinPurchaseAmount;
+                coupon.StartDate = model.StartDate;
+                coupon.EndDate = model.EndDate;
+                coupon.IsActive = model.IsActive;
+                coupon.UsageLimit = model.UsageLimit;
+                coupon.LimitPerOwner = model.LimitPerOwner;
+                coupon.SpecificOwnerId = model.CouponScope == "Owner" ? model.SpecificOwnerId : null;
+                coupon.SpecificRestaurantId = model.CouponScope == "Restaurant" ? model.SpecificRestaurantId : null;
+                coupon.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "کد تخفیف با موفقیت به‌روزرسانی شد";
+                return RedirectToAction("CouponList");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در ویرایش کد تخفیف");
+                ModelState.AddModelError("", "خطا در ویرایش کد تخفیف: " + ex.Message);
+                await LoadCouponSelectLists(model);
+                return View(model);
             }
         }
     }

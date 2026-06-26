@@ -15,11 +15,12 @@
     var orderArrow = Model.OrdersChangePercent > 0 ? "up" : (Model.OrdersChangePercent < 0 ? "down" : "right");
     var revenueArrow = Model.RevenueChangePercent > 0 ? "up" : (Model.RevenueChangePercent < 0 ? "down" : "right");
 }
-
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
 <link rel="stylesheet" href="~/css/all.min.css">
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
-<!-- کتابخانه چارت‌ها -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="~/js/chart.js"></script>
 
 <div class="dashboard-frame">
     <!-- هدر -->
@@ -55,7 +56,7 @@
                 <!-- کارت ۱: پرفروش‌ترین غذاها -->
                 <div class="kpi-card kpi-card--top-foods fade-up">
                     <div class="kpi-card__header">
-                        <span class="kpi-card__label" style="font-weight:bold;">پرفروش‌ترین‌ها</span>
+                        <span class="kpi-card__label" style="font-weight:bold;">پرفروش‌ترین‌های هفته</span>
                        
                     </div>
                     <div class="kpi-card__body">
@@ -131,14 +132,25 @@
                 <!-- کارت ۳: فروش امروز + نمودار ساعتی -->
                 <div class="kpi-card kpi-card--revenue fade-up" style="flex: 1 1 300px; min-width: 250px;">
                     <div class="kpi-card__header">
-                        <span class="kpi-card__label" style="font-weight:bold;">فروش امروز (تومان)</span>
+                        <span class="kpi-card__label" style="font-weight:bold;">فروش امروز</span>
+                        <div style="display:  flex; margin-top:10px; align-items: center; gap: 10px;">
+                            <!-- Badge کوچک تغییر نسبت به دیروز -->
+                            <div class="kpi-card__value num" data-count="@Model.TodayRevenue" data-type="revenue">0</div>
+                            <span>تومان</span>
+                           
+                        </div>
                         <span class="change-badge @revenueChangeClass">
                             <i class="fa-solid fa-arrow-@revenueArrow"></i>
                             <span>@Math.Abs(Model.RevenueChangePercent).ToString("0.0")٪</span>
+                            <span style="font-size: 0.6rem;  padding: 2px 10px; border-radius: 20px; color: #6c757d; display: flex; align-items: center; gap: 4px;">
+
+                                نسبت به دیروز
+
+                            </span>
                         </span>
                     </div>
                     <div class="kpi-card__body">
-                        <span class="kpi-card__value num" data-count="@Model.TodayRevenue" data-type="revenue">0</span>
+               
 
                         <!-- نمودار فروش ساعتی (امروز و دیروز) -->
                         <div style="margin-top: 15px; height: 100px;">
@@ -419,3 +431,4 @@
             });
     });
 </script>
+</html>

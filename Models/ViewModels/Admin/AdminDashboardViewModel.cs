@@ -30,7 +30,19 @@
 
 
     }
+    // در فایل AdminDashboardViewModel.cs اضافه کنید
 
+    // در فایل AdminDashboardViewModel.cs اضافه کنید
+
+    public class SubscriptionStatsViewModel
+    {
+        public string PlanName { get; set; }
+        public string PaymentMethod { get; set; }
+        public int Count { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public string DisplayName { get; set; }
+        public string Color { get; set; } // برای رنگ‌های نمودار
+    }
     public class MonthlyStatsViewModel
     {
         public string Label { get; set; }  // مثلاً "1404/01"

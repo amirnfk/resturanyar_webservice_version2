@@ -2,7 +2,7 @@
 @using DNTPersianUtils.Core
 @{
     ViewData["Title"] = "داشبورد مدیریت";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <!-- Chart.js -->
@@ -815,50 +815,63 @@
     </div>
 
     <!-- ===== ردیف آمار کلی ===== -->
+    <!-- جایگزین کنید بخش چارت وضعیت اشتراک‌ها با این کد -->
+    <!-- ===== ردیف نمودارهای اشتراک ===== -->
     <div class="row g-3 mb-4">
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 anim d2">
-            <div class="stat-card">
-                <div class="strip" style="background:linear-gradient(90deg,#4f46e5,#818cf8)"></div>
-                <i class="fas fa-store watermark"></i>
-                <div class="icon-circle" style="background:linear-gradient(135deg,#4f46e5,#818cf8)"><i class="fas fa-store"></i></div>
-                <div class="stat-number">@Model.TotalRestaurants</div>
-                <div class="stat-label">رستوران‌ها</div>
+        <div class="col-lg-6 col-md-12 anim d5">
+            <div class="dash-card chart-card">
+                <div class="card-head">
+                    <h5><i class="fas fa-chart-pie"></i> توزیع اشتراک‌ها بر اساس پلن و روش پرداخت</h5>
+                    <span class="cnt" id="pieChartCount">بارگذاری...</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="subscriptionPieChart"></canvas>
+                </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 anim d3">
-            <div class="stat-card">
-                <div class="strip" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
-                <i class="fas fa-user-tie watermark"></i>
-                <div class="icon-circle" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)"><i class="fas fa-user-tie"></i></div>
-                <div class="stat-number">@Model.TotalOwners</div>
-                <div class="stat-label">مالکین</div>
+        <div class="col-lg-6 col-md-12 anim d6">
+            <div class="dash-card chart-card">
+                <div class="card-head">
+                    <h5><i class="fas fa-chart-bar"></i> تعداد اشتراک‌ها به تفکیک</h5>
+                    <span class="cnt" id="barChartCount">بارگذاری...</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="subscriptionBarChart"></canvas>
+                </div>
             </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 anim d4">
-            <div class="stat-card">
-                <div class="strip" style="background:linear-gradient(90deg,#0891b2,#22d3ee)"></div>
-                <i class="fas fa-clipboard-list watermark"></i>
-                <div class="icon-circle" style="background:linear-gradient(135deg,#0891b2,#22d3ee)"><i class="fas fa-clipboard-list"></i></div>
-                <div class="stat-number">@Model.TotalSubscriptions</div>
-                <div class="stat-label">کل اشتراک‌ها</div>
-            </div>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 anim d5">
-            <div class="stat-card">
-                <div class="strip" style="background:linear-gradient(90deg,#059669,#34d399)"></div>
-                <i class="fas fa-circle-check watermark"></i>
-                <div class="icon-circle" style="background:linear-gradient(135deg,#059669,#34d399)"><i class="fas fa-circle-check"></i></div>
-                <div class="stat-number">@Model.ActiveSubscriptions</div>
-                <div class="stat-label">اشتراک فعال</div>
-            </div>
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 anim d6">
-            <div class="stat-card">
-                <div class="strip" style="background:linear-gradient(90deg,#d97706,#fbbf24)"></div>
-                <i class="fas fa-coins watermark"></i>
-                <div class="icon-circle" style="background:linear-gradient(135deg,#d97706,#fbbf24)"><i class="fas fa-coins"></i></div>
-                <div class="stat-number">@Model.TotalRevenue.ToString("#,0")</div>
-                <div class="stat-label">درآمد کل (تومان)</div>
+    </div>
+
+    <!-- ===== جدول جزئیات اشتراک‌ها (اختیاری) ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 anim d7">
+            <div class="dash-card" style="height:auto;min-height:300px;">
+                <div class="card-head">
+                    <h5><i class="fas fa-table"></i> جزئیات اشتراک‌های فعال</h5>
+                    <span class="cnt" id="subscriptionStatsCount">بارگذاری...</span>
+                </div>
+                <div class="activity-scroll" style="max-height:400px;overflow-y:auto;overflow-x:auto;">
+                    <table id="subscriptionStatsTable" class="table table-hover display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>پلن</th>
+                                <th>روش پرداخت</th>
+                                <th>تعداد اشتراک</th>
+                                <th>درآمد کل (تومان)</th>
+                                <th>درصد از کل</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                            <tr style="font-weight:bold;background-color:#f8fafc;">
+                                <td colspan="2" style="text-align:left;">مجموع</td>
+                                <td id="totalCountFoot">0</td>
+                                <td id="totalRevenueFoot">0</td>
+                                <td>100%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -955,6 +968,13 @@
             </div>
         </div>
     </div>
+
+
+    <!-- اضافه کنید به AdminPanel.cshtml بعد از کارت آمار فعالیت -->
+    <!-- ===== جدول آمار اشتراک‌ها به تفکیک پلن و روش پرداخت ===== -->
+   
+
+
 
     <!-- ===== لیست رستوران‌ها با فیلتر (اسکرول‌پذیر) ===== -->
     <div class="row g-3 mb-4">
@@ -1391,5 +1411,306 @@
                 }
             });
         });
+
+
+                // اضافه کنید به بخش Scripts در AdminPanel.cshtml
+
+        // اضافه کنید به بخش Scripts در AdminPanel.cshtml
+
+        // ===== 4. نمودارهای آمار اشتراک‌ها =====
+        $(document).ready(function () {
+            // ... کدهای قبلی ...
+
+            // بارگذاری آمار اشتراک‌ها
+            $.ajax({
+                url: '@Url.Action("GetSubscriptionStats", "Admin")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+                        var summary = response.summary;
+
+                        // به‌روزرسانی شمارنده‌ها
+                        $('#pieChartCount').text(summary.totalActiveSubscriptions + ' اشتراک');
+                        $('#barChartCount').text(summary.totalActiveSubscriptions + ' اشتراک');
+                        $('#subscriptionStatsCount').text(summary.totalActiveSubscriptions + ' اشتراک');
+
+                        // ===== 4.1. نمودار دایره‌ای =====
+                        createPieChart(data, summary.totalActiveSubscriptions);
+
+                        // ===== 4.2. نمودار میله‌ای =====
+                        createBarChart(data);
+
+                        // ===== 4.3. جدول جزئیات =====
+                        createStatsTable(data, summary);
+
+                    } else {
+                        alert('خطا: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('خطا در ارتباط با سرور برای دریافت آمار اشتراک‌ها');
+                }
+            });
+        });
+
+        // ===== تابع ایجاد نمودار دایره‌ای =====
+        function createPieChart(data, total) {
+            var ctx = document.getElementById('subscriptionPieChart').getContext('2d');
+
+            // مرتب‌سازی داده‌ها بر اساس پلن
+            var planOrder = { 'رایگان': 1, 'برنزی': 2, 'نقره‌ای': 3, 'طلایی': 4 };
+            data.sort(function(a, b) {
+                return (planOrder[a.planName] || 999) - (planOrder[b.planName] || 999);
+            });
+
+            var labels = data.map(item => item.displayName);
+            var values = data.map(item => item.count);
+            var colors = data.map(item => item.color);
+            var revenues = data.map(item => item.totalRevenue);
+
+            // ایجاد گرادیانت برای رنگ‌ها (افکت حرفه‌ای‌تر)
+            var colorMap = {
+                '#94a3b8': '#cbd5e1', // رایگان
+                '#cd7f32': '#e8a87c', // برنزی
+                '#c0c0c0': '#e2e8f0', // نقره‌ای
+                '#ffd700': '#fbbf24'  // طلایی
+            };
+
+            var gradientColors = colors.map(color => {
+                if (colorMap[color]) {
+                    var grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 100);
+                    grad.addColorStop(0, colorMap[color]);
+                    grad.addColorStop(1, color);
+                    return grad;
+                }
+                return color;
+            });
+
+            // حذف نمودار قبلی اگر وجود دارد
+            if (window.pieChart) {
+                window.pieChart.destroy();
+            }
+
+            window.pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Vazir',
+                                    size: 11
+                                },
+                                padding: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Vazir', size: 13 },
+                            bodyFont: { family: 'Vazir', size: 12 },
+                            cornerRadius: 8,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    var percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    var revenue = revenues[context.dataIndex];
+                                    return [
+                                        `${context.label}: ${context.parsed} اشتراک (${percentage}%)`,
+                                        `درآمد: ${revenue.toLocaleString()} تومان`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        duration: 1500
+                    }
+                }
+            });
+        }
+
+        // ===== تابع ایجاد نمودار میله‌ای =====
+        function createBarChart(data) {
+            var ctx = document.getElementById('subscriptionBarChart').getContext('2d');
+
+            // گروه‌بندی بر اساس پلن
+            var planOrder = ['رایگان', 'برنزی', 'نقره‌ای', 'طلایی'];
+            var paymentMethods = ['فری‌ترایال', 'کافه‌بازار', 'زرین‌پال', 'نامشخص'];
+
+            // ایجاد داده‌های گروه‌بندی شده
+            var groupedData = {};
+            planOrder.forEach(plan => {
+                groupedData[plan] = {};
+                paymentMethods.forEach(method => {
+                    groupedData[plan][method] = 0;
+                });
+            });
+
+            data.forEach(item => {
+                var method = item.paymentMethod;
+                if (method === 'FreeTrial') method = 'فری‌ترایال';
+                else if (method === 'CafeBazar') method = 'کافه‌بازار';
+                else if (method === 'Zarinpal') method = 'زرین‌پال';
+                else method = 'نامشخص';
+
+                if (groupedData[item.planName] && groupedData[item.planName][method] !== undefined) {
+                    groupedData[item.planName][method] = item.count;
+                }
+            });
+
+            // رنگ‌ها برای هر روش پرداخت
+            var methodColors = {
+                'فری‌ترایال': 'rgba(52, 211, 153, 0.8)',
+                'کافه‌بازار': 'rgba(96, 165, 250, 0.8)',
+                'زرین‌پال': 'rgba(251, 191, 36, 0.8)',
+                'نامشخص': 'rgba(148, 163, 184, 0.8)'
+            };
+
+            var methodBorderColors = {
+                'فری‌ترایال': '#059669',
+                'کافه‌بازار': '#2563eb',
+                'زرین‌پال': '#d97706',
+                'نامشخص': '#94a3b8'
+            };
+
+            var datasets = paymentMethods.map(method => {
+                return {
+                    label: method,
+                    data: planOrder.map(plan => groupedData[plan][method] || 0),
+                    backgroundColor: methodColors[method] || 'rgba(148, 163, 184, 0.8)',
+                    borderColor: methodBorderColors[method] || '#94a3b8',
+                    borderWidth: 2,
+                    borderRadius: 4,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.7
+                };
+            });
+
+            // حذف نمودار قبلی اگر وجود دارد
+            if (window.barChart) {
+                window.barChart.destroy();
+            }
+
+            window.barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: planOrder,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Vazir',
+                                    size: 11
+                                },
+                                padding: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Vazir', size: 13 },
+                            bodyFont: { family: 'Vazir', size: 12 },
+                            cornerRadius: 8,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y} اشتراک`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Vazir', size: 12 }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
+                            ticks: {
+                                font: { family: 'Vazir', size: 11 },
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        // ===== تابع ایجاد جدول جزئیات =====
+        function createStatsTable(data, summary) {
+            var tbody = $('#subscriptionStatsTable tbody');
+            tbody.empty();
+
+            // مرتب‌سازی بر اساس پلن
+            var planOrder = { 'رایگان': 1, 'برنزی': 2, 'نقره‌ای': 3, 'طلایی': 4 };
+            data.sort(function(a, b) {
+                return (planOrder[a.planName] || 999) - (planOrder[b.planName] || 999);
+            });
+
+            var totalCount = summary.totalActiveSubscriptions;
+            var totalRevenue = summary.totalRevenue;
+            var totalCountSum = 0;
+            var totalRevenueSum = 0;
+
+            $.each(data, function(index, item) {
+                var percentage = totalCount > 0 ? ((item.count / totalCount) * 100).toFixed(1) : 0;
+
+                var row = `<tr>
+                    <td><strong>${item.planName}</strong></td>
+                    <td>${item.displayName}</td>
+                    <td class="text-center">${item.count}</td>
+                    <td class="text-center">${item.totalRevenue.toLocaleString()}</td>
+                    <td class="text-center">${percentage}%</td>
+                </tr>`;
+                tbody.append(row);
+
+                totalCountSum += item.count;
+                totalRevenueSum += item.totalRevenue;
+            });
+
+            $('#totalCountFoot').text(totalCountSum);
+            $('#totalRevenueFoot').text(totalRevenueSum);
+
+            // اگر داده‌ای وجود نداشت
+            if (data.length === 0) {
+                tbody.append(`<tr><td colspan="5" class="text-center text-muted">هیچ اشتراک فعالی یافت نشد</td></tr>`);
+            }
+        }
     </script>
 }

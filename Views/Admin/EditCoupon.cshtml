@@ -1,0 +1,529 @@
+﻿@model resturanyar.Models.ViewModels.CopounViewModel.CouponViewModel
+
+@{
+    ViewData["Title"] = "ویرایش کد تخفیف";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="edit-coupon-page" dir="rtl">
+    <div class="edit-coupon-card">
+        <!-- هدر -->
+        <div class="edit-header">
+            <div class="header-icon"><i class="fas fa-pen-fancy"></i></div>
+            <div>
+                <h1>ویرایش کد تخفیف</h1>
+                <p>اطلاعات کد تخفیف <strong>@Model.Code</strong> را به‌روزرسانی کنید</p>
+            </div>
+            <a href="@Url.Action("CouponList")" class="btn-back">
+                <i class="fas fa-arrow-left"></i> بازگشت به لیست
+            </a>
+        </div>
+
+        <!-- فرم -->
+        <form asp-action="EditCoupon" method="post" class="edit-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <div class="form-grid">
+                <!-- کد تخفیف -->
+                <div class="form-group">
+                    <label asp-for="Code" class="form-label">کد تخفیف <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-tag input-icon"></i>
+                        <input asp-for="Code" class="form-control" placeholder="مثلاً: SUMMER1404" />
+                    </div>
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                    <small class="form-hint">کد باید منحصربه‌فرد باشد و تنها شامل حروف و اعداد</small>
+                </div>
+
+                <!-- نوع تخفیف -->
+                <div class="form-group">
+                    <label asp-for="DiscountType" class="form-label">نوع تخفیف <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-percent input-icon"></i>
+                        <select asp-for="DiscountType" class="form-control" id="DiscountType">
+                            <option value="">انتخاب کنید</option>
+                            @foreach (var item in Model.DiscountTypes)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <span asp-validation-for="DiscountType" class="text-danger"></span>
+                </div>
+
+                <!-- مقدار تخفیف -->
+                <div class="form-group">
+                    <label asp-for="DiscountValue" class="form-label">مقدار تخفیف <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calculator input-icon"></i>
+                        <input asp-for="DiscountValue" class="form-control" type="number" step="0.01" min="0" placeholder="مقدار عددی" />
+                    </div>
+                    <span asp-validation-for="DiscountValue" class="text-danger"></span>
+                    <small class="form-hint" id="discountValueHint">برای درصدی بین ۱ تا ۱۰۰، برای مبلغ ثابت هر عدد مثبت</small>
+                </div>
+
+                <!-- حداکثر مبلغ تخفیف (فقط درصدی) -->
+                <div class="form-group" id="maxDiscountGroup">
+                    <label asp-for="MaxDiscountAmount" class="form-label">حداکثر مبلغ تخفیف (تومان)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-money-bill-wave input-icon"></i>
+                        <input asp-for="MaxDiscountAmount" class="form-control" type="number" step="1000" min="0" placeholder="مثلاً: ۵۰۰۰۰۰" />
+                    </div>
+                    <span asp-validation-for="MaxDiscountAmount" class="text-danger"></span>
+                    <small class="form-hint">فقط برای تخفیف درصدی اعمال می‌شود</small>
+                </div>
+
+                <!-- حداقل خرید -->
+                <div class="form-group">
+                    <label asp-for="MinPurchaseAmount" class="form-label">حداقل مبلغ خرید (تومان)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-shopping-cart input-icon"></i>
+                        <input asp-for="MinPurchaseAmount" class="form-control" type="number" step="1000" min="0" placeholder="مثلاً: ۱۰۰۰۰۰" />
+                    </div>
+                    <span asp-validation-for="MinPurchaseAmount" class="text-danger"></span>
+                    <small class="form-hint">حداقل سبد خرید برای اعمال تخفیف</small>
+                </div>
+
+                <!-- تاریخ شروع -->
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label">تاریخ شروع <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                        <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                    </div>
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+
+                <!-- تاریخ پایان -->
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label">تاریخ پایان <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar-check input-icon"></i>
+                        <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                    </div>
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+
+                <!-- وضعیت فعال -->
+                <div class="form-group checkbox-group">
+                    <label class="form-label">وضعیت</label>
+                    <div class="checkbox-wrapper">
+                        <input asp-for="IsActive" type="checkbox" />
+                        <label for="IsActive" class="switch-label">فعال</label>
+                    </div>
+                    <span asp-validation-for="IsActive" class="text-danger"></span>
+                </div>
+
+                <!-- محدودیت تعداد استفاده -->
+                <div class="form-group">
+                    <label asp-for="UsageLimit" class="form-label">محدودیت تعداد استفاده (کل)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-users input-icon"></i>
+                        <input asp-for="UsageLimit" class="form-control" type="number" min="0" placeholder="خالی = نامحدود" />
+                    </div>
+                    <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                    <small class="form-hint">تعداد کل دفعاتی که این کد قابل استفاده است</small>
+                </div>
+
+                <!-- محدودیت برای هر مالک -->
+                <div class="form-group">
+                    <label asp-for="LimitPerOwner" class="form-label">تعداد استفاده برای هر مالک</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input asp-for="LimitPerOwner" class="form-control" type="number" min="1" value="1" />
+                    </div>
+                    <span asp-validation-for="LimitPerOwner" class="text-danger"></span>
+                    <small class="form-hint">هر مالک چند بار مجاز به استفاده است</small>
+                </div>
+
+                <!-- محدوده اعتبار -->
+                <div class="form-group full-width">
+                    <label class="form-label">محدوده اعتبار کد <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" asp-for="CouponScope" value="General" checked="@(Model.CouponScope == "General")" />
+                            <span>عمومی (همه)</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" asp-for="CouponScope" value="Owner" checked="@(Model.CouponScope == "Owner")" />
+                            <span>مالک خاص</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" asp-for="CouponScope" value="Restaurant" checked="@(Model.CouponScope == "Restaurant")" />
+                            <span>رستوران خاص</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- انتخاب مالک خاص -->
+                <div class="form-group" id="ownerSelectGroup" style="display: @(Model.CouponScope == "Owner" ? "block" : "none")">
+                    <label asp-for="SpecificOwnerId" class="form-label">انتخاب مالک</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user-tie input-icon"></i>
+                        <select asp-for="SpecificOwnerId" class="form-control" asp-items="Model.Owners">
+                            <option value="">یک مالک را انتخاب کنید</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="SpecificOwnerId" class="text-danger"></span>
+                </div>
+
+                <!-- انتخاب رستوران خاص -->
+                <div class="form-group" id="restaurantSelectGroup" style="display: @(Model.CouponScope == "Restaurant" ? "block" : "none")">
+                    <label asp-for="SpecificRestaurantId" class="form-label">انتخاب رستوران</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-store input-icon"></i>
+                        <select asp-for="SpecificRestaurantId" class="form-control" asp-items="Model.Restaurants">
+                            <option value="">یک رستوران را انتخاب کنید</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="SpecificRestaurantId" class="text-danger"></span>
+                </div>
+
+                <!-- دکمه‌های اقدام -->
+                <div class="form-actions full-width">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> ذخیره تغییرات
+                    </button>
+                    <a href="@Url.Action("CouponList")" class="btn-cancel">
+                        <i class="fas fa-times"></i> انصراف
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .edit-coupon-page {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .edit-coupon-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,.08);
+            padding: 30px 35px;
+        }
+
+        /* هدر */
+        .edit-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.6rem;
+        }
+
+        .edit-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 0 0 4px;
+            color: #1e293b;
+        }
+
+        .edit-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: .95rem;
+        }
+
+        .btn-back {
+            margin-right: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+            .btn-back:hover {
+                background: #e2e8f0;
+                color: #1e293b;
+                text-decoration: none;
+            }
+
+        /* فرم */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+        .form-label {
+            font-weight: 700;
+            color: #334155;
+            font-size: .9rem;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-right: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 44px 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: .95rem;
+            transition: border .2s, box-shadow .2s;
+            background: #fafbfc;
+            color: #1e293b;
+        }
+
+            .form-control:focus {
+                border-color: #6366f1;
+                box-shadow: 0 0 0 4px rgba(99,102,241,.15);
+                outline: none;
+                background: #fff;
+            }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 14px center;
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            padding-top: 6px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+            .checkbox-wrapper input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                accent-color: #6366f1;
+            }
+
+        .switch-label {
+            font-weight: 600;
+            color: #334155;
+            user-select: none;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-top: 4px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #334155;
+        }
+
+            .radio-item input[type="radio"] {
+                width: 18px;
+                height: 18px;
+                accent-color: #6366f1;
+            }
+
+        .form-hint {
+            color: #94a3b8;
+            font-size: .78rem;
+            margin-top: 2px;
+        }
+
+        .text-danger {
+            color: #ef4444;
+            font-size: .82rem;
+        }
+
+        .validation-summary {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            grid-column: 1 / -1;
+        }
+
+        /* دکمه‌ها */
+        .form-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: flex-end;
+            padding-top: 10px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: .95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform .15s, box-shadow .2s;
+            box-shadow: 0 6px 18px rgba(99,102,241,.3);
+        }
+
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 26px rgba(99,102,241,.4);
+            }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: .2s;
+        }
+
+            .btn-cancel:hover {
+                background: #e2e8f0;
+                color: #1e293b;
+                text-decoration: none;
+            }
+
+        /* ریسپانسیو */
+        @@media (max-width: 768px) {
+            .edit-coupon-card {
+                padding: 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .edit-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .btn-back {
+                margin-right: 0;
+                justify-content: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-submit, .btn-cancel {
+                justify-content: center;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            // تغییر نوع تخفیف
+            $('#DiscountType').on('change', function () {
+                var val = $(this).val();
+                var hint = $('#discountValueHint');
+                var maxGroup = $('#maxDiscountGroup');
+
+                if (val === 'Percentage') {
+                    hint.text('مقدار بین 1 تا 100 درصد');
+                    maxGroup.show();
+                } else if (val === 'FixedAmount') {
+                    hint.text('مبلغ ثابت به تومان (هر عدد مثبت)');
+                    maxGroup.hide();
+                } else {
+                    hint.text('لطفاً نوع تخفیف را انتخاب کنید');
+                    maxGroup.hide();
+                }
+            }).trigger('change');
+
+            // تغییر محدوده
+            $('input[name="CouponScope"]').on('change', function () {
+                var val = $(this).val();
+                $('#ownerSelectGroup').toggle(val === 'Owner');
+                $('#restaurantSelectGroup').toggle(val === 'Restaurant');
+            });
+
+            // اعتبارسنجی تاریخ
+            $('#StartDate, #EndDate').on('change', function () {
+                var start = new Date($('#StartDate').val());
+                var end = new Date($('#EndDate').val());
+                if (start && end && start >= end) {
+                    alert('تاریخ شروع باید قبل از تاریخ پایان باشد');
+                }
+            });
+        });
+    </script>
+}

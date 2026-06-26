@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - رستورانیار دلاویتا</title>
+    <link rel="icon" type="image/png" href="~/images/logo.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/resturanyar.styles.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
+    <meta name="theme-color" content="#FF7A00">
+
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+  
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-logo">
+                    <img src="~/images/logo.png" alt="لوگو" class="sidebar-logo-img">
+                    <span class="sidebar-logo-text">رستورانیار</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/Admin/Adminpanel" class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                    <i class="fas fa-home"></i>
+                    <span>داشبورد</span>
+                </a>
+            <a href="@Url.Action("CouponList", "Admin")" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>ساخت کد تخفیف</span>
+                </a>
+              
+                <div class="sidebar-footer">
+                    <form method="post" asp-controller="Home" asp-action="Logout">
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>خروج</span>
+                        </button>
+                    </form>
+                </div>
+            </nav>
+
+            
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+        
+
+            <div class="page-wrapper">
+                <div class="content-card">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <img src="~/images/logo_circle.png" alt="لوگو" class="footer-logo">
+                    <p class="footer-text">
+                        با رستوران‌یار دلاویتا، مدیریت کافه | رستوران شما ساده، دقیق و لذت‌بخش است.
+                    </p>
+                    <p class="footer-copyright">
+                        © 2026 رستورانیار دلاویتا - تمامی حقوق محفوظ است
+                    </p>
+                </div>
+            </footer>
+        </main>
+
+        <script>
+            // Sidebar Functions
+            function toggleSidebar() {
+                // const sidebar = document.getElementById('sidebar');
+                // sidebar.classList.toggle('collapsed');
+                // localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            }
+
+            function toggleMobileSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('open');
+            }
+
+            // Load saved sidebar state
+            // const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+            // if (savedSidebarState === 'true') {
+            //     document.getElementById('sidebar').classList.add('collapsed');
+            // }
+
+            // Theme Functions
+            function toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+
+                const themeIcon = document.querySelector('#themeToggle i');
+                if (newTheme === 'dark') {
+                    themeIcon.className = 'fas fa-sun';
+                } else {
+                    themeIcon.className = 'fas fa-moon';
+                }
+            }
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                const themeIcon = document.querySelector('#themeToggle i');
+                if (savedTheme === 'dark') {
+                    themeIcon.className = 'fas fa-sun';
+                }
+            }
+
+            // Close mobile sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                const sidebar = document.getElementById('sidebar');
+                const mobileBtn = document.querySelector('.mobile-menu-btn');
+
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                    if (!sidebar.contains(event.target) && !mobileBtn.contains(event.target)) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+
+            // Active link highlighting
+            document.querySelectorAll('.nav-item').forEach(link => {
+                if (link.href === window.location.href) {
+                    link.classList.add('active');
+                }
+            });
+
+           
+            function updateClock() {
+                const clockElement = document.getElementById('dashClock');
+                if (clockElement) {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+                    clockElement.textContent = timeString;
+                }
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+
+        </script>
+    
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+                // ذخیره موقعیت اسکرول سایدبار قبل از خروج از صفحه
+        window.addEventListener('beforeunload', function () {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                localStorage.setItem('sidebarScrollPos', sidebar.scrollTop);
+            }
+        });
+
+        // بازیابی موقعیت اسکرول بعد از بارگذاری کامل صفحه
+        window.addEventListener('load', function () {
+            const sidebar = document.getElementById('sidebar');
+            const savedPos = localStorage.getItem('sidebarScrollPos');
+            if (sidebar && savedPos !== null) {
+                sidebar.scrollTop = parseInt(savedPos, 10);
+                localStorage.removeItem('sidebarScrollPos'); // پاک کردن بعد از استفاده
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

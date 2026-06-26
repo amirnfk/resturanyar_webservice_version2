@@ -196,21 +196,22 @@ namespace resturanyar.Controllers
 
             // ========== ۱. پرفروش‌ترین سه غذا ==========
             var topFoods = await _context.OrderItems
-                .AsNoTracking()
-                .Where(oi => oi.Order.RestaurantId == restaurantId
-                             && oi.Order.CreatedAt >= sevenDaysAgo
-                             && oi.Order.CreatedAt <= now)
-                .GroupBy(oi => new { oi.FoodItemId, oi.FoodName, oi.FoodImageUrl })
-                .Select(g => new TopFoodDto
-                {
-                    FoodItemId = g.Key.FoodItemId,
-                    FoodName = g.Key.FoodName ?? "بدون نام",
-                    ImageUrl = g.Key.FoodImageUrl ?? "/uploads/food_default.jpg",
-                    TotalQuantity = g.Sum(x => x.Quantity)
-                })
-                .OrderByDescending(x => x.TotalQuantity)
-                .Take(3)
-                .ToListAsync();
+       .AsNoTracking()
+       .Where(oi => oi.Order.RestaurantId == restaurantId
+                    && oi.Order.CreatedAt >= sevenDaysAgo
+                    && oi.Order.CreatedAt <= now)
+       .GroupBy(oi => oi.FoodItemId)
+       .Select(g => new TopFoodDto
+       {
+           FoodItemId = g.Key,
+           FoodName = g.FirstOrDefault().FoodName ?? "بدون نام",
+           ImageUrl = g.FirstOrDefault().FoodImageUrl ?? "/uploads/food_default.jpg",
+           TotalQuantity = g.Sum(x => x.Quantity)
+       })
+       .OrderByDescending(x => x.TotalQuantity)
+       .Take(3)
+       .ToListAsync();
+                
 
             // ========== ۲. وضعیت سفارش‌ها (امروز) ==========
             // ۲-۱. تعداد کل سفارش‌های امروز
@@ -281,7 +282,10 @@ namespace resturanyar.Controllers
             double revenueChangePercent = 0;
             if (yesterdayRevenue > 0)
                 revenueChangePercent = Math.Round((double)(revenueChange / yesterdayRevenue * 100), 2);
-
+            else if (todayRevenue > 0 && yesterdayRevenue == 0)
+                revenueChangePercent = 100; // رشد ۱۰۰٪ نسبت به روز قبل
+            else if (todayRevenue == 0 && yesterdayRevenue == 0)
+                revenueChangePercent = 0;
             // ========== ساخت ViewModel ==========
             var vm = new DashboardStatsViewModel
             {
@@ -987,46 +991,46 @@ namespace resturanyar.Controllers
                 .ToListAsync();
 
             var topByQty = await orderItemsQuery
-                .GroupBy(oi => new { oi.FoodItemId, oi.FoodName, oi.FoodImageUrl })
-                .Select(g => new TopItemDto
-                {
-                    FoodItemId = g.Key.FoodItemId,
-                    Name = g.Key.FoodName,
-                    ImageUrl = g.Key.FoodImageUrl,
-                    Quantity = g.Sum(x => x.Quantity),
-                    Revenue = g.Sum(x =>
-    (decimal)x.Quantity *
-    (
-        x.UnitPriceWithDiscount.HasValue &&
-        x.UnitPriceWithDiscount.Value > 0
-            ? x.UnitPriceWithDiscount.Value
-            : x.UnitPrice
-    ))
-                })
-                .OrderByDescending(x => x.Quantity)
-                .Take(topN)
-                .ToListAsync();
+     .GroupBy(oi => oi.FoodItemId)  // فقط بر اساس FoodItemId گروه‌بندی کن
+     .Select(g => new TopItemDto
+     {
+         FoodItemId = g.Key,
+         Name = g.FirstOrDefault().FoodName ?? "بدون نام",
+         ImageUrl = g.FirstOrDefault().FoodImageUrl ?? "/uploads/food_default.jpg",
+         Quantity = g.Sum(x => x.Quantity),
+         Revenue = g.Sum(x =>
+             (decimal)x.Quantity *
+             (
+                 x.UnitPriceWithDiscount.HasValue &&
+                 x.UnitPriceWithDiscount.Value > 0
+                     ? x.UnitPriceWithDiscount.Value
+                     : x.UnitPrice
+             ))
+     })
+     .OrderByDescending(x => x.Quantity)
+     .Take(topN)
+     .ToListAsync();
 
             var topByRev = await orderItemsQuery
-                .GroupBy(oi => new { oi.FoodItemId, oi.FoodName, oi.FoodImageUrl })
-                .Select(g => new TopItemDto
-                {
-                    FoodItemId = g.Key.FoodItemId,
-                    Name = g.Key.FoodName,
-                    ImageUrl = g.Key.FoodImageUrl,
-                    Quantity = g.Sum(x => x.Quantity),
-                    Revenue = g.Sum(x =>
-    (decimal)x.Quantity *
-    (
-        x.UnitPriceWithDiscount.HasValue &&
-        x.UnitPriceWithDiscount.Value > 0
-            ? x.UnitPriceWithDiscount.Value
-            : x.UnitPrice
-    ))
-                })
-                .OrderByDescending(x => x.Revenue)
-                .Take(topN)
-                .ToListAsync();
+        .GroupBy(oi => oi.FoodItemId)  // فقط بر اساس FoodItemId گروه‌بندی کن
+        .Select(g => new TopItemDto
+        {
+            FoodItemId = g.Key,
+            Name = g.FirstOrDefault().FoodName ?? "بدون نام",
+            ImageUrl = g.FirstOrDefault().FoodImageUrl ?? "/uploads/food_default.jpg",
+            Quantity = g.Sum(x => x.Quantity),
+            Revenue = g.Sum(x =>
+                (decimal)x.Quantity *
+                (
+                    x.UnitPriceWithDiscount.HasValue &&
+                    x.UnitPriceWithDiscount.Value > 0
+                        ? x.UnitPriceWithDiscount.Value
+                        : x.UnitPrice
+                ))
+        })
+        .OrderByDescending(x => x.Revenue)
+        .Take(topN)
+        .ToListAsync();
 
             var vm = new ManagerReportViewModel
             {

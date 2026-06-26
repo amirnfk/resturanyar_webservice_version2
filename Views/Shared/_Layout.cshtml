@@ -20,9 +20,9 @@
     @if (User.Identity.IsAuthenticated)
     {
         <!-- Mobile Menu Button -->
-        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+        @* <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
             <i class="fas fa-bars"></i>
-        </button>
+        </button> *@
 
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
@@ -112,29 +112,42 @@
             <!-- Topbar / Header -->
             <!-- Topbar / Header -->
             <header class="topbar">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                     
-
-                    <!-- نمایش عنوان صفحه جاری -->
+                <!-- سمت چپ: عنوان صفحه + دکمه موبایل -->
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <div class="page-title">
-                        <i class="@(ViewData["PageIcon"]?.ToString()  )" style="font-size: 0.9rem;"></i>
+                        @* <i class="@(ViewData["PageIcon"]?.ToString() ?? "fas fa-home")"></i> *@
                         <span>@ViewData["Title"]</span>
                     </div>
                 </div>
 
+                <!-- وسط: جستجو -->
+              
+
+                <!-- سمت راست: دکمه‌های عملیاتی + پروفایل -->
                 <div class="topbar-actions">
-                    @* <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-                        <i class="fas fa-moon"></i>
+                    <button class="action-btn" title="اعلان‌ها">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+                    <button class="action-btn" title="راهنما">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+
+                    <div class="user-profile" onclick="location.href='/Profile'">
+                        <div class="user-avatar icon-only">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <span class="user-name">@(User.Identity.Name ?? "کاربر گرامی")</span>
+                            <span class="user-role">مدیر</span>
+                        </div>
+                        @* <i class="fas fa-chevron-down dropdown-icon"></i> *@
                     </div>
 
-                    <div class="sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggle">
-                        <i class="fas fa-bars"></i>
-                    </div> *@
-
-                    <div class="user-info" >
-                        <i class="fa fa-user"></i>
-                        <span class="user-name">@(User.Identity.Name ?? "کاربر گرامی")</span>
-                    </div>
+                
                 </div>
             </header>
 
@@ -159,6 +172,14 @@
         </main>
 
         <script>
+                        window.addEventListener('scroll', function() {
+                const topbar = document.querySelector('.topbar');
+                if (window.scrollY > 10) {
+                    topbar.classList.add('scrolled');
+                } else {
+                    topbar.classList.remove('scrolled');
+                }
+            });
             // Sidebar Functions
             function toggleSidebar() {
                 // const sidebar = document.getElementById('sidebar');
@@ -204,16 +225,16 @@
             }
 
             // Close mobile sidebar when clicking outside
-            document.addEventListener('click', function(event) {
-                const sidebar = document.getElementById('sidebar');
-                const mobileBtn = document.querySelector('.mobile-menu-btn');
+            // document.addEventListener('click', function(event) {
+            //     const sidebar = document.getElementById('sidebar');
+            //     const mobileBtn = document.querySelector('.mobile-menu-btn');
 
-                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-                    if (!sidebar.contains(event.target) && !mobileBtn.contains(event.target)) {
-                        sidebar.classList.remove('open');
-                    }
-                }
-            });
+            //     if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            //         if (!sidebar.contains(event.target) && !mobileBtn.contains(event.target)) {
+            //             sidebar.classList.remove('open');
+            //         }
+            //     }
+            // });
 
             // Active link highlighting
             document.querySelectorAll('.nav-item').forEach(link => {
