@@ -159,3 +159,8 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
+wwwroot\images\mobilesample.png
+wwwroot\images\mobilesample2.png
+wwwroot\images\mobilesample3.png
+wwwroot\images\customer_club.png
+wwwroot\images\support2.png

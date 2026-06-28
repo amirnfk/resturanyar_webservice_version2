@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ff7a1a" />
+    <title>@ViewData["Title"] - رستورانیار</title>
+    <!-- CSS -->
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+    <style>
+        /* استایل اختصاصی منوی بالایی */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: saturate(180%) blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 14px 0;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        [data-theme="dark"] .top-nav {
+            background: rgba(20, 24, 36, 0.85);
+            border-bottom-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .top-nav .nav-link {
+            color: var(--text);
+            opacity: 0.7;
+            padding: 4px 12px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+            .top-nav .nav-link:hover {
+                opacity: 1;
+                background: rgba(255, 122, 26, 0.08);
+                color: var(--primary);
+            }
+
+            .top-nav .nav-link.active {
+                opacity: 1;
+                color: var(--primary);
+                background: rgba(255, 122, 26, 0.1);
+            }
+
+        .top-nav .phone-number {
+            direction: ltr;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(255, 122, 26, 0.1);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 122, 26, 0.2);
+        }
+
+            .top-nav .phone-number i {
+                margin-left: 6px;
+                color: #25D366;
+            }
+        /* منوی اصلی (همان منوی قبلی) با اندکی فاصله از بالا */
+        .main-nav {
+            background: var(--glass);
+            backdrop-filter: saturate(140%) blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 0;
+        }
+
+        [data-theme="dark"] .main-nav {
+            background: rgba(15, 17, 23, 0.8);
+        }
+        /* واکنش‌گرایی: در موبایل منوی بالایی جمع شود */
+        @@media (max-width: 768px) {
+            .top-nav .nav-link {
+                padding: 4px 8px;
+                font-size: 0.8rem;
+            }
+
+            .top-nav .phone-number {
+                font-size: 0.75rem;
+                padding: 2px 10px;
+            }
+        }
+
+        .top-nav .btn-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: #fff;
+            border: 0;
+            border-radius: 30px;
+            padding: 4px 18px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px var(--ring);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .top-nav .btn-cta:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px var(--ring);
+            }
+
+        [data-theme="dark"] .top-nav .btn-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        }
+        /* منوی بالایی */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: saturate(180%) blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        /* منوی اصلی (اگر وجود دارد) */
+        .main-nav,
+        .navbar {
+            position: sticky;
+            top: 0; /* یا top: 56px اگر می‌خواهید زیر منوی بالایی قرار گیرد */
+            z-index: 1020;
+            background: var(--glass);
+            backdrop-filter: saturate(140%) blur(12px);
+        }
+
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#nav">
+
+    <!-- ===== منوی بالایی (جدید) ===== -->
+    <!-- ===== منوی بالایی با قابلیت همبرگر (موبایل) ===== -->
+    <nav class="navbar navbar-expand-md top-nav sticky-top" style="z-index: 1030;">
+        <div class="container">
+            <!-- لوگو یا برند (اختیاری) -->
+            <a class="navbar-brand d-md-none" href="/">
+                <img src="~/images/logo_circle.png" alt="رستورانیار" style="height: 32px;">
+            </a>
+
+            <!-- دکمه همبرگر (فقط در موبایل دیده می‌شود) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavMenu"
+                    aria-controls="topNavMenu" aria-expanded="false" aria-label="تغییر منو">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- محتوای منو که در موبایل جمع می‌شود -->
+            <div class="collapse navbar-collapse" id="topNavMenu">
+
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                 
+                    <li class="nav-item"><a class="nav-link" href="/">خانه</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/restaurant-management">نرم افزار مدیریت رستوران</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cafeshop-management">نرم افزار مدیریت کافه</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/digital-menu">منوی دیجیتال</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/customer-club"> باشگاه مشتریان کافه رستوران شما</a></li>
+                    @* <li class="nav-item"><a class="nav-link" href="/Articles">مقالات</a></li> *@
+                    <li class="nav-item"><a class="nav-link" href="/public-support">پشتیبانی</a></li>
+                   
+                    <li class="nav-item"><a class="nav-link" href="/about-us">درباره ما </a></li>
+                </ul>
+
+                <!-- بخش چپ: دکمه تم و ورود مدیر -->
+                <div class="d-flex align-items-center gap-2">
+                    <button class="theme-toggle" id="themeToggle" aria-label="تغییر تم">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex">ورود مدیر</a>
+                    <!-- در موبایل هم می‌توانید دکمه را به صورت جداگانه نمایش دهید -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+  
+
+    <!-- ===== محتوای اصلی ===== -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- ===== فوتر (همان فوتر فعلی) ===== -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="~/images/logo.png" alt="لوگو نرم افزار رستورانیار" class="brand-logo">
+                        <strong>رستورانیار</strong>
+                    </div>
+                    <p class="mb-2">نرم‌افزار یکپارچه مدیریت کافه و رستوران برای ثبت سفارش، منوی دیجیتال، پرداخت و گزارش‌گیری.</p>
+                    <div class="social mt-3">
+                        <a href="https://instagram.com/resturanyar_delavita" aria-label="اینستاگرام"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/resturanyar_delavita" aria-label="تلگرام"><i class="fab fa-telegram"></i></a>
+                        <a href="https://wa.me/989374422588" aria-label="واتساپ"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold mb-3">لینک‌های سریع</h6>
+                    <ul class="list-unstyled">
+                        <li><a class="text-reset text-decoration-none" href="/#features">ویژگی‌ها</a></li>
+                        <li><a class="text-reset text-decoration-none" href="/#screens">تصاویر</a></li>
+                        <li><a class="text-reset text-decoration-none" href="/#download">دانلود</a></li>
+                        <li><a class="text-reset text-decoration-none" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold mb-3">ارتباط با ما</h6>
+                    <p class="mb-1"><i class="fa-solid fa-phone ms-1"></i> ۰۹۳۷۴۴۲۲۵۸۸</p>
+                    <p class="mb-1"><i class="fa-solid fa-envelope ms-1"></i> support@resturanyar.ir</p>
+                    <p class="mb-0"><i class="fa-solid fa-location-dot ms-1"></i> ایران - پشتیبانی سراسری</p>
+                </div>
+            </div>
+            <hr class="border-light border-opacity-25 my-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center pb-3">
+                <small>© 2025 رستورانیار - تمامی حقوق محفوظ است.</small>
+                <small class="opacity-75">نسخه وب سبک و سریع</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== اسکریپت‌های عمومی ===== -->
+    <script src="~/js/bootstrap.bundle.min.js" defer></script>
+    <script src="~/js/home.js" asp-append-version="true"></script>
+ 
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- دکمه بازگشت به بالا -->
+    <button id="backTop" class="back-top" aria-label="بازگشت به بالا">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+ 
+</body>
+</html>

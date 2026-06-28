@@ -1,5 +1,7 @@
 ﻿@{
-    Layout = null;
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+    ViewData["Title"] = "رستورانیار | نرم‌افزار مدیریت رستوران و منوی دیجیتال";
+
 }
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -21,32 +23,34 @@
     <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
    
 </head>
+
 <body data-bs-spy="scroll" data-bs-target="#nav">
-     
-    <nav id="nav" class="navbar navbar-expand-lg sticky-top py-2">
+
+    <nav id="nav" class="navbar navbar-expand-lg sticky-top py-2 d-none d-lg-block">
+
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2" href="#home" aria-label="خانه">
                 <img src="~/images/logo.png" alt="لوگو رستورانیار" class="brand-logo">
                 <strong class="fs-5">رستورانیار</strong>
             </a>
             <div class="d-flex align-items-center gap-2 order-lg-2">
-                <button class="theme-toggle"  id="themeToggle" aria-label="تغییر تم"><i class="fa-solid fa-moon"></i></button>
-                <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex"> ورود مدیر</a>
-
+               
               
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="بازکردن منو">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="collapse navbar-collapse" id="navMenu">
+            <div class="collapse navbar-collapse" >
                 <ul class="navbar-nav me-auto gap-lg-2">
-                    <li class="nav-item"><a class="nav-link active" href="#home">خانه</a></li>
+                    
                     <li class="nav-item"><a class="nav-link" href="#features">امکانات</a></li>
+              
                     <li class="nav-item"><a class="nav-link" href="#how">نحوه ی استفاده</a></li>
                     <li class="nav-item"><a class="nav-link" href="#screens">تصاویر</a></li>
                     <li class="nav-item"><a class="nav-link" href="#download">دانلود</a></li>
                     <li class="nav-item"><a class="nav-link" href="#faq">پرسش‌های متداول</a></li>
-                    <li class="nav-item d-sm-none"><a class="nav-link btn-manager" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                    
+                   
                 </ul>
             </div>
         </div>
@@ -432,7 +436,7 @@
 
     <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP' alt='' style='cursor:pointer' code='krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'></a>
 
-    <!-- Footer -->
+    @* <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row g-4">
@@ -471,7 +475,7 @@
                 <small class="opacity-75">نسخه وب سبک و سریع </small>
             </div>
         </div>
-    </footer>
+    </footer> *@
 
     <!-- Floating buttons -->
     @* <a href="https://wa.me/989374422588" class="fab-chat" aria-label="گفتگوی واتساپ"><i class="fab fa-whatsapp"></i></a> *@
@@ -508,7 +512,7 @@
     
     <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <script src="~/js/home.js"  asp-append-version="true"></script>
+    <script src="~/js/home.js"  asp-append-version="true"></script>  
 
     <!-- Bootstrap JS -->
     <script src="~/js/bootstrap.bundle.min.js" defer></script>

@@ -1,0 +1,863 @@
+﻿@{
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+    ViewData["Title"] = "پشتیبانی رستورانیار | تماس با پشتیبانی";
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>پشتیبانی نرم‌افزار رستورانیار | تماس با ما</title>
+    <meta name="description" content="پشتیبانی  رستورانیار دلاویتا. ارتباط از طریق چت آنلاین، تلفن، ایمیل و پاسخ به سوالات متداول. تیم پشتیبانی ما همیشه در کنار شماست." />
+    <meta name="keywords" content="پشتیبانی رستورانیار, تماس با پشتیبانی, پشتیبانی نرم افزار رستوران, چت آنلاین, رستورانیار دلاویتا" />
+    <meta name="theme-color" content="#ff7a1a" />
+    <meta property="og:title" content="پشتیبانی رستورانیار | تماس با ما" />
+    <meta property="og:description" content="پشتیبانی  آنلاین رستورانیار دلاویتا. ارتباط از طریق چت آنلاین، تلفن و ایمیل." />
+    <meta property="og:image" content="/images/og-resturanyar.jpg" />
+    <meta property="og:type" content="article" />
+    <link rel="canonical" href="https://resturanyar.ir/support" />
+
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
+    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
+    <link href="~/css/all.min.css" rel="stylesheet">
+    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
+
+    <style>
+        /* استایل‌های اختصاصی با پشتیبانی از دارک‌مود */
+        .article-hero {
+            background: var(--bg);
+            padding: 60px 0 40px;
+            border-bottom: 1px solid rgba(0,0,0,.05);
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .article-hero {
+            border-bottom-color: rgba(255,255,255,.06);
+        }
+
+        .article-hero h1 {
+            font-size: 2.6rem;
+            font-weight: 900;
+            line-height: 1.3;
+            color: var(--text);
+        }
+
+        .article-content {
+            background: var(--bg);
+            padding: 40px 0 60px;
+        }
+
+            .article-content h2 {
+                font-weight: 800;
+                margin-top: 2.8rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 3px solid var(--primary);
+                display: inline-block;
+                color: var(--text);
+            }
+
+            .article-content h3 {
+                font-weight: 700;
+                margin-top: 2rem;
+                color: var(--text);
+            }
+
+            .article-content p {
+                line-height: 2;
+                margin-bottom: 1.2rem;
+                color: var(--muted);
+            }
+
+            .article-content ul, .article-content ol {
+                padding-right: 1.5rem;
+                margin-bottom: 1.5rem;
+                color: var(--muted);
+            }
+
+            .article-content li {
+                margin-bottom: 0.6rem;
+                line-height: 1.9;
+            }
+
+        .highlight-box {
+            background: rgba(255,122,26,.08);
+            border-right: 5px solid var(--primary);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .highlight-box {
+            background: rgba(255,122,26,.15);
+        }
+
+        .feature-grid-article {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card-article {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,.06);
+            text-align: center;
+            transition: .3s;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .feature-card-article {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .feature-card-article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,.12);
+        }
+
+        .feature-card-article i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .feature-card-article h6 {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .feature-card-article p {
+            font-size: .9rem;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--primary), #e0661a);
+            border-radius: 30px;
+            padding: 50px 30px;
+            color: #ffffff;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+            .cta-box h3,
+            .cta-box p,
+            .cta-box span,
+            .cta-box div {
+                color: #ffffff;
+            }
+
+            .cta-box a:not(.btn) {
+                color: #ffe6d5;
+                text-decoration: underline;
+                text-underline-offset: 2px;
+            }
+
+                .cta-box a:not(.btn):hover {
+                    color: #ffffff;
+                }
+
+            .cta-box .btn-light {
+                background: #ffffff;
+                color: #1a1a1a;
+                font-weight: 700;
+                border: 0;
+                transition: .3s;
+            }
+
+                .cta-box .btn-light:hover {
+                    background: #f0f0f0;
+                    color: #1a1a1a;
+                    transform: scale(1.02);
+                }
+
+            .cta-box .btn-cta-outline {
+                background: transparent;
+                color: #ffffff;
+                border: 2px solid #ffffff;
+            }
+
+                .cta-box .btn-cta-outline:hover {
+                    background: #ffffff;
+                    color: var(--primary);
+                }
+
+            .cta-box .fa-circle-check {
+                color: #b3ffb3;
+            }
+
+        .badge-free {
+            background: #28a745;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: .85rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-trial {
+            background: var(--primary);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: .85rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* استایل‌های اختصاصی صفحه پشتیبانی */
+        .support-card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,.06);
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .support-card {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .support-header {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 2.2rem;
+            flex-wrap: wrap;
+        }
+
+            .support-header .icon-circle {
+                width: 64px;
+                height: 64px;
+                background: rgba(255,122,26,.1);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                color: var(--primary);
+                flex-shrink: 0;
+            }
+
+            .support-header h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin: 0;
+                color: var(--text);
+            }
+
+            .support-header p {
+                color: var(--muted);
+                margin: 0;
+                font-size: 1rem;
+            }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.2rem;
+        }
+
+        .info-card-item {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 1.2rem 1.2rem 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid rgba(0,0,0,.06);
+            transition: 0.2s;
+        }
+
+        [data-theme="dark"] .info-card-item {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .info-card-item:hover {
+            border-color: var(--primary);
+        }
+
+        .info-card-item .icon-box {
+            width: 44px;
+            height: 44px;
+            background: var(--card);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .info-card-item .info-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .info-card-item .info-text .label {
+                font-size: 0.75rem;
+                color: var(--muted);
+                font-weight: 500;
+            }
+
+            .info-card-item .info-text .value {
+                font-weight: 600;
+                font-size: 0.95rem;
+                color: var(--text);
+                direction: ltr;
+                text-align: right;
+            }
+
+                .info-card-item .info-text .value[dir="rtl"] {
+                    direction: rtl;
+                }
+
+        /* بخش چت */
+        .chat-section {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0,0,0,.06);
+            margin-bottom: 2.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        [data-theme="dark"] .chat-section {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .chat-section .chat-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+            .chat-section .chat-info .chat-icon {
+                width: 48px;
+                height: 48px;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 1.4rem;
+            }
+
+            .chat-section .chat-info .chat-text h6 {
+                font-weight: 700;
+                margin: 0;
+                font-size: 1rem;
+                color: var(--text);
+            }
+
+            .chat-section .chat-info .chat-text small {
+                color: var(--muted);
+                font-size: 0.85rem;
+            }
+
+        .chat-section .chat-buttons {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .chat-btn {
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+        }
+
+        .chat-btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+            .chat-btn-primary:hover {
+                background: #e0661a;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255,122,26,0.3);
+            }
+
+        .chat-btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(0,0,0,.2);
+        }
+
+            .chat-btn-outline:hover {
+                background: var(--bg);
+                border-color: var(--primary);
+            }
+
+        .chat-btn-success {
+            background: #28a745;
+            color: #fff;
+        }
+
+            .chat-btn-success:hover {
+                background: #1e7e34;
+            }
+
+        .online-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #dcfce7;
+            color: #16a34a;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.8rem;
+            border-radius: 999px;
+        }
+
+        [data-theme="dark"] .online-status {
+            background: rgba(22,163,74,0.2);
+            color: #4ade80;
+        }
+
+        .online-status .dot {
+            width: 6px;
+            height: 6px;
+            background: #16a34a;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @@keyframes pulse-dot {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.3);
+            }
+        }
+
+        /* سوالات متداول */
+        .faq-section {
+            margin-top: 0.5rem;
+        }
+
+            .faq-section h5 {
+                font-weight: 700;
+                margin-bottom: 1.2rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--text);
+            }
+
+        .faq-item {
+            border: 1px solid rgba(0,0,0,.06);
+            border-radius: 10px;
+            margin-bottom: 0.6rem;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+
+        [data-theme="dark"] .faq-item {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .faq-item:hover {
+            border-color: var(--primary);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 1rem 1.2rem;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            gap: 1rem;
+            transition: 0.2s;
+            color: var(--text);
+        }
+
+            .faq-question:hover {
+                background: rgba(255,122,26,.05);
+            }
+
+            .faq-question .fa-chevron-down {
+                transition: transform 0.3s ease;
+                font-size: 0.8rem;
+                color: var(--muted);
+                flex-shrink: 0;
+            }
+
+            .faq-question[aria-expanded="true"] .fa-chevron-down {
+                transform: rotate(180deg);
+            }
+
+        .faq-answer {
+            padding: 0 1.2rem 1.2rem 1.2rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            display: none;
+        }
+
+            .faq-answer.open {
+                display: block;
+            }
+
+        @@media (max-width: 768px) {
+            .article-hero h1 {
+                font-size: 2rem;
+            }
+
+            .support-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .support-header .icon-circle {
+                width: 48px;
+                height: 48px;
+                font-size: 1.4rem;
+            }
+
+            .support-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-section {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+                .chat-section .chat-info {
+                    justify-content: center;
+                }
+
+                .chat-section .chat-buttons {
+                    justify-content: center;
+                }
+        }
+
+        @@media (max-width: 480px) {
+            .chat-section .chat-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .chat-btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .faq-question {
+                font-size: 0.85rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .faq-answer {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== هیرو مقاله ===== -->
+    <section class="article-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1>پشتیبانی رستورانیار دلاویتا؛ همیشه در کنار شما</h1>
+                    <p class="lead mt-3" style="color: var(--muted);">
+                        تیم پشتیبانی <strong>رستورانیار</strong>   آماده پاسخگویی به سوالات و مشکلات شماست.
+                        از طریق چت آنلاین، تلفن یا ایمیل با ما در ارتباط باشید.
+                    </p>
+                    <div class="mt-4">
+                        <a href="/Home/ManagerLogin" class="btn btn-cta px-5 py-2">ورود به پنل</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <img src="~/images/support2.png" alt="پشتیبانی رستورانیار" class="img-fluid rounded-4 shadow" style="max-height:320px; object-fit: cover; width:auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== محتوای اصلی ===== -->
+    <section class="article-content">
+        <div class="container">
+
+            <div class="support-card">
+
+                <!-- هدر -->
+                <div class="support-header">
+                    <div class="icon-circle">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div>
+                        <h1>پشتیبانی</h1>
+                        <p>ما همیشه در کنار شما هستیم. از طریق راه‌های زیر با ما در ارتباط باشید.</p>
+                    </div>
+                </div>
+
+                <!-- کارت‌های اطلاعات تماس -->
+                <div class="info-cards">
+                    <div class="info-card-item">
+                        <div class="icon-box"><i class="fas fa-phone-alt"></i></div>
+                        <div class="info-text">
+                            <span class="label">تلفن پشتیبانی</span>
+                            <span class="value" dir="ltr">09374422588</span>
+                        </div>
+                    </div>
+                    <div class="info-card-item">
+                        <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                        <div class="info-text">
+                            <span class="label">ایمیل</span>
+                            <span class="value" dir="ltr">support@resturanyar.com</span>
+                        </div>
+                    </div>
+                    <div class="info-card-item">
+                        <div class="icon-box"><i class="fas fa-clock"></i></div>
+                        <div class="info-text">
+                            <span class="label">ساعت کاری</span>
+                            <span class="value" dir="rtl">شنبه تا چهارشنبه ۹ تا ۱۸</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بخش چت آنلاین -->
+                <div class="chat-section">
+                    <div class="chat-info">
+                        <div class="chat-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="chat-text">
+                            <h6>
+                                چت آنلاین
+                                <span class="online-status">
+                                    <span class="dot"></span> آنلاین
+                                </span>
+                            </h6>
+                            <small>پاسخگویی فوری از طریق چت</small>
+                        </div>
+                    </div>
+                    <div class="chat-buttons">
+                        <button class="chat-btn chat-btn-primary" id="open_chat">
+                            <i class="fas fa-comment"></i> باز کردن چت
+                        </button>
+                        
+                    </div>
+                </div>
+
+                <!-- سوالات متداول (پشتیبانی) -->
+                <div class="faq-section">
+                    <h5>
+                        <i class="fas fa-question-circle" style="color: var(--primary);"></i>
+                        سوالات متداول پشتیبانی
+                    </h5>
+
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>ساعات کاری پشتیبانی چه زمانی است؟</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            تیم پشتیبانی رستورانیار دلاویتا همه روزه، از ساعت <strong>۹ صبح تا ۱۸ عصر</strong> به‌صورت آنلاین و فعال در کنار شماست.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>چگونه می‌توانم با پشتیبانی تماس بگیرم؟</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            شما می‌توانید از طریق <strong>چت آنلاین</strong> داخل همین صفحه و <strong>تماس تلفنی</strong> با شماره ۰۹۳۷۴۴۲۲۵۸۸     با ما در ارتباط باشید.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>اگر خارج از ساعات کاری پیام بگذارم، چه می‌شود؟</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            تمام پیام‌های ارسال‌شده در خارج از ساعات کاری، در <strong>اولین فرصت </strong>   توسط کارشناسان ما بررسی و پاسخ داده می‌شوند.    .
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>آیا پشتیبانی تلفنی هم دارید؟</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            بله، شماره تماس پشتیبانی <strong dir="ltr">۰۹۳۷۴۴۲۲۵۸۸</strong> در ساعات کاری پاسخگوی شماست. در صورت عدم پاسخگویی (به دلیل مشغول بودن خطوط)، لطفاً از طریق چت پیام بگذارید تا در اسرع وقت با شما تماس بگیریم.
+                        </div>
+                    </div>
+
+                  
+
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>آیا در تعطیلات رسمی پشتیبانی دارید؟</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="faq-answer">
+                            در روزهای تعطیل رسمی، تیم پشتیبانی به‌صورت حضوری در دفتر کار حضور ندارد؛ اما پیام‌های ارسال‌شده از طریق چت  در <strong>اولین فرصت</strong> بررسی و پاسخ داده می‌شوند. 
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== باکس CTA ===== -->
+            <div class="cta-box">
+                <h3 class="fw-bold">همین حالا شروع کنید و از پشتیبانی رایگان بهره‌مند شوید</h3>
+                <p style="color: #fff; opacity: 0.9;">با اشتراک تستی رایگان، رستورانیار را امتحان کنید و تیم پشتیبانی ما در کنار شماست.</p>
+                <a href="/Home/ManagerLogin" class="btn btn-light btn-lg px-5">شروع کنید</a>
+                <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> پشتیبانی آنلاین </span>
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> چت آنلاین</span>
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> پاسخگویی سریع</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== دکمه بازگشت به بالا ===== -->
+    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- ===== اسکریپت‌ها ===== -->
+    <script src="~/js/home.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Goftino -->
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+    </script>
+
+    <!-- ===== دیتای ساختاریافته (JSON-LD) ===== -->
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "Article",
+          "headline": "پشتیبانی رستورانیار دلاویتا؛ همیشه در کنار شما",
+          "description": "پشتیبانی آنلاین رستورانیار دلاویتا. ارتباط از طریق چت آنلاین، تلفن، ایمیل و پاسخ به سوالات متداول.",
+          "image": "https://resturanyar.ir/images/og-resturanyar.jpg",
+          "author": { "@@type": "Organization", "name": "رستورانیار" },
+          "datePublished": "2026-06-28",
+          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/support" }
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@@type": "ListItem", "position": 1, "name": "خانه", "item": "https://resturanyar.ir/" },
+            { "@@type": "ListItem", "position": 2, "name": "پشتیبانی", "item": "https://resturanyar.ir/support" }
+          ]
+        }
+    </script>
+
+    <script>
+        // دکمه بازگشت به بالا
+        window.addEventListener('scroll', function() {
+            var btn = document.getElementById('backTop');
+            if (window.scrollY > 300) btn.classList.add('show');
+            else btn.classList.remove('show');
+        });
+        document.getElementById('backTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== اسکریپت‌های اختصاصی پشتیبانی =====
+        var restaurantId = @(ViewBag.RestaurantId ?? 0);
+        var restaurantName = @Html.Raw(Json.Serialize(ViewBag.RestaurantName ?? "رستوران"));
+
+        // اتصال دکمه‌ها به گوفتینو
+        window.addEventListener('goftino_ready', function () {
+            // تنظیم کاربر
+            Goftino.setUser({
+                email: 'restaurant ID: ' + restaurantId,
+                name: 'restaurant Name: ' + restaurantName,
+                about: 'رستورانیار دلاویتا',
+                phone: '',
+                avatar: '',
+                forceUpdate: true
+            });
+
+            // دکمه‌ها
+            document.getElementById("open_chat").addEventListener("click", function () {
+                Goftino.open();
+            });
+            document.getElementById("toggle_chat").addEventListener("click", function () {
+                Goftino.toggle();
+            });
+        });
+
+        // آکاردئون سوالات متداول
+        document.addEventListener('DOMContentLoaded', function() {
+            var faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var answer = this.nextElementSibling;
+                    var isOpen = answer.classList.contains('open');
+
+                    // بستن بقیه
+                    document.querySelectorAll('.faq-answer').forEach(function(el) {
+                        el.classList.remove('open');
+                    });
+                    document.querySelectorAll('.faq-question').forEach(function(el) {
+                        el.setAttribute('aria-expanded', 'false');
+                    });
+
+                    // اگر بسته بود، باز کن
+                    if (!isOpen) {
+                        answer.classList.add('open');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+﻿@{
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+    ViewData["Title"] = "درباره ما | رستورانیار دلاویتا";
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>درباره ما | رستورانیار دلاویتا، آرمان مدیریت هوشمند</title>
+    <meta name="description" content="رستورانیار دلاویتا با هدف مدیریت صحیح و کامل رستوران‌ها و کافه‌ها طراحی شده است. ما به دنبال تحول در صنعت مهمان‌نوازی از طریق فناوری و هوشمندی هستیم." />
+    <meta name="keywords" content="درباره ما, رستورانیار, دلاویتا, مدیریت رستوران, مدیریت کافه, نرم افزار مدیریت رستوران" />
+    <meta name="theme-color" content="#ff7a1a" />
+    <meta property="og:title" content="درباره ما | رستورانیار دلاویتا" />
+    <meta property="og:description" content="آرمان ما مدیریت صحیح و کامل رستوران‌ها و کافه‌ها با تکیه بر فناوری و داده‌های هوشمند است." />
+    <meta property="og:image" content="/images/og-resturanyar.jpg" />
+    <meta property="og:type" content="article" />
+    <link rel="canonical" href="https://resturanyar.ir/about-us" />
+
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
+    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
+    <link href="~/css/all.min.css" rel="stylesheet">
+    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
+
+    <style>
+        /* استایل‌های اختصاصی با پشتیبانی از دارک‌مود */
+        .article-hero {
+            background: var(--bg);
+            padding: 60px 0 40px;
+            border-bottom: 1px solid rgba(0,0,0,.05);
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .article-hero {
+            border-bottom-color: rgba(255,255,255,.06);
+        }
+
+        .article-hero h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .article-content {
+            background: var(--bg);
+            padding: 40px 0 60px;
+        }
+
+            .article-content h2 {
+                font-weight: 800;
+                margin-top: 2.8rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.4rem;
+                border-bottom: 3px solid var(--primary);
+                display: inline-block;
+                color: var(--text);
+            }
+
+            .article-content h3 {
+                font-weight: 700;
+                margin-top: 2rem;
+                color: var(--text);
+            }
+
+            .article-content p {
+                line-height: 2;
+                margin-bottom: 1.2rem;
+                color: var(--muted);
+            }
+
+            .article-content ul, .article-content ol {
+                padding-right: 1.5rem;
+                margin-bottom: 1.5rem;
+                color: var(--muted);
+            }
+
+            .article-content li {
+                margin-bottom: 0.6rem;
+                line-height: 1.9;
+            }
+
+        .highlight-box {
+            background: rgba(255,122,26,.08);
+            border-right: 5px solid var(--primary);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .highlight-box {
+            background: rgba(255,122,26,.15);
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+
+        .value-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 28px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,.06);
+            text-align: center;
+            transition: .3s;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .value-card {
+            border-color: rgba(255,255,255,.06);
+        }
+
+        .value-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,.12);
+        }
+
+        .value-card i {
+            font-size: 2.6rem;
+            color: var(--primary);
+            margin-bottom: 14px;
+        }
+
+        .value-card h6 {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .value-card p {
+            font-size: .9rem;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, var(--primary), #e0661a);
+            border-radius: 30px;
+            padding: 50px 30px;
+            color: #ffffff;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+            .cta-box h3,
+            .cta-box p,
+            .cta-box span,
+            .cta-box div {
+                color: #ffffff;
+            }
+
+            .cta-box a:not(.btn) {
+                color: #ffe6d5;
+                text-decoration: underline;
+                text-underline-offset: 2px;
+            }
+
+                .cta-box a:not(.btn):hover {
+                    color: #ffffff;
+                }
+
+            .cta-box .btn-light {
+                background: #ffffff;
+                color: #1a1a1a;
+                font-weight: 700;
+                border: 0;
+                transition: .3s;
+            }
+
+                .cta-box .btn-light:hover {
+                    background: #f0f0f0;
+                    color: #1a1a1a;
+                    transform: scale(1.02);
+                }
+
+            .cta-box .btn-cta-outline {
+                background: transparent;
+                color: #ffffff;
+                border: 2px solid #ffffff;
+            }
+
+                .cta-box .btn-cta-outline:hover {
+                    background: #ffffff;
+                    color: var(--primary);
+                }
+
+            .cta-box .fa-circle-check {
+                color: #b3ffb3;
+            }
+
+        @@media (max-width: 768px) {
+            .article-hero h1 {
+                font-size: 2rem;
+            }
+
+            .value-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .value-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* ===== لوگوی خفن با افکت‌های درخشان ===== */
+        .logo-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* حلقه‌های درخشان اطراف لوگو */
+        .glow-ring {
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: ringPulse 3s ease-in-out infinite;
+        }
+
+        .glow-ring-1 {
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 122, 26, 0.15);
+            animation-delay: 0s;
+        }
+
+        .glow-ring-2 {
+            width: 115%;
+            height: 115%;
+            border: 1.5px dashed rgba(255, 122, 26, 0.10);
+            animation-delay: 1.5s;
+            animation-duration: 4s;
+        }
+
+        @@keyframes ringPulse {
+            0%, 100%
+
+        {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.8;
+        }
+
+        50% {
+            transform: translate(-50%, -50%) scale(1.04);
+            opacity: 0.3;
+        }
+
+        }
+
+        /* کانتینر لوگو با افکت شیشه‌ای (Glassmorphism) */
+        .logo-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 0 40px rgba(255, 122, 26, 0.15), 0 0 80px rgba(255, 122, 26, 0.05), inset 0 0 30px rgba(255, 122, 26, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: floatLogo 4s ease-in-out infinite;
+        }
+
+            .logo-container:hover {
+                transform: scale(1.04);
+                box-shadow: 0 0 60px rgba(255, 122, 26, 0.25), 0 0 120px rgba(255, 122, 26, 0.08), inset 0 0 30px rgba(255, 122, 26, 0.06);
+            }
+
+        /* خود تصویر لوگو */
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+            filter: drop-shadow(0 4px 20px rgba(255, 122, 26, 0.12));
+            transition: filter 0.4s ease;
+        }
+
+        .logo-container:hover .logo-image {
+            filter: drop-shadow(0 4px 30px rgba(255, 122, 26, 0.25));
+        }
+
+        /* انیمیشن شناور ملایم */
+        @@keyframes floatLogo {
+            0%, 100%
+
+        {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+
+        }
+
+        /* ریسپانسیو برای موبایل */
+        @@media (max-width: 768px) {
+            .logo-wrapper
+
+        {
+            width: 160px;
+            height: 160px;
+        }
+
+        .logo-container {
+            width: 145px;
+            height: 145px;
+            padding: 12px;
+        }
+
+        .glow-ring-1 {
+            width: 100%;
+            height: 100%;
+        }
+
+        .glow-ring-2 {
+            width: 115%;
+            height: 115%;
+        }
+
+        }
+
+        @@media (max-width: 480px) {
+            .logo-wrapper
+
+        {
+            width: 140px;
+            height: 140px;
+        }
+
+        .logo-container {
+            width: 125px;
+            height: 125px;
+            padding: 10px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== هیرو مقاله ===== -->
+    <section class="article-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1>درباره ما؛ آرمان مدیریت صحیح و کامل</h1>
+                    <p class="lead mt-3" style="color: var(--muted);">
+                        <strong>رستورانیار دلاویتا</strong> با شعار «مدیریت هوشمند، مهمان‌نوازی بی‌نقص» متولد شد. ما به دنبال تحولی پایدار در صنعت رستوران‌داری و کافه‌داری هستیم؛ تحولی که در آن فناوری در خدمت تجربه‌ای بی‌نقص برای مشتری و آرامش خاطر برای مدیر باشد.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    <div class="logo-wrapper">
+                        <!-- حلقه‌های درخشان اطراف لوگو -->
+                        <div class="glow-ring glow-ring-1"></div>
+                        <div class="glow-ring glow-ring-2"></div>
+
+                        <!-- خود لوگو با افکت شیشه‌ای و درخشش -->
+                        <div class="logo-container">
+                            <img src="~/images/logo_circle.png"
+                                 alt="رستورانیار دلاویتا"
+                                 class="logo-image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== محتوای اصلی ===== -->
+    <section class="article-content">
+        <div class="container">
+
+            <h2>چالش‌های امروز صنعت رستوران‌داری</h2>
+            <p>
+                اداره یک رستوران یا کافه موفق، در دنیای پرشتاب امروز، از هر زمان دیگری پیچیده‌تر شده است. افزایش انتظارات مشتریان، رقابت فشرده، نوسان قیمت مواد اولیه و نیاز به سرعت و دقت بالا، مدیران را با چالش‌های متعددی روبرو کرده است. روش‌های سنتی مبتنی بر کاغذ و قلم یا حتی نرم‌افزارهای پراکنده، دیگر پاسخگوی نیازهای یک کسب‌وکار پویا نیستند.
+            </p>
+            <div class="highlight-box">
+                <strong>باور ما:</strong> مدیریت صحیح، ترکیبی از <strong>داده‌های دقیق</strong>، <strong>فرآیندهای شفاف</strong> و <strong>تیم‌های توانمند</strong> است. این سه رکن، پایه‌های یک رستوران یا کافه موفق را می‌سازند.
+            </div>
+
+            <h2>راهکار رستورانیار دلاویتا</h2>
+            <p>
+                <strong>رستورانیار دلاویتا</strong> با درک عمیق از این چالش‌ها، پلتفرمی یکپارچه طراحی کرده است که تمام حلقه‌های مدیریتی را از ثبت سفارش تا گزارش‌گیری مالی به هم متصل می‌کند. هدف ما این است که مدیران به‌جای درگیر شدن با جزئیات اجرایی، بر روی استراتژی و رشد کسب‌وکار خود متمرکز شوند.
+            </p>
+            <ul>
+                <li><strong>یکپارچگی هوشمند:</strong> اتصال سالن، آشپزخانه، انبار و امور مالی در یک بستر واحد.</li>
+                <li><strong>شفافیت کامل:</strong> دسترسی لحظه‌ای به عملکرد پرسنل، وضعیت میزها و جریان مالی.</li>
+                <li><strong>تصمیم‌گیری مبتنی بر داده:</strong> داشبوردهای تحلیلی که به شما نشان می‌دهند چه چیزی کار می‌کند و چه چیزی نیاز به بهبود دارد.</li>
+                <li><strong>تجربه بی‌نقص برای مشتری:</strong> کاهش زمان انتظار و افزایش دقت، کلید وفاداری مشتریان است.</li>
+            </ul>
+
+            <h2>ارزش‌های ما</h2>
+            <div class="value-grid">
+                <div class="value-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h6>دقت</h6>
+                    <p>هر سفارش، هر تراکنش و هر گزارش باید عاری از خطا باشد.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-bolt"></i>
+                    <h6>سرعت</h6>
+                    <p>در دنیای مهمان‌نوازی، زمان طلایی‌ترین سرمایه است.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-handshake"></i>
+                    <h6>اعتماد</h6>
+                    <p>ما با داده‌های شما مانند ارزشمندترین دارایی‌تان رفتار می‌کنیم.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-users"></i>
+                    <h6>مشتری‌مداری</h6>
+                    <p>همه تلاش ما برای خلق تجربه‌ای به‌یادماندنی برای مشتریان شماست.</p>
+                </div>
+            </div>
+
+            <h2>چشم‌انداز ما</h2>
+            <p>
+                ما در رستورانیار دلاویتا، خود را پیشگام تحول دیجیتال در صنعت غذا و نوشیدنی ایران می‌دانیم. چشم‌انداز ما آینده‌ای است که در آن هر رستوران و کافه‌ای، صرف‌نظر از اندازه، بتواند از قدرت داده و هوشمندی برای رشد پایدار استفاده کند. ما به دنبال ایجاد اکوسیستمی هستیم که در آن مدیران، پرسنل و مشتریان همگی در یک مسیر هماهنگ حرکت کنند و نتیجه آن، تجربه‌ای بی‌نقص و سودآوری پایدار باشد.
+            </p>
+            <div class="highlight-box">
+                <i class="fa-regular fa-circle-check text-success ms-1"></i>
+                <strong>آرمان ما:</strong> مدیریت صحیح و کامل یعنی جایی که هیچ جزئی از چشم‌انداز پنهان نماند و تمام اجزای کسب‌وکار در یک راستا حرکت کنند. این همان چیزی است که ما در رستورانیار دلاویتا دنبال می‌کنیم.
+            </div>
+
+            <!-- ===== باکس دعوت به اقدام ===== -->
+            <div class="cta-box">
+                <h3 class="fw-bold">همین حالا وقت آغاز است</h3>
+                <p style="color: #fff; opacity: 0.9;">با ما همراه شوید و از نزدیک تفاوت یک مدیریت صحیح و کامل را لمس کنید.</p>
+                <a href="/Home/ManagerLogin" class="btn btn-light btn-lg px-5">شروع کنید</a>
+                <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> تست رایگان</span>
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> نسخه موبایل رایگان</span>
+                    <span><i class="fa-regular fa-circle-check ms-1"></i> پشتیبانی حرفه‌ای</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== دکمه بازگشت به بالا ===== -->
+    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- ===== اسکریپت‌ها ===== -->
+    <script src="~/js/home.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Goftino -->
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+    </script>
+
+    <!-- ===== دیتای ساختاریافته (JSON-LD) ===== -->
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "AboutPage",
+          "name": "درباره ما | رستورانیار دلاویتا",
+          "description": "رستورانیار دلاویتا با هدف مدیریت صحیح و کامل رستوران‌ها و کافه‌ها طراحی شده است.",
+          "url": "https://resturanyar.ir/about-us",
+          "mainEntity": {
+            "@@type": "Organization",
+            "name": "رستورانیار دلاویتا",
+            "description": "پلتفرم جامع مدیریت هوشمند رستوران و کافه"
+          }
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@@type": "ListItem", "position": 1, "name": "خانه", "item": "https://resturanyar.ir/" },
+            { "@@type": "ListItem", "position": 2, "name": "درباره ما", "item": "https://resturanyar.ir/about-us" }
+          ]
+        }
+    </script>
+
+    <script>
+        // دکمه بازگشت به بالا
+        window.addEventListener('scroll', function() {
+            var btn = document.getElementById('backTop');
+            if (window.scrollY > 300) btn.classList.add('show');
+            else btn.classList.remove('show');
+        });
+        document.getElementById('backTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>

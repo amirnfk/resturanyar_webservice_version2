@@ -1,5 +1,15 @@
 [
   {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "AboutUs",
+    "RelativePath": "about-us",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.HomeController",
     "Method": "AddRestaurant",
     "RelativePath": "addrestaurant",
@@ -1346,6 +1356,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "CafeshopManagement",
+    "RelativePath": "cafeshop-management",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.HomeController",
     "Method": "ConsumeCoupon",
     "RelativePath": "coupon/consume",
@@ -1375,6 +1395,26 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "CustomerClub",
+    "RelativePath": "customer-club",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "DigitalMenu",
+    "RelativePath": "digital-menu",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -1419,6 +1459,16 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "PublicSupport",
+    "RelativePath": "public-support",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "MenuController",
     "Method": "PublicMenu",
     "RelativePath": "PublicMenu",
@@ -1432,6 +1482,26 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.PublicController",
+    "Method": "RestaurantManagement",
+    "RelativePath": "restaurant-management",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.resturanyar.Controllers.SitemapController",
+    "Method": "Index",
+    "RelativePath": "sitemap.xml",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
