@@ -1,14 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting; // ✳️ اضافه شده برای Rate Limiting
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models;
 using resturanyar.Controllers.Api;
+using resturanyar.Controllers.Api;
+using resturanyar.Models.Settings;
+using resturanyar.Utility;
 using resturanyar.Utility;
 using Resturanyar.Data;
+using Resturanyar.Data;
+using Resturanyar.Hubs;
 using Resturanyar.Hubs;
 using Serilog;
+using Serilog;
 using System.Text.Json;
-
+using System.Threading.RateLimiting;
+using System.Threading.RateLimiting;      // ✳️ اضافه شده برای Rate Limiting
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +46,7 @@ builder.Services.AddCors(options =>
 
 
 // ✳️ افزودن کنترلرهای API و MVC
-builder.Services.AddControllers();               
+builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 // ✳️ افزودن Swagger با Security Definition
@@ -91,6 +102,59 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization();
 
+builder.Services.Configure<PayamakSettings>(
+    builder.Configuration.GetSection("Payamak"));
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // ---- Global limiter with SignalR exclusion ----
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        // If the request is for SignalR, do not limit it
+        if (httpContext.Request.Path.StartsWithSegments("/orderHub"))
+        {
+            return RateLimitPartition.GetNoLimiter<string>("signalr_exempt");
+        }
+
+        // Otherwise, use IP‑based limiting
+        var ip = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                 ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                 ?? "unknown_ip";
+
+        return RateLimitPartition.GetFixedWindowLimiter(ip,
+            _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 60,                // 60 requests per minute
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            });
+    });
+
+    // ---- OTP policy (to be used on specific endpoints) ----
+    options.AddPolicy("OtpPolicy", httpContext =>
+    {
+        var phone = httpContext.Items["OtpPhoneNumber"]?.ToString();
+        if (string.IsNullOrEmpty(phone))
+        {
+            phone = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        }
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: phone,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 3,                 // max 3 attempts
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(5) // within 5 minutes
+            });
+    });
+});
+
 // ✳️ راه‌اندازی لاگر Serilog
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -104,8 +168,25 @@ builder.Host.UseSerilog(); // جایگزین ILogger پیش‌فرض
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
+        c.RoutePrefix = "swagger";
+    });
 
-// ✅ Middleware برای هندل‌کردن تمام exceptionها به صورت JSON با status 200
+    // ✅ Add this to see detailed errors in the browser
+    app.UseDeveloperExceptionPage();
+}
+
+// ✅ Middleware برای هندل‌کردن تمام exceptionها (اصلاح شده برای امنیت بیشتر)
 app.Use(async (context, next) =>
 {
     try
@@ -114,14 +195,18 @@ app.Use(async (context, next) =>
     }
     catch (Exception ex)
     {
-        context.Response.StatusCode = 200;
+        // تغییر استاتوس کد به 500 برای مدیریت صحیح خطا در فرانت و کلاینت‌ها
+        context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
+
+        var isDev = app.Environment.IsDevelopment();
 
         var errorResponse = new
         {
             success = false,
             message = "خطای غیرمنتظره در سرور",
-            detail = ex.Message
+            // نمایش جزییات دقیق خطا فقط در محیط توسعه (لوکال) جهت جلوگیری از افشای اطلاعات
+            detail = isDev ? ex.Message : "توضیحات خطا در محیط پروداکشن در دسترس نیست."
         };
 
         var json = JsonSerializer.Serialize(errorResponse);
@@ -130,19 +215,10 @@ app.Use(async (context, next) =>
 });
 
 //// ✳️ فعال‌سازی Swagger
-//app.UseSwagger();
-//app.UseSwaggerUI(c =>
-//{
-//    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
-//    c.RoutePrefix = "swagger";
-//});
+
 
 // ✳️ کانفیگ‌های دیگر
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -151,6 +227,13 @@ app.UseStaticFiles();
 
 // ✳️ Routing و Session
 app.UseRouting();
+// after app.UseRouting() and before app.UseRateLimiter()
+app.UseMiddleware<OtpPhoneNumberExtractorMiddleware>();
+
+
+// 🔒 فعال‌سازی میدل‌ور Rate Limiting (دقیقاً بعد از Routing و قبل از مپ شدن کنترلرها و هاب‌ها)
+app.UseRateLimiter();
+
 app.MapHub<OrderHub>("/orderHub");
 
 app.UseSession();            // اگه هنوز سشن رو می‌خوای نگه داری (تا مرحله‌ی انتقال)
@@ -163,8 +246,8 @@ app.UseAuthorization();
 app.UseWhen(context =>
 {
     var path = context.Request.Path.ToString();
-   
-    return path.StartsWith("/api") && !path.Contains("verifyotpweb" ) && !path.Contains("addrestaurant")&& !path.Contains("registerandlogin"); 
+
+    return path.StartsWith("/api") && !path.Contains("verifyotpweb") && !path.Contains("sendPriceList") && !path.Contains("addrestaurant") && !path.Contains("registerandlogin");
 }, appBuilder =>
 {
     appBuilder.UseMiddleware<StaticTokenMiddleware>();
@@ -222,3 +305,4 @@ app.MapControllerRoute(
 
 
 app.Run();
+

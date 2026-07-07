@@ -12,6 +12,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     // ===== inputs =====
     const passwordPhoneInput = document.querySelector('input[name="Phone"]');
+    const passwordField = document.getElementById("passwordField"); // Input رمز
+    const togglePassword = document.getElementById("togglePassword"); // آیکون چشم
     const otpPhoneInput = document.getElementById("otpPhoneInput");
     const otpCodeInput = document.getElementById("otpCodeInput");
 
@@ -28,6 +30,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const otpStepCode = document.getElementById("otp-step-code");
     const displayPhone = document.getElementById("displayPhone");
 
+    // ===== Toggle Password Visibility (جدید اضافه شده) =====
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener("click", function () {
+            // تغییر نوع اینپوت بین رمز و متن
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+
+            // تغییر ظاهر آیکون (اختیاری)
+            if (type === "text") {
+                togglePassword.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            } else {
+                togglePassword.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+            }
+        });
+    }
+
     // ===== auto convert digits (در لحظه تایپ) =====
     [passwordPhoneInput, otpPhoneInput, otpCodeInput].forEach(input => {
         if (input) {
@@ -38,28 +56,30 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ===== switch tabs =====
-    btnSwitchToOtp.addEventListener("click", function () {
+    btnSwitchToOtp.addEventListener("click", function (e) {
+        e.preventDefault();
         passwordSection.classList.add("d-none");
         otpSection.classList.remove("d-none");
-        document.querySelector("#passwordForm .alert")?.remove();
-    });
-    btnSwitchToRegister.addEventListener("click", function () {
-        passwordSection.classList.add("d-none");
-        otpSection.classList.remove("d-none");
-        btnSwitchToPassword.classList.add("d-none");
         document.querySelector("#passwordForm .alert")?.remove();
     });
 
-    btnSwitchToPassword.addEventListener("click", function () {
+    btnSwitchToRegister.addEventListener("click", function (e) {
+        e.preventDefault();
+        passwordSection.classList.add("d-none");
+        otpSection.classList.remove("d-none");
+        document.querySelector("#passwordForm .alert")?.remove();
+    });
+
+    btnSwitchToPassword.addEventListener("click", function (e) {
+        e.preventDefault();
         otpSection.classList.add("d-none");
         passwordSection.classList.remove("d-none");
     });
 
     // ===== request OTP =====
     btnGetOtp.addEventListener("click", function () {
-        // نکته مهم: مقدار را دقیقاً اینجا می‌خوانیم و تبدیل می‌کنیم
         let phone = otpPhoneInput.value;
-        phone = toEnglishDigits(phone); // تبدیل اطمینانی
+        phone = toEnglishDigits(phone);
         phone = phone.replace(/\s+/g, "").trim();
 
         const mobileRegex = /^09\d{9}$/;
@@ -96,7 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ===== verify OTP =====
-    // ===== verify OTP =====
     btnVerifyOtp.addEventListener("click", function () {
         let phone = otpPhoneInput.value;
         let otp = otpCodeInput.value;
@@ -122,10 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     window.location.href = data.redirectUrl ?? location.reload();
                 } else if (data.needsRegistration) {
-                    // باز کردن مودال ثبت‌نام
                     const modal = new bootstrap.Modal(document.getElementById('registerModal'));
                     modal.show();
-                    // ذخیره شماره برای استفاده در ثبت‌نام
                     document.getElementById('btnRegisterSubmit').dataset.phone = data.phoneNumber;
                 } else {
                     Swal.fire('خطا', data.message, 'error');
@@ -138,13 +155,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ===== register submit =====
-    // ===== عناصر مودال =====
     const registerName = document.getElementById('registerName');
     const registerPassword = document.getElementById('registerPassword');
     const registerConfirm = document.getElementById('registerConfirmPassword');
     const registerSubmitBtn = document.getElementById('btnRegisterSubmit');
 
-    // تبدیل اعداد فارسی به انگلیسی برای فیلدهای ثبت‌نام
     [registerName, registerPassword, registerConfirm].forEach(input => {
         if (input) {
             input.addEventListener('input', function () {
@@ -153,7 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // نمایش خطا در زیر فیلدهای مودال
     function showRegisterError(fieldId, message) {
         const errorDiv = document.getElementById(fieldId);
         if (errorDiv) {
@@ -174,19 +188,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // اعتبارسنجی اصلی شامل بررسی تطابق رمزها
     function validateRegisterForm() {
         let name = registerName.value.trim();
         let password = registerPassword.value;
         let confirm = registerConfirm.value;
 
-        // تبدیل مجدد برای اطمینان
         password = toEnglishDigits(password);
         confirm = toEnglishDigits(confirm);
 
         let isValid = true;
 
-        // بررسی نام
         if (name === '') {
             showRegisterError('registerNameError', 'نام و نام خانوادگی الزامی است');
             isValid = false;
@@ -197,7 +208,6 @@ document.addEventListener("DOMContentLoaded", function () {
             clearRegisterError('registerNameError');
         }
 
-        // بررسی رمز عبور
         if (password.length < 6) {
             showRegisterError('registerPasswordError', 'رمز عبور حداقل ۶ کاراکتر');
             isValid = false;
@@ -205,7 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
             clearRegisterError('registerPasswordError');
         }
 
-        // *** مهمترین بخش: بررسی یکسان بودن رمز و تکرار آن ***
         if (password !== confirm) {
             showRegisterError('registerConfirmError', 'رمز عبور و تکرار آن یکسان نیستند');
             isValid = false;
@@ -216,7 +225,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // ارسال درخواست ثبت‌نام
     registerSubmitBtn.addEventListener('click', function () {
         const phone = this.dataset.phone;
         if (!phone) {
@@ -225,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!validateRegisterForm()) {
-            return; // توقف ارسال در صورت عدم اعتبار
+            return;
         }
 
         let name = registerName.value.trim();
@@ -258,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
-    // اعتبارسنجی لحظه‌ای برای تکرار رمز (هنگام تایپ)
     if (registerConfirm) {
         registerConfirm.addEventListener('input', function () {
             let password = registerPassword.value;
@@ -271,7 +278,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // پاک کردن خطاهای دیگر هنگام تایپ
     if (registerName) {
         registerName.addEventListener('input', () => clearRegisterError('registerNameError'));
     }
@@ -279,7 +285,6 @@ document.addEventListener("DOMContentLoaded", function () {
         registerPassword.addEventListener('input', () => clearRegisterError('registerPasswordError'));
     }
 
-    // ریست مودال هنگام بسته شدن
     const modal = document.getElementById('registerModal');
     if (modal) {
         modal.addEventListener('hidden.bs.modal', function () {
@@ -291,6 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
             clearRegisterError('registerConfirmError');
         });
     }
+
     // ===== edit phone =====
     btnEditPhone.addEventListener("click", function () {
         otpStepCode.classList.add("d-none");

@@ -7,31 +7,129 @@
     <title>@ViewData["Title"] - رستورانیار دلاویتا</title>
     <link rel="icon" type="image/png" href="~/images/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
- <link rel="stylesheet" href="~/css/all.min.css" /> 
+    <link rel="stylesheet" href="~/css/all.min.css" />
     @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
-    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" /> 
+    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
+
+    <style>
+        :root {
+            --layout-bg: #f8f9fa;
+            --layout-text: #212529;
+            --header-bg: rgba(255, 255, 255, 0.90);
+            --header-border: #e9ecef;
+            --accent-orange: #FF8800;
+            --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --layout-bg: #12141c;
+            --layout-text: #f8f9fa;
+            --header-bg: rgba(30, 34, 42, 0.90);
+            --header-border: #2b303b;
+            --header-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Iran Yekan', 'Segoe UI', Tahoma, sans-serif !important;
+            direction: rtl !important;
+           
+            color: var(--layout-text) !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 100vh !important;
+        }
+
+        .simple-header {
+            background-color: var(--header-bg) !important;
+            border-bottom: 1px solid var(--header-border) !important;
+            box-shadow: var(--header-shadow) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            position: sticky !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 1050 !important;
+            padding: 6px 0 !important;
+            transition: background-color 0.3s ease, border-color 0.3s ease !important;
+        }
+
+            .simple-header .user-info {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                padding: 4px 8px !important;
+            }
+
+                .simple-header .user-info i {
+                    color: var(--accent-orange) !important;
+                    font-size: 1.45rem !important;
+                    vertical-align: middle !important;
+                    transition: transform 0.2s ease !important;
+                }
+
+                .simple-header .user-info:hover i {
+                    transform: scale(1.1) !important;
+                }
+
+            .simple-header .user-name {
+                color: var(--layout-text) !important;
+                font-weight: 700 !important;
+                font-size: 0.95rem !important;
+                user-select: none !important;
+            }
+
+            .simple-header .logout-form {
+                margin: 0 !important;
+                padding: 0 !important;
+                display: inline-block !important;
+            }
+
+            .simple-header .btn-outline-danger {
+                font-family: 'Iran Yekan', sans-serif !important;
+                font-size: 0.85rem !important;
+                font-weight: 700 !important;
+                padding: 5px 18px !important;
+                border-radius: 50px !important;
+                border-width: 1.5px !important;
+                transition: all 0.25s ease-in-out !important;
+            }
+
+                .simple-header .btn-outline-danger:focus,
+                .simple-header .btn-outline-danger:active {
+                    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25) !important;
+                    outline: none !important;
+                }
+
+        .simple-main {
+            padding: 24px 0 !important;
+          
+            min-height: calc(100vh - 60px) !important;
+            display: block !important;
+            transition: background-color 0.3s ease !important;
+        }
+    </style>
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
- 
+
 <body>
-    <!-- هدر ساده با نام کاربر و دکمه خروج -->
     <header class="simple-header">
         <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center py-2">
+            <div class="d-flex justify-content-between align-items-center py-1">
                 <div class="user-info">
                     <i class="fas fa-user-circle"></i>
                     <span class="user-name">@(User.Identity?.Name ?? "کاربر گرامی")</span>
                 </div>
                 <form method="post" asp-controller="Home" asp-action="Logout" class="logout-form">
                     <button type="submit" class="btn btn-sm btn-outline-danger">
-                         خروج
+                        خروج
                     </button>
                 </form>
             </div>
         </div>
     </header>
 
-    <!-- محتوای اصلی صفحه -->
     <main class="simple-main">
         @RenderBody()
     </main>

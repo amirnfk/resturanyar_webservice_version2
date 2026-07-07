@@ -63,7 +63,23 @@ html, body {
     overflow-x: hidden;
     transition: background 0.3s ease, color 0.3s ease;
     font-family: 'IRANYekan', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    /* 1. Allows the background pseudo-element to reference the body */
+    position: relative !important;
+    z-index: 1 !important;
 }
+
+    /* 2. Create the full-viewport fixed background layer */
+    body::before {
+        content: "" !important;
+        position: fixed !important; /* 'fixed' keeps the background static while content scrolls */
+        inset: 0 !important;
+        background-image: url('../images/back8.png') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        filter: blur(12px) !important; /* Subtle blur effect */
+        transform: scale(1.05) !important; /* Conceals blurred edge artifacts */
+        z-index: -1 !important; /* Safely forces it behind everything on the page */
+    }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
@@ -100,12 +116,13 @@ html, body {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
-    background: var(--bg);
+  
     padding: 20px;
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     gap: 20px;
+  
 }
 
 /* --- Header --- */

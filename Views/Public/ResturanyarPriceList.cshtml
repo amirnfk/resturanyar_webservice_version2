@@ -1,0 +1,301 @@
+﻿@{
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+    ViewData["Title"] = "دریافت لیست قیمت رستورانیار";
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>دریافت لیست قیمت نرم‌افزار رستورانیار</title>
+    <meta name="description" content="دریافت آنی لیست قیمت محصولات و نرم‌افزار مدیریت رستوران، فست‌فود و کافی‌شاپ رستورانیار دلاویتا." />
+
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
+    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
+    <link href="~/css/all.min.css" rel="stylesheet">
+    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
+
+    <style>
+        /* مینیمال‌ترین ساختار ممکن */
+        body {
+            background: var(--bg, #f5f7fb);
+        }
+
+        .pricelist-content {
+            background: var(--bg, #f5f7fb);
+            padding: 80px 0;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* کارت فرم – بسیار ساده و سبک */
+        .form-card {
+            background: var(--card, #ffffff);
+            border-radius: 20px;
+            padding: 2.2rem 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: background 0.2s, border 0.2s;
+        }
+
+        [data-theme="dark"] .form-card {
+            border-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .form-card .form-title-hint {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .form-card .form-control {
+            border-radius: 14px;
+            padding: 0.65rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.07);
+            background-color: transparent;
+            color: var(--text, #1e1e2a);
+            font-size: 0.95rem;
+            text-align: center;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+            .form-card .form-control:focus {
+                border-color: #2ecc71;
+                box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
+            }
+
+        /* دکمه سبز یکدست – مینیمال و بدون افکت اضافه */
+        .btn-submit-form {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 0.7rem 1.8rem;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: background 0.2s, opacity 0.2s;
+            width: 100%;
+            letter-spacing: 0.3px;
+        }
+
+            .btn-submit-form:hover {
+                background-color: #157347;
+                opacity: 0.92;
+            }
+
+        /* بخش توضیحات سمت راست – کاملاً مینیمال */
+        .info-section h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text, #1e1e2a);
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .info-section .highlight-text {
+            color: #198754;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(25, 135, 84, 0.3);
+        }
+
+        .info-section p {
+            line-height: 1.9;
+            color: var(--muted, #5b5b6e);
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        /* پیام‌های موفقیت/خطا – ساده و بدون حاشیه */
+        .alert-message {
+            display: none;
+            border-radius: 14px;
+            padding: 0.85rem 1rem;
+            margin-top: 1.2rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-align: center;
+            background-color: rgba(25, 135, 84, 0.06);
+            color: #198754;
+            border: 1px solid rgba(25, 135, 84, 0.08);
+        }
+
+            .alert-message.error {
+                background-color: rgba(220, 53, 69, 0.05);
+                color: #dc3545;
+                border-color: rgba(220, 53, 69, 0.08);
+            }
+
+        /* حذف اسپینر اضافی – فقط یک نقطه ساده */
+        .btn-spinner {
+            display: inline-block;
+            width: 1.1rem;
+            height: 1.1rem;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-top-color: #fff;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ریسپانسیو */
+        @@media (max-width: 991px) {
+            .info-section {
+                text-align: center;
+                margin-bottom: 2.5rem;
+            }
+
+                .info-section p {
+                    text-align: center;
+                }
+
+            .form-card {
+                padding: 1.8rem 1.5rem;
+            }
+        }
+
+        /* بسیار مینیمال – بدون هیچ تزئین اضافی */
+        .form-label {
+            font-weight: 600;
+            color: var(--muted, #5b5b6e);
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="pricelist-content">
+        <div class="container">
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-6 col-xl-7 ps-lg-5 info-section">
+                    <h1>لیست قیمت اشتراک‌های رستورانیار</h1>
+
+                    <p class="mb-4">
+                        در صورتی که قبلاً اشتراک رستورانیار را تهیه کرده‌اید و به پشتیبانی نیاز دارید،
+                        <a href="/public-support" class="highlight-text">از این قسمت اقدام کنید.</a>
+                    </p>
+
+                    <p>
+                        جهت دریافت لیست قیمت اشتراک‌های رستورانیار، کافیست فرم زیر را تکمیل کنید. همکاران ما در اولین زمان ممکن با شما تماس خواهند گرفت.
+                    </p>
+                </div>
+
+                <div class="col-lg-6 col-xl-5">
+                    <div class="form-card">
+                        <div class="form-title-hint">
+                            برای دریافت لیست قیمت اشتراک‌های رستورانیار و مشاوره رایگان، فرم زیر را تکمیل کنید.
+                        </div>
+
+                        <form id="priceListForm">
+                            <div class="mb-4">
+                                <label for="fullName" class="form-label mb-2 d-block">نام و نام خانوادگی *</label>
+                                <input type="text" class="form-control" id="fullName" placeholder="نام و نام خانوادگی" required maxlength="100">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="phoneNumber" class="form-label mb-2 d-block">شماره موبایل *</label>
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="09121234568" dir="ltr" required>
+                            </div>
+
+                            <button type="submit" class="btn-submit-form mt-1" id="submitBtn">
+                                <span class="btn-spinner d-none" id="btnSpinner"></span>
+                                ارسال درخواست
+                            </button>
+                        </form>
+
+                        <div id="responseAlert" class="alert-message"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('priceListForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const responseAlert = document.getElementById('responseAlert');
+
+            // تابع کمکی برای نمایش خطا
+            const showError = (message) => {
+                responseAlert.innerText = message;
+                responseAlert.className = 'alert-message error';
+                responseAlert.style.display = 'block';
+            };
+
+            // ریست پیام قبلی
+            responseAlert.style.display = 'none';
+            responseAlert.className = 'alert-message';
+
+            // 1. بررسی خالی نبودن نام
+            if (!fullName) {
+                showError('لطفاً نام و نام خانوادگی خود را وارد کنید.');
+                return;
+            }
+
+            // 2. بررسی خالی نبودن شماره موبایل
+            if (!phoneNumber) {
+                showError('لطفاً شماره موبایل خود را وارد کنید.');
+                return;
+            }
+
+            // 3. بررسی صحت فرمت شماره موبایل (شروع با 09 و دقیقا 11 رقم)
+            const phoneRegex = /^09\d{9}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                showError('شماره موبایل وارد شده معتبر نیست. لطفاً با فرمت صحیح (مانند 09123456789) وارد کنید.');
+                return;
+            }
+
+            // فعال‌سازی اسپینر
+            submitBtn.disabled = true;
+            btnSpinner.classList.remove('d-none');
+
+            try {
+                const response = await fetch('api/userapi/sendPriceList', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ FullName: fullName, PhoneNumber: phoneNumber })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    responseAlert.innerText = result.message || 'درخواست شما با موفقیت ثبت شد و پیامک برای شما ارسال گردید.';
+                    responseAlert.className = 'alert-message';
+                    responseAlert.style.display = 'block';
+                    document.getElementById('priceListForm').reset();
+                } else {
+                    showError(result.message || 'خطایی در سیستم رخ داده است. لطفاً مجدداً تلاش کنید.');
+                }
+            } catch (error) {
+                showError('خطا در برقراری ارتباط با سرور. لطفا اتصال اینترنت خود را بررسی کنید.');
+            } finally {
+                submitBtn.disabled = false;
+                btnSpinner.classList.add('d-none');
+            }
+        });
+    </script>
+
+</body>
+</html>

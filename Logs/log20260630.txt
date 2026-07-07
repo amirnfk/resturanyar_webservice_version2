@@ -1,0 +1,74 @@
+2026-06-30 22:36:21.811 +03:30 [INF] User profile is available. Using 'C:\Users\zmi13\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 22:36:22.747 +03:30 [WRN] The foreign key property 'CustomerAddress.CustomerId1' was created in shadow state because a conflicting property with the simple name 'CustomerId' exists in the entity type, but is either not mapped, is already used for another relationship, or is incompatible with the associated primary key type. See https://aka.ms/efcore-relationships for information on mapping relationships in EF Core.
+2026-06-30 22:36:22.765 +03:30 [WRN] No store type was specified for the decimal property 'CostPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'Price' on entity type 'FoodItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'UnitPrice' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'UnitPriceWithDiscount' on entity type 'OrderItem'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPrice6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'DiscountPriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'Price12Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'Price3Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'Price6Monthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:22.766 +03:30 [WRN] No store type was specified for the decimal property 'PriceMonthly' on entity type 'SubscriptionPlan'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-06-30 22:36:26.534 +03:30 [INF] Executed DbCommand (586ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-06-30 22:36:26.817 +03:30 [INF] Now listening on: https://localhost:7171
+2026-06-30 22:36:26.817 +03:30 [INF] Now listening on: http://localhost:5292
+2026-06-30 22:36:26.939 +03:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 22:36:26.940 +03:30 [INF] Hosting environment: Development
+2026-06-30 22:36:26.940 +03:30 [INF] Content root path: D:\aspnet projects\resturanyar\resturanyar_webservice_version2
+2026-06-30 22:36:27.310 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/ - null null
+2026-06-30 22:36:27.490 +03:30 [INF] Executing endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-30 22:36:27.509 +03:30 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller resturanyar.Controllers.HomeController (resturanyar).
+2026-06-30 22:36:27.522 +03:30 [INF] Executing ViewResult, running view Index.
+2026-06-30 22:36:27.687 +03:30 [INF] Executed ViewResult - view Index executed in 165.4722ms.
+2026-06-30 22:36:27.693 +03:30 [INF] Executed action resturanyar.Controllers.HomeController.Index (resturanyar) in 182.4481ms
+2026-06-30 22:36:27.694 +03:30 [INF] Executed endpoint 'resturanyar.Controllers.HomeController.Index (resturanyar)'
+2026-06-30 22:36:27.706 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/ - 200 null text/html; charset=utf-8 398.4056ms
+2026-06-30 22:36:27.706 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - null null
+2026-06-30 22:36:27.706 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - null null
+2026-06-30 22:36:27.706 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/all.min.css - null null
+2026-06-30 22:36:27.712 +03:30 [INF] The file /css/all.min.css was not modified
+2026-06-30 22:36:27.712 +03:30 [INF] The file /css/bootstrap_rtl_min.css was not modified
+2026-06-30 22:36:27.712 +03:30 [INF] The file /css/Vazirmatn_font_face.css was not modified
+2026-06-30 22:36:27.713 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/bootstrap_rtl_min.css - 304 null text/css 7.4513ms
+2026-06-30 22:36:27.713 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/Vazirmatn_font_face.css - 304 null text/css 7.31ms
+2026-06-30 22:36:27.713 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/all.min.css - 304 null text/css 7.4558ms
+2026-06-30 22:36:27.720 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/css/home.css?v=OYkGNTWBRzG6WWXbIN-8QCCzIel0VSSGsH_suHRt5Oc - null null
+2026-06-30 22:36:27.720 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo_circle.png - null null
+2026-06-30 22:36:27.721 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/images/logo.png - null null
+2026-06-30 22:36:27.721 +03:30 [INF] The file /images/logo_circle.png was not modified
+2026-06-30 22:36:27.721 +03:30 [INF] The file /images/logo.png was not modified
+2026-06-30 22:36:27.721 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo_circle.png - 304 null image/png 0.7684ms
+2026-06-30 22:36:27.721 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/images/logo.png - 304 null image/png 0.752ms
+2026-06-30 22:36:27.721 +03:30 [INF] The file /css/home.css was not modified
+2026-06-30 22:36:27.721 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/css/home.css?v=OYkGNTWBRzG6WWXbIN-8QCCzIel0VSSGsH_suHRt5Oc - 304 null text/css 1.0732ms
+2026-06-30 22:36:27.727 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - null null
+2026-06-30 22:36:27.727 +03:30 [INF] The file /js/home.js was not modified
+2026-06-30 22:36:27.728 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/home.js?v=OKhvU6q2lxPYL88YyaftKXhtbRH8h01xu4TsSpC-oAk - 304 null text/javascript 0.495ms
+2026-06-30 22:36:27.733 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 22:36:27.734 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - null null
+2026-06-30 22:36:27.734 +03:30 [INF] The file /js/bootstrap.bundle.min.js was not modified
+2026-06-30 22:36:27.734 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/js/bootstrap.bundle.min.js - 304 null text/javascript 0.3607ms
+2026-06-30 22:36:27.736 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_framework/aspnetcore-browser-refresh.js - 200 13757 application/javascript; charset=utf-8 2.8357ms
+2026-06-30 22:36:27.738 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/_vs/browserLink - null null
+2026-06-30 22:36:27.773 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/_vs/browserLink - 200 null text/javascript; charset=UTF-8 34.4949ms
+2026-06-30 22:36:27.781 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - null null
+2026-06-30 22:36:27.786 +03:30 [INF] CORS policy execution successful.
+2026-06-30 22:36:27.787 +03:30 [INF] The file /fonts/iranyekan/iranyekanwebregularfanum.woff was not modified
+2026-06-30 22:36:27.788 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebregularfanum.woff - 304 null application/font-woff 7.0577ms
+2026-06-30 22:36:27.797 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - null null
+2026-06-30 22:36:27.798 +03:30 [INF] CORS policy execution successful.
+2026-06-30 22:36:27.798 +03:30 [INF] The file /webfonts/fa-solid-900.woff2 was not modified
+2026-06-30 22:36:27.798 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-solid-900.woff2 - 304 null font/woff2 0.9861ms
+2026-06-30 22:36:27.800 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - null null
+2026-06-30 22:36:27.800 +03:30 [INF] CORS policy execution successful.
+2026-06-30 22:36:27.800 +03:30 [INF] The file /fonts/iranyekan/iranyekanwebboldfanum.woff was not modified
+2026-06-30 22:36:27.800 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/fonts/iranyekan/iranyekanwebboldfanum.woff - 304 null application/font-woff 0.4175ms
+2026-06-30 22:36:27.811 +03:30 [INF] Request starting HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - null null
+2026-06-30 22:36:27.812 +03:30 [INF] CORS policy execution successful.
+2026-06-30 22:36:27.812 +03:30 [INF] The file /webfonts/fa-brands-400.woff2 was not modified
+2026-06-30 22:36:27.812 +03:30 [INF] Request finished HTTP/2 GET https://localhost:7171/webfonts/fa-brands-400.woff2 - 304 null font/woff2 0.4289ms

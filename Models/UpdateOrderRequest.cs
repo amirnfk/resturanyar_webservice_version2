@@ -10,4 +10,6 @@ public class UpdateOrderRequest
     public string? Description { get; set; }   
 
     public List<OrderItemDto> Items { get; set; }
+    public int? CustomerId { get; set; }  // ← اضافه کنید
+
 }

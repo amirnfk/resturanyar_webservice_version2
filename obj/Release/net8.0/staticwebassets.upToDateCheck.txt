@@ -25,7 +25,6 @@ wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
 wwwroot\css\home.css
 wwwroot\css\jalalidatepicker.min.css
-wwwroot\css\managerlogin.css
 wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
 wwwroot\css\ownerlogin.css
@@ -58,6 +57,7 @@ wwwroot\images\back.jpg
 wwwroot\images\baker_9102653.png
 wwwroot\images\bergerback.jpg
 wwwroot\images\cashier_1651946.png
+wwwroot\images\customer_club.png
 wwwroot\images\customer_placeholder.png
 wwwroot\images\foodlist.jpg
 wwwroot\images\food_default.jpg
@@ -66,6 +66,8 @@ wwwroot\images\icons\baseline_auto_awesome_24.svg
 wwwroot\images\logo.png
 wwwroot\images\logo_circle.png
 wwwroot\images\man.png
+wwwroot\images\mobilesample.png
+wwwroot\images\mobilesample2.png
 wwwroot\images\orderlist.jpg
 wwwroot\images\sampleweb.jpg
 wwwroot\images\sampleweb1.jpg
@@ -75,6 +77,7 @@ wwwroot\images\sampleweb4.jpg
 wwwroot\images\sampleweb5.jpg
 wwwroot\images\sampleweb6.jpg
 wwwroot\images\staff_managment.jpg
+wwwroot\images\support2.png
 wwwroot\images\tabletfoodlist.jpg
 wwwroot\images\tablethome.jpg
 wwwroot\images\waiter_2453333.png
@@ -159,8 +162,9 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\images\mobilesample.png
-wwwroot\images\mobilesample2.png
+wwwroot\css\fntawsom600.css
+wwwroot\images\restaurant_background.png
+wwwroot\css\managerlogin.css
+wwwroot\images\back7.png
+wwwroot\images\back8.png
 wwwroot\images\mobilesample3.png
-wwwroot\images\customer_club.png
-wwwroot\images\support2.png

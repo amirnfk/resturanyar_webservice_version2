@@ -11,147 +11,138 @@
     <title>ورود مدیر رستوران</title>
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
     <link href="~/css/site.css" rel="stylesheet" />
-    
+
     <script src="~/js/sweetalert2@11.js"></script>
     <link href="~/css/managerlogin.css" rel="stylesheet" asp-append-version="true" />
 </head>
-<body class="bg-white">
-   
-    <div class="bg-orange" style="height:220px;"></div>
-     
-    <div class="main-box text-center position-relative">
-      
-        <img src="~/images/logo.png" alt="لوگو" class="rounded-circle shadow logo-img" />
-        
-        <div class="card mt-4 shadow rounded-4">
-            <div class="card-body px-4 py-5 text-start">
-                <h5 class="text-orange fw-bold text-center mb-4">ورود مدیر رستوران</h5>
+<body class="bg-light">
 
-              
-                <div id="login-password-section">
-                    <form asp-action="ManagerLogin" method="post" id="passwordForm">
-                        <div class="mb-3">
-                            <label asp-for="Phone" class="form-label">شماره تلفن</label>
-                            <input asp-for="Phone" class="form-control form-control-lg text-end" placeholder="مثلاً 09121234567" />
-                            <span asp-validation-for="Phone" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Password" class="form-label">رمز عبور</label>
-                            <input asp-for="Password" type="password" class="form-control form-control-lg text-end" placeholder="رمز عبور" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-orange btn-lg fw-bold">ورود</button>
-                        </div>
-                        @if (ViewBag.Error != null)
-                        {
-                            <div class="alert alert-danger mt-3 text-center">@ViewBag.Error</div>
-                        }
-                    </form>
-
-                   
-                    <div class="text-center mt-3">
-                        <button type="button" id="btnSwitchToOtp" class="btn-modern-switch">
-                          
-                            
-                            ورود با کد یکبار مصرف  
-                        </button>
-                       
-                    </div>
-                    <div class="text-center mt-3">
-                        <button type="button" id="btnSwitchToRegister" class="btn-modern-switch">
-
-
-                           ثبت نام
-                        </button>
-
-                    </div>
-                </div>
-
-               
-                <div id="login-otp-section" class="d-none">
-
-                  
-                    <div id="otp-step-phone">
-                        <div class="mb-3">
-                            <label class="form-label">شماره تلفن</label>
-                            <input id="otpPhoneInput" class="form-control form-control-lg text-end" placeholder="مثلاً 09121234567" />
-                            <span id="otpPhoneError" class="text-danger small"></span>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button id="btnGetOtp" class="btn btn-orange btn-lg fw-bold w-100">دریافت کد تایید</button>
-                        </div>
-                    </div>
-
-                    
-                    <div id="otp-step-code" class="d-none">
-                        <div class="alert alert-info text-center small">
-                            کد تایید برای شماره <span id="displayPhone" class="fw-bold"></span> ارسال شد.
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">کد تایید</label>
-                            <input id="otpCodeInput" type="text" class="form-control form-control-lg text-center" placeholder="کد ۴ رقمی" maxlength="4" />
-                            <span id="otpCodeError" class="text-danger small"></span>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button id="btnVerifyOtp" class="btn btn-orange btn-lg fw-bold">تایید و ورود</button>
-                        </div>
-                        <div class="text-center mt-3">
-                            <button id="btnEditPhone" class="btn-edit-phone">
-                                ویرایش شماره
-                            </button>
-                        </div>
-                    </div>
-
-                   
-                    <div class="text-center mt-4 pt-3 border-top">
-                        <button type="button" id="btnSwitchToPassword" class="btn-link-custom">
-                            ورود با رمز عبور
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-       
-        @* <img src="~/images/bergerback.jpg" alt="پس‌زمینه" class="img-fluid mt-4" style="max-height: 240px; object-fit: contain;" /> *@
+    <div class="login-bg-wrapper">
+        <div class="login-overlay"></div>
     </div>
 
-    <!-- مودال ثبت‌نام -->
+    <div class="main-login-container">
+        <div class="login-card shadow-lg rounded-4">
+
+            <div class="text-center mb-4">
+                <img src="~/images/logo.png" alt="لوگو رستوران یار" class="logo-img mb-3" />
+               
+                <h5 class="fw-bold text-dark">ورود مدیر رستوران</h5>
+            </div>
+
+            <div id="login-password-section">
+                <form asp-action="ManagerLogin" method="post" id="passwordForm">
+                    <div class="mb-3 text-start">
+                        <label asp-for="Phone" class="form-label fw-bold small text-dark">شماره تلفن</label>
+                        <input asp-for="Phone" class="form-control form-control-lg custom-input text-end" placeholder="مثلاً 09121234567" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3 text-start position-relative">
+                        <label asp-for="Password" class="form-label fw-bold small text-dark">رمز عبور</label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg custom-input text-end pr-5" placeholder="رمز عبور" id="passwordField" />
+
+                        <span class="password-toggle-icon" id="togglePassword">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </span>
+
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2 px-1">
+               
+                        <button type="button" id="btnSwitchToOtp" class="btn btn-link text-decoration-none text-muted small p-0 m-0">ورود با کد پیامکی</button>
+                    </div>
+
+                    <div class="d-grid mt-2">
+                        <button type="submit" class="btn btn-orange btn-lg fw-bold rounded-pill">ورود</button>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger mt-3 text-center small py-2">@ViewBag.Error</div>
+                    }
+                </form>
+
+                <div class="text-center mt-4">
+                    <span class="text-dark small fw-bold">هنوز ثبت نام نکرده‌اید؟ </span>
+                    <button type="button" id="btnSwitchToRegister" class="btn btn-link text-success text-decoration-none fw-bold p-0 m-0">ثبت نام</button>
+                </div>
+            </div>
+
+            <div id="login-otp-section" class="d-none">
+
+                <div id="otp-step-phone">
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold small text-dark">شماره تلفن</label>
+                        <input id="otpPhoneInput" class="form-control form-control-lg custom-input text-end" placeholder="مثلاً 09121234567" />
+                        <span id="otpPhoneError" class="text-danger small"></span>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button id="btnGetOtp" class="btn btn-orange btn-lg fw-bold w-100 rounded-pill">دریافت کد تایید</button>
+                    </div>
+                </div>
+
+                <div id="otp-step-code" class="d-none">
+                    <div class="alert alert-info text-center small rounded-3 border-0 bg-opacity-10 text-orange">
+                        کد تایید برای شماره <span id="displayPhone" class="fw-bold"></span> ارسال شد.
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold small text-dark">کد تایید</label>
+                        <input id="otpCodeInput" type="text" class="form-control form-control-lg custom-input text-center tracking-widest" placeholder="کد ۴ رقمی" maxlength="4" />
+                        <span id="otpCodeError" class="text-danger small"></span>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button id="btnVerifyOtp" class="btn btn-orange btn-lg fw-bold rounded-pill">تایید و ورود</button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button id="btnEditPhone" class="btn-edit-phone">ویرایش شماره</button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 pt-3">
+                    <button type="button" id="btnSwitchToPassword" class="btn btn-link text-muted text-decoration-none small">بازگشت به ورود با رمز عبور</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="modal fade" id="registerModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title text-orange fw-bold w-100 text-center">تکمیل اطلاعات ثبت‌نام</h5>
                 </div>
                 <div class="modal-body px-4">
                     <p class="text-muted text-center small mb-4">شماره شما تایید شد. لطفاً اطلاعات زیر را تکمیل کنید.</p>
 
-                    <div class="mb-3">
-                        <label class="form-label">نام و نام خانوادگی</label>
-                        <input id="registerName" type="text" class="form-control form-control-lg text-end" placeholder="نام کامل" />
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold small">نام و نام خانوادگی</label>
+                        <input id="registerName" type="text" class="form-control form-control-lg custom-input text-end" placeholder="نام کامل" />
                         <div id="registerNameError" class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">رمز عبور</label>
-                        <input id="registerPassword" type="password" class="form-control form-control-lg text-end" placeholder="رمز عبور (حداقل ۶ کاراکتر)" />
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold small">رمز عبور</label>
+                        <input id="registerPassword" type="password" class="form-control form-control-lg custom-input text-end" placeholder="رمز عبور (حداقل ۶ کاراکتر)" />
                         <div id="registerPasswordError" class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">تکرار رمز عبور</label>
-                        <input id="registerConfirmPassword" type="password" class="form-control form-control-lg text-end" placeholder="دوباره رمز عبور را وارد کنید" />
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold small">تکرار رمز عبور</label>
+                        <input id="registerConfirmPassword" type="password" class="form-control form-control-lg custom-input text-end" placeholder="دوباره رمز عبور را وارد کنید" />
                         <div id="registerConfirmError" class="invalid-feedback"></div>
                     </div>
 
                     <div class="d-grid mt-4 mb-2">
-                        <button id="btnRegisterSubmit" class="btn btn-orange btn-lg fw-bold">ثبت‌نام و ورود</button>
+                        <button id="btnRegisterSubmit" class="btn btn-orange btn-lg fw-bold rounded-pill">ثبت‌نام و ورود</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
     <script>
         (function() {

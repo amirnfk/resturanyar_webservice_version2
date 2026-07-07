@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
 namespace Resturanyar.Hubs
 {
+    [DisableRateLimiting]
     public class OrderHub : Hub
     {
         public async Task SendOrderUpdate(string restaurantId, string message)
@@ -10,7 +12,7 @@ namespace Resturanyar.Hubs
             await Clients.Group(restaurantId).SendAsync("ReceiveOrderUpdate", message);
         }
 
-        // 🔥 اضافه کردن این متد برای تست اتصال
+       
         public async Task JoinRestaurantGroup(string restaurantId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, restaurantId);

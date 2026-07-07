@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
  
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using resturanyar.Models;
  
  
 using resturanyar.Models;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.Settings;
 using resturanyar.Utility;
 using Resturanyar.Data;
 using Resturanyar.Data;
@@ -22,10 +25,12 @@ using Resturanyar.Hubs;
 using System;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text;
@@ -39,12 +44,19 @@ namespace Resturanyar.Controllers.Api
         private readonly IHubContext<OrderHub> _hubContext;
 
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration; // <-- اضافه شد
+        private readonly PayamakSettings _payamakSettings;
 
-        public UserApiController(AppDbContext context, IHubContext<OrderHub> hubContext)
+
+        public UserApiController(AppDbContext context,
+            IHubContext<OrderHub> hubContext, 
+            IConfiguration configuration,
+            IOptions<PayamakSettings> payamakOptions)
         {
             _context = context;
             _hubContext = hubContext;
-
+            _configuration = configuration;
+            _payamakSettings = payamakOptions.Value;
         }
         private static string EncodePassword(string plainPassword)
         {
@@ -1667,6 +1679,7 @@ namespace Resturanyar.Controllers.Api
                 order.StatusId = request.StatusId;
                 order.UpdatedAt = DateTime.Now;
                 order.Description = request.Description;
+                order.CustomerId = request.CustomerId;
 
                 // *** اضافه کردن این قسمت برای آپدیت تاریخ شمسی ***
                 order.UpdatedAtShamsi = DateHelper.ToShamsi(DateTime.Now);
@@ -2167,19 +2180,171 @@ namespace Resturanyar.Controllers.Api
                 default: return null;
             }
         }
+        public class PriceListRequest
+        {
+            [Required(ErrorMessage = "نام و نام خانوادگی الزامی است.")]
+            [StringLength(100, ErrorMessage = "نام و نام خانوادگی نباید بیش از ۱۰۰ کاراکتر باشد.")]
+            public string FullName { get; set; }
+            [IranianMobile]
+            public string PhoneNumber { get; set; }
+        }
+        [HttpPost("sendPriceList")]
+        [EnableRateLimiting("OtpPolicy")]
+        [AllowAnonymous]
+        public async Task<IActionResult> sendPriceList([FromBody] PriceListRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.PhoneNumber))
+                return BadRequest(new { success = false, message = "شماره تلفن الزامی است." });
 
-      
+            // ارسال پیامک به مشتری
+            var smsRequest = new
+            {
+                username = _payamakSettings.Username,
+                password = _payamakSettings.Password,
+                text = request.FullName,
+                to = request.PhoneNumber,
+                bodyId = _payamakSettings.PriceListBodyId
+            };
+
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(smsRequest);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(
+                   _payamakSettings.BaseUrl,
+                    content
+                );
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var jsonResponse = System.Text.Json.JsonSerializer.Deserialize<PayamakResponse>(responseContent);
+
+                if (!response.IsSuccessStatusCode || jsonResponse.RetStatus != 1 || jsonResponse.StrRetStatus != "Ok")
+                {
+                    return StatusCode((int)response.StatusCode, new
+                    {
+                        success = false,
+                        message = $"ارسال پیام با خطا مواجه شد: وضعیت {response.StatusCode}، RetStatus: {jsonResponse.RetStatus}، StrRetStatus: {jsonResponse.StrRetStatus}"
+                    });
+                }
+
+                // **ارسال پیامک به خودتان برای اطلاع از درخواست جدید**
+                await SendNotificationToAdmin(request.FullName, request.PhoneNumber);
+
+
+                return Ok(new { success = true, message = "درخواست شما با موفقیت ثبت شد. همکاران ما به زودی با شما تماس خواهند گرفت." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = $"خطا در ارسال پیام: {ex.Message}" });
+            }
+        }
+
+        // متد کمکی برای ارسال پیامک به ادمین
+        private async Task SendNotificationToAdmin(string fullName, string phoneNumber)
+        {
+            try
+            {
+                var adminMessage = $"{fullName} - {phoneNumber}";
+
+                var smsRequest = new
+                {
+                    username = _payamakSettings.Username,
+                    password = _payamakSettings.Password,
+                    text = adminMessage,
+                    to = _payamakSettings.AdminPhoneNumber,
+                    bodyId = _payamakSettings.PriceListToAdminBodyId
+                };
+
+                using var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                var json = System.Text.Json.JsonSerializer.Serialize(smsRequest);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // ✅ استفاده از await برای دریافت پاسخ
+                var response = await client.PostAsync(_payamakSettings.BaseUrl, content);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                // ✅ لاگ کردن نتیجه برای دیباگ
+               
+            }
+            catch (Exception ex)
+            {
+               
+                // می‌توانید خطا را در دیتابیس لاگ کنید
+            }
+        }
+        //[HttpPost("sendPriceList")]
+        //[EnableRateLimiting("OtpPolicy")]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> sendPriceList([FromBody] PriceListRequest request)
+        //{
+
+        //    if (string.IsNullOrWhiteSpace(request.PhoneNumber))
+        //        return BadRequest(new { success = false, message = "شماره تلفن الزامی است." });
+
+
+
+
+        //    var smsRequest = new
+        //    {
+        //        username = _payamakSettings.Username,
+        //        password = _payamakSettings.Password,
+        //        text = request.FullName,
+        //        to = request.PhoneNumber,
+        //        bodyId = _payamakSettings.PriceListBodyId
+        //    };
+
+        //    using var client = new HttpClient();
+        //    client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+        //    try
+        //    {
+        //        var json = System.Text.Json.JsonSerializer.Serialize(smsRequest);
+        //        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //        var response = await client.PostAsync(
+        //            "https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber",
+        //            content
+        //        );
+
+        //        var responseContent = await response.Content.ReadAsStringAsync();
+        //        var jsonResponse = System.Text.Json.JsonSerializer.Deserialize<PayamakResponse>(responseContent);
+
+        //        if (!response.IsSuccessStatusCode || jsonResponse.RetStatus != 1 || jsonResponse.StrRetStatus != "Ok")
+        //        {
+        //            return StatusCode((int)response.StatusCode, new
+        //            {
+        //                success = false,
+        //                message = $"ارسال پیام با خطا مواجه شد: وضعیت {response.StatusCode}، RetStatus: {jsonResponse.RetStatus}، StrRetStatus: {jsonResponse.StrRetStatus}"
+        //            });
+        //        }
+
+        //        return Ok(new { success = true, message = "درخواست شما با موفقیت ثبت شد. همکاران ما به زودی با شما تماس خواهند گرفت." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = $"خطا در ارسال پیام: {ex.Message}" });
+        //    }
+        //}
+
+
 
         [HttpPost("otprequest")]
+        [EnableRateLimiting("OtpPolicy")]
         public async Task<IActionResult> RequestOtp([FromBody] OtpRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.PhoneNumber))
                 return BadRequest(new { success = false, message = "Phone number is required" });
 
-            // Generate 4-digit OTP
+           
             var otpCode = new Random().Next(1000, 10000).ToString();
 
-            // Save hashed OTP in DB
+           
             var otpEntry = new OtpEntry
             {
                 PhoneNumber = request.PhoneNumber,
@@ -2193,11 +2358,11 @@ namespace Resturanyar.Controllers.Api
             // Send SMS (via Payamak API)
             var smsRequest = new
             {
-                username = "09149141260",
-                password = "PCMZA",
-                text = $" دلاویتا ; {otpCode}", // Match Postman's exact format with spaces
+                username = _payamakSettings.Username,
+                password = _payamakSettings.Password,
+                text = $" رستورانیار دلاویتا ; {otpCode}",
                 to = request.PhoneNumber,
-                bodyId = "357811" // Ensure this is a string
+                bodyId = _payamakSettings.BodyId
             };
 
             using var client = new HttpClient();
@@ -2211,9 +2376,8 @@ namespace Resturanyar.Controllers.Api
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await client.PostAsync(
-                    "https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber",
-                    content
-                );
+    _payamakSettings.BaseUrl,
+    content);
 
                 // Read response body
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -2236,12 +2400,12 @@ namespace Resturanyar.Controllers.Api
             }
             catch (Exception ex)
             {
-                // Handle network or JSON parsing errors
-                return StatusCode(500, new { success = false, message = $"SMS request failed: {ex.Message}" });
+                
+                return StatusCode(500, new { success = false, message = $"SMS request failed: " });
             }
         }
 
-        // Define a class to deserialize Payamak API response
+       
 
 
         [HttpPost("otpverify")]

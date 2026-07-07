@@ -9,6 +9,7 @@ namespace resturanyar.Controllers
     {
         public class SitemapController : Controller
         {
+            [HttpGet]
             [Route("/sitemap.xml")]
             public IActionResult Index()
             {
