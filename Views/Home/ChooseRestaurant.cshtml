@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "انتخاب یا افزودن کافه یا رستوران";
     var restaurants = ViewBag.Restaurants as List<Restaurant>;
-    var ownerId = ViewBag.OwnerId;
+   
 }
 
 <!DOCTYPE html>
@@ -84,7 +84,7 @@
 
     <script>
         // Owner ID from ViewBag passed to JS
-        var currentOwnerId = "@(ViewBag.ownerId ?? 0)";
+       // var currentOwnerId = "@(ViewBag.ownerId ?? 0)";
     </script>
     <script>
         // Dark Mode Initialization Script

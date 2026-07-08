@@ -1,4 +1,5 @@
-﻿ 
+﻿ const token = localStorage.getItem('ownerToken');
+
 
 var currentOwnerId = parseInt(currentOwnerId) || 0;
 
@@ -63,90 +64,82 @@ var currentOwnerId = parseInt(currentOwnerId) || 0;
             });
         }
 
-    function addRestaurant() {
-                var restaurantName = $("#restaurantName").val().trim();
-    var errorDiv = $("#nameError");
+        function addRestaurant() {
+            var restaurantName = $("#restaurantName").val().trim();
+            var errorDiv = $("#nameError");
 
-    // ریست خطاها
-    errorDiv.hide().text('');
+            errorDiv.hide().text('');
 
-    // اعتبارسنجی
-    if (!restaurantName) {
-        errorDiv.text('نام رستوران الزامی است').show();
-    $("#restaurantName").focus();
-    return;
-                }
-
-    if (restaurantName.length < 2) {
-        errorDiv.text('نام رستوران باید حداقل ۲ کاراکتر باشد').show();
-    $("#restaurantName").focus();
-    return;
-                }
-
-    // دکمه غیرفعال شود
-    var $btn = $("#btnAddRestaurant");
-    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> در حال افزودن...');
-
-    // ساخت payload - استفاده از ViewBag.OwnerId
-    var payload = {
-        name: restaurantName,
-    owner_id: currentOwnerId // مقدار پیش‌فرض برای جلوگیری از خطا
-                };
-
-    // بررسی owner_id
-    if (payload.owner_id === 0) {
-        alert("خطا: شناسه مالک نامعتبر است");
-    $btn.prop('disabled', false).text('افزودن');
-    return;
-                }
-
-  
-    $.ajax({
-        url: "/api/userapi/addrestaurant",  
-    type: "POST",
-    contentType: "application/json",
-    headers: {
-        
-            
-        'X-Requested-With': 'XMLHttpRequest'
-                    },
-    data: JSON.stringify(payload),
-        success: function (res) {
-            if (res.success) {
-                if (res.has_free_trial) {
-                    showFreeTrialModal(res.message, function () {
-                        redirectAfterAdd(res.restaurant_id);
-                    });
-                } else {
-                    alert("✅ " + res.message);
-                    setTimeout(function () {
-                        redirectAfterAdd(res.restaurant_id);
-                    }, 1500);
-                }
-            } else {
-                alert("❌ " + res.message);
-                errorDiv.text(res.message).show();
+            if (!restaurantName) {
+                errorDiv.text('نام رستوران الزامی است').show();
+                $("#restaurantName").focus();
+                return;
             }
-        }, 
-    error: function (xhr, status, error) {
-                        var errorMessage = "خطا در ارتباط با سرور";
-    try {
-                            var response = JSON.parse(xhr.responseText);
-    if (response && response.message) {
-        errorMessage = response.message;
-                            }
-                        } catch (e) {
-        // اگر response JSON نبود
-    }
-    alert("❌ " + errorMessage);
-    errorDiv.text(errorMessage).show();
-    console.error("Error:", error);
-                    },
-    complete: function () {
-        // فعال کردن دکمه
-        $btn.prop('disabled', false).text('افزودن');
+
+            if (restaurantName.length < 2) {
+                errorDiv.text('نام رستوران باید حداقل ۲ کاراکتر باشد').show();
+                $("#restaurantName").focus();
+                return;
+            }
+
+            var $btn = $("#btnAddRestaurant");
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> در حال افزودن...');
+
+            // دریافت توکن از localStorage
+            var token = localStorage.getItem('ownerToken');
+            if (!token) {
+                alert("لطفاً ابتدا وارد شوید.");
+                $btn.prop('disabled', false).text('افزودن');
+                return;
+            }
+
+            // payload فقط شامل نام رستوران است
+            var payload = {
+                name: restaurantName
+            };
+
+            $.ajax({
+                url: "/api/V2/userapi/addrestaurant",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    'Authorization': 'Bearer ' + token,    
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                data: JSON.stringify(payload),
+                success: function (res) {
+                    if (res.success) {
+                        if (res.has_free_trial) {
+                            showFreeTrialModal(res.message, function () {
+                                redirectAfterAdd(res.restaurant_id);
+                            });
+                        } else {
+                            alert("✅ " + res.message);
+                            setTimeout(function () {
+                                redirectAfterAdd(res.restaurant_id);
+                            }, 1500);
+                        }
+                    } else {
+                        alert("❌ " + res.message);
+                        errorDiv.text(res.message).show();
                     }
-                });
-            }
+                },
+                error: function (xhr, status, error) {
+                    var errorMessage = "خطا در ارتباط با سرور";
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response && response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch (e) { }
+                    alert("❌ " + errorMessage);
+                    errorDiv.text(errorMessage).show();
+                    console.error("Error:", error);
+                },
+                complete: function () {
+                    $btn.prop('disabled', false).text('افزودن');
+                }
+            });
+        }
         });
  

@@ -8,6 +8,6 @@
     "\\wwwroot",
     "\\wwwroot\\css"
   ],
-  "SelectedNode": "\\Views\\Home\\_ManagerOrdersPartial.cshtml",
+  "SelectedNode": "\\Controllers\\SitemapController.cs",
   "PreviewInSolutionExplorer": false
 }

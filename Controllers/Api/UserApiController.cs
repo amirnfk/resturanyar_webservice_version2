@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Asp.Versioning;
+using Azure.Core;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -37,8 +38,9 @@ using System.Text;
 namespace Resturanyar.Controllers.Api
 {
     [ApiController]
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
-
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class UserApiController : ControllerBase
     {
         private readonly IHubContext<OrderHub> _hubContext;
@@ -398,6 +400,9 @@ namespace Resturanyar.Controllers.Api
                 });
             }
         }
+
+
+
         [HttpPost("owner_login")]
         public IActionResult Login([FromBody] OwnerLoginRequest request)
         {

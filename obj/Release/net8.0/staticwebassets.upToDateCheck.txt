@@ -7,6 +7,7 @@ wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\chooserestaurant.css
 wwwroot\css\dashboard.css
+wwwroot\css\fntawsom600.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
 wwwroot\css\fonts\iranyekan\iranyekanwebblackfanum.eot
@@ -25,6 +26,7 @@ wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
 wwwroot\css\home.css
 wwwroot\css\jalalidatepicker.min.css
+wwwroot\css\managerlogin.css
 wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
 wwwroot\css\ownerlogin.css
@@ -54,6 +56,8 @@ wwwroot\images\addfood.jpg
 wwwroot\images\apphome.jpg
 wwwroot\images\appscreenfoodlist.jpg
 wwwroot\images\back.jpg
+wwwroot\images\back7.png
+wwwroot\images\back8.png
 wwwroot\images\baker_9102653.png
 wwwroot\images\bergerback.jpg
 wwwroot\images\cashier_1651946.png
@@ -68,7 +72,9 @@ wwwroot\images\logo_circle.png
 wwwroot\images\man.png
 wwwroot\images\mobilesample.png
 wwwroot\images\mobilesample2.png
+wwwroot\images\mobilesample3.png
 wwwroot\images\orderlist.jpg
+wwwroot\images\restaurant_background.png
 wwwroot\images\sampleweb.jpg
 wwwroot\images\sampleweb1.jpg
 wwwroot\images\sampleweb2.jpg
@@ -92,7 +98,6 @@ wwwroot\js\home.js
 wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
-wwwroot\js\managerlogin.js
 wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
 wwwroot\js\persian-date.min.js
@@ -162,9 +167,4 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\css\fntawsom600.css
-wwwroot\images\restaurant_background.png
-wwwroot\css\managerlogin.css
-wwwroot\images\back7.png
-wwwroot\images\back8.png
-wwwroot\images\mobilesample3.png
+wwwroot\js\managerlogin.js

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar.csproj": {}
+    "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj": {}
   },
   "projects": {
-    "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar.csproj": {
+    "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "projectUniqueName": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj",
         "projectName": "resturanyar",
-        "projectPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\resturanyar.csproj",
-        "packagesPath": "C:\\Users\\zmi13\\.nuget\\packages\\",
-        "outputPath": "D:\\aspnet projects\\resturanyar\\resturanyar_webservice_version2\\obj\\",
+        "projectPath": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "packagesPath": "C:\\Users\\anoorafkan\\.nuget\\packages\\",
+        "outputPath": "E:\\myAspProjects\\Work at home\\resturanyar_webservice_version2\\resturanyar_webservice_version2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\vs shared folder\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\zmi13\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\anoorafkan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Asp.Versioning.Mvc": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
+            "Asp.Versioning.Mvc.ApiExplorer": {
+              "target": "Package",
+              "version": "[8.1.0, )"
+            },
             "ClosedXML": {
               "target": "Package",
               "version": "[0.105.0, )"
@@ -77,6 +85,10 @@
             "Microsoft.AspNet.WebApi.WebHost": {
               "target": "Package",
               "version": "[5.3.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.12, )"
             },
             "Microsoft.AspNetCore.SignalR": {
               "target": "Package",
@@ -144,7 +156,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

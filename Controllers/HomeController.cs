@@ -443,7 +443,7 @@ namespace resturanyar.Controllers
                 .ToList();
 
             ViewBag.Restaurants = restaurants;
-            ViewBag.OwnerId = ownerId;
+             
 
             return View();
         }
@@ -1924,8 +1924,33 @@ namespace resturanyar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            // 1. خروج از سیستم و پاک کردن کوکی
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+
+            // 2. ساخت یک صفحه HTML موقت برای پاک کردن لوکال استوریج و سپس ریدایرکت
+            string redirectHtml = $@"
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset='utf-8' />
+     
+    </head>
+    <body>
+       
+        <script>
+            
+            localStorage.clear();
+            
+ 
+
+          
+            window.location.href = '/Home/Index';
+        </script>
+    </body>
+    </html>";
+
+            
+            return Content(redirectHtml, "text/html");
         }
 
 

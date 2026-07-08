@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting; // ✳️ اضافه شده برای Rate Limiting
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Models;
 using resturanyar.Controllers.Api;
@@ -17,6 +20,7 @@ using Resturanyar.Hubs;
 using Resturanyar.Hubs;
 using Serilog;
 using Serilog;
+using System.Text;
 using System.Text.Json;
 using System.Threading.RateLimiting;
 using System.Threading.RateLimiting;      // ✳️ اضافه شده برای Rate Limiting
@@ -51,9 +55,26 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 // ✳️ افزودن Swagger با Security Definition
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new Asp.Versioning.UrlSegmentApiVersionReader();
+})
+.AddApiExplorer(options => // 👈 متد AddApiExplorer را مستقیماً به ورژن‌بندی وصل کنید
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+// ثبت سرویس ساخت توکن در Dependency Injection
+builder.Services.AddScoped<resturanyar.Utility.TokenService>();
+
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Resturanyar API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Resturanyar API - V1", Version = "v1" });
+    c.SwaggerDoc("v2", new OpenApiInfo { Title = "Resturanyar API - V2", Version = "v2" });
 
     // تعریف امنیتی توکن
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -91,14 +112,33 @@ builder.Services.AddSession(options =>
 // using Microsoft.AspNetCore.Authentication.Cookies;
 builder.Services.AddHostedService<WarmupService>();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddAuthentication(options =>
+{
+    // سیستم به طور پیش‌فرض برای صفحات وب از کوکی استفاده می‌کند
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/Home/ManagerLogin";
+    options.Cookie.Name = "ResturanyarAuth";
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    // تنظیمات توکن JWT شما برای نسخه ۲
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.LoginPath = "/Home/ManagerLogin"; // مسیر لاگین پیش‌فرض
-        options.Cookie.Name = "ResturanyarAuth";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8);
-        options.SlidingExpiration = true;
-    });
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
 
 builder.Services.AddAuthorization();
 
@@ -178,7 +218,9 @@ else
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
+        // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2"); // 👈 اضافه کردن این خط
         c.RoutePrefix = "swagger";
     });
 
@@ -246,6 +288,12 @@ app.UseAuthorization();
 app.UseWhen(context =>
 {
     var path = context.Request.Path.ToString();
+
+    // 🟢 شرط جدید: اگر آدرس مربوط به ورژن ۲ بود، میدل‌ور قدیمی اعمال نشود
+    if (path.StartsWith("/api/v2", StringComparison.OrdinalIgnoreCase))
+    {
+        return false;
+    }
 
     return path.StartsWith("/api") && !path.Contains("verifyotpweb") && !path.Contains("sendPriceList") && !path.Contains("addrestaurant") && !path.Contains("registerandlogin");
 }, appBuilder =>
