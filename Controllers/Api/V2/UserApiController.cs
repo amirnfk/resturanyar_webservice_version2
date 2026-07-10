@@ -26,9 +26,7 @@ namespace resturanyar.Controllers.Api.V2
             _tokenService = tokenService;
         }
 
-        /// <summary>
-        /// متد ورود و بررسی هویت مالک رستوران و تولید توکن JWT
-        /// </summary>
+     
         [AllowAnonymous]
         [HttpPost("generate-token")]
         public IActionResult GenerateTokenAction([FromBody] TokenRequestModel request)
@@ -46,20 +44,32 @@ namespace resturanyar.Controllers.Api.V2
                     return NotFound(new { success = false, message = "کاربری با این شماره تلفن یافت نشد." });
                 }
 
-                bool hasRestaurant = _context.Restaurants.Any(r => r.owner_id == owner.Id);
-                if (!hasRestaurant)
-                {
-                    return BadRequest(new { success = false, message = "خطا: حساب شما به هیچ رستورانی متصل نیست یا شما مالک رستورانی نیستید." });
-                }
+                //bool hasRestaurant = _context.Restaurants.Any(r => r.owner_id == owner.Id);
+                //if (!hasRestaurant)
+                //{
+                //    return BadRequest(new { success = false, message = "خطا: حساب شما به هیچ رستورانی متصل نیست یا شما مالک رستورانی نیستید." });
+                //}
 
                 string jwtToken = _tokenService.GenerateOwnerToken(owner);
+                var expirationTime = DateTime.UtcNow.AddDays(1); // زمان انقضا باید با TokenService هماهنگ باشد
 
+                // ۲. استراتژی امن برای وب (ست کردن کوکی HttpOnly)
+                // مرورگر وب این کوکی را ذخیره میکند و جاوااسکریپت به آن دسترسی ندارد (ضد XSS)
+                Response.Cookies.Append("X-Access-Token", jwtToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // حتما در پروداکشن فعال باشد (نیاز به HTTPS)
+                    SameSite = SameSiteMode.Strict,
+                    Expires = expirationTime
+                });
+
+                // ۳. خروجی مشترک (موبایل از فیلد token استفاده میکند و وب میتواند آن را نادیده بگیرد)
                 return Ok(new
                 {
                     success = true,
                     message = "خوش آمدید. هویت شما به عنوان مالک رستوران تایید شد.",
-                    token = jwtToken,
-                    expiresAt = DateTime.Now.AddDays(30)
+                    token = jwtToken, // برای مصرف در موبایل
+                    expiresAt = expirationTime
                 });
             }
             catch (Exception ex)
@@ -73,89 +83,8 @@ namespace resturanyar.Controllers.Api.V2
             public string PhoneNumber { get; set; }
         }
 
-        /// <summary>
-        /// دریافت لیست رستوران‌های متعلق به مالک (بر اساس توکن)
-        /// در صورت ارسال پارامتر ownerId در کوئری، تطابق آن با مالک توکن بررسی می‌شود.
-        /// </summary>
-        [HttpGet("getrestaurants")]
-        public IActionResult GetRestaurantsByOwnerV2([FromQuery] int? ownerId = null)
-        {
-            try
-            {
-                // ۱. استخراج ownerId از توکن
-                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int tokenOwnerId))
-                {
-                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
-                }
-
-                // ۲. اگر ownerId در کوئری ارسال شده، بررسی تطابق با مالک توکن
-                int targetOwnerId = tokenOwnerId; // پیش‌فرض: خود مالک توکن
-                if (ownerId.HasValue)
-                {
-                    if (ownerId.Value != tokenOwnerId)
-                    {
-                        return Forbid(); // یا بازگرداندن خطای دسترسی
-                        // یا: return Unauthorized(new { success = false, message = "شما مجاز به مشاهده اطلاعات این مالک نیستید." });
-                    }
-                    targetOwnerId = ownerId.Value;
-                }
-
-                // ۳. یافتن مالک
-                var owner = _context.Owners.Find(targetOwnerId);
-                if (owner == null)
-                {
-                    return NotFound(new { success = false, message = "مالک یافت نشد." });
-                }
-
-                // ۴. واکشی لیست رستوران‌های این مالک
-                var restaurants = _context.Restaurants
-                    .Where(r => r.owner_id == targetOwnerId)
-                    .Select(r => new { r.restaurant_id, r.name })
-                    .ToList();
-
-                return Ok(new
-                {
-                    success = true,
-                    owner = new { owner.Id, owner.Name },
-                    restaurants = restaurants
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "خطای سرور در واکشی لیست رستوران‌ها" });
-            }
-        }
-
-        /// <summary>
-        /// حذف کاربر با اعمال سطح دسترسی مالکیت رستوران
-        /// </summary>
-        [HttpDelete("deleteuser/{restaurantId}/{userId}")]
-        public IActionResult DeleteUserV2(int restaurantId, int userId)
-        {
-            var claimValue = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(claimValue) || !int.TryParse(claimValue, out int currentOwnerId))
-            {
-                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
-            }
-
-            bool isOwnerOfRestaurant = _context.Restaurants
-                .Any(r => r.restaurant_id == restaurantId && r.owner_id == currentOwnerId);
-
-            if (!isOwnerOfRestaurant)
-            {
-                return Forbid();
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.user_id == userId && u.restaurant_id == restaurantId);
-            if (user == null) return NotFound(new { success = false, message = "کاربر یافت نشد" });
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-
-            return Ok(new { success = true, message = "کاربر با موفقیت حذف شد" });
-        }
-
+   
+    
 
         [HttpPost("addrestaurant")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // حتماً این ویژگی را اضافه کنید
@@ -164,7 +93,7 @@ namespace resturanyar.Controllers.Api.V2
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                
+
                 var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
                 {
@@ -312,7 +241,7 @@ namespace resturanyar.Controllers.Api.V2
             }
         }
 
-       
+
         private string GenerateUniqueRestaurantCode()
         {
             Random rnd = new Random();
@@ -333,7 +262,6 @@ namespace resturanyar.Controllers.Api.V2
             return Convert.ToBase64String(bytes);
         }
 
-       
+
     }
 }
- 

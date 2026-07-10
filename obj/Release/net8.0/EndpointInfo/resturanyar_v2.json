@@ -361,60 +361,6 @@
         }
       }
     },
-    "/api/v2/UserApi/getrestaurants": {
-      "get": {
-        "tags": [
-          "UserApi"
-        ],
-        "parameters": [
-          {
-            "name": "ownerId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v2/UserApi/deleteuser/{restaurantId}/{userId}": {
-      "delete": {
-        "tags": [
-          "UserApi"
-        ],
-        "parameters": [
-          {
-            "name": "restaurantId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v2/UserApi/addrestaurant": {
       "post": {
         "tags": [

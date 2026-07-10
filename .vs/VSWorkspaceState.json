@@ -6,8 +6,9 @@
     "\\Views",
     "\\Views\\Home",
     "\\wwwroot",
-    "\\wwwroot\\css"
+    "\\wwwroot\\css",
+    "\\wwwroot\\js"
   ],
-  "SelectedNode": "\\Controllers\\SitemapController.cs",
+  "SelectedNode": "\\wwwroot\\js\\managerlogin.js",
   "PreviewInSolutionExplorer": false
 }

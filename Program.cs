@@ -127,7 +127,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
-    // تنظیمات توکن JWT شما برای نسخه ۲
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -137,6 +136,20 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+
+    // 🟢 تغییر اصلی: اضافه شدن رویداد برای خواندن توکن از کوکی (مخصوص نسخه وب)
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // اگر درخواستی از وب آمد و کوکی حاوی توکن بود، آن را به عنوان توکن معتبر بشناسد
+            if (context.Request.Cookies.ContainsKey("X-Access-Token"))
+            {
+                context.Token = context.Request.Cookies["X-Access-Token"];
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -353,4 +366,3 @@ app.MapControllerRoute(
 
 
 app.Run();
-

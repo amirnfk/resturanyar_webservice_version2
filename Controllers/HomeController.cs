@@ -53,7 +53,7 @@ namespace resturanyar.Controllers
         {
             return View();
         }
-       
+
         public IActionResult Privacy()
         {
             return View();
@@ -62,14 +62,14 @@ namespace resturanyar.Controllers
         [Authorize]
         public IActionResult PrepareUpgrade(int restaurantId)
         {
-            
+
             HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId);
 
             var restaurant = _context.Restaurants.Find(restaurantId);
             if (restaurant != null)
                 HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
 
-           
+
             return RedirectToAction("Upgrade");
         }
 
@@ -93,7 +93,7 @@ namespace resturanyar.Controllers
         {
             return View();
         }
-       
+
 
         public IActionResult ManagerLogin()
         {
@@ -103,7 +103,7 @@ namespace resturanyar.Controllers
             Response.Headers["Expires"] = "0";
 
             if (User.Identity.IsAuthenticated)
-                return RedirectToAction("ChooseRestaurant", "Home"); 
+                return RedirectToAction("ChooseRestaurant", "Home");
 
             return View();
         }
@@ -130,7 +130,7 @@ namespace resturanyar.Controllers
                     return View();
                 }
 
-                if (DecodePassword(owner.Password) != request.Password)  
+                if (DecodePassword(owner.Password) != request.Password)
                 {
                     ViewBag.Error = "رمز عبور نادرست است.";
                     return View();
@@ -169,7 +169,7 @@ namespace resturanyar.Controllers
             return View();
         }
 
- 
+
 
         public async Task<IActionResult> Dashboard()
         {
@@ -211,7 +211,7 @@ namespace resturanyar.Controllers
        .OrderByDescending(x => x.TotalQuantity)
        .Take(3)
        .ToListAsync();
-                
+
 
             // ========== ۲. وضعیت سفارش‌ها (امروز) ==========
             // ۲-۱. تعداد کل سفارش‌های امروز
@@ -226,7 +226,7 @@ namespace resturanyar.Controllers
             // گروه‌بندی پیشنهادی (قابل ویرایش)
             var waiterStatuses = new[] { 3, 5 };
             var chefStatuses = new[] { 5, 4 };
-            var cashierStatuses = new[] { 6, 7, 8,  11 };
+            var cashierStatuses = new[] { 6, 7, 8, 11 };
 
             var statusGroups = await _context.Orders
                 .AsNoTracking()
@@ -290,9 +290,9 @@ namespace resturanyar.Controllers
             var vm = new DashboardStatsViewModel
             {
                 RestaurantName = restaurant.name,
-                
+
                 TopFoods = topFoods,
-               
+
                 TotalOrdersToday = totalOrdersToday,
                 WaiterOrdersCount = waiterCount,
                 ChefOrdersCount = chefCount,
@@ -365,7 +365,7 @@ namespace resturanyar.Controllers
             // اگر restaurantId به عنوان پارامتر نیامده، سعی کن از سشن بخوانی
             if (restaurantId == null)
             {
-                  restaurantId = User.GetRestaurantId();
+                restaurantId = User.GetRestaurantId();
                 if (restaurantId == null)
                 {
                     return RedirectToAction("ChooseRestaurant");
@@ -443,7 +443,7 @@ namespace resturanyar.Controllers
                 .ToList();
 
             ViewBag.Restaurants = restaurants;
-             
+
 
             return View();
         }
@@ -701,9 +701,9 @@ namespace resturanyar.Controllers
         }
 
 
-      
 
-     
+
+
 
 
 
@@ -801,7 +801,7 @@ namespace resturanyar.Controllers
                 {
                     return RedirectToAction("ChooseRestaurant");
                 }
-                
+
 
                 // بررسی وجود رستوران
                 var restaurant = _context.Restaurants.Find(restaurantId.Value);
@@ -1065,7 +1065,7 @@ namespace resturanyar.Controllers
             return View("ManagerReports", vm);
         }
 
-        
+
 
         [HttpGet("ExportOrdersToExcel")]
         public IActionResult ExportOrdersToExcel(
@@ -1146,7 +1146,7 @@ namespace resturanyar.Controllers
                     wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
                     wsOrders.Cell(1, 3).Value = "شماره میز";
                     wsOrders.Cell(1, 4).Value = "وضعیت";
-                    
+
                     wsOrders.Cell(1, 5).Value = "نام مشتری";
                     wsOrders.Cell(1, 6).Value = "شماره موبایل";
                     wsOrders.Cell(1, 7).Value = "توضیحات";
@@ -1161,7 +1161,7 @@ namespace resturanyar.Controllers
                         wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
                         wsOrders.Cell(row, 3).Value = o.TableNumber;
                         wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
-                        
+
                         wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "مشتری مهمان";
                         string mobile = o.Customer?.Mobile ?? "-";
                         if (!string.IsNullOrEmpty(mobile) && mobile.StartsWith("991"))
@@ -1256,7 +1256,7 @@ namespace resturanyar.Controllers
                 _ => "-"
             };
         }
-       
+
 
         public async Task<IActionResult> FoodList()
         {
@@ -1281,7 +1281,7 @@ namespace resturanyar.Controllers
                     Description = f.Description ?? "",
                     ImageUrl = f.ImageUrl ?? "",
                     CategoryId = f.CategoryId,
-                    CategoryName = f.Category != null ? f.Category.CategoryName : "", 
+                    CategoryName = f.Category != null ? f.Category.CategoryName : "",
                     Price = f.Price,
                     DiscountPrice = f.DiscountPrice ?? 0,
                     CostPrice = f.CostPrice ?? 0,
@@ -1310,7 +1310,7 @@ namespace resturanyar.Controllers
             var items = await _context.FoodItems
                        .Where(f => f.RestaurantId == restaurantId && f.IsActive) // فقط غذاهای فعال
 
-                .Include(f => f.Category)  
+                .Include(f => f.Category)
                 .Select(f => new FoodItemViewModel
                 {
                     FoodItemId = f.FoodItemId,
@@ -1375,7 +1375,7 @@ namespace resturanyar.Controllers
     string? period = null,
     string? search = null,
     DateTime? from = null,
-    DateTime? to = null 
+    DateTime? to = null
      )
 
         {
@@ -1491,7 +1491,7 @@ namespace resturanyar.Controllers
             {
                 if (int.TryParse(search, out int numeric))
                 {
-                    query = query.Where(o => o.OrderId == numeric  );
+                    query = query.Where(o => o.OrderId == numeric);
                 }
                 else
                 {
@@ -1551,14 +1551,14 @@ namespace resturanyar.Controllers
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 return PartialView("_ManagerOrdersPartial", vm);
 
-            
 
-   
+
+
             return View("ManagerOrderList", vm);
         }
 
 
-    
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateOrderStatus(int orderId, int newStatusId)
@@ -1645,7 +1645,7 @@ namespace resturanyar.Controllers
             if (!string.IsNullOrWhiteSpace(search))
             {
                 if (int.TryParse(search, out int num))
-                    query = query.Where(o => o.OrderId == num  );
+                    query = query.Where(o => o.OrderId == num);
                 else
                     query = query.Where(o => o.Description != null && o.Description.Contains(search));
             }
@@ -1740,7 +1740,7 @@ namespace resturanyar.Controllers
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 if (int.TryParse(filter.Search, out int num))
-                    query = query.Where(o => o.OrderId == num  );
+                    query = query.Where(o => o.OrderId == num);
                 else
                     query = query.Where(o => o.Description != null && o.Description.Contains(filter.Search));
             }
@@ -1820,7 +1820,7 @@ namespace resturanyar.Controllers
                     CategoryId = c.CategoryId,
                     CategoryName = c.CategoryName,
                     CreatedAt = c.CreatedAt.ToString("yyyy-MM-dd HH:mm"),
-                          DisplayOrder = c.DisplayOrder
+                    DisplayOrder = c.DisplayOrder
                 })
                 .ToListAsync();
 
@@ -1860,7 +1860,7 @@ namespace resturanyar.Controllers
         }
 
 
-       
+
 
         public async Task<IActionResult> TableList()
         {
@@ -1890,7 +1890,7 @@ namespace resturanyar.Controllers
             if (restaurantId == null)
                 return RedirectToAction("ChooseRestaurant");
 
-            
+
 
             ViewBag.RestaurantId = restaurantId.Value;
             return View();
@@ -1902,7 +1902,7 @@ namespace resturanyar.Controllers
             ViewBag.RestaurantName = restaurant?.name ?? "";
 
 
-              
+
             if (restaurantId == null)
                 return RedirectToAction("ChooseRestaurant");
 
@@ -1914,8 +1914,8 @@ namespace resturanyar.Controllers
 
 
 
-            
- 
+
+
 
         }
 
@@ -1924,33 +1924,16 @@ namespace resturanyar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // 1. خروج از سیستم و پاک کردن کوکی
+            // ۱. پاک کردن کوکی توکن از مرورگر کاربر
+            // نکته: نام کوکی را دقیقاً همان نامی بگذارید که موقع لاگین (مثلاً X-Access-Token) ست کرده‌اید
+            Response.Cookies.Delete("X-Access-Token");
+
+            // اگر از سیستم Identity یا Cookie Authentication خود دات‌نت هم همزمان استفاده می‌کردید، 
+            // این خط را نگه دارید، در غیر این صورت می‌توانید حذفش کنید:
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // 2. ساخت یک صفحه HTML موقت برای پاک کردن لوکال استوریج و سپس ریدایرکت
-            string redirectHtml = $@"
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset='utf-8' />
-     
-    </head>
-    <body>
-       
-        <script>
-            
-            localStorage.clear();
-            
- 
-
-          
-            window.location.href = '/Home/Index';
-        </script>
-    </body>
-    </html>";
-
-            
-            return Content(redirectHtml, "text/html");
+            // ۲. ریدایرکت مستقیم، شیک و استاندارد از سمت سرور به صفحه اصلی
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -2020,7 +2003,7 @@ namespace resturanyar.Controllers
 
 
 
-      
+
 
 
 
@@ -2077,7 +2060,7 @@ namespace resturanyar.Controllers
                         return BadRequest(new { success = false, message = "کد تخفیف نامعتبر است." });
 
                     // اعتبارسنجی تاریخ
-               
+
                     if (now < coupon.StartDate || now > coupon.EndDate)
                         return BadRequest(new { success = false, message = "کد تخفیف منقضی شده یا هنوز فعال نشده است." });
 
@@ -2183,7 +2166,7 @@ namespace resturanyar.Controllers
                 string authority = json.data.authority.ToString();
 
                 // --- 9) ثبت رکورد اشتراک Pending ---
-                
+
                 var endDate = CalculateEndDate(now, period);
 
                 var subscription = new Subscription
@@ -2449,7 +2432,7 @@ namespace resturanyar.Controllers
                 _ => (plan.PriceMonthly, (plan.DiscountPriceMonthly > 0 ? plan.DiscountPriceMonthly : plan.PriceMonthly))
             };
         }
-        
+
 
         [HttpGet("zarinpal/verify")]
         public async Task<IActionResult> ZarinpalVerify([FromQuery] string Authority, [FromQuery] string Status)
@@ -2686,7 +2669,7 @@ namespace resturanyar.Controllers
             return View();
         }
 
-      
+
 
     }
 }

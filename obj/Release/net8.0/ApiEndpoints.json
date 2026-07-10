@@ -2360,27 +2360,6 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
-    "Method": "DeleteUserV2",
-    "RelativePath": "api/v2/UserApi/deleteuser/{restaurantId}/{userId}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "restaurantId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GenerateTokenAction",
     "RelativePath": "api/v2/UserApi/generate-token",
     "HttpMethod": "POST",
@@ -2391,22 +2370,6 @@
         "Name": "request",
         "Type": "resturanyar.Controllers.Api.V2.UserApiController\u002BTokenRequestModel",
         "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
-    "Method": "GetRestaurantsByOwnerV2",
-    "RelativePath": "api/v2/UserApi/getrestaurants",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "ownerId",
-        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
       }
     ],
     "ReturnTypes": []

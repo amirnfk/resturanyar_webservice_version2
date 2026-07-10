@@ -21,6 +21,7 @@ namespace resturanyar.Controllers
                 "https://resturanyar.ir/digital-menu",
                 "https://resturanyar.ir/customer-club",
                 "https://resturanyar.ir/public-support",
+                "https://resturanyar.ir/resturanyar-pricelist",
                 "https://resturanyar.ir/about-us"
             };
 

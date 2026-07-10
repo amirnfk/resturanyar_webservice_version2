@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-  
+
     [passwordPhoneInput, otpPhoneInput, otpCodeInput].forEach(input => {
         if (input) {
             input.addEventListener("input", function () {
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     });
- 
+
     btnSwitchToOtp.addEventListener("click", function (e) {
         e.preventDefault();
         passwordSection.classList.add("d-none");
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordSection.classList.remove("d-none");
     });
 
-  
+
     btnGetOtp.addEventListener("click", function () {
         let phone = otpPhoneInput.value;
         phone = toEnglishDigits(phone);
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-  
+
     btnVerifyOtp.addEventListener("click", function () {
         let phone = otpPhoneInput.value;
         let otp = otpCodeInput.value;
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
- 
+
     const registerName = document.getElementById('registerName');
     const registerPassword = document.getElementById('registerPassword');
     const registerConfirm = document.getElementById('registerConfirmPassword');
@@ -200,17 +200,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await response.json();
 
             if (data.success) {
-                // ذخیره توکن در localStorage برای استفاده در صفحات بعدی (انتخاب رستوران)
-                localStorage.setItem('ownerToken', data.token);
-                localStorage.setItem('ownerTokenExpires', data.expiresAt);
-                console.log("توکن مالک رستوران با موفقیت ساخته و ذخیره شد.");
+               
+                router.push('/home/chooserestaurant');
+            
             } else {
-                // اگر کاربر مالک رستوران نباشد، اینجا ارور برمی‌گردد اما روند V1 را قطع نمی‌کنیم
-                console.warn("تولید توکن V2 ناموفق بود (احتمالا کاربر مالک نیست):", data.message);
-                localStorage.removeItem('ownerToken');
+               
+              
+               
             }
         } catch (error) {
-            console.error("خطا در ارتباط با API نسخه 2:", error);
+           
         }
     }
     function validateRegisterForm() {
