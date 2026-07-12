@@ -4,6 +4,10 @@ D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.runtimeconfig.json
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Asp.Versioning.Abstractions.dll
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Asp.Versioning.Http.dll
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Asp.Versioning.Mvc.dll
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Asp.Versioning.Mvc.ApiExplorer.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Azure.Core.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\ClosedXML.dll
@@ -19,6 +23,7 @@ D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\System.Net.Http.Formatting.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\System.Web.Http.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\System.Web.Http.WebHost.dll
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Microsoft.Data.SqlClient.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\Microsoft.EntityFrameworkCore.dll

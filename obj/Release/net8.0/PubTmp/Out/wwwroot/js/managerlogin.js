@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ===== auto convert digits (در لحظه تایپ) =====
+
     [passwordPhoneInput, otpPhoneInput, otpCodeInput].forEach(input => {
         if (input) {
             input.addEventListener("input", function () {
@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // ===== switch tabs =====
     btnSwitchToOtp.addEventListener("click", function (e) {
         e.preventDefault();
         passwordSection.classList.add("d-none");
@@ -76,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordSection.classList.remove("d-none");
     });
 
-    // ===== request OTP =====
+
     btnGetOtp.addEventListener("click", function () {
         let phone = otpPhoneInput.value;
         phone = toEnglishDigits(phone);
@@ -115,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ===== verify OTP =====
+
     btnVerifyOtp.addEventListener("click", function () {
         let phone = otpPhoneInput.value;
         let otp = otpCodeInput.value;
@@ -137,8 +136,11 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ phoneNumber: phone, code: otp })
         })
             .then(r => r.json())
-            .then(data => {
+            // ADDED 'async' HERE
+            .then(async data => {
                 if (data.success) {
+                    // ADDED: Generate and store the token before redirecting
+                    await generateAndStoreV2Token(phone);
                     window.location.href = data.redirectUrl ?? location.reload();
                 } else if (data.needsRegistration) {
                     const modal = new bootstrap.Modal(document.getElementById('registerModal'));
@@ -154,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
-    // ===== register submit =====
+
     const registerName = document.getElementById('registerName');
     const registerPassword = document.getElementById('registerPassword');
     const registerConfirm = document.getElementById('registerConfirmPassword');
@@ -187,7 +189,29 @@ document.addEventListener("DOMContentLoaded", function () {
             if (input) input.classList.remove('is-invalid');
         }
     }
+    async function generateAndStoreV2Token(phone) {
+        try {
+            const response = await fetch('/api/V2/UserApi/generate-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ PhoneNumber: phone }) // مطابق مدل بک‌اند V2
+            });
 
+            const data = await response.json();
+
+            if (data.success) {
+               
+                router.push('/home/chooserestaurant');
+            
+            } else {
+               
+              
+               
+            }
+        } catch (error) {
+           
+        }
+    }
     function validateRegisterForm() {
         let name = registerName.value.trim();
         let password = registerPassword.value;
@@ -249,8 +273,9 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ phoneNumber: phone, name, password })
         })
             .then(r => r.json())
-            .then(data => {
+            .then(async data => {
                 if (data.success) {
+                    await generateAndStoreV2Token(phone);
                     window.location.href = data.redirectUrl;
                 } else {
                     Swal.fire('خطا', data.message, 'error');
@@ -303,4 +328,37 @@ document.addEventListener("DOMContentLoaded", function () {
         otpStepPhone.classList.remove("d-none");
         otpCodeInput.value = "";
     });
+
+    // ===== ورود با رمز عبور + ساخت توکن V2 قبل از ارسال فرم =====
+    const passwordForm = document.getElementById('passwordForm');
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // جلوگیری از ارسال عادی
+
+            const phone = passwordPhoneInput ? passwordPhoneInput.value.trim() : '';
+            const submitBtn = passwordForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            // غیرفعال کردن دکمه و نمایش اسپینر
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> در حال ورود...';
+
+            // تابع ارسال نهایی فرم
+            const finalSubmit = () => {
+                passwordForm.submit();
+                // پس از submit صفحه رفرش می‌شود، نیازی به بازگردانی دکمه نیست
+            };
+
+            if (phone) {
+                // ساخت توکن و سپس ارسال فرم (حتی اگر خطا رخ دهد، فرم ارسال می‌شود)
+                generateAndStoreV2Token(phone)
+                    .finally(() => {
+                        finalSubmit();
+                    });
+            } else {
+                // اگر شماره موجود نبود، مستقیماً فرم را ارسال کن
+                finalSubmit();
+            }
+        });
+    }
 });

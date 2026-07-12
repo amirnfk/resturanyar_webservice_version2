@@ -73,7 +73,7 @@ html, body {
         content: "" !important;
         position: fixed !important; /* 'fixed' keeps the background static while content scrolls */
         inset: 0 !important;
-        background-image: url('../images/back8.png') !important;
+        background-image: url('../images/back8.jpg') !important;
         background-size: cover !important;
         background-position: center !important;
         filter: blur(12px) !important; /* Subtle blur effect */

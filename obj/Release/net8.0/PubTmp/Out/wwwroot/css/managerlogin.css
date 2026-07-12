@@ -26,7 +26,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100vh;
-    background-image: url('../images/back8.png'); /* می‌توانید مسیر عکس محو شده رستوران را اینجا بگذارید */
+    background-image: url('../images/back8.jpg'); /* می‌توانید مسیر عکس محو شده رستوران را اینجا بگذارید */
     background-size: cover;
     background-position: center;
     z-index: -2;

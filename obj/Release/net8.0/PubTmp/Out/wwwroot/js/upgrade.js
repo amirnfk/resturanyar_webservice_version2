@@ -69,8 +69,9 @@
             { key: 'canUsePrinter', label: 'اتصال به پرینتر', value: sub.canUsePrinter, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
             { key: 'canShareMenu', label: 'اشتراک‌گذاری منو', value: sub.canShareMenu, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
             { key: 'canUseRealtime', label: 'به‌روزرسانی لحظه‌ای', value: sub.canUseRealtime, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
-            { key: 'canManageUsers', label: 'مدیریت کاربران', value: sub.canManageUsers, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
+            { key: 'canManageUsers', label: 'مدیریت کارکنان', value: sub.canManageUsers, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
             { key: 'canAccessReports', label: 'گزارش‌های پیشرفته', value: sub.canAccessReports, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
+            { key: 'canManageMultipleRestaurants', label: 'باشگاه مشتریان', value: sub.canManageMultipleRestaurants, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
             { key: 'canManageMultipleRestaurants', label: 'مدیریت چند رستوران', value: sub.canManageMultipleRestaurants, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
             { key: 'canUseWeb', label: 'دسترسی نسخه وب', value: sub.canUseWeb, format: v => v ? '' : '', icon: v => v ? 'check' : 'cross' },
         ];
