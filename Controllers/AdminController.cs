@@ -648,8 +648,8 @@ namespace resturanyar.Controllers
                 return View(model);
             }
 
-            var adminUsername = "a";
-            var adminPassword = "a";
+            var adminUsername = "@noorafkan";
+            var adminPassword = "24602460";
 
             if (model.Username == adminUsername && model.Password == adminPassword)
             {

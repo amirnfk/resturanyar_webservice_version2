@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
+using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
 
@@ -33,6 +34,7 @@ namespace Resturanyar.Data
         public DbSet<CouponUsage> CouponUsages { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

@@ -1924,15 +1924,7 @@ namespace resturanyar.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // ۱. پاک کردن کوکی توکن از مرورگر کاربر
-            // نکته: نام کوکی را دقیقاً همان نامی بگذارید که موقع لاگین (مثلاً X-Access-Token) ست کرده‌اید
-            Response.Cookies.Delete("X-Access-Token");
-
-            // اگر از سیستم Identity یا Cookie Authentication خود دات‌نت هم همزمان استفاده می‌کردید، 
-            // این خط را نگه دارید، در غیر این صورت می‌توانید حذفش کنید:
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            // ۲. ریدایرکت مستقیم، شیک و استاندارد از سمت سرور به صفحه اصلی
             return RedirectToAction("Index", "Home");
         }
 

@@ -82,12 +82,9 @@
         </div>
     </div>
 
+ 
     <script>
-        // Owner ID from ViewBag passed to JS
-       // var currentOwnerId = "@(ViewBag.ownerId ?? 0)";
-    </script>
-    <script>
-        // Dark Mode Initialization Script
+       
         (function() {
           const html = document.documentElement;
           const storageKey = "ry-theme";
@@ -103,6 +100,10 @@
         })();
     </script>
     <script src="~/js/jquery_3.6.0.min.js"></script>
+    <script type="module">
+        import {fetchWithAuth} from '/js/authentication/apiinterceptor.js';
+        window.fetchWithAuth = fetchWithAuth;
+    </script>
     <script src="~/js/chooserestaurant.js" asp-append-version="true"></script>
 </body>
 </html>

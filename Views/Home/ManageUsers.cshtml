@@ -397,262 +397,231 @@
 
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+    // Import the interceptor and expose it globally
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
-       $("#btnAddUserEmpty").click(function () {
-        $("#btnAddUser").click(); // همون مودال اصلی رو باز کن
-    });
-    // حذف کاربر
-    $(".btn-delete").click(function () {
-         var restaurantId = @ViewBag.RestaurantId ?? 0;
-        if (restaurantId === 0) {
-            alert("شناسه رستوران پیدا نشد.");
-            return;
-        }
-        var id = $(this).data("id");
+    // All the logic below uses window.fetchWithAuth (provided by the interceptor)
+    // No need to manually set Authorization headers – the interceptor does it.
+       
+    $(document).ready(function () {
+        // ----- Helper: apply role defaults to checkboxes -----
+        function applyRoleDefaults(roleId, modal) {
+            var base = (modal === 'edit') ? '#edit' : '#add';
+            roleId = parseInt(roleId) || 0;
 
-        if (!confirm("آیا مطمئن هستید که این کاربر حذف شود؟")) return;
+            var order = false, kitchen = false, payment = false;
+            if (roleId === 2) { order = true; }
+            else if (roleId === 3) { kitchen = true; }
+            else if (roleId === 4) { payment = true; }
 
-        $.ajax({
-            url: `/api/UserApi/deleteuser/${restaurantId}/${id}`,  // backtick برای template string
-            type: 'DELETE',  // باید حروف بزرگ باشه (معمول)
-            success: function (res) {
-                alert(res.message);
-                if (res.success) {
-                    location.reload();
-                }
-            },
-            error: function () {
-                alert("خطا در حذف کاربر");
-            }
-        });
-    });
-
-        function encodeBase64(str) {
-        try {
-            return btoa(str); // btoa رشته رو Base64 می‌کنه
-        } catch {
-            return "";
-        }
-    }
-        function decodeBase64(str) {
-        try {
-            return atob(str); // atob رشته Base64 رو decode می‌کنه
-        } catch {
-            return "";
-        }
-    }
-
-        
-     // نمایش اطلاعات
-    $(".btn-show-info").click(function () {
-        var name = $(this).data("name");
-        var password = decodeBase64($(this).data("password"));
-        var restaurantId = $(this).data("restaurantid");
-
-        // پرمیشن‌ها از card بخونیم
-        const $card = $(this).closest(".user-card");
-        const hasOrder   = $card.find(".perm-order").hasClass("inactive") === false;
-        const hasKitchen = $card.find(".perm-kitchen").hasClass("inactive") === false;
-        const hasPayment = $card.find(".perm-payment").hasClass("inactive") === false;
-
-        // متن نقش‌ها
-        let roles = [];
-        if (hasOrder) roles.push("گارسون");
-        if (hasKitchen) roles.push("آشپز");
-        if (hasPayment) roles.push("صندوقدار");
-
-        // اگر هیچ پرمیشنی نداشت
-        let roleText = roles.length > 0 ? roles.join(" ، ") : "نامشخص";
-
-        $.get(`/api/UserApi/getrestaurantcode/${restaurantId}`, function (res) {
-            if (res.success) {
-                $("#infoName").text(name);
-                $("#infoRole").text(roleText);
-                $("#infoPassword").text(password);
-                $("#infoCode").text(res.code);
-
-                var qrData = `${name}::${password}::${res.code}`;
-                var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
-                $("#infoQr").attr("src", qrUrl);
-
-                new bootstrap.Modal(document.getElementById('infoModal')).show();
-            } else {
-                alert("خطا در دریافت کد رستوران");
-            }
-        });
-    });
-
-
- $(".btn-edit").click(function () {
-         const $card = $(this).closest(".user-card");
-
-        const hasOrder   = $(this).data("order_management_permission") == 1;
-        const hasKitchen = $(this).data("kitchen_management_permission") == 1;
-        const hasPayment = $(this).data("payment_management_permission") == 1;
-
-        setPermIconState($card, 'order',   hasOrder);
-        setPermIconState($card, 'kitchen', hasKitchen);
-        setPermIconState($card, 'payment', hasPayment);
-    var password = decodeBase64($(this).data("password"));
-    $("#editUserId").val($(this).data("id"));
-    $("#editName").val($(this).data("name"));
-    $("#editPassword").val(password);
-    $("#editRole").val($(this).data("role_id"));
-    $("#editRestaurantId").val($(this).data("restaurantid"));
-
-    // مقداردهی اولیه بر اساس مقادیر ذخیره‌شده (نگه میداریم)
-    $("#editOrderPermission").prop("checked", $(this).data("order_management_permission") == 1);
-    $("#editKitchenPermission").prop("checked", $(this).data("kitchen_management_permission") == 1);
-    $("#editPaymentPermission").prop("checked", $(this).data("payment_management_permission") == 1);
-
-    // اگر بعداً کاربر نقش را تغییر دهد، handler مرحله 2 آن را به پیش‌فرض نقش جدید می‌برد.
-    new bootstrap.Modal(document.getElementById('editModal')).show();
-});
-
-
-    // ذخیره تغییرات و ارسال به API
-       $("#saveEdit").click(function () {
-        var id = parseInt($("#editUserId").val());
-        var name = $("#editName").val().trim();
-        var password = $("#editPassword").val().trim();
-        var role_id = parseInt($("#editRole").val());
-        var restaurantId = parseInt($("#editRestaurantId").val());
-
-        // ✅ validation
-        if (!validateUserForm(name, password, role_id)) return;
-
-        var payload = {
-            user_id: id,
-            name: name,
-            password: password,
-            role_id: role_id,
-            restaurant_id: restaurantId,
-            order_management_permission: $("#editOrderPermission").prop("checked"),
-            kitchen_management_permission: $("#editKitchenPermission").prop("checked"),
-            payment_management_permission: $("#editPaymentPermission").prop("checked")
-        };
-
-        $.ajax({
-            url: "https://resturanyar.ir/api/UserApi/edituser",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(payload),
-            success: function (res) {
-                alert(res.message);
-                if (res.success) location.reload();
-            },
-            error: function () {
-                alert("خطا در ذخیره تغییرات کاربر");
-            }
-        });
-    });
-
-
-       $("#btnAddUser").click(function () {
-        $("#addName").val('');
-        $("#addPassword").val('');
-        $("#addRole").val('2');  // مقدار پیشفرض گارسون
-
-        // ست کردن چک‌باکس‌ها براساس نقش پیش‌فرض (گارسون -> فقط دسترسی سفارش)
-        applyRoleDefaults(2, 'add');
-
-        new bootstrap.Modal(document.getElementById('addUserModal')).show();
-    });
-
-    // ارسال فرم ثبت کاربر جدید
-       $("#saveAddUser").click(function () {
-        var name = $("#addName").val().trim();
-        var password = $("#addPassword").val().trim();
-        var role_id = parseInt($("#addRole").val());
-
-        // ✅ validation
-        if (!validateUserForm(name, password, role_id)) return;
-
-        var restaurantId = @ViewBag.RestaurantId ?? 0;
-        if (restaurantId === 0) {
-            alert("شناسه رستوران پیدا نشد.");
-            return;
+            $(base + 'OrderPermission').prop('checked', order);
+            $(base + 'KitchenPermission').prop('checked', kitchen);
+            $(base + 'PaymentPermission').prop('checked', payment);
         }
 
-        var payload = {
-            name: name,
-            password: password,
-            role_id: role_id,
-            restaurant_id: restaurantId,
-            order_management_permission: $("#addOrderPermission").prop("checked"),
-            kitchen_management_permission: $("#addKitchenPermission").prop("checked"),
-            payment_management_permission: $("#addPaymentPermission").prop("checked")
-        };
-
-        $.ajax({
-            url: "https://resturanyar.ir/api/UserApi/adduser",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(payload),
-            success: function (res) {
-                alert(res.message);
-                if (res.success) location.reload();
-            },
-            error: function () {
-                alert("خطا در ثبت کاربر");
-            }
-        });
-    });
-        // وقتی کاربر نقش در فرم ثبت جدید رو تغییر داد
-    $("#addRole").off('change.applyDefaults').on('change.applyDefaults', function () {
-        applyRoleDefaults($(this).val(), 'add');
-    });
-
-    // وقتی نقش در فرم ویرایش تغییر کرد
-    $("#editRole").off('change.applyDefaults').on('change.applyDefaults', function () {
-        applyRoleDefaults($(this).val(), 'edit');
-    });
-
-
+        // ----- Validation helpers -----
         function isValidUsername(username) {
-        return username && username.length >= 3;
-    }
-
-    function isValidPassword(password) {
-        return password && password.length >= 6;
-    }
-
-    function validateUserForm(name, password, roleId) {
-        if (!isValidUsername(name)) {
-            alert("نام کاربری باید حداقل ۳ کاراکتر باشد.");
-            return false;
+            return username && username.length >= 3;
         }
-        if (!isValidPassword(password)) {
-            alert("رمز عبور باید حداقل ۶ کاراکتر باشد.");
-            return false;
+        function isValidPassword(password) {
+            return password && password.length >= 6;
         }
-        if (!roleId || roleId === 0) {
-            alert("لطفاً نقش کاربر را انتخاب کنید.");
-            return false;
-        }
-        return true;
-    }
-        // roleId: عدد نقش (2,3,4)
-    // modal: 'add' یا 'edit' -> برای ساختن id های صحیح (#addOrderPermission / #editOrderPermission)
-    function applyRoleDefaults(roleId, modal) {
-        var base = (modal === 'edit') ? '#edit' : '#add';
-        roleId = parseInt(roleId) || 0;
-
-        var order = false, kitchen = false, payment = false;
-        if (roleId === 2) { // گارسون
-            order = true;
-        } else if (roleId === 3) { // آشپز
-            kitchen = true;
-        } else if (roleId === 4) { // صندوقدار
-            payment = true;
+        function validateUserForm(name, password, roleId) {
+            if (!isValidUsername(name)) {
+                alert("نام کاربری باید حداقل ۳ کاراکتر باشد.");
+                return false;
+            }
+            if (!isValidPassword(password)) {
+                alert("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+                return false;
+            }
+            if (!roleId || roleId === 0) {
+                alert("لطفاً نقش کاربر را انتخاب کنید.");
+                return false;
+            }
+            return true;
         }
 
-        $(base + 'OrderPermission').prop('checked', order);
-        $(base + 'KitchenPermission').prop('checked', kitchen);
-        $(base + 'PaymentPermission').prop('checked', payment);
-    }
-        function setPermIconState($card, perm, isOn) {
-        const $icon = $card.find('.perm-' + perm);
-        $icon.toggleClass('inactive', !isOn);
-    }
+        // ----- BASE64 helpers (for password decoding) -----
+        function decodeBase64(str) {
+            try { return atob(str); } catch { return ""; }
+        }
+
+        // ----- 1. DELETE user -----
+        $(".btn-delete").click(async function () {
+            var restaurantId = @ViewBag.RestaurantId ?? 0;
+            if (restaurantId === 0) {
+                alert("شناسه رستوران پیدا نشد.");
+                return;
+            }
+            var id = $(this).data("id");
+            if (!confirm("آیا مطمئن هستید که این کاربر حذف شود؟")) return;
+
+            try {
+                const response = await window.fetchWithAuth(
+                    `/api/v2/UserApi/deleteuser/${restaurantId}/${id}`,
+                    { method: 'DELETE' }
+                );
+                const res = await response.json();
+                alert(res.message);
+                if (res.success) location.reload();
+            } catch (error) {
+                // The interceptor already handles 401 & redirects, so this is for network errors
+                alert("خطا در حذف کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+            }
+        });
+
+        // ----- 2. SHOW INFO (QR) -----
+        $(".btn-show-info").click(async function () {
+            var name = $(this).data("name");
+            var password = decodeBase64($(this).data("password"));
+            var restaurantId = $(this).data("restaurantid");
+
+            // Read permissions from the card
+            const $card = $(this).closest(".user-card");
+            const hasOrder   = !$card.find(".perm-order").hasClass("inactive");
+            const hasKitchen = !$card.find(".perm-kitchen").hasClass("inactive");
+            const hasPayment = !$card.find(".perm-payment").hasClass("inactive");
+
+            let roles = [];
+            if (hasOrder) roles.push("گارسون");
+            if (hasKitchen) roles.push("آشپز");
+            if (hasPayment) roles.push("صندوقدار");
+            let roleText = roles.length > 0 ? roles.join(" ، ") : "نامشخص";
+
+            try {
+                const response = await window.fetchWithAuth(
+                    `/api/v2/UserApi/getrestaurantcode/${restaurantId}`
+                );
+                const res = await response.json();
+                if (response.ok && res.success) {
+                    $("#infoName").text(name);
+                    $("#infoRole").text(roleText);
+                    $("#infoPassword").text(password);
+                    $("#infoCode").text(res.code);
+
+                    var qrData = `${name}::${password}::${res.code}`;
+                    var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+                    $("#infoQr").attr("src", qrUrl);
+
+                    new bootstrap.Modal(document.getElementById('infoModal')).show();
+                } else {
+                    alert("خطا در دریافت کد رستوران");
+                }
+            } catch (error) {
+                alert("خطا در دریافت کد رستوران: " + (error.message || "مشکل در ارتباط با سرور"));
+            }
+        });
+
+        // ----- 3. EDIT user – open modal and fill data -----
+        $(".btn-edit").click(function () {
+            var password = decodeBase64($(this).data("password"));
+            $("#editUserId").val($(this).data("id"));
+            $("#editName").val($(this).data("name"));
+            $("#editPassword").val(password);
+            $("#editRole").val($(this).data("role_id"));
+            $("#editRestaurantId").val($(this).data("restaurantid"));
+
+            // Set checkboxes from data attributes (store as int 1/0)
+            $("#editOrderPermission").prop("checked", $(this).data("order_management_permission") == 1);
+            $("#editKitchenPermission").prop("checked", $(this).data("kitchen_management_permission") == 1);
+            $("#editPaymentPermission").prop("checked", $(this).data("payment_management_permission") == 1);
+
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        });
+
+        // ----- 4. SAVE EDIT -----
+        $("#saveEdit").click(async function () {
+            var id = parseInt($("#editUserId").val());
+            var name = $("#editName").val().trim();
+            var password = $("#editPassword").val().trim();
+            var role_id = parseInt($("#editRole").val());
+            var restaurantId = parseInt($("#editRestaurantId").val());
+
+            if (!validateUserForm(name, password, role_id)) return;
+
+            var payload = {
+                user_id: id,
+                name: name,
+                password: password,
+                role_id: role_id,
+                restaurant_id: restaurantId,
+                order_management_permission: $("#editOrderPermission").prop("checked"),
+                kitchen_management_permission: $("#editKitchenPermission").prop("checked"),
+                payment_management_permission: $("#editPaymentPermission").prop("checked")
+            };
+
+            try {
+                const response = await window.fetchWithAuth('/api/v2/UserApi/edituser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                alert(res.message);
+                if (res.success) location.reload();
+            } catch (error) {
+                alert("خطا در ویرایش کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+            }
+        });
+
+        // ----- 5. OPEN ADD USER modal -----
+        $("#btnAddUser, #btnAddUserEmpty").click(function () {
+            $("#addName").val('');
+            $("#addPassword").val('');
+            $("#addRole").val('2');
+            applyRoleDefaults(2, 'add');
+            new bootstrap.Modal(document.getElementById('addUserModal')).show();
+        });
+
+        // ----- 6. SAVE ADD USER -----
+        $("#saveAddUser").click(async function () {
+            var name = $("#addName").val().trim();
+            var password = $("#addPassword").val().trim();
+            var role_id = parseInt($("#addRole").val());
+
+            if (!validateUserForm(name, password, role_id)) return;
+
+            var restaurantId = @ViewBag.RestaurantId ?? 0;
+            if (restaurantId === 0) {
+                alert("شناسه رستوران پیدا نشد.");
+                return;
+            }
+
+            var payload = {
+                name: name,
+                password: password,
+                role_id: role_id,
+                restaurant_id: restaurantId,
+                order_management_permission: $("#addOrderPermission").prop("checked"),
+                kitchen_management_permission: $("#addKitchenPermission").prop("checked"),
+                payment_management_permission: $("#addPaymentPermission").prop("checked")
+            };
+
+            try {
+                const response = await window.fetchWithAuth('/api/v2/UserApi/adduser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                alert(res.message);
+                if (res.success) location.reload();
+            } catch (error) {
+                alert("خطا در ثبت کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+            }
+        });
+
+        // ----- 7. ROLE change events (apply defaults) -----
+        $("#addRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+            applyRoleDefaults($(this).val(), 'add');
+        });
+        $("#editRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+            applyRoleDefaults($(this).val(), 'edit');
+        });
+    });
 </script>

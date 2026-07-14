@@ -2360,6 +2360,59 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "AddUser",
+    "RelativePath": "api/v2/UserApi/adduser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/v2/UserApi/deleteuser/{restaurantId}/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "EditUser",
+    "RelativePath": "api/v2/UserApi/edituser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.EditUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GenerateTokenAction",
     "RelativePath": "api/v2/UserApi/generate-token",
     "HttpMethod": "POST",
@@ -2369,6 +2422,70 @@
       {
         "Name": "request",
         "Type": "resturanyar.Controllers.Api.V2.UserApiController\u002BTokenRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetRestaurantCode",
+    "RelativePath": "api/v2/UserApi/getrestaurantcode/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetUsersByRestaurant",
+    "RelativePath": "api/v2/UserApi/getusersbyrestaurant/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "Logout",
+    "RelativePath": "api/v2/UserApi/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "currentRefreshToken",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "Refresh",
+    "RelativePath": "api/v2/UserApi/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AuthorizationModels.RefreshTokenRequestModel",
         "IsRequired": true
       }
     ],
@@ -2524,7 +2641,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "resturanyar.Controllers.resturanyar.Controllers.SitemapController",
+    "ContainingType": "resturanyar.Controllers.SitemapController",
     "Method": "Index",
     "RelativePath": "sitemap.xml",
     "HttpMethod": "GET",

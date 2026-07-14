@@ -1,29 +1,28 @@
 ﻿
-
-
-var currentOwnerId = parseInt(currentOwnerId) || 0;
-
+ 
 
 
 $(document).ready(function () {
-    // نمایش/مخفی کردن فرم افزودن رستوران
+    // Show/hide add restaurant form
     $("#btnShowAdd").click(function () {
         $("#addRestaurantForm").slideToggle();
         $("#restaurantName").focus();
     });
 
-    // ارسال درخواست افزودن رستوران
+    // Submit via button click
     $("#btnAddRestaurant").click(function () {
         addRestaurant();
     });
 
-    // امکان ارسال با کلید Enter
+    // Submit via Enter key
     $("#restaurantName").keypress(function (e) {
         if (e.which === 13) {
             e.preventDefault();
             addRestaurant();
         }
     });
+
+    // Helper: redirect after adding
     function redirectAfterAdd(restaurantId) {
         if (restaurantId) {
             window.location.href = '/Home/Dashboard/' + restaurantId;
@@ -32,6 +31,7 @@ $(document).ready(function () {
         }
     }
 
+    // Show Free Trial modal
     function showFreeTrialModal(message, onClose) {
         var modalHtml =
             '<div class="modal fade" id="freeTrialModal" tabindex="-1">' +
@@ -64,7 +64,8 @@ $(document).ready(function () {
         });
     }
 
-    function addRestaurant() {
+    // Main function: add restaurant using fetchWithAuth
+    async function addRestaurant() {
         var restaurantName = $("#restaurantName").val().trim();
         var errorDiv = $("#nameError");
 
@@ -75,7 +76,6 @@ $(document).ready(function () {
             $("#restaurantName").focus();
             return;
         }
-
         if (restaurantName.length < 2) {
             errorDiv.text('نام رستوران باید حداقل ۲ کاراکتر باشد').show();
             $("#restaurantName").focus();
@@ -85,65 +85,44 @@ $(document).ready(function () {
         var $btn = $("#btnAddRestaurant");
         $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> در حال افزودن...');
 
-        
-        
+        var payload = { name: restaurantName };
 
-        // payload فقط شامل نام رستوران است
-        var payload = {
-            name: restaurantName
-        };
+        try {
+            // ✅ Use fetchWithAuth (interceptor handles token refresh)
+            const response = await window.fetchWithAuth('/api/v2/UserApi/addrestaurant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        $.ajax({
-            url: "/api/V2/userapi/addrestaurant",
-            type: "POST",
-            contentType: "application/json",
-            xhrFields: {
-                withCredentials: true
-            },
-            headers: {
-               
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            data: JSON.stringify(payload),
-            success: function (res) {
-                if (res.success) {
-                    if (res.has_free_trial) {
-                        showFreeTrialModal(res.message, function () {
-                            redirectAfterAdd(res.restaurant_id);
-                        });
-                    } else {
-                        alert("✅ " + res.message);
-                        setTimeout(function () {
-                            redirectAfterAdd(res.restaurant_id);
-                        }, 1500);
-                    }
+            const res = await response.json();
+
+            if (response.ok && res.success) {
+                if (res.has_free_trial) {
+                    showFreeTrialModal(res.message, function () {
+                        redirectAfterAdd(res.restaurant_id);
+                    });
                 } else {
-                    alert("❌ " + res.message);
-                    errorDiv.text(res.message).show();
+                    alert("✅ " + res.message);
+                    setTimeout(function () {
+                        redirectAfterAdd(res.restaurant_id);
+                    }, 1500);
                 }
-            },
-            error: function (xhr, status, error) {
-                var errorMessage = "خطا در ارتباط با سرور";
-
-                if (xhr.status === 401) {
-                    alert("❌ لطفاً ابتدا وارد حساب کاربری خود شوید.");
-                    window.location.href = '/User/Login'; // آدرس صفحه لاگین خود را جایگزین کنید
-                    return;
-                }
-
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response && response.message) {
-                        errorMessage = response.message;
-                    }
-                } catch (e) { }
-                alert("❌ " + errorMessage);
-                errorDiv.text(errorMessage).show();
-               
-            },
-            complete: function () {
-                $btn.prop('disabled', false).text('افزودن');
+            } else {
+                // Server returned error (non-200 or success false)
+                alert("❌ " + (res.message || 'خطا در ثبت رستوران'));
+                errorDiv.text(res.message || 'خطا').show();
             }
-        });
+        } catch (error) {
+            // Network errors or interceptor redirection (e.g., refresh failure)
+            // The interceptor already redirects to login on auth failure, so we just show a generic error.
+            alert("❌ خطا در ارتباط با سرور: " + (error.message || ''));
+            errorDiv.text('خطا در ارتباط با سرور').show();
+        } finally {
+            $btn.prop('disabled', false).text('افزودن');
+        }
     }
+
+    // Expose addRestaurant globally if needed (not required)
 });
+ 

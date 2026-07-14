@@ -609,6 +609,7 @@ namespace Resturanyar.Controllers.Api
                 });
             }
         }
+
         [HttpGet("getusersbyrestaurant/{restaurantId}")]
         public IActionResult GetUsersByRestaurant(int restaurantId)
         {

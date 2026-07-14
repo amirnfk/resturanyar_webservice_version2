@@ -3,12 +3,13 @@
     "",
     "\\Controllers",
     "\\Controllers\\Api",
+    "\\Controllers\\Api\\V2",
     "\\Views",
     "\\Views\\Home",
     "\\wwwroot",
     "\\wwwroot\\css",
     "\\wwwroot\\js"
   ],
-  "SelectedNode": "\\wwwroot\\js\\managerlogin.js",
+  "SelectedNode": "\\Controllers\\Api\\V2\\UserApiController.cs",
   "PreviewInSolutionExplorer": false
 }

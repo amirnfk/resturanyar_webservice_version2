@@ -194,22 +194,24 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('/api/V2/UserApi/generate-token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ PhoneNumber: phone }) // مطابق مدل بک‌اند V2
+                body: JSON.stringify({ PhoneNumber: phone })  
             });
 
             const data = await response.json();
 
             if (data.success) {
-               
-                router.push('/home/chooserestaurant');
+                localStorage.setItem('accessToken', data.token);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                localStorage.setItem('phone', phone);
+                //window.location.href = '/Home/ChooseRestaurant'
             
             } else {
-               
+               console.write("error")
               
                
             }
         } catch (error) {
-           
+            console.write("error" + error)
         }
     }
     function validateRegisterForm() {
