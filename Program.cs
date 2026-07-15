@@ -221,7 +221,7 @@ else
     {
         // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
-        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2"); // 👈 اضافه کردن این خط
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2"); 
         c.RoutePrefix = "swagger";
     });
 

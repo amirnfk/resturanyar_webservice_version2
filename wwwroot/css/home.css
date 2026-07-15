@@ -1110,3 +1110,57 @@ footer {
                 display: none;
             }
 }
+/* ====== اینماد ====== */
+.enamad-section {
+    padding: 3rem 0 2rem;
+    background: #f8fafc;
+}
+
+.enamad-box {
+    max-width: 400px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 1.5rem;
+    padding: 1.8rem 1.5rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid #ffede0;
+    transition: transform 0.2s ease;
+}
+
+    .enamad-box:hover {
+        transform: translateY(-3px);
+    }
+
+.enamad-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+    .enamad-header i {
+        font-size: 1.3rem;
+    }
+
+.enamad-logo {
+    width: 120px;
+    height: auto;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    .enamad-logo:hover {
+        opacity: 0.8;
+    }
+
+.enamad-caption {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-top: 0.8rem;
+    margin-bottom: 0;
+}

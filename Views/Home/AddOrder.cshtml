@@ -8,6 +8,7 @@
 @* <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" /> *@
 
 <style>
+    /* (all CSS remains exactly as before – unchanged) */
     :root {
         --primary: #ff7a00;
         --primary-hover: #e66900;
@@ -34,8 +35,6 @@
         --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
- 
-
     body {
         background: var(--bg-page);
         direction: rtl;
@@ -46,9 +45,6 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
-    
-
-    /* Scrollbar Styling */
     ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -69,7 +65,6 @@
             background: var(--primary);
         }
 
-    /* Typography improvements */
     h1, h2, h3, h4, h5, h6 {
         letter-spacing: -0.02em;
         font-weight: 800;
@@ -84,7 +79,6 @@
         color: var(--text-muted) !important;
     }
 
-    /* ── TOOLBAR ── */
     .food-toolbar {
         background: var(--card-bg);
         backdrop-filter: blur(0px);
@@ -96,7 +90,7 @@
     }
 
         .food-toolbar .form-control,
-        .food-toolbar .form-select  {
+        .food-toolbar .form-select {
             font-family: "IRANYekan", "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
             border-radius: var(--radius-sm);
             border: 1px solid #e2e8f0;
@@ -113,8 +107,6 @@
                 outline: none;
             }
 
-   
-    /* ── BUTTONS ── */
     .btn-primary {
         background: linear-gradient(135deg, var(--primary), #f97316);
         border: none;
@@ -186,7 +178,6 @@
             transform: scale(0.97);
         }
 
-    /* ── FOOD CARD (Enhanced) ── */
     .food-card {
         position: relative;
         border: 1px solid var(--card-border);
@@ -343,7 +334,6 @@
     }
 
     .price-new {
-
         color: green;
         font-weight: 900;
         font-size: 1.1rem;
@@ -365,7 +355,6 @@
             padding: 8px 0;
         }
 
-    /* ── CART SIDEBAR (Enhanced) ── */
     .cart-sidebar {
         position: sticky;
         top: 24px;
@@ -472,7 +461,6 @@
         font-style: italic;
     }
 
-
     .cart-fab {
         position: fixed;
         inset-inline-end: 16px;
@@ -506,7 +494,6 @@
             margin: 0;
         }
 
-
     .cart-offcanvas .offcanvas-header {
         border-bottom: 2px solid var(--primary-light);
         background: #fff;
@@ -517,7 +504,6 @@
         background: #fefefe;
     }
 
-  
     .customer-search-wrapper {
         position: relative;
     }
@@ -538,18 +524,14 @@
     }
 
     @@keyframes slideDown {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .customer-result-item {
@@ -614,7 +596,6 @@
             transform: scale(1.02);
         }
 
-   
     .toast-container {
         position: fixed;
         bottom: 24px;
@@ -663,21 +644,16 @@
         }
 
     @@keyframes toastSlideIn {
-        from
-
-    {
-        opacity: 0;
-        transform: translateX(-40px) scale(0.9);
+        from {
+            opacity: 0;
+            transform: translateX(-40px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
     }
 
-    to {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-    }
-
-    }
-
-  
     .modal-content {
         border: none;
         border-radius: var(--radius-lg);
@@ -697,133 +673,111 @@
         padding: 1rem 1.5rem;
     }
 
-
     @@media (hover: none) and (pointer: coarse) {
-        .add-to-cart-btn, .remove-item-btn, #submitOrderBtn, #offcanvasSubmitOrderBtn, .cart-fab
-
-    {
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .cart-item-actions input[type="number"] {
-        min-height: 42px;
-        font-size: 1rem;
-    }
-
-    .food-card:hover {
-        transform: translateY(-4px);
-    }
-
-        .food-card:hover .food-img {
-            transform: scale(1.04);
+        .add-to-cart-btn, .remove-item-btn, #submitOrderBtn, #offcanvasSubmitOrderBtn, .cart-fab {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .cart-item-actions input[type="number"] {
+            min-height: 42px;
+            font-size: 1rem;
+        }
+
+        .food-card:hover {
+            transform: translateY(-4px);
+        }
+
+            .food-card:hover .food-img {
+                transform: scale(1.04);
+            }
     }
 
     @@media (max-width: 768px) {
-        .food-toolbar
-
-    {
-        padding: 12px 16px;
-    }
-
-    .cart-sidebar {
-        padding: 16px;
-    }
-
-    .food-body {
-        padding: 10px 12px;
-    }
-
-    .food-title {
-        font-size: 1rem;
-    }
-
-        .cart-sidebar{
-            display:none;
+        .food-toolbar {
+            padding: 12px 16px;
         }
 
+        .cart-sidebar {
+            padding: 16px;
+        }
+
+        .food-body {
+            padding: 10px 12px;
+        }
+
+        .food-title {
+            font-size: 1rem;
+        }
+
+        .cart-sidebar {
+            display: none;
+        }
     }
 
     @@media (max-width: 576px) {
-        #desktopCustomerSearch, #offcanvasCustomerSearch
+        #desktopCustomerSearch, #offcanvasCustomerSearch {
+            font-size: 16px !important;
+        }
 
-    {
-        font-size: 16px !important;
+        .selected-customer-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .price-area {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
     }
 
-    .selected-customer-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .price-area {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
-
-    }
-
-    /* Animations for food items */
     .food-card-item {
         animation: fadeInUp 0.4s ease-out backwards;
         animation-delay: calc(var(--item-index, 0) * 0.03s);
     }
 
     @@keyframes fadeInUp {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(20px);
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    }
-
-    /* Focus visible for accessibility */
     :focus-visible {
         outline: 3px solid var(--primary);
         outline-offset: 2px;
         border-radius: var(--radius-sm);
     }
 
-    /* Loading state for buttons */
     .btn:disabled {
         opacity: 0.7;
         cursor: not-allowed;
         transform: none !important;
     }
 
-    /* Smooth page transition */
     .food-page {
         animation: pageFadeIn 0.5s ease-out;
     }
 
     @@keyframes pageFadeIn {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(10px);
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    }
-    /* ── INPUT GROUP (CUSTOMER SEARCH) ── */
     .input-group {
         position: relative;
         display: flex;
@@ -892,7 +846,6 @@
                 font-size: 1rem;
             }
 
-        /* RTL support for input-group (since page is rtl) */
         .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu),
         .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3) {
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -904,34 +857,28 @@
             border-bottom-left-radius: var(--radius-sm);
         }
 
-    /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .input-group .btn-new-customer
+        .input-group .btn-new-customer {
+            padding: 0 14px;
+            font-size: 0.75rem;
+        }
 
-    {
-        padding: 0 14px;
-        font-size: 0.75rem;
+            .input-group .btn-new-customer i {
+                font-size: 0.85rem;
+            }
+
+        .input-group .form-control {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
     }
 
-    .input-group .btn-new-customer i {
-        font-size: 0.85rem;
-    }
-
-    .input-group .form-control {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-
-    }
-
-    /* Disabled state */
     .input-group .btn-new-customer:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
     }
 
-    /* Error state */
     .input-group.has-error {
         border-color: #ef4444;
     }
@@ -945,10 +892,8 @@
 <div class="container food-page mt-4">
     <div class="row">
 
-      
+        <!-- Food List Column -->
         <div class="col-lg-8">
-            
-
             <div class="food-toolbar mb-3">
                 <div class="row g-2 align-items-center">
                     <div class="col-12 col-md-4">
@@ -1042,7 +987,7 @@
                                             data-id="@item.FoodItemId"
                                             data-name="@item.Name"
                                             data-price="@(item.DiscountPrice > 0 ? item.DiscountPrice : item.Price)">
-                                         افزودن به سفارش
+                                        افزودن به سفارش
                                     </button>
                                 </div>
                             </div>
@@ -1070,7 +1015,6 @@
                     <label class="form-label fw-semibold">مشتری </label>
                     <div class="customer-search-wrapper">
                         <div class="input-group">
-                            
                             <input type="text" id="desktopCustomerSearch" class="form-control"
                                    placeholder="شماره موبایل یا نام ..." autocomplete="off">
                             <button class="btn btn-new-customer" type="button"
@@ -1125,7 +1069,6 @@
             <label class="form-label fw-semibold">مشتری (اختیاری)</label>
             <div class="customer-search-wrapper">
                 <div class="input-group">
-                 
                     <input type="text" id="offcanvasCustomerSearch" class="form-control"
                            placeholder="شماره موبایل یا نام ..." autocomplete="off">
                     <button class="btn btn-new-customer" type="button"
@@ -1182,12 +1125,18 @@
 
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
+
+<!-- Import the interceptor and expose it globally -->
+<script type="module">
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
     // ══════════════════════════════════════════════════════════
-    //  CONSTANTS & STATE
+    //  CONSTANTS & STATE (V2 endpoints)
     // ══════════════════════════════════════════════════════════
-    const API_BASE      = "/api/UserApi";
-    const API_CUSTOMERS = "/api/Customers";
+    const API_BASE      = "/api/v2/UserApi";       // V2 endpoint
     var   restaurantId  = @(ViewBag.RestaurantId ?? 0);
 
     let cart               = [];
@@ -1195,7 +1144,7 @@
     let activeModalContext = 'desktop';
     let isSubmittingOrder  = false;
     let isSubmittingCustomer = false;
-    let currentSearchXhr   = null;
+    let currentSearchXhr   = null;   // we'll keep for abort, but fetch doesn't abort easily; we'll handle by ignoring old responses
 
     // ══════════════════════════════════════════════════════════
     //  HELPERS
@@ -1281,7 +1230,7 @@
     }
 
     // ══════════════════════════════════════════════════════════
-    //  CUSTOMER SEARCH SETUP
+    //  CUSTOMER SEARCH SETUP (using fetchWithAuth)
     // ══════════════════════════════════════════════════════════
     function setupCustomerSearch(context) {
         var sel = CONTEXTS[context];
@@ -1312,56 +1261,56 @@
             if (!$(e.target).closest(sel.searchId).length &&
                 !$(e.target).closest(sel.resultsId).length) {
                 $(sel.resultsId).hide();
-
-
-
-                    
-
-
-
-
             }
         });
     }
 
-    function doSearch(context, query) {
+    // We'll use a simple counter to ignore outdated responses
+    let searchCounter = 0;
+
+    async function doSearch(context, query) {
         var sel = CONTEXTS[context];
-        if (currentSearchXhr) currentSearchXhr.abort();
+        // Increment counter to ignore old responses
+        const currentSearchId = ++searchCounter;
         $(sel.spinnerId).show();
-        currentSearchXhr = $.ajax({
-            url: API_CUSTOMERS + '/getcustomers/' + restaurantId,
-            type: 'GET',
-            data: { search: query, page: 1, pageSize: 8 },
-            success: function(res) {
-                $(sel.spinnerId).hide();
-                if (res.success && res.data && res.data.length) {
-                    var html = '';
-                    res.data.forEach(function(c) {
-                        html += `<div class="customer-result-item"
-                                      data-id="${c.customerId}"
-                                      data-mobile="${escapeHtml(c.mobile)}"
-                                      data-name="${escapeHtml(c.fullName || '')}">
-                            <div>
-                                <div class="customer-mobile">📞 ${escapeHtml(c.mobile)}</div>
-                                ${c.fullName ? `<div class="customer-name">${escapeHtml(c.fullName)}</div>` : ''}
-                            </div>
-                        </div>`;
-                    });
-                    $(sel.resultsId).html(html).show();
-                } else {
-                    $(sel.resultsId).html('<div class="p-3 text-center text-muted">مشتری‌ای یافت نشد</div>').show();
-                }
-            },
-            error: function(xhr) {
-                if (xhr.statusText === 'abort') return;
-                $(sel.spinnerId).hide();
-                $(sel.resultsId).html('<div class="p-3 text-center text-danger">خطا در جستجو</div>').show();
-            },
-            complete: function() { currentSearchXhr = null; }
-        });
+
+        try {
+            const response = await window.fetchWithAuth(
+                `${API_BASE}/getcustomers/${restaurantId}?search=${encodeURIComponent(query)}&page=1&pageSize=8`
+            );
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const res = await response.json();
+            // Ignore if this response is outdated
+            if (currentSearchId !== searchCounter) return;
+            $(sel.spinnerId).hide();
+
+            if (res.success && res.data && res.data.length) {
+                var html = '';
+                res.data.forEach(function(c) {
+                    html += `<div class="customer-result-item"
+                                  data-id="${c.customerId}"
+                                  data-mobile="${escapeHtml(c.mobile)}"
+                                  data-name="${escapeHtml(c.fullName || '')}">
+                        <div>
+                            <div class="customer-mobile">📞 ${escapeHtml(c.mobile)}</div>
+                            ${c.fullName ? `<div class="customer-name">${escapeHtml(c.fullName)}</div>` : ''}
+                        </div>
+                    </div>`;
+                });
+                $(sel.resultsId).html(html).show();
+            } else {
+                $(sel.resultsId).html('<div class="p-3 text-center text-muted">مشتری‌ای یافت نشد</div>').show();
+            }
+        } catch (error) {
+            if (currentSearchId !== searchCounter) return;
+            $(sel.spinnerId).hide();
+            $(sel.resultsId).html('<div class="p-3 text-center text-danger">خطا در جستجو</div>').show();
+        }
     }
 
-  
+    // ── New Customer Modal ──
     $('#newCustomerModal').on('show.bs.modal', function(e) {
         var btn = $(e.relatedTarget);
         activeModalContext = btn.data('context') || 'desktop';
@@ -1371,13 +1320,12 @@
     });
 
     $('#newCustomerModal').on('hidden.bs.modal', function() {
-       
         $('.modal-backdrop').remove();
         $('body').removeClass('modal-open').css({ overflow: '', paddingRight: '' });
         isSubmittingCustomer = false;
     });
 
-        $('#saveNewCustomerBtn').on('click', function() {
+    $('#saveNewCustomerBtn').on('click', async function() {
         if (isSubmittingCustomer) return;
 
         var fullName = $('#newCustomerFullName').val().trim();
@@ -1385,11 +1333,8 @@
         var description = $('#newCustomerDesc').val().trim();
 
         if (fullName !== "") {
-            // نام وارد شده: تولید خودکار شماره موبایل
             mobile = generateAutoMobile();
-            // اعتبارسنجی شماره موبایل انجام نمی‌شود
         } else {
-            // نام خالی: شماره موبایل الزامی و باید معتبر باشد
             mobile = $('#newCustomerMobile').val().trim();
             if (!/^09[0-9]{9}$/.test(mobile)) {
                 showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
@@ -1403,40 +1348,39 @@
         $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
         isSubmittingCustomer = true;
 
-        $.ajax({
-            url: API_CUSTOMERS + '/addcustomer',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ restaurantId: restaurantId, mobile: mobile, fullName: fullName, description: description }),
-            success: function(res) {
-                if (res.success) {
-                    showToast('مشتری با موفقیت ثبت شد', 'success');
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/addcustomer`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ restaurantId: restaurantId, mobile: mobile, fullName: fullName, description: description })
+            });
+            const res = await response.json();
+            if (res.success) {
+                showToast('مشتری با موفقیت ثبت شد', 'success');
 
-                    var modalEl = document.getElementById('newCustomerModal');
-                    var bsModal = bootstrap.Modal.getInstance(modalEl);
-                    if (bsModal) bsModal.hide();
+                var modalEl = document.getElementById('newCustomerModal');
+                var bsModal = bootstrap.Modal.getInstance(modalEl);
+                if (bsModal) bsModal.hide();
 
-                    setTimeout(function() {
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open');
-                        $('body').css({ overflow: '', paddingRight: '' });
-                    }, 150);
+                setTimeout(function() {
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                    $('body').css({ overflow: '', paddingRight: '' });
+                }, 150);
 
-                    selectCustomer(res.customerId, mobile, fullName);
-                } else {
-                    showToast(res.message || 'خطا در ثبت مشتری', 'error');
-                    $btn.html(originalHtml).prop('disabled', false);
-                    isSubmittingCustomer = false;
-                }
-            },
-            error: function(xhr) {
-                var msg = 'خطا در ارتباط با سرور';
-                if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                showToast(msg, 'error');
+                selectCustomer(res.customerId, mobile, fullName);
+            } else {
+                showToast(res.message || 'خطا در ثبت مشتری', 'error');
                 $btn.html(originalHtml).prop('disabled', false);
                 isSubmittingCustomer = false;
             }
-        });
+        } catch (error) {
+            var msg = 'خطا در ارتباط با سرور';
+            if (error.message) msg = error.message;
+            showToast(msg, 'error');
+            $btn.html(originalHtml).prop('disabled', false);
+            isSubmittingCustomer = false;
+        }
     });
 
     function generateAutoMobile() {
@@ -1447,81 +1391,12 @@
         return prefix + eightDigits + random;
     }
 
-    // $('#saveNewCustomerBtn').on('click', function() {
-    //     if (isSubmittingCustomer) return;
-
-    //     var mobile = $('#newCustomerMobile').val().trim();
-    //     if (!/^09[0-9]{9}$/.test(mobile)) {
-    //         showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
-    //         return;
-    //     }
-    //     var fullName    = $('#newCustomerFullName').val().trim();
-    //     if (!fullName) {
-    //         fullName = "مشتری مهمان";   
-             
-    //     }
-
-    //     var description = $('#newCustomerDesc').val().trim();
-    //     var $btn = $(this);
-    //     var originalHtml = $btn.html();
-    //     $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
-    //     isSubmittingCustomer = true;
-
-    //     $.ajax({
-    //         url: API_CUSTOMERS + '/addcustomer',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({ restaurantId: restaurantId, mobile: mobile, fullName: fullName, description: description }),
-    //         success: function(res) {
-    //             if (res.success) {
-    //                showToast('مشتری با موفقیت ثبت شد', 'success');
-
-
-
-    //                  var modalEl = document.getElementById('newCustomerModal');
-    //             var bsModal = bootstrap.Modal.getInstance(modalEl);
-    //             if (bsModal) bsModal.hide();
-
-            
-    //             setTimeout(function() {
-    //                 $('.modal-backdrop').remove();
-    //                 $('body').removeClass('modal-open');
-    //                 $('body').css({ overflow: '', paddingRight: '' });
-    //             }, 150);
-
-
-    //                 selectCustomer(res.customerId, mobile, fullName);
-
-
-    //             } else {
-    //                 showToast(res.message || 'خطا در ثبت مشتری', 'error');
-    //                 $btn.html(originalHtml).prop('disabled', false);
-    //                 isSubmittingCustomer = false;
-    //             }
-    //         },
-    //         error: function(xhr) {
-    //             var msg = 'خطا در ارتباط با سرور';
-    //             if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-    //             showToast(msg, 'error');
-    //             $btn.html(originalHtml).prop('disabled', false);
-    //             isSubmittingCustomer = false;
-    //         }
-    //     });
-    // });
-
-   
-
-    // function generateAutoMobile() {
-    //     const prefix = '991';
-    //     const timestamp = Date.now().toString();
-    //     const eightDigits = timestamp.slice(2, 10);
-    //     const random = Math.floor(Math.random() * 10);  
-    //     return prefix + eightDigits + random;  
-    // }
-
-     $(document).on('click', '.btn-change-customer', function() {
+    // Change customer button
+    $(document).on('click', '.btn-change-customer', function() {
         clearCustomerForContext($(this).data('context'));
     });
+
+    // ── Cart rendering ──
     function renderCart() {
         var itemCount  = cart.reduce(function(s,i){ return s + i.quantity; }, 0);
         var cartTotal  = cart.reduce(function(s,i){ return s + i.price * i.quantity; }, 0);
@@ -1583,32 +1458,30 @@
     });
 
     // ══════════════════════════════════════════════════════════
-    //  TABLES
+    //  TABLES (using fetchWithAuth)
     // ══════════════════════════════════════════════════════════
-    function loadTables() {
+    async function loadTables() {
         if (!restaurantId) return;
-        $.ajax({
-            url: API_BASE + '/gettablesbyrestaurant/' + restaurantId,
-            type: 'GET',
-            success: function(data) {
-                var base = '<option value="">-- انتخاب میز --</option>';
-                if (data.tables && data.tables.length) {
-                    var opts = '';
-                    data.tables.forEach(function(t) {
-                        opts += `<option value="${escapeHtml(t.tableName)}" data-seats="${t.seats}">
-                                    ${escapeHtml(t.tableName)} (${t.seats} صندلی)
-                                 </option>`;
-                    });
-                    $('#tableSelect, #offcanvasTableSelect').html(base + opts);
-                } else {
-                    $('#tableSelect, #offcanvasTableSelect').html(base + '<option disabled>میز فعالی یافت نشد</option>');
-                }
-            },
-            error: function() {
-                $('#tableSelect, #offcanvasTableSelect').html('<option value="">-- خطا در بارگذاری میزها --</option>');
-                showToast('خطا در دریافت لیست میزها', 'error');
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/gettablesbyrestaurant/${restaurantId}`);
+            if (!response.ok) throw new Error('Failed to load tables');
+            const data = await response.json();
+            var base = '<option value="">-- انتخاب میز --</option>';
+            if (data.tables && data.tables.length) {
+                var opts = '';
+                data.tables.forEach(function(t) {
+                    opts += `<option value="${escapeHtml(t.tableName)}" data-seats="${t.seats}">
+                                ${escapeHtml(t.tableName)} (${t.seats} صندلی)
+                             </option>`;
+                });
+                $('#tableSelect, #offcanvasTableSelect').html(base + opts);
+            } else {
+                $('#tableSelect, #offcanvasTableSelect').html(base + '<option disabled>میز فعالی یافت نشد</option>');
             }
-        });
+        } catch (error) {
+            $('#tableSelect, #offcanvasTableSelect').html('<option value="">-- خطا در بارگذاری میزها --</option>');
+            showToast('خطا در دریافت لیست میزها', 'error');
+        }
     }
 
     $(document).on('change', '#tableSelect', function() {
@@ -1621,9 +1494,9 @@
     });
 
     // ══════════════════════════════════════════════════════════
-    //  SUBMIT ORDER
+    //  SUBMIT ORDER (using fetchWithAuth)
     // ══════════════════════════════════════════════════════════
-    function submitOrder(tableSelectId, descriptionId, btnElement) {
+    async function submitOrder(tableSelectId, descriptionId, btnElement) {
         if (isSubmittingOrder) return;
 
         var tableName = $(tableSelectId).val();
@@ -1641,74 +1514,74 @@
         var originalHtml = $btn.html();
         $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
 
-        $.ajax({
-            url: API_BASE + '/createOrder',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                restaurantId: restaurantId,
-                tableNumber:  tableName,
-                statusId:     3,
-                description:  $(descriptionId).val().trim(),
-                items:        cart.map(function(i){ return { foodItemId: i.id, quantity: i.quantity }; }),
-                customerId:   selectedCustomerId
-            }),
-            success: function(res) {
-                if (res.success) {
-                    showToast('سفارش با موفقیت ثبت شد!', 'success');
-                    cart = [];
-                    resetCustomer();
-                    renderCart();
-                    $('#tableSelect, #offcanvasTableSelect').val('');
-                    $('#tableSeatsInfo, #offcanvasTableSeatsInfo').text('');
-                    $('#orderDescription, #offcanvasOrderDescription').val('');
-                    var oc = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
-                    if (oc) oc.hide();
-                } else {
-                    showToast('خطا در ثبت سفارش: ' + (res.message || 'نامشخص'), 'error');
-                }
-            },
-            error: function(xhr) {
-                var msg = 'خطای ارتباط با سرور';
-                if (xhr.status === 401) msg = 'لطفاً ابتدا وارد حساب کاربری خود شوید.';
-                else if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                showToast(msg, 'error');
-            },
-            complete: function() {
-                isSubmittingOrder = false;
-                $btn.html(originalHtml).prop('disabled', false);
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/createOrder`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    restaurantId: restaurantId,
+                    tableNumber:  tableName,
+                    statusId:     3,
+                    description:  $(descriptionId).val().trim(),
+                    items:        cart.map(function(i){ return { foodItemId: i.id, quantity: i.quantity }; }),
+                    customerId:   selectedCustomerId
+                })
+            });
+            const res = await response.json();
+            if (res.success) {
+                showToast('سفارش با موفقیت ثبت شد!', 'success');
+                cart = [];
+                resetCustomer();
+                renderCart();
+                $('#tableSelect, #offcanvasTableSelect').val('');
+                $('#tableSeatsInfo, #offcanvasTableSeatsInfo').text('');
+                $('#orderDescription, #offcanvasOrderDescription').val('');
+                var oc = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
+                if (oc) oc.hide();
+            } else {
+                showToast('خطا در ثبت سفارش: ' + (res.message || 'نامشخص'), 'error');
             }
-        });
+        } catch (error) {
+            var msg = 'خطای ارتباط با سرور';
+            if (error.status === 401) msg = 'لطفاً ابتدا وارد حساب کاربری خود شوید.';
+            else if (error.message) msg = error.message;
+            showToast(msg, 'error');
+        } finally {
+            isSubmittingOrder = false;
+            $btn.html(originalHtml).prop('disabled', false);
+        }
     }
 
     $('#submitOrderBtn').on('click', function() { submitOrder('#tableSelect', '#orderDescription', this); });
     $('#offcanvasSubmitOrderBtn').on('click', function() { submitOrder('#offcanvasTableSelect', '#offcanvasOrderDescription', this); });
 
-
-    function populateFilterCategories() {
-        $.ajax({
-            url: API_BASE + '/getcategoriesbyrestaurant/' + restaurantId,
-            type: 'GET',
-            success: function(data) {
-                var $sel = $('#filterCategory').empty().append('<option value="">همه دسته‌ها</option>');
-                (data.categories || []).forEach(function(c) {
-                    $sel.append(`<option value="${c.categoryId}">${escapeHtml(c.categoryName)}</option>`);
-                });
-            },
-            error: function() {
-                var seen = new Set();
-                $('.food-card-item').each(function() {
-                    var id = String($(this).data('category'));
-                    var name = $(this).data('categoryname');
-                    if (id && !seen.has(id)) {
-                        $('#filterCategory').append(`<option value="${id}">${escapeHtml(name)}</option>`);
-                        seen.add(id);
-                    }
-                });
-            }
-        });
+    // ══════════════════════════════════════════════════════════
+    //  FILTER CATEGORIES (using fetchWithAuth)
+    // ══════════════════════════════════════════════════════════
+    async function populateFilterCategories() {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getcategoriesbyrestaurant/${restaurantId}`);
+            if (!response.ok) throw new Error('Failed to load categories');
+            const data = await response.json();
+            var $sel = $('#filterCategory').empty().append('<option value="">همه دسته‌ها</option>');
+            (data.categories || []).forEach(function(c) {
+                $sel.append(`<option value="${c.categoryId}">${escapeHtml(c.categoryName)}</option>`);
+            });
+        } catch (error) {
+            // fallback: read from DOM
+            var seen = new Set();
+            $('.food-card-item').each(function() {
+                var id = String($(this).data('category'));
+                var name = $(this).data('categoryname');
+                if (id && !seen.has(id)) {
+                    $('#filterCategory').append(`<option value="${id}">${escapeHtml(name)}</option>`);
+                    seen.add(id);
+                }
+            });
+        }
     }
 
+    // ── Filter & Sort ──
     function applyFilters() {
         var q    = $('#searchBox').val().trim().toLowerCase();
         var cat  = $('#filterCategory').val();
@@ -1753,7 +1626,9 @@
         visible.forEach(function(el) { $container.append(el); });
     }
 
- 
+    // ══════════════════════════════════════════════════════════
+    //  INIT
+    // ══════════════════════════════════════════════════════════
     $(function() {
         populateFilterCategories();
         loadTables();

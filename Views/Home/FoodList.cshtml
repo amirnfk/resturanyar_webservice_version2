@@ -2,9 +2,6 @@
 @{
     var restaurantName = ViewBag.RestaurantName as string;
     ViewData["Title"] = "لیست آیتم ها - " + @restaurantName;
-
-
-   
     var placeholder = Url.Content("~/images/food_placeholder.jpg");
 }
 
@@ -111,8 +108,6 @@
         transform: scale(1.03);
     }
 
-   
-
     .food-body {
         padding: 10px 12px;
     }
@@ -149,6 +144,7 @@
         align-items: baseline;
         gap: 8px;
         margin-top: 4px;
+        flex-wrap: wrap;
     }
 
     .price-old {
@@ -158,10 +154,14 @@
     }
 
     .price-new {
-        color: #ef4444;
+        color: #10b981;
         font-weight: 900;
         font-size: 1rem;
     }
+
+        .price-new.no-discount {
+            color: #10b981;
+        }
 
     .food-footer {
         display: flex;
@@ -224,98 +224,7 @@
             background-color: #ef4444 !important;
         }
 
-    /* Minimal on mobile */
-    @@media (max-width: 576px) {
-        h2
-
-    {
-        font-size: 1.05rem;
-    }
-
-    .food-toolbar {
-        padding: 8px;
-    }
-
-        .food-toolbar .form-control, .food-toolbar .form-select {
-            font-size: .86rem;
-        }
-
-    .food-card {
-        border-radius: 10px;
-        box-shadow: 0 8px 18px rgba(15,23,42,.06);
-    }
-
-    .food-img-wrap {
-        aspect-ratio: 1/1;
-    }
-
-    .food-body {
-        padding: 8px 10px;
-    }
-
-    .food-title {
-        font-size: .95rem;
-        margin-bottom: 2px;
-    }
-
-    .food-desc, .chip {
-        display: none;
-    }
-
-    .price-area {
-        gap: 6px;
-    }
-
-    .price-old {
-        font-size: .8rem;
-    }
-
-    .price-new {
-        font-size: .95rem;
-    }
-
-    .food-footer {
-        padding: 7px 9px;
-    }
-
-        .food-footer .btn {
-            font-size: .76rem;
-            padding: .28rem .5rem;
-        }
-
-    
-
-
-    }
-    /* جایگزین بخش قیمت و تخفیف در استایل موجود */
-
-    /* قیمت‌ها */
-    .price-area {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        margin-top: 4px;
-        flex-wrap: wrap;
-    }
-
-    .price-old {
-        text-decoration: line-through;
-        color: #9ca3af;
-        font-size: 0.85rem;
-    }
-
-    .price-new {
-        color: #10b981; /* سبز زیبا */
-        font-weight: 900;
-        font-size: 1rem;
-    }
-
-        /* فقط قیمت اصلی (بدون تخفیف) */
-        .price-new.no-discount {
-            color: #10b981;
-        }
-
-    /* بنر تخفیف قرمز */
+    /* Ribbon for discount */
     .ribbon {
         position: absolute;
         top: 8px;
@@ -330,39 +239,78 @@
         z-index: 2;
     }
 
-        
-
-    /* کارت تخفیف‌دار */
-    .food-card.has-discount .price-new {
-        color: #10b981;
-        font-size: 1.05rem;
-    }
-
-    /* دکمه تخفیف در موبایل */
+    /* Minimal on mobile */
     @@media (max-width: 576px) {
-        .ribbon
+        h2 {
+            font-size: 1.05rem;
+        }
 
-    {
-        padding: 3px 8px;
-        font-size: 9px;
-        top: 6px;
-        right: 6px;
-    }
+        .food-toolbar {
+            padding: 8px;
+        }
 
-    .price-new {
-        font-size: 0.9rem;
-    }
+            .food-toolbar .form-control, .food-toolbar .form-select {
+                font-size: .86rem;
+            }
 
+        .food-card {
+            border-radius: 10px;
+            box-shadow: 0 8px 18px rgba(15,23,42,.06);
+        }
+
+        .food-img-wrap {
+            aspect-ratio: 1/1;
+        }
+
+        .food-body {
+            padding: 8px 10px;
+        }
+
+        .food-title {
+            font-size: .95rem;
+            margin-bottom: 2px;
+        }
+
+        .food-desc, .chip {
+            display: none;
+        }
+
+        .price-area {
+            gap: 6px;
+        }
+
+        .price-old {
+            font-size: .8rem;
+        }
+
+        .price-new {
+            font-size: .95rem;
+        }
+
+        .food-footer {
+            padding: 7px 9px;
+        }
+
+            .food-footer .btn {
+                font-size: .76rem;
+                padding: .28rem .5rem;
+            }
+
+        .ribbon {
+            padding: 3px 8px;
+            font-size: 9px;
+            top: 6px;
+            right: 6px;
+        }
     }
 </style>
 
 <div class="container food-page mt-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-       
         <button class="btn btn-primary" onclick="openAddModal()">افزودن غذا</button>
     </div>
 
-    <!-- Filters kept visible, compact on mobile -->
+    <!-- Filters -->
     <div class="food-toolbar mb-3">
         <div class="row g-2 align-items-center">
             <div class="col-12 col-md-4">
@@ -465,7 +413,7 @@
     }
 </div>
 
-<!-- Modal با پیش‌نمایش تصویر -->
+<!-- Modal -->
 <div class="modal fade" id="foodModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -485,7 +433,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">توضیحات</label>
-<textarea id="description" name="description" class="form-control" rows="3"></textarea>
+                                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">دسته‌بندی <span class="text-danger">*</span></label>
@@ -527,303 +475,331 @@
 
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
+
+<!-- Import the interceptor and expose it globally -->
+<script type="module">
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
-    const API_BASE = "https://resturanyar.ir/api/UserApi";
+    const API_BASE = "/api/v2/UserApi";
     let compressedImageFile = null;
 
-    // Image compression + preview
+    // -----------------------------------------------------------------
+    // Helper: show / clear validation errors
+    function showErrors(errors) {
+        const c = document.getElementById("errorContainer");
+        if (!c) return;
+        c.innerHTML = '<strong>لطفاً خطاهای زیر را برطرف کنید:</strong>' +
+            errors.map(e => `<div>• ${e}</div>`).join("");
+        c.classList.remove("d-none");
+        c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearErrors() {
+        const c = document.getElementById("errorContainer");
+        if (c) { c.classList.add("d-none"); c.innerHTML = ""; }
+    }
+
+    // -----------------------------------------------------------------
+    // Image compression (unchanged)
     document.getElementById("image").addEventListener("change", async function () {
-    if (this.files && this.files[0]) {
-    try {
-    compressedImageFile = await compressImage(this.files[0], 800, 800, 0.8);
-    document.getElementById("imgPreview").src = URL.createObjectURL(compressedImageFile);
-    } catch (e) {
-    compressedImageFile = this.files[0];
-    document.getElementById("imgPreview").src = URL.createObjectURL(this.files[0]);
-    }
-    } else {
-    document.getElementById("imgPreview").src = "@placeholder";
-    }
+        if (this.files && this.files[0]) {
+            try {
+                compressedImageFile = await compressImage(this.files[0], 800, 800, 0.8);
+                document.getElementById("imgPreview").src = URL.createObjectURL(compressedImageFile);
+            } catch (e) {
+                compressedImageFile = this.files[0];
+                document.getElementById("imgPreview").src = URL.createObjectURL(this.files[0]);
+            }
+        } else {
+            document.getElementById("imgPreview").src = "@placeholder";
+        }
     });
 
     function compressImage(file, maxW, maxH, q) {
-    return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-    let w = img.width, h = img.height;
-    if (w > maxW || h > maxH) {
-    const r = Math.min(maxW / w, maxH / h); w *= r; h *= r;
-    }
-    const c = document.createElement("canvas"); c.width = w; c.height = h;
-    const ctx = c.getContext("2d"); ctx.drawImage(img, 0, 0, w, h);
-    c.toBlob(b => b ? resolve(new File([b], file.name, { type: "image/jpeg" })) : reject(new Error("blob error")), "image/jpeg", q);
-    };
-    img.onerror = reject; img.src = e.target.result;
-    };
-    reader.onerror = reject; reader.readAsDataURL(file);
-    });
-    }
-
-    // Save (Add/Update)
-    function saveFood() {
-    clearErrors();
-    if (restaurantId === 0) { showErrors(["شناسه رستوران پیدا نشد."]); return; }
-
-    const id = $("#foodId").val();
-    const name = $("#name").val().trim();
-    const categoryId = parseInt($("#category").val());
-    const price = parseInt($("#price").val());
-    const discountVal = $("#discountPrice").val();
-    const discountPrice = discountVal ? parseInt(discountVal) : null;
-    const isAvailable = $("#isAvailable").prop("checked");
-
-    let errors = [];
-    if (!name) errors.push("نام غذا الزامی است.");
-    else if (name.length < 2) errors.push("نام غذا باید حداقل ۲ کاراکتر باشد.");
-    if (isNaN(categoryId) || categoryId <= 0) errors.push("لطفاً یک دسته‌بندی معتبر انتخاب کنید.");
-    if (isNaN(price) || price <= 0) errors.push("قیمت باید عددی بزرگ‌تر از صفر باشد.");
-    if (discountPrice !== null) {
-    if (isNaN(discountPrice)) errors.push("قیمت تخفیف باید عددی معتبر باشد.");
-    else if (discountPrice >= price) errors.push("قیمت تخفیف باید کمتر از قیمت اصلی باشد.");
-    }
-    if (errors.length) { showErrors(errors); return; }
-
-    const fd = new FormData();
-    fd.append("RestaurantId", restaurantId);
-    fd.append("Name", name);
-    fd.append("Description", $("#description").val());
-    fd.append("CategoryId", categoryId);
-    fd.append("Price", price);
-    fd.append("DiscountPrice", discountPrice || 0);
-    fd.append("IsAvailable", isAvailable);
-    if (id) fd.append("FoodItemId", id);
-    if (compressedImageFile) fd.append("Image", compressedImageFile);
-
-    let url = `${API_BASE}/addfood`, method = "POST";
-    if (id) { url = `${API_BASE}/updatefood/${id}`; method = "PUT"; }
-
-    const btn = $("#btnSaveFood"), orig = btn.html();
-    btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ذخیره...').prop('disabled', true);
-
-    $.ajax({
-    url: url,
-    type: method,
-    data: fd,
-    contentType: false,
-    processData: false,
-    success: function (res) {
-    btn.html(orig).prop('disabled', false);
-    const ok = res.success || res.Success || false;
-    const msg = res.message || res.Message || "عملیات با موفقیت انجام شد";
-    alert(msg);
-    if (ok) {
-    $('#foodModal').modal('hide');
-    setTimeout(function(){ location.reload(); }, 500);
-    }
-    },
-    error: function (xhr) {
-    btn.html(orig).prop('disabled', false);
-    const errorMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : "خطا در برقراری ارتباط با سرور";
-    showErrors([errorMsg]);
-    }
-    });
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    let w = img.width, h = img.height;
+                    if (w > maxW || h > maxH) {
+                        const r = Math.min(maxW / w, maxH / h);
+                        w *= r; h *= r;
+                    }
+                    const c = document.createElement("canvas");
+                    c.width = w; c.height = h;
+                    const ctx = c.getContext("2d");
+                    ctx.drawImage(img, 0, 0, w, h);
+                    c.toBlob(b => b ? resolve(new File([b], file.name, { type: "image/jpeg" })) : reject(new Error("blob error")), "image/jpeg", q);
+                };
+                img.onerror = reject;
+                img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 
-    // Delete
-    function deleteFood(id) {
-    if (!confirm("آیا از حذف این غذا مطمئن هستید؟")) return;
-    $.ajax({
-    url: `${API_BASE}/deleteFood/${id}`,
-    type: "DELETE",
-    success: function (res) {
-    const ok = res.success || res.Success || false;
-    const msg = res.message || res.Message || "عملیات با موفقیت انجام شد";
-    alert(msg);
-    if (ok) {
-    const card = $(`[data-id='${id}']`);
-    card.fadeOut(200, function () {
-    $(this).remove();
-    if (!$("#foodList [data-id]").length) {
-    $("#foodList").html('<div class="col-12"><div class="alert alert-warning text-center">غذایی برای نمایش وجود ندارد.</div></div>');
-    }
-    });
-    }
-    },
-    error: function () {
-    alert("خطا در برقراری ارتباط با سرور");
-    }
-    });
+    // -----------------------------------------------------------------
+    // SAVE (Add / Update)
+    async function saveFood() {
+        clearErrors();
+        if (restaurantId === 0) {
+            showErrors(["شناسه رستوران پیدا نشد."]);
+            return;
+        }
+
+        const id = $("#foodId").val();
+        const name = $("#name").val().trim();
+        const categoryId = parseInt($("#category").val());
+        const price = parseInt($("#price").val());
+        const discountVal = $("#discountPrice").val();
+        const discountPrice = discountVal ? parseInt(discountVal) : null;
+        const isAvailable = $("#isAvailable").prop("checked");
+
+        // Validation
+        let errors = [];
+        if (!name) errors.push("نام غذا الزامی است.");
+        else if (name.length < 2) errors.push("نام غذا باید حداقل ۲ کاراکتر باشد.");
+        if (isNaN(categoryId) || categoryId <= 0) errors.push("لطفاً یک دسته‌بندی معتبر انتخاب کنید.");
+        if (isNaN(price) || price <= 0) errors.push("قیمت باید عددی بزرگ‌تر از صفر باشد.");
+        if (discountPrice !== null) {
+            if (isNaN(discountPrice)) errors.push("قیمت تخفیف باید عددی معتبر باشد.");
+            else if (discountPrice >= price) errors.push("قیمت تخفیف باید کمتر از قیمت اصلی باشد.");
+        }
+        if (errors.length) { showErrors(errors); return; }
+
+        const fd = new FormData();
+        fd.append("RestaurantId", restaurantId);
+        fd.append("Name", name);
+        fd.append("Description", $("#description").val());
+        fd.append("CategoryId", categoryId);
+        fd.append("Price", price);
+        fd.append("DiscountPrice", discountPrice || 0);
+        fd.append("IsAvailable", isAvailable);
+        if (compressedImageFile) fd.append("Image", compressedImageFile);
+
+        let url = `${API_BASE}/addfood`;
+        let method = "POST";
+        if (id) {
+            url = `${API_BASE}/updatefood/${id}`;
+            method = "PUT";
+        }
+
+        const btn = $("#btnSaveFood"), orig = btn.html();
+        btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ذخیره...').prop('disabled', true);
+
+        try {
+            const response = await window.fetchWithAuth(url, {
+                method: method,
+                body: fd,
+                // Do NOT set Content-Type – browser sets it for FormData
+            });
+            const res = await response.json();
+            btn.html(orig).prop('disabled', false);
+            alert(res.message || "عملیات با موفقیت انجام شد");
+            if (res.success) {
+                $('#foodModal').modal('hide');
+                setTimeout(() => location.reload(), 500);
+            }
+        } catch (error) {
+            btn.html(orig).prop('disabled', false);
+            // The interceptor already handles 401 & redirect, so we show the error
+            alert("خطا در ذخیره غذا: " + (error.message || "مشکل در ارتباط با سرور"));
+        }
     }
 
-    // Modal helpers
-    function loadCategoriesIntoModal(selectedCategoryId = "", cb) {
-    $.ajax({
-    url: `${API_BASE}/getcategoriesbyrestaurant/${restaurantId}`,
-    type: "GET",
-    success: function (data) {
-    const select = $("#category");
-    select.empty().append('<option value="">-- انتخاب دسته‌بندی --</option>');
-    (data.categories || []).forEach(function(cat){
-    select.append(`<option value="${cat.categoryId}">${cat.categoryName}</option>`);
-    });
-    if (selectedCategoryId) select.val(String(selectedCategoryId));
-    if (typeof cb === "function") cb();
-    },
-    error: function () {
-    alert("خطا در بارگذاری دسته‌بندی‌ها");
-    if (typeof cb === "function") cb();
+    // -----------------------------------------------------------------
+    // DELETE
+    async function deleteFood(id) {
+        if (!confirm("آیا از حذف این غذا مطمئن هستید؟")) return;
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/deleteFood/${id}`, {
+                method: "DELETE"
+            });
+            const res = await response.json();
+            alert(res.message || "عملیات با موفقیت انجام شد");
+            if (res.success) {
+                const card = $(`[data-id='${id}']`);
+                card.fadeOut(200, function () {
+                    $(this).remove();
+                    if (!$("#foodList [data-id]").length) {
+                        $("#foodList").html('<div class="col-12"><div class="alert alert-warning text-center">غذایی برای نمایش وجود ندارد.</div></div>');
+                    }
+                });
+            }
+        } catch (error) {
+            alert("خطا در حذف غذا: " + (error.message || "مشکل در ارتباط با سرور"));
+        }
     }
-    });
+
+    // -----------------------------------------------------------------
+    // LOAD CATEGORIES into modal dropdown
+    async function loadCategoriesIntoModal(selectedCategoryId = "", cb) {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getcategoriesbyrestaurant/${restaurantId}`);
+            const data = await response.json();
+            const select = $("#category");
+            select.empty().append('<option value="">-- انتخاب دسته‌بندی --</option>');
+            (data.categories || []).forEach(cat => {
+                select.append(`<option value="${cat.categoryId}">${cat.categoryName}</option>`);
+            });
+            if (selectedCategoryId) select.val(String(selectedCategoryId));
+            if (typeof cb === "function") cb();
+        } catch (error) {
+            alert("خطا در بارگذاری دسته‌بندی‌ها: " + (error.message || "مشکل در ارتباط با سرور"));
+            if (typeof cb === "function") cb();
+        }
     }
+
+    // -----------------------------------------------------------------
+    // OPEN ADD MODAL
     function openAddModal() {
-    $("#modalTitle").text("افزودن غذا");
-    $("#foodForm")[0].reset();
-    $("#foodId").val("");
-    compressedImageFile = null;
-    $("#imgPreview").attr("src", "@placeholder");
-    clearErrors();
-    loadCategoriesIntoModal("", function () {
-    new bootstrap.Modal(document.getElementById("foodModal")).show();
-    setTimeout(function(){ $("#name").trigger("focus"); }, 200);
-    });
+        $("#modalTitle").text("افزودن غذا");
+        $("#foodForm")[0].reset();
+        $("#foodId").val("");
+        compressedImageFile = null;
+        $("#imgPreview").attr("src", "@placeholder");
+        clearErrors();
+        loadCategoriesIntoModal("", function () {
+            new bootstrap.Modal(document.getElementById("foodModal")).show();
+            setTimeout(() => $("#name").trigger("focus"), 200);
+        });
     }
+
+    // -----------------------------------------------------------------
+    // OPEN EDIT MODAL
     function openEditModal(id) {
-    const card = $(`[data-id='${id}']`);
-    if (!card.length) { alert("غذا پیدا نشد!"); return; }
+        const card = $(`[data-id='${id}']`);
+        if (!card.length) { alert("غذا پیدا نشد!"); return; }
 
-    $("#modalTitle").text("ویرایش غذا");
-    $("#foodId").val(id);
-    $("#name").val(card.data("name") || "");
-    $("#description").val(card.data("description") || "");
-    $("#price").val(parseInt(card.data("price")) || 0);
-    $("#discountPrice").val(parseInt(card.data("discountpercent")) ? parseInt(card.data("price")) - parseInt(card.data("discount")) : parseInt(card.data("discountprice")) || 0);
-    $("#isAvailable").prop("checked",
-    card.data("isavailable") === true ||
-    card.data("isavailable") === "True" ||
-    card.data("isavailable") === "true"
-    );
-    const img = card.data("image");
-    $("#imgPreview").attr("src", img ? img : "@placeholder");
-    compressedImageFile = null;
-    clearErrors();
+        $("#modalTitle").text("ویرایش غذا");
+        $("#foodId").val(id);
+        $("#name").val(card.data("name") || "");
+        $("#description").val(card.data("description") || "");
+        $("#price").val(parseInt(card.data("price")) || 0);
+        // discountPrice: if there's a discount, set it; otherwise 0
+        const discount = parseInt(card.data("discount")) || 0;
+        const price = parseInt(card.data("price")) || 0;
+        $("#discountPrice").val(discount ? price - discount : 0);
+        $("#isAvailable").prop("checked",
+            card.data("isavailable") === true ||
+            card.data("isavailable") === "True" ||
+            card.data("isavailable") === "true"
+        );
+        const img = card.data("image");
+        $("#imgPreview").attr("src", img ? img : "@placeholder");
+        compressedImageFile = null;
+        clearErrors();
 
-    loadCategoriesIntoModal(card.data("category"), function () {
-    new bootstrap.Modal(document.getElementById("foodModal")).show();
-    });
+        loadCategoriesIntoModal(card.data("category"), function () {
+            new bootstrap.Modal(document.getElementById("foodModal")).show();
+        });
     }
 
-    // Add Category
+    // -----------------------------------------------------------------
+    // ADD CATEGORY (via modal button)
     $("#btnAddCategoryModal").on("click", function () {
-    const name = prompt("نام دسته‌بندی جدید را وارد کنید:");
-    if (name && name.trim() !== "") addCategory(name.trim());
+        const name = prompt("نام دسته‌بندی جدید را وارد کنید:");
+        if (name && name.trim() !== "") addCategory(name.trim());
     });
-    function addCategory(name) {
-    $.ajax({
-    url: `${API_BASE}/addcategory`,
-    type: "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ restaurantId: restaurantId, categoryName: name }),
-    success: function (d) {
-    if (d.success) {
-    const id = d.category_id || d.categoryId;
-    $("#category").append(`<option value="${id}" selected>${name}</option>`);
-    alert(d.message || "دسته‌بندی با موفقیت اضافه شد");
-    } else {
-    alert("خطا: " + (d.message || "نامشخص"));
-    }
-    },
-    error: function () {
-    alert("خطا در برقراری ارتباط با سرور");
-    }
-    });
+
+    async function addCategory(name) {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/addcategory`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ restaurantId: restaurantId, categoryName: name })
+            });
+            const data = await response.json();
+            if (data.success) {
+                const id = data.category_id || data.categoryId;
+                $("#category").append(`<option value="${id}" selected>${name}</option>`);
+                alert(data.message || "دسته‌بندی با موفقیت اضافه شد");
+            } else {
+                alert("خطا: " + (data.message || "نامشخص"));
+            }
+        } catch (error) {
+            alert("خطا در افزودن دسته‌بندی: " + (error.message || "مشکل در ارتباط با سرور"));
+        }
     }
 
-    // Errors
-    function showErrors(errors) {
-    const c = document.getElementById("errorContainer");
-    if (!c) return;
-    c.innerHTML = '<strong>لطفاً خطاهای زیر را برطرف کنید:</strong>' + errors.map(function(e){ return `<div>• ${e}</div>`; }).join("");
-    c.classList.remove("d-none");
-    c.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    function clearErrors() {
-    const c = document.getElementById("errorContainer");
-    if (c) { c.classList.add("d-none"); c.innerHTML = ""; }
+    // -----------------------------------------------------------------
+    // POPULATE FILTER CATEGORIES (dropdown in toolbar)
+    async function populateFilterCategories() {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getcategoriesbyrestaurant/${restaurantId}`);
+            const data = await response.json();
+            const select = $("#filterCategory");
+            (data.categories || []).forEach(c => {
+                select.append(`<option value="${c.categoryId}">${c.categoryName}</option>`);
+            });
+        } catch (error) {
+            // fallback: read from DOM
+            const seen = new Set();
+            $("#foodList [data-id]").each(function () {
+                const id = String($(this).data("category"));
+                const name = $(this).data("categoryname");
+                if (id && !seen.has(id)) {
+                    $("#filterCategory").append(`<option value="${id}">${name}</option>`);
+                    seen.add(id);
+                }
+            });
+        }
     }
 
-    // Filters
-    function populateFilterCategories() {
-    $.ajax({
-    url: `${API_BASE}/getcategoriesbyrestaurant/${restaurantId}`,
-    type: "GET",
-    success: function (data) {
-    const select = $("#filterCategory");
-    (data.categories || []).forEach(function(c){
-    select.append(`<option value="${c.categoryId}">${c.categoryName}</option>`);
-    });
-    },
-    error: function () {
-    const seen = new Set();
-    $("#foodList [data-id]").each(function () {
-    const id = String($(this).data("category"));
-    const name = $(this).data("categoryname");
-    if (id && !seen.has(id)) {
-    $("#filterCategory").append(`<option value="${id}">${name}</option>`);
-    seen.add(id);
-    }
-    });
-    }
-    });
-    }
+    // -----------------------------------------------------------------
+    // FILTER & SORT
     function applyFilters() {
-    const q = $("#searchBox").val().trim().toLowerCase();
-    const cat = $("#filterCategory").val();
-    const avail = $("#filterAvailability").val();
-    const sort = $("#sortBy").val();
-    const cards = $("#foodList > [data-id]").toArray();
+        const q = $("#searchBox").val().trim().toLowerCase();
+        const cat = $("#filterCategory").val();
+        const avail = $("#filterAvailability").val();
+        const sort = $("#sortBy").val();
+        const cards = $("#foodList > [data-id]").toArray();
 
-    cards.forEach(function(el){
-    const $el = $(el);
-    const name = ($el.data("name") || "").toString().toLowerCase();
-    const desc = ($el.data("description") || "").toString().toLowerCase();
-    const category = String($el.data("category") || "");
-    const isAvailable = String($el.data("isavailable")).toLowerCase();
-    let ok = true;
-    if (q && !(name.includes(q) || desc.includes(q))) ok = false;
-    if (cat && category !== String(cat)) ok = false;
-    if (avail && isAvailable !== String(avail)) ok = false;
-    $el.toggle(ok);
-    });
+        cards.forEach(function (el) {
+            const $el = $(el);
+            const name = ($el.data("name") || "").toString().toLowerCase();
+            const desc = ($el.data("description") || "").toString().toLowerCase();
+            const category = String($el.data("category") || "");
+            const isAvailable = String($el.data("isavailable")).toLowerCase();
+            let ok = true;
+            if (q && !(name.includes(q) || desc.includes(q))) ok = false;
+            if (cat && category !== String(cat)) ok = false;
+            if (avail && isAvailable !== String(avail)) ok = false;
+            $el.toggle(ok);
+        });
 
-    const visible = $("#foodList > [data-id]:visible").toArray();
-    visible.sort(function(a, b){
-    const $a = $(a), $b = $(b);
-    const nameA = ($a.data("name") || "").toString();
-    const nameB = ($b.data("name") || "").toString();
-    const priceA = parseInt($a.data("price") || 0);
-    const priceB = parseInt($b.data("price") || 0);
-    const discA = parseInt($a.data("discount") || 0);
-    const discB = parseInt($b.data("discount") || 0);
-    switch (sort) {
-    case "name-asc": return nameA.localeCompare(nameB, 'fa');
-    case "name-desc": return nameB.localeCompare(nameA, 'fa');
-    case "price-asc": return priceA - priceB;
-    case "price-desc": return priceB - priceA;
-    case "discount-desc": return discB - discA;
-    default: return 0;
+        const visible = $("#foodList > [data-id]:visible").toArray();
+        visible.sort(function (a, b) {
+            const $a = $(a), $b = $(b);
+            const nameA = ($a.data("name") || "").toString();
+            const nameB = ($b.data("name") || "").toString();
+            const priceA = parseInt($a.data("price") || 0);
+            const priceB = parseInt($b.data("price") || 0);
+            const discA = parseInt($a.data("discount") || 0);
+            const discB = parseInt($b.data("discount") || 0);
+            switch (sort) {
+                case "name-asc": return nameA.localeCompare(nameB, 'fa');
+                case "name-desc": return nameB.localeCompare(nameA, 'fa');
+                case "price-asc": return priceA - priceB;
+                case "price-desc": return priceB - priceA;
+                case "discount-desc": return discB - discA;
+                default: return 0;
+            }
+        });
+        const container = $("#foodList");
+        visible.forEach(el => container.append(el));
     }
-    });
-    const container = $("#foodList");
-    visible.forEach(function(el){ container.append(el); });
-    }
 
+    // -----------------------------------------------------------------
+    // INITIALIZATION
     $(function () {
-    populateFilterCategories();
-    $("#searchBox, #filterCategory, #filterAvailability, #sortBy").on("input change", applyFilters);
+        populateFilterCategories();
+        $("#searchBox, #filterCategory, #filterAvailability, #sortBy").on("input change", applyFilters);
     });
- 
 </script>
-

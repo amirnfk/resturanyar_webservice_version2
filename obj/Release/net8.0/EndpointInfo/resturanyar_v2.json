@@ -593,10 +593,320 @@
           }
         }
       }
+    },
+    "/api/v2/UserApi/addfood": {
+      "post": {
+        "tags": [
+          "UserApi"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Name"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "maxLength": 100,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "Description": {
+                    "maxLength": 500,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "CategoryId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Price": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "DiscountPrice": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "CostPrice": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "isAvailable": {
+                    "type": "boolean"
+                  },
+                  "RestaurantId": {
+                    "maximum": 2147483647,
+                    "minimum": 1,
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "RemoveImage": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "CategoryId": {
+                  "style": "form"
+                },
+                "Price": {
+                  "style": "form"
+                },
+                "DiscountPrice": {
+                  "style": "form"
+                },
+                "CostPrice": {
+                  "style": "form"
+                },
+                "isAvailable": {
+                  "style": "form"
+                },
+                "RestaurantId": {
+                  "style": "form"
+                },
+                "RemoveImage": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/updatefood/{id}": {
+      "put": {
+        "tags": [
+          "UserApi"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Name"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "maxLength": 100,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "Description": {
+                    "maxLength": 500,
+                    "minLength": 0,
+                    "type": "string"
+                  },
+                  "Image": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "CategoryId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Price": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "DiscountPrice": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "CostPrice": {
+                    "minimum": 0,
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "isAvailable": {
+                    "type": "boolean"
+                  },
+                  "RestaurantId": {
+                    "maximum": 2147483647,
+                    "minimum": 1,
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "RemoveImage": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "Image": {
+                  "style": "form"
+                },
+                "CategoryId": {
+                  "style": "form"
+                },
+                "Price": {
+                  "style": "form"
+                },
+                "DiscountPrice": {
+                  "style": "form"
+                },
+                "CostPrice": {
+                  "style": "form"
+                },
+                "isAvailable": {
+                  "style": "form"
+                },
+                "RestaurantId": {
+                  "style": "form"
+                },
+                "RemoveImage": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/deleteFood/{id}": {
+      "delete": {
+        "tags": [
+          "UserApi"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/getcategoriesbyrestaurant/{restaurantId}": {
+      "get": {
+        "tags": [
+          "UserApi"
+        ],
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/addcategory": {
+      "post": {
+        "tags": [
+          "UserApi"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AddCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "restaurantId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "AddRestaurantRequest": {
         "type": "object",
         "properties": {

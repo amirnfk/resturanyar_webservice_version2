@@ -112,6 +112,7 @@ wwwroot\images\support2.png
 wwwroot\images\tabletfoodlist.jpg
 wwwroot\images\tablethome.jpg
 wwwroot\images\waiter_2453333.png
+wwwroot\js\authentication\apiinterceptor.js
 wwwroot\js\bootstrap.bundle.min.js
 wwwroot\js\bootstrap_bundle_min_poper.js
 wwwroot\js\canvasconfetti.js
@@ -195,10 +196,10 @@ wwwroot\ms-icon-150x150.png
 wwwroot\ms-icon-310x310.png
 wwwroot\ms-icon-70x70.png
 wwwroot\site.webmanifest
+wwwroot\uploads\1ee5f16e-6146-4df7-ab2a-9cbccf855789.png
 wwwroot\web-app-manifest-192x192.png
 wwwroot\web-app-manifest-512x512.png
 wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\js\authentication\apiinterceptor.js

@@ -35,23 +35,23 @@
                 <strong class="fs-5">رستورانیار</strong>
             </a>
             <div class="d-flex align-items-center gap-2 order-lg-2">
-               
-              
+
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="بازکردن منو">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="collapse navbar-collapse" >
+            <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto gap-lg-2">
-                    
+
                     <li class="nav-item"><a class="nav-link" href="#features">امکانات</a></li>
-              
+
                     <li class="nav-item"><a class="nav-link" href="#how">نحوه ی استفاده</a></li>
                     <li class="nav-item"><a class="nav-link" href="#screens">تصاویر</a></li>
                     <li class="nav-item"><a class="nav-link" href="#download">دانلود</a></li>
                     <li class="nav-item"><a class="nav-link" href="#faq">پرسش‌های متداول</a></li>
-                    
-                   
+
+
                 </ul>
             </div>
         </div>
@@ -68,7 +68,7 @@
                     <div class="d-flex flex-wrap gap-2">
                         <a href="/resturanyar-pricelist" class="btn btn-cta"><i class="fa-solid fa-download ms-1"></i> دریافت لیست قیمت</a>
                         <a href="/Home/ManagerLogin" class="btn btn-manager  d-sm-inline-flex"> ورود مدیر</a>
-                     
+
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center gap-3 mt-4">
@@ -268,7 +268,7 @@
                         <p class="mb-3">هم‌اکنون از طریق کافه‌بازار در دسترس است. نصب سریع و راه‌اندازی آسان.</p>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="https://cafebazaar.ir/app/com.musiclrc.resturanyar" target="_blank" rel="noopener" class="store-btn">
-                                <i class="fa-solid fa-store ms-1"></i>   دریافت از کافه‌بازار  
+                                <i class="fa-solid fa-store ms-1"></i>   دریافت از کافه‌بازار
                             </a>
                             <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex"> ورود مدیر</a>
 
@@ -435,29 +435,48 @@
             </div>
         </div>
     </section>
+    <!-- ====== نماد اعتماد الکترونیکی (اینماد) ====== -->
+    <section id="enamad" class="enamad-section">
+        <div class="container">
+            <div class="enamad-box">
+                <div class="enamad-header">
+                    <i class="fa-solid fa-shield-halved text-success"></i>
+                    <span>نماد اعتماد الکترونیکی</span>
+                </div>
+                <div class="enamad-body">
+                    <a referrerpolicy="origin" target="_blank"
+                       href="https://trustseal.enamad.ir/?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP">
+                        <img referrerpolicy="origin"
+                             src="https://trustseal.enamad.ir/logo.aspx?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP"
+                             alt="نماد اعتماد الکترونیکی اینماد"
+                             class="enamad-logo"
+                             code="krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP">
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=734513&Code=krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP' alt='' style='cursor:pointer' code='krsIfRiUBxNJxVvdLxpkhmfPYDUxuJwP'></a>
 
-    
-    
     <script type="text/javascript">
-        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+        !function () { var i = "c6rsQH", a = window, d = document; function g() { var g = d.createElement("script"), s = "https://www.goftino.com/widget/" + i, l = localStorage.getItem("goftino_" + i); g.async = !0, g.src = l ? s + "?o=" + l : s; d.getElementsByTagName("head")[0].appendChild(g); } "complete" === d.readyState ? g() : a.attachEvent ? a.attachEvent("onload", g) : a.addEventListener("load", g, !1); }();
     </script>
-  
+
 
     <!--- Add this to open/close/toggle widget --->
     <script>
         window.addEventListener('goftino_ready', function () {
             document.getElementById("open_chat").addEventListener("click", function () {
-                        Goftino.setUser({
-           email : '...',
-           name : '...',
-           about : 'Resturanyar...',
-           phone : '...',
-           avatar : '...',
-        
-           forceUpdate : true
-        });
+                Goftino.setUser({
+                    email: '...',
+                    name: '...',
+                    about: 'Resturanyar...',
+                    phone: '...',
+                    avatar: '...',
+
+                    forceUpdate: true
+                });
 
                 Goftino.open();
             });
@@ -469,10 +488,10 @@
             });
         });
     </script>
-    
+
     <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <script src="~/js/home.js"  asp-append-version="true"></script>  
+    <script src="~/js/home.js" asp-append-version="true"></script>
 
     <!-- Bootstrap JS -->
     <script src="~/js/bootstrap.bundle.min.js" defer></script>

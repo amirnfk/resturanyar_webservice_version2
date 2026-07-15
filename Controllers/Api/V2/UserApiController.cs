@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.AuthorizationModels;
+using resturanyar.Models.CustomerModels;
 using resturanyar.Utility;
+using Resturanyar.Hubs;
 using System.Security.Claims;
 using System.Text;
 
@@ -24,11 +27,18 @@ namespace resturanyar.Controllers.Api.V2
         private readonly TokenService _tokenService;
         private readonly IConfiguration _configuration;
 
-        public UserApiController(AppDbContext context,TokenService tokenService, IConfiguration configuration)
+        private readonly IHubContext<OrderHub> _hubContext;
+
+        public UserApiController(
+            AppDbContext context,
+            TokenService tokenService,
+            IConfiguration configuration,
+            IHubContext<OrderHub> hubContext) // <-- added
         {
             _context = context;
             _tokenService = tokenService;
             _configuration = configuration;
+            _hubContext = hubContext;
         }
         [AllowAnonymous]
         [HttpPost("generate-token")]
@@ -138,56 +148,7 @@ namespace resturanyar.Controllers.Api.V2
 
             return Ok(new { success = true, message = "با موفقیت خارج شد." });
         }
-        //[AllowAnonymous]
-        //[HttpPost("generate-token")]
-        //public IActionResult GenerateTokenAction([FromBody] TokenRequestModel request)
-        //{
-        //    try
-        //    {
-        //        if (request == null || string.IsNullOrEmpty(request.PhoneNumber))
-        //        {
-        //            return BadRequest(new { success = false, message = "شماره تلفن الزامی است." });
-        //        }
-
-        //        var owner = _context.Owners.FirstOrDefault(c => c.Phone == request.PhoneNumber);
-        //        if (owner == null)
-        //        {
-        //            return NotFound(new { success = false, message = "کاربری با این شماره تلفن یافت نشد." });
-        //        }
-
-        //        //bool hasRestaurant = _context.Restaurants.Any(r => r.owner_id == owner.Id);
-        //        //if (!hasRestaurant)
-        //        //{
-        //        //    return BadRequest(new { success = false, message = "خطا: حساب شما به هیچ رستورانی متصل نیست یا شما مالک رستورانی نیستید." });
-        //        //}
-
-        //        string jwtToken = _tokenService.GenerateOwnerToken(owner);
-        //        var expirationTime = DateTime.UtcNow.AddDays(1); // زمان انقضا باید با TokenService هماهنگ باشد
-
-        //        // ۲. استراتژی امن برای وب (ست کردن کوکی HttpOnly)
-        //        // مرورگر وب این کوکی را ذخیره میکند و جاوااسکریپت به آن دسترسی ندارد (ضد XSS)
-        //        Response.Cookies.Append("X-Access-Token", jwtToken, new CookieOptions
-        //        {
-        //            HttpOnly = true,
-        //            Secure = true, // حتما در پروداکشن فعال باشد (نیاز به HTTPS)
-        //            SameSite = SameSiteMode.Strict,
-        //            Expires = expirationTime
-        //        });
-
-        //        // ۳. خروجی مشترک (موبایل از فیلد token استفاده میکند و وب میتواند آن را نادیده بگیرد)
-        //        return Ok(new
-        //        {
-        //            success = true,
-        //            message = "خوش آمدید. هویت شما به عنوان مالک رستوران تایید شد.",
-        //            token = jwtToken, // برای مصرف در موبایل
-        //            expiresAt = expirationTime
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = "خطایی در سرور رخ داد: " + ex.Message });
-        //    }
-        //}
+         
 
         public class TokenRequestModel
         {
@@ -577,6 +538,640 @@ namespace resturanyar.Controllers.Api.V2
 
         [HttpGet("getrestaurantcode/{restaurantId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        
+        [HttpPost("addfood")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AddFood([FromForm] FoodItemCreateRequest request)
+        {
+            try
+            {
+                // 1. Validate owner from token
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+                }
+
+                // 2. Validate required fields
+                if (string.IsNullOrWhiteSpace(request.Name))
+                    return BadRequest(new { success = false, message = "نام غذا الزامی است." });
+
+                if (request.Price <= 0)
+                    return BadRequest(new { success = false, message = "قیمت باید بیشتر از صفر باشد." });
+
+                if (request.RestaurantId <= 0)
+                    return BadRequest(new { success = false, message = "شناسه رستوران معتبر نیست." });
+
+                if (request.CategoryId <= 0)
+                    return BadRequest(new { success = false, message = "دسته‌بندی معتبر نیست." });
+
+                // 3. Verify the restaurant belongs to this owner
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // 4. Verify category exists and belongs to this restaurant
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId && c.RestaurantId == request.RestaurantId);
+                if (category == null)
+                    return BadRequest(new { success = false, message = "دسته‌بندی یافت نشد یا غیرفعال است." });
+
+                // 5. Handle image upload (optional)
+                string imageUrl = "";
+                if (request.Image != null && request.Image.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.Image.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await request.Image.CopyToAsync(stream);
+                    }
+
+                    imageUrl = $"/uploads/{uniqueFileName}";
+                }
+
+                // 6. Create FoodItem
+                var food = new FoodItem
+                {
+                    Name = request.Name.Trim(),
+                    Description = request.Description?.Trim(),
+                    ImageUrl = imageUrl,
+                    CategoryId = request.CategoryId,
+                    Price = request.Price,
+                    DiscountPrice = request.DiscountPrice,
+                    CostPrice = request.CostPrice,
+                    RestaurantId = request.RestaurantId,
+                    IsAvailable = request.isAvailable ?? true,
+                    IsActive = true,
+                    CreatedAt = DateTime.Now
+                };
+
+                _context.FoodItems.Add(food);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "آیتم با موفقیت اضافه شد",
+                    data = new
+                    {
+                        food.FoodItemId,
+                        food.Name,
+                        food.Price,
+                        food.ImageUrl,
+                        food.CategoryId
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+
+        [HttpPut("updatefood/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateFood(int id, [FromForm] FoodItemCreateRequest request)
+        {
+            try
+            {
+                // 1. Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+                }
+
+                // 2. Find the food item with its restaurant
+                var food = await _context.FoodItems
+                    
+                    .FirstOrDefaultAsync(f => f.FoodItemId == id);
+                if (food == null)
+                    return NotFound(new { success = false, message = "آیتم غذایی مورد نظر یافت نشد." });
+
+                // 3. Verify owner owns the restaurant
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == food.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return Unauthorized(new { success = false, message = "شما دسترسی به این آیتم ندارید." });
+
+                // 4. Validate category
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId && c.RestaurantId == food.RestaurantId);
+                if (category == null)
+                    return BadRequest(new { success = false, message = "دسته‌بندی معتبر نیست یا غیرفعال است." });
+
+                // 5. Handle image update
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                if (request.Image != null && request.Image.Length > 0)
+                {
+                    // Delete old image if exists
+                    if (!string.IsNullOrEmpty(food.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(uploadsFolder, Path.GetFileName(food.ImageUrl));
+                        if (System.IO.File.Exists(oldImagePath))
+                            System.IO.File.Delete(oldImagePath);
+                    }
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(request.Image.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await request.Image.CopyToAsync(stream);
+                    }
+
+                    food.ImageUrl = $"/uploads/{uniqueFileName}";
+                }
+                else if (request.RemoveImage == 2 && !string.IsNullOrEmpty(food.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(uploadsFolder, Path.GetFileName(food.ImageUrl));
+                    if (System.IO.File.Exists(oldImagePath))
+                        System.IO.File.Delete(oldImagePath);
+
+                    food.ImageUrl = "";
+                }
+
+                // 6. Update fields
+                food.Name = request.Name.Trim();
+                food.Description = request.Description?.Trim();
+                food.CategoryId = request.CategoryId;
+                food.Price = request.Price;
+                food.DiscountPrice = request.DiscountPrice;
+                food.CostPrice = request.CostPrice;
+                food.IsAvailable = request.isAvailable ?? true;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "آیتم با موفقیت ویرایش شد." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpDelete("deleteFood/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteFoodItem(int id)
+        {
+            try
+            {
+                // 1. Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+                }
+
+                // 2. Find the food item
+                var item = await _context.FoodItems
+                    .FirstOrDefaultAsync(f => f.FoodItemId == id);
+                if (item == null)
+                    return NotFound(new { success = false, message = "آیتم مورد نظر پیدا نشد." });
+
+                // 3. Verify ownership
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == item.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return Unauthorized(new { success = false, message = "شما دسترسی به این آیتم ندارید." });
+
+                // 4. Soft delete
+                item.IsActive = false;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "آیتم با موفقیت غیرفعال شد." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطای غیرمنتظره در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpGet("getcategoriesbyrestaurant/{restaurantId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetCategoriesByRestaurant(int restaurantId)
+        {
+            try
+            {
+                // 1. Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+                }
+
+                // 2. Verify restaurant belongs to owner
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // 3. Get categories
+                var categories = await _context.Categories
+                    .Where(c => c.RestaurantId == restaurantId)
+                    .Select(c => new
+                    {
+                        c.CategoryId,
+                        c.CategoryName,
+                        c.CreatedAt
+                    })
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    restaurant = new { restaurant.restaurant_id, restaurant.name },
+                    categories
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPost("addcategory")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest request)
+        {
+            try
+            {
+                // 1. Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+                }
+
+                // 2. Verify restaurant belongs to owner
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // 3. Check duplicate category name for this restaurant
+                bool exists = await _context.Categories.AnyAsync(c =>
+                    c.RestaurantId == request.RestaurantId &&
+                    c.CategoryName.ToLower().Trim() == request.CategoryName.ToLower().Trim());
+
+                if (exists)
+                    return Ok(new { success = false, message = "این دسته‌بندی قبلاً برای این رستوران ثبت شده است." });
+
+                // 4. Create category
+                var category = new Category
+                {
+                    RestaurantId = request.RestaurantId,
+                    CategoryName = request.CategoryName.Trim(),
+                    CreatedAt = DateTime.Now
+                };
+
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "دسته‌بندی با موفقیت اضافه شد",
+                    category_id = category.CategoryId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpGet("gettablesbyrestaurant/{restaurantId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetTablesByRestaurant(int restaurantId)
+        {
+            try
+            {
+                // 1. Extract owner ID from JWT
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                // 2. Verify the restaurant belongs to this owner
+                var restaurant = _context.Restaurants
+                    .FirstOrDefault(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // 3. Retrieve tables
+                var tables = _context.RestaurantTables
+                    .Where(t => t.RestaurantId == restaurantId)
+                    .Select(t => new
+                    {
+                        t.TableId,
+                        t.TableName,
+                        t.Seats,
+                        t.CreatedAt
+                    })
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    restaurant = new { restaurant.restaurant_id, restaurant.name },
+                    tables
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+
+        [HttpPost("createOrder")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
+        {
+            try
+            {
+                // 1. Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                // 2. Verify the restaurant belongs to this owner
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // 3. Validate customer if provided
+                if (request.CustomerId.HasValue)
+                {
+                    var customerExists = await _context.Customers
+                        .AnyAsync(c => c.CustomerId == request.CustomerId.Value && c.RestaurantId == request.RestaurantId && c.IsActive);
+                    if (!customerExists)
+                        return BadRequest(new { success = false, message = "مشتری با این شناسه برای این رستوران یافت نشد." });
+                }
+
+                // 4. Create order
+                var order = new Order
+                {
+                    RestaurantId = request.RestaurantId,
+                    TableNumber = request.TableNumber,
+                    StatusId = request.StatusId,
+                    CustomerId = request.CustomerId,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    CreatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
+                    UpdatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
+                    Description = request.Description,
+                    OrderItems = new List<OrderItem>()
+                };
+
+                // 5. Add order items
+                foreach (var item in request.Items)
+                {
+                    var food = await _context.FoodItems.FindAsync(item.FoodItemId);
+                    if (food == null)
+                        return BadRequest(new { success = false, message = $"آیتم غذایی با شناسه {item.FoodItemId} یافت نشد." });
+
+                    order.OrderItems.Add(new OrderItem
+                    {
+                        FoodItemId = item.FoodItemId,
+                        Quantity = item.Quantity,
+                        UnitPrice = food.Price,
+                        UnitPriceWithDiscount = food.DiscountPrice ?? food.Price,
+                        FoodName = food.Name,
+                        FoodImageUrl = food.ImageUrl
+                    });
+                }
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                // 6. Add initial OrderUpdate for the next role (e.g., Chef = 3)
+                int? nextRoleId = GetNextRoleId(request.StatusId);
+                if (nextRoleId.HasValue)
+                {
+                    var existingUpdate = await _context.OrderUpdates
+                        .FirstOrDefaultAsync(u => u.OrderId == order.OrderId && u.TargetRoleId == nextRoleId.Value);
+                    if (existingUpdate != null)
+                        existingUpdate.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    else
+                    {
+                        _context.OrderUpdates.Add(new OrderUpdate
+                        {
+                            OrderId = order.OrderId,
+                            RestaurantId = order.RestaurantId,
+                            TargetRoleId = nextRoleId.Value,
+                            UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                        });
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                // 7. Notify via SignalR
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new
+                    {
+                        orderId = order.OrderId,
+                        newStatusId = order.StatusId,
+                        message = $"سفارش {order.OrderId} با موفقیت ثبت شد."
+                    });
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "سفارش با موفقیت ثبت شد.",
+                    orderId = order.OrderId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        // Helper method (same as V1)
+        private int? GetNextRoleId(int statusId)
+        {
+            switch (statusId)
+            {
+                case 2: return 3;  // Waiting -> Chef
+                case 3: return 3;  // Chef
+                case 4: return 3;  // Cashier
+                case 5: return 2;  // Waiter
+                case 6: return 4;  // Owner
+                case 7: return 4;
+                case 8: return 4;
+                case 9: return 4;
+                case 10: return 4;
+                case 11: return 4;
+                case 12: return 3;
+                case 99: return 3;
+                default: return null;
+            }
+        }
+
+        [HttpGet("getcustomers/{restaurantId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
+        {
+            try
+            {
+                // Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                // Verify restaurant ownership
+                var restaurant = _context.Restaurants
+                    .FirstOrDefault(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var query = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query = query.Where(c => c.Mobile.Contains(search) ||
+                                             (c.FullName != null && c.FullName.Contains(search)));
+                }
+
+                var totalCount = query.Count();
+                var customers = query
+                    .OrderByDescending(c => c.CreatedAt)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(c => new
+                    {
+                        c.CustomerId,
+                        c.Mobile,
+                        c.FullName,
+                        c.Description,
+                        c.CreatedAt,
+                        c.UpdatedAt
+                    })
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    data = customers,
+                    totalCount,
+                    currentPage = page,
+                    pageSize,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+        [HttpPost("addcustomer")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
+        {
+            try
+            {
+                // Owner validation
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                // Verify restaurant ownership
+                var restaurant = _context.Restaurants
+                    .FirstOrDefault(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                // Check for existing customer (including inactive)
+                var existingCustomer = _context.Customers
+                    .FirstOrDefault(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
+
+                if (existingCustomer != null)
+                {
+                    if (!existingCustomer.IsActive)
+                    {
+                        // Reactivate and update info
+                        existingCustomer.IsActive = true;
+                        existingCustomer.FullName = request.FullName;
+                        existingCustomer.Description = request.Description;
+                        existingCustomer.UpdatedAt = DateTime.Now;
+                        _context.SaveChanges();
+
+                        return Ok(new
+                        {
+                            success = true,
+                            message = "مشتری غیرفعال قبلی با موفقیت فعال و ویرایش شد",
+                            customerId = existingCustomer.CustomerId,
+                            wasReactivated = true
+                        });
+                    }
+                    else
+                    {
+                        return Ok(new { success = false, message = "این شماره موبایل قبلاً برای این رستوران ثبت شده است." });
+                    }
+                }
+
+                // Create new customer
+                var customer = new Customer
+                {
+                    RestaurantId = request.RestaurantId,
+                    Mobile = request.Mobile,
+                    FullName = request.FullName,
+                    Description = request.Description,
+                    IsActive = true,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.Customers.Add(customer);
+                _context.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "مشتری با موفقیت اضافه شد",
+                    customerId = customer.CustomerId,
+                    wasReactivated = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+        private string GenerateUniqueRestaurantCode()
+        {
+            Random rnd = new Random();
+            string code;
+
+            do
+            {
+                code = rnd.Next(100000, 999999).ToString();
+            }
+            while (_context.Restaurants.Any(r => r.restaurant_code == code));
+
+            return code;
+        }
+        private static string EncodePassword(string plainPassword)
+        {
+            if (string.IsNullOrEmpty(plainPassword)) return null;
+            byte[] bytes = Encoding.UTF8.GetBytes(plainPassword);
+            return Convert.ToBase64String(bytes);
+        }
+
         public IActionResult GetRestaurantCode(int restaurantId)
         {
             try
@@ -604,27 +1199,5 @@ namespace resturanyar.Controllers.Api.V2
                 return StatusCode(500, new { success = false, message = "خطای سرور: " + ex.Message });
             }
         }
-
-        private string GenerateUniqueRestaurantCode()
-        {
-            Random rnd = new Random();
-            string code;
-
-            do
-            {
-                code = rnd.Next(100000, 999999).ToString();
-            }
-            while (_context.Restaurants.Any(r => r.restaurant_code == code));
-
-            return code;
-        }
-        private static string EncodePassword(string plainPassword)
-        {
-            if (string.IsNullOrEmpty(plainPassword)) return null;
-            byte[] bytes = Encoding.UTF8.GetBytes(plainPassword);
-            return Convert.ToBase64String(bytes);
-        }
-
-
     }
 }
