@@ -136,11 +136,16 @@
 <!-- Scripts -->
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
+
+<script type="module">
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
-    const API_BASE = "https://resturanyar.ir/api/UserApi";
+    const API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
 
-    // اضافه کردن میز
     function openAddTableModal() {
         $("#modalTitle").text("افزودن میز");
         $("#tableId").val("");
@@ -150,7 +155,6 @@
         new bootstrap.Modal(document.getElementById('tableModal')).show();
     }
 
-    // ویرایش میز
     function openEditTableModal(id) {
         const card = $(`[data-id='${id}']`);
         $("#tableId").val(id);
@@ -161,8 +165,7 @@
         new bootstrap.Modal(document.getElementById('tableModal')).show();
     }
 
-    // ذخیره میز (افزودن یا ویرایش)
-    function saveTable() {
+    async function saveTable() {
         clearErrors();
         const id = $("#tableId").val();
         const name = $("#tableName").val().trim();
@@ -181,53 +184,105 @@
         if (id) {
             url = `${API_BASE}/edittable`;
             data.tableId = parseInt(id);
+            method = "PUT";
         }
 
-        $.ajax({
-            url: url,
-            type: method,
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (res) {
-                if (res.success) {
-                    alert(res.message || "عملیات موفق");
-                    location.reload();
-                } else {
-                    showErrors([res.message || "خطا در ذخیره میز"]);
-                }
-            },
-            error: function (xhr) {
-                showErrors([xhr.responseJSON?.message || "خطا در ارتباط با سرور"]);
+        try {
+            const response = await window.fetchWithAuth(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const res = await response.json();
+            if (res.success) {
+                showToast(res.message || 'عملیات موفق', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showErrors([res.message || "خطا در ذخیره میز"]);
             }
-        });
+        } catch (error) {
+            showErrors([error.message || "خطا در ارتباط با سرور"]);
+        }
     }
 
-    // حذف میز
-    function deleteTable(id) {
+    async function deleteTable(id) {
         if (!confirm("آیا از حذف این میز اطمینان دارید؟")) return;
 
-        $.ajax({
-            url: `${API_BASE}/deletetable`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ restaurantId: restaurantId, tableId: id }),
-            success: function (res) {
-                alert(res.message);
-                if (res.success) location.reload();
-            },
-            error: function () {
-                alert("خطا در ارتباط با سرور");
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/deletetable`, {
+                method: "DELETE",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ restaurantId: restaurantId, tableId: id })
+            });
+            const res = await response.json();
+            showToast(res.message || 'عملیات موفق', res.success ? 'success' : 'error');
+            if (res.success) {
+                setTimeout(() => location.reload(), 1000);
             }
-        });
+        } catch (error) {
+            showToast('خطا در ارتباط با سرور', 'error');
+        }
     }
 
-    // Utility
     function showErrors(errors) {
         const box = $("#errorContainer");
         box.html(errors.map(e => `<div>• ${e}</div>`).join(""));
         box.removeClass("d-none");
     }
+
     function clearErrors() {
         $("#errorContainer").addClass("d-none").html("");
     }
+
+    function showToast(message, type = 'success') {
+        document.querySelector('.custom-toast')?.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `custom-toast toast-${type}`;
+        toast.innerHTML = `
+            <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
+            <div class="toast-message">${message}</div>
+            <div class="toast-close" style="cursor:pointer;margin-right:auto;font-size:20px;line-height:1;">&times;</div>
+        `;
+
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            min-width: 240px;
+            background: ${type === 'success' ? '#1e7e34' : '#dc3545'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            direction: rtl;
+            font-family: inherit;
+            animation: slideInLeft 0.3s ease;
+        `;
+
+        toast.querySelector('.toast-close').onclick = () => toast.remove();
+        document.body.appendChild(toast);
+
+        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+    }
 </script>
+
+<style>
+    @@keyframes slideInLeft {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>

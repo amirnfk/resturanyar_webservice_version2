@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d248b8cb65ca67b8c29ce69e07457899a7c3e044")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8863b8ceb0a4bdcb217dbf1f298a451d1c65b905")]
 [assembly: System.Reflection.AssemblyProductAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("resturanyar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

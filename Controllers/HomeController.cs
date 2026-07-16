@@ -102,9 +102,6 @@ namespace resturanyar.Controllers
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
 
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction("ChooseRestaurant", "Home");
-
             return View();
         }
 

@@ -139,9 +139,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // ADDED 'async' HERE
             .then(async data => {
                 if (data.success) {
-                    // ADDED: Generate and store the token before redirecting
-                    await generateAndStoreV2Token(phone);
-                    window.location.href = data.redirectUrl ?? location.reload();
+                    const tokenStored = await generateAndStoreV2Token(phone);
+                    if (tokenStored) {
+                        window.location.href = data.redirectUrl ?? location.reload();
+                    } else {
+                        Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
+                    }
                 } else if (data.needsRegistration) {
                     const modal = new bootstrap.Modal(document.getElementById('registerModal'));
                     modal.show();
@@ -191,27 +194,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     async function generateAndStoreV2Token(phone) {
         try {
-            const response = await fetch('/api/V2/UserApi/generate-token', {
+            const response = await fetch('/api/v2/UserApi/generate-token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ PhoneNumber: phone })  
+                body: JSON.stringify({ PhoneNumber: phone })
             });
 
             const data = await response.json();
 
-            if (data.success) {
+            if (response.ok && data.success) {
                 localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('refreshToken', data.refreshToken);
                 localStorage.setItem('phone', phone);
-                //window.location.href = '/Home/ChooseRestaurant'
-            
-            } else {
-               console.write("error")
-              
-               
+                return true;
             }
+            console.error('Token generation failed:', data.message || response.status);
+            return false;
         } catch (error) {
-            console.write("error" + error)
+            console.error('Token generation error:', error);
+            return false;
         }
     }
     function validateRegisterForm() {
@@ -277,8 +278,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(r => r.json())
             .then(async data => {
                 if (data.success) {
-                    await generateAndStoreV2Token(phone);
-                    window.location.href = data.redirectUrl;
+                    const tokenStored = await generateAndStoreV2Token(phone);
+                    if (tokenStored) {
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
+                    }
                 } else {
                     Swal.fire('خطا', data.message, 'error');
                 }
@@ -352,10 +357,15 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             if (phone) {
-                // ساخت توکن و سپس ارسال فرم (حتی اگر خطا رخ دهد، فرم ارسال می‌شود)
                 generateAndStoreV2Token(phone)
-                    .finally(() => {
-                        finalSubmit();
+                    .then(tokenStored => {
+                        if (tokenStored) {
+                            finalSubmit();
+                        } else {
+                            Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalText;
+                        }
                     });
             } else {
                 // اگر شماره موجود نبود، مستقیماً فرم را ارسال کن

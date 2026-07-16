@@ -2469,6 +2469,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "AddTable",
+    "RelativePath": "api/v2/UserApi/addtable",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.AddTableRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "AddUser",
     "RelativePath": "api/v2/UserApi/adduser",
     "HttpMethod": "POST",
@@ -2517,6 +2533,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "DeleteCustomer",
+    "RelativePath": "api/v2/UserApi/deletecustomer",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.DeleteCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "DeleteFoodItem",
     "RelativePath": "api/v2/UserApi/deleteFood/{id}",
     "HttpMethod": "DELETE",
@@ -2526,6 +2558,22 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "DeleteTable",
+    "RelativePath": "api/v2/UserApi/deletetable",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.DeleteTableRequest",
         "IsRequired": true
       }
     ],
@@ -2563,6 +2611,38 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.EditCategoryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "EditCustomer",
+    "RelativePath": "api/v2/UserApi/editcustomer",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.EditCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "EditTable",
+    "RelativePath": "api/v2/UserApi/edittable",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.EditTableRequest",
         "IsRequired": true
       }
     ],
@@ -2618,6 +2698,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetCustomerInsights",
+    "RelativePath": "api/v2/UserApi/getcustomerinsights/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GetCustomers",
     "RelativePath": "api/v2/UserApi/getcustomers/{restaurantId}",
     "HttpMethod": "GET",
@@ -2643,6 +2739,73 @@
         "Name": "search",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetCustomersWithStats",
+    "RelativePath": "api/v2/UserApi/getcustomerswithstats/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetCustomerDashboardStats",
+    "RelativePath": "api/v2/UserApi/getdashboardstats/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

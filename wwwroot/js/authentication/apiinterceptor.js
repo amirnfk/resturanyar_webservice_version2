@@ -10,7 +10,7 @@ const processQueue = (error, token = null) => {
     failedQueue = [];
 };
 
-const refreshAccessToken = async () => {
+export const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem('refreshToken');
     const phone = localStorage.getItem('phone');
     if (!refreshToken || !phone) throw new Error('No refresh token');

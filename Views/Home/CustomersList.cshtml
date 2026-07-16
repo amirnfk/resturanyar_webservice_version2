@@ -599,7 +599,14 @@
 <script src="~/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/toastr.min.js"></script>
 <script src="~/js/chart.umd.min.js"></script>
+
+<script type="module">
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
+    const API_BASE = "/api/v2/UserApi";
     toastr.options = {
         "positionClass": "toast-top-left",
         "timeOut": "3000",
@@ -615,13 +622,13 @@
     var currentPeriod = "all";
     var currentSortBy = "TotalSpent";
 
-    function loadInsightsCards() {
-        $.ajax({
-            url: `/api/Customers/getcustomerinsights/${restaurantId}`,
-            type: "GET",
-            success: function(response) {
-                if (response.success) {
-                    const data = response.data;
+    async function loadInsightsCards() {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getcustomerinsights/${restaurantId}`);
+            if (!response.ok) throw new Error('Failed to load insights');
+            const responseData = await response.json();
+            if (responseData.success) {
+                const data = responseData.data;
 
                     // ۱. رشد مشتریان جدید (۷ روز اخیر)
                     let growthHtml = '';
@@ -685,16 +692,14 @@
                     if (bestHtml === '') bestHtml = '<div class="text-center py-5 text-muted small">مشتری دارای سفارش یافت نشد</div>';
                     $("#bestCustomersList").html(bestHtml);
                 } else {
-                    toastr.error(response.message);
+                    toastr.error(responseData.message);
                 }
-            },
-            error: function() {
+            } catch (error) {
                 toastr.error("خطا در دریافت اطلاعات کارت‌ها");
             }
-        });
     }
 
-    function loadCustomers(page, search, period, sortBy) {
+    async function loadCustomers(page, search, period, sortBy) {
         currentPage = page || 1;
         currentSearch = search !== undefined ? search : currentSearch;
         currentPeriod = period !== undefined ? period : currentPeriod;
@@ -702,46 +707,44 @@
         $("#loadingSpinner").removeClass("d-none");
         $("#customersList").empty();
 
-        $.ajax({
-            url: `/api/Customers/getcustomerswithstats/${restaurantId}`,
-            type: "GET",
-            data: {
+        try {
+            const params = new URLSearchParams({
                 page: currentPage,
                 pageSize: pageSize,
                 search: currentSearch,
                 period: currentPeriod,
                 sortBy: currentSortBy
-            },
-            success: function(response) {
-                if (response.success) {
-                    if (response.data && response.data.length > 0) {
-                        renderCustomersWithStats(response.data);
-                        renderPagination(response.currentPage, response.totalPages);
-                        // if (response.totalCount) {
-                        //     $("#totalRecordsInfo").html(`<i class="fas fa-chart-line text-primary"></i> تعداد کل نتایج یافت شده: ${response.totalCount.toLocaleString('fa-IR')} مشتری`).show();
-                        // }
-                    } else {
-                        $("#customersList").html(`<div class="alert alert-info border-0 text-center py-4" style="border-radius:var(--radius-sm)"><i class="fas fa-info-circle me-1"></i> مشتری با شرایط فیلتر در بازه انتخابی یافت نشد.</div>`);
-                        $("#paginationContainer").empty();
-                        $("#totalRecordsInfo").hide();
-                    }
+            });
+            const response = await window.fetchWithAuth(`${API_BASE}/getcustomerswithstats/${restaurantId}?${params}`);
+            if (!response.ok) throw new Error('Failed to load customers');
+            const responseData = await response.json();
+            if (responseData.success) {
+                if (responseData.data && responseData.data.length > 0) {
+                    renderCustomersWithStats(responseData.data);
+                    renderPagination(responseData.currentPage, responseData.totalPages);
                 } else {
-                    toastr.error(response.message);
+                    $("#customersList").html(`<div class="alert alert-info border-0 text-center py-4" style="border-radius:var(--radius-sm)"><i class="fas fa-info-circle me-1"></i> مشتری با شرایط فیلتر در بازه انتخابی یافت نشد.</div>`);
+                    $("#paginationContainer").empty();
+                    $("#totalRecordsInfo").hide();
                 }
-            },
-            error: function() { toastr.error("خطا در دریافت لیست مشتریان"); },
-            complete: function() { $("#loadingSpinner").addClass("d-none"); }
-        });
+            } else {
+                toastr.error(responseData.message);
+            }
+        } catch (error) {
+            toastr.error("خطا در دریافت لیست مشتریان");
+        } finally {
+            $("#loadingSpinner").addClass("d-none");
+        }
     }
 
     let trendChart = null;
-    function loadDashboardStats() {
-        $.ajax({
-            url: `/api/Customers/getdashboardstats/${restaurantId}`,
-            type: "GET",
-            success: function(response) {
-                if (response.success) {
-                    const s = response.data;
+    async function loadDashboardStats() {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getdashboardstats/${restaurantId}`);
+            if (!response.ok) throw new Error('Failed to load dashboard stats');
+            const responseData = await response.json();
+            if (responseData.success) {
+                const s = responseData.data;
                     $("#totalCustomers").text(s.totalActiveCustomers.toLocaleString('fa-IR'));
                     $("#newToday").text(s.newCustomersToday.toLocaleString('fa-IR'));
                     $("#newWeek").text(s.newCustomersThisWeek.toLocaleString('fa-IR'));
@@ -836,13 +839,11 @@
                         }
                     });
                 } else {
-                    toastr.error(response.message);
+                    toastr.error(responseData.message);
                 }
-            },
-            error: function() {
+            } catch (error) {
                 toastr.error("خطا در دریافت اطلاعات داشبورد");
             }
-        });
     }
 
     function renderCustomersWithStats(customers) {
@@ -1001,23 +1002,18 @@
         $("#customerModal").modal("show");
     });
 
-      $("#btnSaveCustomer").click(function () {
+      $("#btnSaveCustomer").click(async function () {
         const id = $("#customerId").val();
         let fullName = $("#fullName").val().trim();
         let mobile = $("#mobile").val().trim();
         const description = $("#description").val().trim();
 
-        // منطق جدید فقط برای ثبت مشتری جدید (نه ویرایش)
         if (id === "0") {
             if (fullName !== "") {
-                // کاربر نام وارد کرده است
                 if (mobile === "") {
-                    // شماره وارد نکرده → تولید خودکار
                     mobile = generateAutoMobile();
                 }
-                // اگر شماره هم وارد کرده باشد، همان شماره حفظ می‌شود
             } else {
-                // نام خالی: شماره موبایل الزامی است
                 if (!mobile) {
                     toastr.warning("شماره موبایل الزامی است");
                     $("#mobile").focus();
@@ -1031,7 +1027,6 @@
                 fullName = "مشتری مهمان";
             }
         } else {
-            // ویرایش مشتری موجود: شماره موبایل الزامی و معتبر (در صورت تغییر)
             if (!mobile) {
                 toastr.warning("شماره موبایل الزامی است");
                 $("#mobile").focus();
@@ -1047,7 +1042,6 @@
             }
         }
 
-        const url = id === "0" ? "/api/Customers/addcustomer" : "/api/Customers/editcustomer";
         const payload = id === "0" ? {
             restaurantId: restaurantId,
             fullName: fullName,
@@ -1061,25 +1055,32 @@
             description: description
         };
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(payload),
-            success: function (res) {
-                if (res.success) {
-                    toastr.success(res.message);
-                    $("#customerModal").modal("hide");
-                    loadCustomers(currentPage, currentSearch);
-                    loadDashboardStats();
-                } else {
-                    toastr.error(res.message);
-                }
-            },
-            error: function () {
-                toastr.error("خطا در برقراری ارتباط با سرور");
+        let url = `${API_BASE}/addcustomer`;
+        let method = "POST";
+        if (id !== "0") {
+            url = `${API_BASE}/editcustomer`;
+            method = "PUT";
+        }
+
+        try {
+            const response = await window.fetchWithAuth(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const res = await response.json();
+            if (res.success) {
+                toastr.success(res.message);
+                $("#customerModal").modal("hide");
+                loadCustomers(currentPage, currentSearch);
+                loadDashboardStats();
+                loadInsightsCards();
+            } else {
+                toastr.error(res.message);
             }
-        });
+        } catch (error) {
+            toastr.error("خطا در برقراری ارتباط با سرور");
+        }
     });
       function generateAutoMobile() {
         const prefix = '991';
@@ -1094,29 +1095,29 @@
         $("#deleteModal").modal("show");
     });
 
-    $("#confirmDelete").click(function () {
-        $.ajax({
-            url: "/api/Customers/deletecustomer",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-                customerId: deleteId,
-                restaurantId: restaurantId
-            }),
-            success: function (res) {
-                if (res.success) {
-                    toastr.success(res.message);
-                    $("#deleteModal").modal("hide");
-                    loadCustomers(currentPage, currentSearch);
-                    loadDashboardStats();
-                } else {
-                    toastr.error(res.message);
-                }
-            },
-            error: function () {
-                toastr.error("خطا در حذف اطلاعات مشتری");
+    $("#confirmDelete").click(async function () {
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/deletecustomer`, {
+                method: "DELETE",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customerId: deleteId,
+                    restaurantId: restaurantId
+                })
+            });
+            const res = await response.json();
+            if (res.success) {
+                toastr.success(res.message);
+                $("#deleteModal").modal("hide");
+                loadCustomers(currentPage, currentSearch);
+                loadDashboardStats();
+                loadInsightsCards();
+            } else {
+                toastr.error(res.message);
             }
-        });
+        } catch (error) {
+            toastr.error("خطا در حذف اطلاعات مشتری");
+        }
     });
 
     $(document).on("click", ".page-link", function (e) {

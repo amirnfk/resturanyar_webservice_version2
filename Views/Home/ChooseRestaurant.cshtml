@@ -101,8 +101,29 @@
     </script>
     <script src="~/js/jquery_3.6.0.min.js"></script>
     <script type="module">
-        import {fetchWithAuth} from '/js/authentication/apiinterceptor.js';
+        import { fetchWithAuth, refreshAccessToken } from '/js/authentication/apiinterceptor.js';
         window.fetchWithAuth = fetchWithAuth;
+
+        async function ensureValidJwtSession() {
+            let token = localStorage.getItem('accessToken');
+            const phone = localStorage.getItem('phone');
+            const refreshToken = localStorage.getItem('refreshToken');
+
+            if (!token && refreshToken && phone) {
+                try {
+                    token = await refreshAccessToken();
+                } catch { /* fall through */ }
+            }
+
+            if (!token) {
+                localStorage.clear();
+                window.location.href = '/Home/Logout';
+                return false;
+            }
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => ensureValidJwtSession());
     </script>
     <script src="~/js/chooserestaurant.js" asp-append-version="true"></script>
 </body>

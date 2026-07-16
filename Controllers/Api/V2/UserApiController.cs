@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.ViewModels;
 using resturanyar.Utility;
 using Resturanyar.Hubs;
 using System.Security.Claims;
@@ -844,6 +845,113 @@ namespace resturanyar.Controllers.Api.V2
             }
         }
 
+        // ===================== Table Management (V2) =====================
+        [HttpPost("addtable")]
+        public async Task<IActionResult> AddTable([FromBody] AddTableRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                bool exists = await _context.RestaurantTables.AnyAsync(t =>
+                    t.RestaurantId == request.RestaurantId &&
+                    t.TableName.ToLower().Trim() == request.TableName.ToLower().Trim());
+                if (exists)
+                    return Ok(new { success = false, message = "این میز قبلاً برای این رستوران ثبت شده است" });
+
+                var table = new RestaurantTable
+                {
+                    RestaurantId = request.RestaurantId,
+                    TableName = request.TableName.Trim(),
+                    Seats = request.Seats,
+                    CreatedAt = DateTime.Now
+                };
+
+                _context.RestaurantTables.Add(table);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "میز با موفقیت اضافه شد", table_id = table.TableId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPut("edittable")]
+        public async Task<IActionResult> EditTable([FromBody] EditTableRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var table = await _context.RestaurantTables
+                    .FirstOrDefaultAsync(t => t.TableId == request.TableId && t.RestaurantId == request.RestaurantId);
+                if (table == null)
+                    return NotFound(new { success = false, message = "میز یافت نشد یا متعلق به این رستوران نیست" });
+
+                bool duplicate = await _context.RestaurantTables.AnyAsync(t =>
+                    t.RestaurantId == request.RestaurantId &&
+                    t.TableId != request.TableId &&
+                    t.TableName.ToLower().Trim() == request.TableName.ToLower().Trim());
+                if (duplicate)
+                    return Ok(new { success = false, message = "این نام میز قبلاً در این رستوران ثبت شده است" });
+
+                table.TableName = request.TableName.Trim();
+                table.Seats = request.Seats;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "میز با موفقیت ویرایش شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpDelete("deletetable")]
+        public async Task<IActionResult> DeleteTable([FromBody] DeleteTableRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var table = await _context.RestaurantTables
+                    .FirstOrDefaultAsync(t => t.TableId == request.TableId && t.RestaurantId == request.RestaurantId);
+                if (table == null)
+                    return NotFound(new { success = false, message = "میز یافت نشد یا متعلق به این رستوران نیست" });
+
+                _context.RestaurantTables.Remove(table);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "میز با موفقیت حذف شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
 
         [HttpPost("createOrder")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -1102,6 +1210,428 @@ namespace resturanyar.Controllers.Api.V2
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpPut("editcustomer")]
+        public async Task<IActionResult> EditCustomer([FromBody] EditCustomerRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var customer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId && c.RestaurantId == request.RestaurantId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                bool mobileExists = await _context.Customers.AnyAsync(c =>
+                    c.RestaurantId == request.RestaurantId &&
+                    c.Mobile == request.Mobile &&
+                    c.CustomerId != request.CustomerId);
+                if (mobileExists)
+                    return Ok(new { success = false, message = "این شماره موبایل قبلاً برای مشتری دیگری در این رستوران ثبت شده است" });
+
+                customer.Mobile = request.Mobile;
+                customer.FullName = request.FullName;
+                customer.Description = request.Description;
+                customer.UpdatedAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "مشتری با موفقیت ویرایش شد" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpDelete("deletecustomer")]
+        public async Task<IActionResult> DeleteCustomer([FromBody] DeleteCustomerRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var customer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId && c.RestaurantId == request.RestaurantId);
+                if (customer == null)
+                    return NotFound(new { success = false, message = "مشتری یافت نشد" });
+
+                customer.IsActive = false;
+                customer.UpdatedAt = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "مشتری با موفقیت حذف شد (غیرفعال)" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا در سرور: " + ex.Message });
+            }
+        }
+
+        [HttpGet("getcustomerswithstats/{restaurantId}")]
+        public async Task<IActionResult> GetCustomersWithStats(
+            int restaurantId,
+            int page = 1,
+            int pageSize = 12,
+            string search = "",
+            string sortBy = "TotalSpent",
+            string period = "all",
+            DateTime? from = null,
+            DateTime? to = null)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                DateTime startDate, endDate;
+                if (period != "all" && !from.HasValue)
+                {
+                    var now = DateTime.Now;
+                    if (period == "today")
+                    { startDate = now.Date; endDate = now.Date.AddDays(1).AddTicks(-1); }
+                    else if (period == "week")
+                    { startDate = now.Date.AddDays(-7); endDate = now; }
+                    else if (period == "month")
+                    { startDate = new DateTime(now.Year, now.Month, 1); endDate = now; }
+                    else if (period == "year")
+                    { startDate = now.Date.AddYears(-1); endDate = now; }
+                    else
+                    { startDate = DateTime.MinValue; endDate = DateTime.MaxValue; }
+                }
+                else
+                {
+                    startDate = from ?? DateTime.MinValue;
+                    endDate = to ?? DateTime.MaxValue;
+                    if (endDate.TimeOfDay == TimeSpan.Zero)
+                        endDate = endDate.Date.AddDays(1).AddTicks(-1);
+                }
+
+                var customersQuery = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive)
+                    .AsQueryable();
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    var searchLower = search.Trim().ToLower();
+                    customersQuery = customersQuery.Where(c =>
+                        c.FullName.ToLower().Contains(searchLower) ||
+                        c.Mobile.Contains(search));
+                }
+
+                var customers = await customersQuery.ToListAsync();
+                var customerIds = customers.Select(c => c.CustomerId).ToList();
+
+                var ordersQuery = _context.Orders
+                    .Where(o => customerIds.Contains(o.CustomerId.Value) &&
+                                o.RestaurantId == restaurantId &&
+                                o.CreatedAt >= startDate && o.CreatedAt <= endDate &&
+                                o.StatusId == 11)
+                    .Include(o => o.OrderItems)
+                    .AsQueryable();
+
+                var orders = await ordersQuery.ToListAsync();
+
+                var stats = customers.Select(c => new CustomerStatsViewModel
+                {
+                    CustomerId = c.CustomerId,
+                    FullName = c.FullName,
+                    Mobile = c.Mobile,
+                    Description = c.Description,
+                    IsActive = c.IsActive,
+                    CreatedAt = c.CreatedAt,
+                    CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
+                    TotalOrders = orders.Where(o => o.CustomerId == c.CustomerId).Count(),
+                    TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
+                        .Select(o => o.CreatedAt.Date).Distinct().Count(),
+                    TotalSpent = orders.Where(o => o.CustomerId == c.CustomerId)
+                        .Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                    LastOrderDate = orders.Where(o => o.CustomerId == c.CustomerId)
+                        .Max(o => (DateTime?)o.CreatedAt),
+                    LastOrderAmount = orders.Where(o => o.CustomerId == c.CustomerId)
+                        .OrderByDescending(o => o.CreatedAt)
+                        .Take(1)
+                        .Select(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity))
+                        .FirstOrDefault()
+                }).ToList();
+
+                foreach (var s in stats)
+                {
+                    s.AverageOrderValue = s.TotalOrders > 0 ? s.TotalSpent / s.TotalOrders : 0;
+                    s.LastOrderDateShamsi = s.LastOrderDate.HasValue ? DateHelper.ToShamsi(s.LastOrderDate.Value) : "-";
+                }
+
+                var orderedStats = sortBy switch
+                {
+                    "TotalOrders" => stats.OrderByDescending(x => x.TotalOrders),
+                    "TotalDistinctDays" => stats.OrderByDescending(x => x.TotalDistinctDays),
+                    "LastOrderAmount" => stats.OrderByDescending(x => x.LastOrderAmount),
+                    _ => stats.OrderByDescending(x => x.TotalSpent)
+                };
+
+                var totalItems = orderedStats.Count();
+                var pagedStats = orderedStats.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    data = pagedStats,
+                    totalCount = totalItems,
+                    currentPage = page,
+                    pageSize = pageSize,
+                    totalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("getdashboardstats/{restaurantId}")]
+        public async Task<IActionResult> GetCustomerDashboardStats(int restaurantId)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var today = DateTime.Today;
+                var startOfWeek = today.AddDays(-(int)today.DayOfWeek + 1);
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                var allActiveCustomers = _context.Customers
+                    .Where(c => c.RestaurantId == restaurantId && c.IsActive);
+
+                var newToday = await allActiveCustomers.CountAsync(c => c.CreatedAt >= today);
+                var newThisWeek = await allActiveCustomers.CountAsync(c => c.CreatedAt >= startOfWeek);
+                var newThisMonth = await allActiveCustomers.CountAsync(c => c.CreatedAt >= startOfMonth);
+                var totalActive = await allActiveCustomers.CountAsync();
+
+                var closedOrders = _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11)
+                    .Include(o => o.OrderItems);
+
+                var totalOrders = await closedOrders.CountAsync();
+                var totalRevenue = await closedOrders
+                    .SumAsync(o => o.OrderItems.Sum(oi =>
+                        (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity));
+
+                var avgRevenuePerCustomer = totalActive > 0 ? totalRevenue / totalActive : 0;
+                var avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+                var customerSpending = await _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11 && o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                        OrderCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .FirstOrDefaultAsync();
+
+                string topCustomerName = "-";
+                decimal topCustomerTotal = 0;
+                int topCustomerOrders = 0;
+
+                if (customerSpending != null)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == customerSpending.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    topCustomerName = customer ?? "مشتری ناشناس";
+                    topCustomerTotal = customerSpending.TotalSpent;
+                    topCustomerOrders = customerSpending.OrderCount;
+                }
+
+                var last7Days = new List<DailyCustomerStat>();
+                for (int i = 6; i >= 0; i--)
+                {
+                    var day = today.AddDays(-i);
+                    var nextDay = day.AddDays(1);
+                    var newCustomers = await _context.Customers
+                        .CountAsync(c => c.RestaurantId == restaurantId &&
+                                         c.CreatedAt >= day && c.CreatedAt < nextDay);
+                    var revenue = await _context.Orders
+                        .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11 &&
+                                    o.CreatedAt >= day && o.CreatedAt < nextDay)
+                        .SumAsync(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity));
+
+                    last7Days.Add(new DailyCustomerStat
+                    {
+                        Date = day,
+                        PersianDate = DateHelper.ToShamsi(day),
+                        NewCustomers = newCustomers,
+                        Revenue = revenue
+                    });
+                }
+
+                var stats = new CustomerDashboardStatsViewModel
+                {
+                    NewCustomersToday = newToday,
+                    NewCustomersThisWeek = newThisWeek,
+                    NewCustomersThisMonth = newThisMonth,
+                    TotalActiveCustomers = totalActive,
+                    TotalRevenue = totalRevenue,
+                    AverageRevenuePerCustomer = avgRevenuePerCustomer,
+                    AverageOrderValue = avgOrderValue,
+                    TotalOrders = totalOrders,
+                    TopCustomerName = topCustomerName,
+                    TopCustomerTotalSpent = topCustomerTotal,
+                    TopCustomerOrders = topCustomerOrders,
+                    Last7DaysStats = last7Days
+                };
+
+                return Ok(new { success = true, data = stats });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("getcustomerinsights/{restaurantId}")]
+        public async Task<IActionResult> GetCustomerInsights(int restaurantId)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                if (restaurant == null)
+                    return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+                var today = DateTime.Today;
+                var last7DaysStart = today.AddDays(-7);
+
+                var closedOrders = _context.Orders
+                    .Where(o => o.RestaurantId == restaurantId && o.StatusId == 11)
+                    .Include(o => o.OrderItems)
+                    .AsQueryable();
+
+                var topCustomersLast7Days = await closedOrders
+                    .Where(o => o.CreatedAt >= last7DaysStart && o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                        OrdersCount = g.Count()
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .Take(3)
+                    .ToListAsync();
+
+                var growthCustomers = new List<object>();
+                foreach (var item in topCustomersLast7Days)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == item.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    growthCustomers.Add(new
+                    {
+                        Name = customer ?? "مشتری ناشناس",
+                        Amount = item.TotalSpent,
+                        OrderCount = item.OrdersCount
+                    });
+                }
+
+                var customerPurchaseCounts = await closedOrders
+                    .Where(o => o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new { CustomerId = g.Key, OrderCount = g.Count() })
+                    .ToListAsync();
+
+                int totalBuyingCustomers = customerPurchaseCounts.Count;
+                int moreThan1 = customerPurchaseCounts.Count(x => x.OrderCount >= 2);
+                int moreThan2 = customerPurchaseCounts.Count(x => x.OrderCount >= 3);
+                int moreThan4 = customerPurchaseCounts.Count(x => x.OrderCount >= 5);
+
+                double rate2 = totalBuyingCustomers > 0 ? (moreThan1 * 100.0 / totalBuyingCustomers) : 0;
+                double rate3 = totalBuyingCustomers > 0 ? (moreThan2 * 100.0 / totalBuyingCustomers) : 0;
+                double rate5 = totalBuyingCustomers > 0 ? (moreThan4 * 100.0 / totalBuyingCustomers) : 0;
+
+                var topCustomersOverall = await closedOrders
+                    .Where(o => o.CustomerId != null)
+                    .GroupBy(o => o.CustomerId)
+                    .Select(g => new
+                    {
+                        CustomerId = g.Key,
+                        TotalSpent = g.Sum(o => o.OrderItems.Sum(oi =>
+                            (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity))
+                    })
+                    .OrderByDescending(x => x.TotalSpent)
+                    .Take(3)
+                    .ToListAsync();
+
+                var bestCustomers = new List<object>();
+                foreach (var item in topCustomersOverall)
+                {
+                    var customer = await _context.Customers
+                        .Where(c => c.CustomerId == item.CustomerId)
+                        .Select(c => c.FullName)
+                        .FirstOrDefaultAsync();
+                    bestCustomers.Add(new
+                    {
+                        Name = customer ?? "مشتری ناشناس",
+                        Amount = item.TotalSpent
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        growthCustomers,
+                        returnRates = new { rate2, rate3, rate5 },
+                        bestCustomers
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
 

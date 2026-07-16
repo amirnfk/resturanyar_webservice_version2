@@ -124,7 +124,6 @@ wwwroot\js\home.js
 wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
-wwwroot\js\managerlogin.js
 wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
 wwwroot\js\persian-date.min.js
@@ -203,3 +202,4 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
+wwwroot\js\managerlogin.js

@@ -143,6 +143,13 @@
         </div>
     </div>
 
+    <script>
+        (function () {
+            if (localStorage.getItem('accessToken') && document.cookie.includes('.AspNetCore.Cookies')) {
+                window.location.href = '/Home/ChooseRestaurant';
+            }
+        })();
+    </script>
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
     <script>
         (function() {
