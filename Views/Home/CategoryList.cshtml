@@ -213,21 +213,31 @@
  
 @Html.AntiForgeryToken()
 
+<!-- CategoryList.cshtml - Updated JavaScript Section -->
 <script src="~/js/jquery_3.6.0.min.js"></script>
 <script src="~/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/Sortable.min.js" asp-append-version="true"></script>
+
+<!-- Import the interceptor and expose it globally -->
+<script type="module">
+    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+    window.fetchWithAuth = fetchWithAuth;
+</script>
+
 <script>
-    const API_BASE = "https://resturanyar.ir/api/UserApi";
+    const API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
     var token = $('input[name="__RequestVerificationToken"]').val();
 
-    // فعال‌سازی Sortable روی کانتینر
+    // ============================================================
+    // SORTABLE - Drag & Drop reordering
+    // ============================================================
     var sortableContainer = document.getElementById('sortable-list');
     var sortable = null;
     if (sortableContainer) {
         sortable = new Sortable(sortableContainer, {
             animation: 300,
-            handle: '.card',      // کل کارت قابل کشیدن است (می‌توان به .drag-handle محدود کرد)
+            handle: '.card',
             ghostClass: 'sortable-drag',
             onEnd: function() {
                 $('#saveOrderBtn').show();
@@ -235,20 +245,14 @@
         });
     }
 
-    // نمایش هینت فقط یک بار (در صورت وجود localStorage)
+    // Show hint once
     function showHintOnce() {
-        @* const hintClosed = localStorage.getItem('categoryDragHintClosed');
-        if (!hintClosed) { *@
-            $('#dragHint').slideDown(300);
-        @* } *@
+        $('#dragHint').slideDown(300);
     }
 
-    @* function closeHint() {
-        $('#dragHint').slideUp(200);
-        localStorage.setItem('categoryDragHintClosed', 'true');
-    } *@
-
-    // ذخیره ترتیب جدید
+    // ============================================================
+    // SAVE ORDER - Keep using the existing Home controller action
+    // ============================================================
     $('#saveOrderBtn').click(function() {
         var items = [];
         $('#sortable-list .col-12').each(function(index) {
@@ -269,24 +273,23 @@
             },
             success: function(res) {
                 if (res.success) {
-                   
-                     showToast('ترتیب دسته‌بندی‌ها با موفقیت ذخیره شد', 'success');
-                     setTimeout(() => location.reload(), 1000);
+                    showToast('ترتیب دسته‌بندی‌ها با موفقیت ذخیره شد', 'success');
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    
                     showToast('خطا در ذخیره ترتیب: ' + (res.message || 'خطای ناشناخته'), 'error');
                 }
             },
             error: function(xhr) {
                 let msg = 'خطا در ارتباط با سرور';
                 if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-               
                 showToast(msg, 'error');
             }
         });
     });
 
-    // باز کردن مودال برای افزودن
+    // ============================================================
+    // OPEN ADD CATEGORY MODAL
+    // ============================================================
     function openAddCategoryModal() {
         $("#modalTitle").text("افزودن دسته‌بندی");
         $("#categoryId").val("");
@@ -295,7 +298,9 @@
         new bootstrap.Modal(document.getElementById('categoryModal')).show();
     }
 
-    // باز کردن مودال برای ویرایش
+    // ============================================================
+    // OPEN EDIT CATEGORY MODAL
+    // ============================================================
     function openEditCategoryModal(id) {
         const cardDiv = $(`[data-id='${id}']`);
         const name = cardDiv.find('h5').text();
@@ -306,8 +311,10 @@
         new bootstrap.Modal(document.getElementById('categoryModal')).show();
     }
 
-    // ذخیره دسته (افزودن یا ویرایش)
-    function saveCategory() {
+    // ============================================================
+    // SAVE CATEGORY (Add or Edit) - V2 API
+    // ============================================================
+    async function saveCategory() {
         clearErrors();
         const id = $("#categoryId").val();
         const name = $("#categoryName").val().trim();
@@ -317,6 +324,7 @@
             return;
         }
 
+        // Prepare request data
         const data = {
             restaurantId: restaurantId,
             categoryName: name
@@ -328,68 +336,66 @@
         if (id) {
             url = `${API_BASE}/editcategory`;
             data.categoryId = parseInt(id);
+            method = "PUT"; // Fixed: EditCategory uses HttpPut
         }
 
-        $.ajax({
-            url: url,
-            type: method,
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (res) {
-                if (res.success) {
-                     showToast('عملیات موفق', 'success');
-                    
-                   setTimeout(() => location.reload(), 1000);
-                } else {
-                    showErrors([res.message || "خطا در ذخیره"]);
-                }
-            },
-            error: function (xhr) {
-                showErrors([xhr.responseJSON?.message || "خطا در ارتباط با سرور"]);
+        try {
+            const response = await window.fetchWithAuth(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const res = await response.json();
+            if (res.success) {
+                showToast(res.message || 'عملیات موفق', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showErrors([res.message || "خطا در ذخیره"]);
             }
-        });
+        } catch (error) {
+            showErrors([error.message || "خطا در ارتباط با سرور"]);
+        }
     }
 
-    // حذف دسته
-    function deleteCategory(id) {
+    async function deleteCategory(id) {
         if (!confirm("آیا از حذف این دسته‌بندی مطمئن هستید؟")) return;
 
-        $.ajax({
-            url: `${API_BASE}/deletecategory`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-                restaurantId: restaurantId,
-                categoryId: id
-            }),
-            success: function (res) {
-                showToast(res.message, 'success');
-                
-                if (res.success)   setTimeout(() => location.reload(), 1000);; ;
-            },
-            error: function () {
-                showToast('خطا در ارتباط با سرور', 'error');
-              
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/deletecategory`, {
+                method: "DELETE",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    restaurantId: restaurantId,
+                    categoryId: id
+                })
+            });
+            const res = await response.json();
+            showToast(res.message || 'عملیات موفق', res.success ? 'success' : 'error');
+            if (res.success) {
+                setTimeout(() => location.reload(), 1000);
             }
-        });
+        } catch (error) {
+            showToast('خطا در ارتباط با سرور', 'error');
+        }
     }
 
+    // ============================================================
+    // HELPER: Show errors in modal
+    // ============================================================
     function showErrors(errors) {
         const errorBox = $("#errorContainer");
         errorBox.html(errors.map(e => `<div>• ${e}</div>`).join(""));
         errorBox.removeClass("d-none");
     }
+
     function clearErrors() {
         $("#errorContainer").addClass("d-none").html("");
     }
 
-    // اجرای نمایش هینت هنگام بارگذاری صفحه
-    $(document).ready(function() {
-        showHintOnce();
-    });
-
-      function showToast(message, type = 'success') {
-        // remove any existing toast first
+    // ============================================================
+    // TOAST NOTIFICATION
+    // ============================================================
+    function showToast(message, type = 'success') {
         document.querySelector('.custom-toast')?.remove();
 
         const toast = document.createElement('div');
@@ -426,4 +432,26 @@
 
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
     }
+
+    // ============================================================
+    // INITIALIZATION
+    // ============================================================
+    $(document).ready(function() {
+        showHintOnce();
+    });
 </script>
+
+<!-- Add CSS animation for toast -->
+<style>
+    @@keyframes slideInLeft {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
