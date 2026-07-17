@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using resturanyar.Utility;
 
 namespace resturanyar.Controllers
 {
@@ -10,6 +11,7 @@ namespace resturanyar.Controllers
         [Route("/restaurant-management")]
         public IActionResult RestaurantManagement()
         {
+            ViewData["Seo"] = SeoDefaults.RestaurantManagement();
             return View();
         }
 
@@ -17,6 +19,7 @@ namespace resturanyar.Controllers
         [Route("/cafeshop-management")]
        public IActionResult CafeshopManagement()
         {
+            ViewData["Seo"] = SeoDefaults.CafeShopManagement();
             return View();
         }
 
@@ -24,6 +27,7 @@ namespace resturanyar.Controllers
         [Route("/digital-menu")]
         public IActionResult DigitalMenu()
         {
+            ViewData["Seo"] = SeoDefaults.DigitalMenu();
             return View();
         }
 
@@ -31,6 +35,7 @@ namespace resturanyar.Controllers
         [Route("/customer-club")]
        public IActionResult CustomerClub()
         {
+            ViewData["Seo"] = SeoDefaults.CustomerClub();
             return View();
         }
 
@@ -38,6 +43,7 @@ namespace resturanyar.Controllers
         [Route("/public-support")]
         public IActionResult PublicSupport()
         {
+            ViewData["Seo"] = SeoDefaults.PublicSupport();
             return View();
         }
 
@@ -46,6 +52,7 @@ namespace resturanyar.Controllers
         [Route("/resturanyar-pricelist")]
         public IActionResult ResturanyarPriceList()
         {
+            ViewData["Seo"] = SeoDefaults.PriceList();
             return View();
         }
 
@@ -53,6 +60,7 @@ namespace resturanyar.Controllers
         [Route("/about-us")]
         public IActionResult AboutUs()
         {
+            ViewData["Seo"] = SeoDefaults.AboutUs();
             return View();
         }
 

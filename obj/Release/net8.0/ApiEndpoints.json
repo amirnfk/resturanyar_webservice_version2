@@ -3053,6 +3053,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "resturanyar.Controllers.ArticlesController",
+    "Method": "Index",
+    "RelativePath": "articles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.ArticlesController",
+    "Method": "Detail",
+    "RelativePath": "articles/{slug}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "slug",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.PublicController",
     "Method": "CafeshopManagement",
     "RelativePath": "cafeshop-management",

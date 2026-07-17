@@ -60,6 +60,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwRG93bmxvYWRcQXBwRG93bmxvYWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/_ArticleStyles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcX0FydGljbGVTdHlsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/AddOrder.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRPcmRlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -242,6 +254,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_Layout_public.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfcHVibGljLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_SeoHead.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZW9IZWFkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_SimpleLayout.cshtml]

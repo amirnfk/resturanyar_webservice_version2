@@ -1,0 +1,97 @@
+@model resturanyar.Models.Article
+@{
+    Layout = "~/Views/Shared/_IndexLayout.cshtml";
+    ViewData["Title"] = Model.Title;
+    var imageUrl = string.IsNullOrWhiteSpace(Model.FeaturedImageUrl)
+        ? "/images/logo.png"
+        : Model.FeaturedImageUrl;
+    var absoluteImageUrl = imageUrl.StartsWith("http")
+        ? imageUrl
+        : "https://resturanyar.ir" + imageUrl;
+}
+
+@section Styles {
+    @await Html.PartialAsync("_ArticleStyles")
+}
+
+<section class="article-hero">
+    <div class="container">
+        <nav class="breadcrumb-nav" aria-label="مسیر">
+            <a href="/">خانه</a>
+            <span class="mx-2">/</span>
+            <a href="/articles">مقالات</a>
+            <span class="mx-2">/</span>
+            <span>@Model.Title</span>
+        </nav>
+        <p class="article-meta mb-2">
+            <i class="fa-regular fa-calendar ms-1"></i> @Model.PublishedAt.ToString("yyyy/MM/dd")
+            <span class="mx-2">|</span>
+            <i class="fa-regular fa-user ms-1"></i> @Model.Author
+        </p>
+        <h1>@Model.Title</h1>
+    </div>
+</section>
+
+<section class="article-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                @if (!string.IsNullOrWhiteSpace(Model.FeaturedImageUrl))
+                {
+                    <img src="@Model.FeaturedImageUrl" alt="@Model.Title" class="img-fluid rounded-4 shadow mb-4" loading="lazy" style="max-height:360px; width:100%; object-fit:cover;">
+                }
+
+                @Html.Raw(Model.Content)
+
+                <div class="cta-box">
+                    <h3 class="fw-bold">رستورانیار را رایگان امتحان کنید</h3>
+                    <p style="opacity:.9;">با اشتراک تستی، تمام امکانات نرم‌افزار مدیریت رستوران را بدون ریسک بررسی کنید.</p>
+                    <a href="/resturanyar-pricelist" class="btn btn-light btn-lg px-4 me-2">دریافت لیست قیمت</a>
+                    <a href="/Home/ManagerLogin" class="btn btn-cta btn-lg px-4">شروع رایگان</a>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="highlight-box">
+                    <h3 class="h5 fw-bold mb-3">صفحات مرتبط</h3>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="/restaurant-management">نرم‌افزار مدیریت رستوران</a></li>
+                        <li class="mb-2"><a href="/digital-menu">منوی دیجیتال QR</a></li>
+                        <li class="mb-2"><a href="/customer-club">باشگاه مشتریان</a></li>
+                        <li><a href="/articles">همه مقالات</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section StructuredData {
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "BlogPosting",
+          "headline": "@Model.Title",
+          "description": "@Model.MetaDescription",
+          "image": "@absoluteImageUrl",
+          "author": { "@@type": "Organization", "name": "@Model.Author" },
+          "datePublished": "@Model.PublishedAt.ToString("yyyy-MM-dd")",
+          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/articles/@Model.Slug" },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "رستورانیار",
+            "logo": { "@@type": "ImageObject", "url": "https://resturanyar.ir/images/logo.png" }
+          }
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@@type": "ListItem", "position": 1, "name": "خانه", "item": "https://resturanyar.ir/" },
+            { "@@type": "ListItem", "position": 2, "name": "مقالات", "item": "https://resturanyar.ir/articles" },
+            { "@@type": "ListItem", "position": 3, "name": "@Model.Title", "item": "https://resturanyar.ir/articles/@Model.Slug" }
+          ]
+        }
+    </script>
+}

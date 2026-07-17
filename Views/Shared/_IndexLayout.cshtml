@@ -4,7 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#ff7a1a" />
-    <title>@ViewData["Title"] - رستورانیار</title>
+    @{
+        var seo = ViewData["Seo"] as resturanyar.Models.SeoMetadata;
+        var pageTitle = seo?.Title ?? (ViewData["Title"]?.ToString() + " - رستورانیار");
+    }
+    <title>@pageTitle</title>
+    @await Html.PartialAsync("_SeoHead")
+    @await RenderSectionAsync("Head", required: false)
+    @await RenderSectionAsync("StructuredData", required: false)
+    @if (seo != null && !seo.NoIndex)
+    {
+        <script type="application/ld+json">
+            {
+              "@@context": "https://schema.org",
+              "@@type": "Organization",
+              "name": "رستورانیار",
+              "url": "https://resturanyar.ir/",
+              "logo": "https://resturanyar.ir/images/logo.png",
+              "description": "نرم‌افزار یکپارچه مدیریت کافه و رستوران، منوی دیجیتال، سفارش‌گیر و گزارش‌گیری.",
+              "contactPoint": {
+                "@@type": "ContactPoint",
+                "telephone": "+98-937-442-2588",
+                "contactType": "customer support",
+                "availableLanguage": "Persian"
+              },
+              "sameAs": [
+                "https://instagram.com/resturanyar_delavita",
+                "https://t.me/resturanyar_delavita"
+              ]
+            }
+        </script>
+    }
     <!-- CSS -->
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
     <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet" />
@@ -188,7 +218,7 @@
                     <li class="nav-item"><a class="nav-link" href="/digital-menu">منوی دیجیتال</a></li>
                     <li class="nav-item"><a class="nav-link" href="/customer-club"> باشگاه مشتریان کافه رستوران شما</a></li>
                     <li class="nav-item"><a class="nav-link" href="/resturanyar-pricelist"> درخواست لیست قیمت</a></li>
-                    @* <li class="nav-item"><a class="nav-link" href="/Articles">مقالات</a></li> *@
+                    <li class="nav-item"><a class="nav-link" href="/articles">مقالات</a></li>
                     <li class="nav-item"><a class="nav-link" href="/public-support">پشتیبانی</a></li>
                    
                     <li class="nav-item"><a class="nav-link" href="/about-us">درباره ما </a></li>

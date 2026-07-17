@@ -3,26 +3,7 @@
     ViewData["Title"] = "پشتیبانی رستورانیار | تماس با پشتیبانی";
 }
 
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>پشتیبانی نرم‌افزار رستورانیار | تماس با ما</title>
-    <meta name="description" content="پشتیبانی  رستورانیار دلاویتا. ارتباط از طریق چت آنلاین، تلفن، ایمیل و پاسخ به سوالات متداول. تیم پشتیبانی ما همیشه در کنار شماست." />
-    <meta name="keywords" content="پشتیبانی رستورانیار, تماس با پشتیبانی, پشتیبانی نرم افزار رستوران, چت آنلاین, رستورانیار دلاویتا" />
-    <meta name="theme-color" content="#ff7a1a" />
-    <meta property="og:title" content="پشتیبانی رستورانیار | تماس با ما" />
-    <meta property="og:description" content="پشتیبانی  آنلاین رستورانیار دلاویتا. ارتباط از طریق چت آنلاین، تلفن و ایمیل." />
-    <meta property="og:image" content="/images/og-resturanyar.jpg" />
-    <meta property="og:type" content="article" />
-    <link rel="canonical" href="https://resturanyar.ir/support" />
-
-    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
-    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
-    <link href="~/css/all.min.css" rel="stylesheet">
-    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
-
+@section Styles {
     <style>
         /* استایل‌های اختصاصی با پشتیبانی از دارک‌مود */
         .article-hero {
@@ -594,8 +575,7 @@
             }
         }
     </style>
-</head>
-<body>
+}
 
     <!-- ===== هیرو مقاله ===== -->
     <section class="article-hero">
@@ -761,19 +741,7 @@
         </div>
     </section>
 
-    <!-- ===== دکمه بازگشت به بالا ===== -->
-    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
-
-    <!-- ===== اسکریپت‌ها ===== -->
-    <script src="~/js/home.js" asp-append-version="true"></script>
-    <script src="~/js/bootstrap.bundle.min.js" defer></script>
-
-    <!-- Goftino -->
-    <script type="text/javascript">
-        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
-    </script>
-
-    <!-- ===== دیتای ساختاریافته (JSON-LD) ===== -->
+@section StructuredData {
     <script type="application/ld+json">
         {
           "@@context": "https://schema.org",
@@ -783,7 +751,7 @@
           "image": "https://resturanyar.ir/images/og-resturanyar.jpg",
           "author": { "@@type": "Organization", "name": "رستورانیار" },
           "datePublished": "2026-06-28",
-          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/support" }
+          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/public-support" }
         }
     </script>
     <script type="application/ld+json">
@@ -792,29 +760,21 @@
           "@@type": "BreadcrumbList",
           "itemListElement": [
             { "@@type": "ListItem", "position": 1, "name": "خانه", "item": "https://resturanyar.ir/" },
-            { "@@type": "ListItem", "position": 2, "name": "پشتیبانی", "item": "https://resturanyar.ir/support" }
+            { "@@type": "ListItem", "position": 2, "name": "پشتیبانی", "item": "https://resturanyar.ir/public-support" }
           ]
         }
     </script>
+}
 
+@section Scripts {
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+    </script>
     <script>
-        // دکمه بازگشت به بالا
-        window.addEventListener('scroll', function() {
-            var btn = document.getElementById('backTop');
-            if (window.scrollY > 300) btn.classList.add('show');
-            else btn.classList.remove('show');
-        });
-        document.getElementById('backTop').addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // ===== اسکریپت‌های اختصاصی پشتیبانی =====
         var restaurantId = @(ViewBag.RestaurantId ?? 0);
         var restaurantName = @Html.Raw(Json.Serialize(ViewBag.RestaurantName ?? "رستوران"));
 
-        // اتصال دکمه‌ها به گوفتینو
         window.addEventListener('goftino_ready', function () {
-            // تنظیم کاربر
             Goftino.setUser({
                 email: 'restaurant ID: ' + restaurantId,
                 name: 'restaurant Name: ' + restaurantName,
@@ -824,16 +784,11 @@
                 forceUpdate: true
             });
 
-            // دکمه‌ها
             document.getElementById("open_chat").addEventListener("click", function () {
                 Goftino.open();
             });
-            document.getElementById("toggle_chat").addEventListener("click", function () {
-                Goftino.toggle();
-            });
         });
 
-        // آکاردئون سوالات متداول
         document.addEventListener('DOMContentLoaded', function() {
             var faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(function(btn) {
@@ -841,7 +796,6 @@
                     var answer = this.nextElementSibling;
                     var isOpen = answer.classList.contains('open');
 
-                    // بستن بقیه
                     document.querySelectorAll('.faq-answer').forEach(function(el) {
                         el.classList.remove('open');
                     });
@@ -849,7 +803,6 @@
                         el.setAttribute('aria-expanded', 'false');
                     });
 
-                    // اگر بسته بود، باز کن
                     if (!isOpen) {
                         answer.classList.add('open');
                         this.setAttribute('aria-expanded', 'true');
@@ -858,6 +811,4 @@
             });
         });
     </script>
-
-</body>
-</html>
+}

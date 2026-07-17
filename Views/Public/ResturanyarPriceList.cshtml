@@ -3,19 +3,7 @@
     ViewData["Title"] = "دریافت لیست قیمت رستورانیار";
 }
 
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>دریافت لیست قیمت نرم‌افزار رستورانیار</title>
-    <meta name="description" content="دریافت آنی لیست قیمت محصولات و نرم‌افزار مدیریت رستوران، فست‌فود و کافی‌شاپ رستورانیار دلاویتا." />
-
-    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
-    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
-    <link href="~/css/all.min.css" rel="stylesheet">
-    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
-
+@section Styles {
     <style>
         /* مینیمال‌ترین ساختار ممکن */
         body {
@@ -176,8 +164,7 @@
             letter-spacing: 0.3px;
         }
     </style>
-</head>
-<body>
+}
 
     <section class="pricelist-content">
         <div class="container">
@@ -227,6 +214,19 @@
         </div>
     </section>
 
+@section StructuredData {
+    <script type="application/ld+json">
+        {
+          "@@context": "https://schema.org",
+          "@@type": "WebPage",
+          "name": "دریافت لیست قیمت نرم‌افزار رستورانیار",
+          "description": "دریافت آنی لیست قیمت محصولات و نرم‌افزار مدیریت رستوران، فست‌فود و کافی‌شاپ رستورانیار دلاویتا.",
+          "url": "https://resturanyar.ir/resturanyar-pricelist"
+        }
+    </script>
+}
+
+@section Scripts {
     <script>
         document.getElementById('priceListForm').addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -237,37 +237,31 @@
             const btnSpinner = document.getElementById('btnSpinner');
             const responseAlert = document.getElementById('responseAlert');
 
-            // تابع کمکی برای نمایش خطا
             const showError = (message) => {
                 responseAlert.innerText = message;
                 responseAlert.className = 'alert-message error';
                 responseAlert.style.display = 'block';
             };
 
-            // ریست پیام قبلی
             responseAlert.style.display = 'none';
             responseAlert.className = 'alert-message';
 
-            // 1. بررسی خالی نبودن نام
             if (!fullName) {
                 showError('لطفاً نام و نام خانوادگی خود را وارد کنید.');
                 return;
             }
 
-            // 2. بررسی خالی نبودن شماره موبایل
             if (!phoneNumber) {
                 showError('لطفاً شماره موبایل خود را وارد کنید.');
                 return;
             }
 
-            // 3. بررسی صحت فرمت شماره موبایل (شروع با 09 و دقیقا 11 رقم)
             const phoneRegex = /^09\d{9}$/;
             if (!phoneRegex.test(phoneNumber)) {
                 showError('شماره موبایل وارد شده معتبر نیست. لطفاً با فرمت صحیح (مانند 09123456789) وارد کنید.');
                 return;
             }
 
-            // فعال‌سازی اسپینر
             submitBtn.disabled = true;
             btnSpinner.classList.remove('d-none');
 
@@ -296,6 +290,4 @@
             }
         });
     </script>
-
-</body>
-</html>
+}

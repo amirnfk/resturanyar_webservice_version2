@@ -51,6 +51,7 @@ namespace resturanyar.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Seo"] = SeoDefaults.HomePage();
             return View();
         }
 

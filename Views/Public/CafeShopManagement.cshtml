@@ -3,26 +3,7 @@
     ViewData["Title"] = "نرم‌افزار مدیریت کافه و کافی‌شاپ | رستورانیار";
 }
 
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>نرم‌افزار مدیریت کافه، کافی‌شاپ و قهوه‌خانه | رستورانیار</title>
-    <meta name="description" content="رستورانیار نرم‌افزار جامع مدیریت کافه و کافی‌شاپ با نسخه موبایل رایگان و اشتراک تستی. مدیریت سفارشات، پرسنل، میزها، موجودی و گزارش‌گیری هوشمند." />
-    <meta name="keywords" content="نرم افزار مدیریت کافه, مدیریت کافی شاپ, نرم افزار کافه, نرم افزار مدیریت قهوه خانه, رستورانیار, نرم افزار مدیریت رستوران" />
-    <meta name="theme-color" content="#ff7a1a" />
-    <meta property="og:title" content="نرم‌افزار مدیریت کافه و کافی‌شاپ | رستورانیار" />
-    <meta property="og:description" content="مدیریت یکپارچه کافه و کافی‌شاپ با نرم‌افزار رستورانیار. نسخه موبایل رایگان + اشتراک تستی." />
-    <meta property="og:image" content="/images/og-resturanyar.jpg" />
-    <meta property="og:type" content="article" />
-    <link rel="canonical" href="https://resturanyar.ir/cafe-management-software" />
-
-    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
-    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
-    <link href="~/css/all.min.css" rel="stylesheet">
-    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
-
+@section Styles {
     <style>
         /* استایل‌های اختصاصی با پشتیبانی از دارک‌مود */
         .article-hero {
@@ -229,8 +210,7 @@
             }
         }
     </style>
-</head>
-<body>
+}
 
     <!-- ===== هیرو مقاله (ویژه کافه) ===== -->
     <section class="article-hero">
@@ -375,19 +355,7 @@
         </div>
     </section>
 
-    <!-- ===== دکمه بازگشت به بالا ===== -->
-    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
-
-    <!-- ===== اسکریپت‌ها ===== -->
-    <script src="~/js/home.js" asp-append-version="true"></script>
-    <script src="~/js/bootstrap.bundle.min.js" defer></script>
-
-    <!-- Goftino -->
-    <script type="text/javascript">
-        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
-    </script>
-
-    <!-- ===== دیتای ساختاریافته (JSON-LD) ===== -->
+@section StructuredData {
     <script type="application/ld+json">
         {
           "@@context": "https://schema.org",
@@ -397,7 +365,7 @@
           "image": "https://resturanyar.ir/images/og-resturanyar.jpg",
           "author": { "@@type": "Organization", "name": "رستورانیار" },
           "datePublished": "2026-06-28",
-          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/cafe-management-software" }
+          "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/cafeshop-management" }
         }
     </script>
     <script type="application/ld+json">
@@ -406,22 +374,14 @@
           "@@type": "BreadcrumbList",
           "itemListElement": [
             { "@@type": "ListItem", "position": 1, "name": "خانه", "item": "https://resturanyar.ir/" },
-            { "@@type": "ListItem", "position": 2, "name": "نرم‌افزار مدیریت کافه", "item": "https://resturanyar.ir/cafe-management-software" }
+            { "@@type": "ListItem", "position": 2, "name": "نرم‌افزار مدیریت کافه", "item": "https://resturanyar.ir/cafeshop-management" }
           ]
         }
     </script>
+}
 
-    <script>
-        // دکمه بازگشت به بالا
-        window.addEventListener('scroll', function() {
-            var btn = document.getElementById('backTop');
-            if (window.scrollY > 300) btn.classList.add('show');
-            else btn.classList.remove('show');
-        });
-        document.getElementById('backTop').addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+@section Scripts {
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
     </script>
-
-</body>
-</html>
+}

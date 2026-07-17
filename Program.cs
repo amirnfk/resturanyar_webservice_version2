@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting; // ✳️ اضافه شده برای Rate Limiting
@@ -52,6 +53,7 @@ builder.Services.AddCors(options =>
 // ✳️ افزودن کنترلرهای API و MVC
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
+builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "RequestVerificationToken";
@@ -223,6 +225,22 @@ builder.Host.UseSerilog(); // جایگزین ILogger پیش‌فرض
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        if (!resturanyar.Data.ArticleDbSeeder.Seed(db))
+        {
+            Log.Warning("Article seed did not run at startup. It will retry on the first visit to /articles.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "Article seed failed at startup.");
+    }
+}
+
 app.UseCors("AllowAll");
 if (!app.Environment.IsDevelopment())
 {
@@ -279,6 +297,7 @@ app.Use(async (context, next) =>
 
 
 app.UseHttpsRedirection();
+app.UseResponseCompression();
 app.UseStaticFiles();
 
 //Console.WriteLine("ENV: " + builder.Environment.EnvironmentName);

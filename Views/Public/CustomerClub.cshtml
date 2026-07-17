@@ -3,26 +3,7 @@
     ViewData["Title"] = "باشگاه مشتریان رستوران و کافه | رستورانیار دلاویتا";
 }
 
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>باشگاه مشتریان رستوران و کافه | رستورانیار دلاویتا</title>
-    <meta name="description" content="باشگاه مشتریان رستورانیار دلاویتا با ثبت خودکار مشتریان هنگام سفارش، تحلیل رفتار خرید، نرخ بازگشت و رتبه‌بندی مشتریان وفادار. مدیریت هوشمند مشتریان رستوران، کافه و فست‌فود." />
-    <meta name="keywords" content="باشگاه مشتریان, مدیریت مشتریان رستوران, تحلیل رفتار مشتری, نرخ بازگشت مشتری, مشتری وفادار, رستورانیار, دلاویتا, نرم افزار مشتریان" />
-    <meta name="theme-color" content="#ff7a1a" />
-    <meta property="og:title" content="باشگاه مشتریان رستوران و کافه | رستورانیار دلاویتا" />
-    <meta property="og:description" content="باشگاه مشتریان هوشمند با ثبت خودکار، تحلیل رفتار و رتبه‌بندی مشتریان وفادار. افزایش بازگشت مشتری و فروش رستوران." />
-    <meta property="og:image" content="/images/og-resturanyar.jpg" />
-    <meta property="og:type" content="article" />
-    <link rel="canonical" href="https://resturanyar.ir/customer-club" />
-
-    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet">
-    <link href="~/css/Vazirmatn_font_face.css" rel="stylesheet">
-    <link href="~/css/all.min.css" rel="stylesheet">
-    <link href="~/css/home.css" rel="stylesheet" asp-append-version="true">
-
+@section Styles {
     <style>
         /* استایل‌های اختصاصی با پشتیبانی از دارک‌مود */
         .article-hero {
@@ -253,8 +234,7 @@
             color: var(--primary);
         }
     </style>
-</head>
-<body>
+}
 
     <!-- ===== هیرو مقاله (ویژه باشگاه مشتریان) ===== -->
     <section class="article-hero">
@@ -419,19 +399,7 @@
         </div>
     </section>
 
-    <!-- ===== دکمه بازگشت به بالا ===== -->
-    <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
-
-    <!-- ===== اسکریپت‌ها ===== -->
-    <script src="~/js/home.js" asp-append-version="true"></script>
-    <script src="~/js/bootstrap.bundle.min.js" defer></script>
-
-    <!-- Goftino -->
-    <script type="text/javascript">
-        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
-    </script>
-
-    <!-- ===== دیتای ساختاریافته (JSON-LD) ===== -->
+@section StructuredData {
     <script type="application/ld+json">
         {
           "@@context": "https://schema.org",
@@ -454,18 +422,10 @@
           ]
         }
     </script>
+}
 
-    <script>
-        // دکمه بازگشت به بالا
-        window.addEventListener('scroll', function() {
-            var btn = document.getElementById('backTop');
-            if (window.scrollY > 300) btn.classList.add('show');
-            else btn.classList.remove('show');
-        });
-        document.getElementById('backTop').addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+@section Scripts {
+    <script type="text/javascript">
+        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
     </script>
-
-</body>
-</html>
+}

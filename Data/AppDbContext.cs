@@ -39,6 +39,7 @@ namespace Resturanyar.Data
         public DbSet<AdminMessage> AdminMessages { get; set; }
         public DbSet<AdminMessageRecipient> AdminMessageRecipients { get; set; }
         public DbSet<AdminMessageRead> AdminMessageReads { get; set; }
+        public DbSet<Article> Articles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -244,7 +245,14 @@ namespace Resturanyar.Data
             ConfigureSubscriptionEntities(modelBuilder);
             ConfigureAdminMessageEntities(modelBuilder);
 
-         
+            modelBuilder.Entity<Article>(entity =>
+            {
+                entity.HasKey(a => a.Id);
+                entity.HasIndex(a => a.Slug).IsUnique();
+                entity.Property(a => a.PublishedAt).HasDefaultValueSql("GETDATE()");
+                entity.Property(a => a.IsPublished).HasDefaultValue(true);
+                entity.Property(a => a.Author).HasDefaultValue("رستورانیار");
+            });
 
     }
      private void ConfigureAdminMessageEntities(ModelBuilder modelBuilder)

@@ -1,0 +1,36 @@
+@using resturanyar.Models
+@{
+    var seo = ViewData["Seo"] as SeoMetadata;
+}
+@if (seo != null)
+{
+    if (!string.IsNullOrWhiteSpace(seo.Description))
+    {
+        <meta name="description" content="@seo.Description" />
+    }
+    if (!string.IsNullOrWhiteSpace(seo.Keywords))
+    {
+        <meta name="keywords" content="@seo.Keywords" />
+    }
+    if (seo.NoIndex)
+    {
+        <meta name="robots" content="noindex, nofollow" />
+    }
+    if (!string.IsNullOrWhiteSpace(seo.CanonicalUrl))
+    {
+        <link rel="canonical" href="@seo.CanonicalUrl" />
+    }
+
+    <meta property="og:title" content="@seo.Title" />
+    <meta property="og:description" content="@seo.Description" />
+    <meta property="og:url" content="@seo.CanonicalUrl" />
+    <meta property="og:image" content="@seo.OgImage" />
+    <meta property="og:type" content="@seo.OgType" />
+    <meta property="og:locale" content="fa_IR" />
+    <meta property="og:site_name" content="رستورانیار" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@seo.Title" />
+    <meta name="twitter:description" content="@seo.Description" />
+    <meta name="twitter:image" content="@seo.OgImage" />
+}

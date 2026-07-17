@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /Home/Dashboard
+Disallow: /Home/ManagerLogin
+Disallow: /Admin/
+Disallow: /api/
+Sitemap: https://resturanyar.ir/sitemap.xml
