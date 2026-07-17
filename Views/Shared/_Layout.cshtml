@@ -19,7 +19,7 @@
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")">
 
     @if (User.Identity.IsAuthenticated)
     {
@@ -42,7 +42,7 @@
                     <i class="fas fa-home"></i>
                     <span>داشبورد</span>
                 </a>
-                <a href="@Url.Action("ManageUsers", "Home")" class="nav-item">
+                <a href="@Url.Action("ManageStaff", "Home")" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>مدیریت کارکنان</span>
                 </a>
@@ -99,7 +99,7 @@
                     <span>تنظیمات</span>
                 </a> *@
                 <div class="sidebar-footer">
-                    <form method="post" asp-controller="Home" asp-action="Logout">
+                    <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm">
                         <button type="submit" class="logout-btn">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>خروج</span>
@@ -132,13 +132,10 @@
 
                 <!-- سمت راست: دکمه‌های عملیاتی + پروفایل -->
                 <div class="topbar-actions">
-                    @* <button class="action-btn" title="اعلان‌ها">
+                    <button id="ownerMessageBtn" class="action-btn" type="button" title="پیام‌ها">
                         <i class="fas fa-bell"></i>
-                        <span class="badge-dot"></span>
+                        <span id="ownerMessageBadge" class="badge-dot owner-msg-badge" hidden></span>
                     </button>
-                    <button class="action-btn" title="راهنما">
-                        <i class="fas fa-question-circle"></i>
-                    </button> *@
 
                     <div class="user-profile" >
                         <div class="user-avatar icon-only">
@@ -269,7 +266,17 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await Html.PartialAsync("_ConfirmModal")
+    <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
+    <script src="~/js/app-toast.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof wireLogoutConfirm === 'function') {
+                wireLogoutConfirm('#sidebarLogoutForm');
+            }
+        });
+    </script>
     <script>
                 // ذخیره موقعیت اسکرول سایدبار قبل از خروج از صفحه
         window.addEventListener('beforeunload', function () {
@@ -290,6 +297,14 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    @if (User.Identity?.IsAuthenticated == true && User.GetRestaurantId() != null)
+    {
+        <script type="module">
+            import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+            window.fetchWithAuth = fetchWithAuth;
+        </script>
+        <script type="module" src="~/js/owner-messages.js" asp-append-version="true"></script>
+    }
 
 </body>
 </html>

@@ -20,6 +20,7 @@
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
     <style>
         body {
             direction: rtl;
@@ -266,6 +267,10 @@
 
     </div>
 
+    @await Html.PartialAsync("_ConfirmModal")
+    <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
+    <script src="~/js/app-toast.js" asp-append-version="true"></script>
+
     <script>
         const form = document.getElementById('filterForm');
         const ordersContainer = document.getElementById('ordersContainer');
@@ -322,7 +327,7 @@
                 window.history.replaceState({}, '', '@Url.Action("CashierDashboard", "Home")');
 
             } catch (error) {
-                alert(error.message);
+                showToast(error.message, 'error');
             }
         }
 
@@ -363,7 +368,7 @@
 
         // تابع تغییر وضعیت (مثل قبل)
         async function changeStatus(orderId, newStatusId) {
-            if (!confirm("آیا از تغییر وضعیت سفارش مطمئن هستید؟")) {
+            if (!(await showConfirm({ message: 'آیا از تغییر وضعیت سفارش مطمئن هستید؟' }))) {
                 return;
             }
 
@@ -384,14 +389,14 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    alert(data.message || "وضعیت با موفقیت تغییر کرد.");
+                    showToast(data.message || 'وضعیت با موفقیت تغییر کرد.', 'success');
                     loadOrders({ page: currentPage }); // بعد از تغییر وضعیت لیست رو آپدیت کن
                 } else {
-                    alert(data.message || "خطا در تغییر وضعیت.");
+                    showToast(data.message || 'خطا در تغییر وضعیت.', 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert("خطا در ارتباط با سرور.");
+                showToast('خطا در ارتباط با سرور.', 'error');
             }
         }
     </script>

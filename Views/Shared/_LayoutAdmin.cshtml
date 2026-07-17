@@ -41,9 +41,17 @@
                     <i class="fas fa-users"></i>
                     <span>ساخت کد تخفیف</span>
                 </a>
+            <a href="@Url.Action("SendMessage", "Admin")" class="nav-item">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>ارسال پیام</span>
+                </a>
+            <a href="@Url.Action("MessageList", "Admin")" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>پیام‌های ارسالی</span>
+                </a>
               
                 <div class="sidebar-footer">
-                    <form method="post" asp-controller="Home" asp-action="Logout">
+                    <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm">
                         <button type="submit" class="logout-btn">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>خروج</span>
@@ -161,7 +169,17 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await Html.PartialAsync("_ConfirmModal")
+    <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
+    <script src="~/js/app-toast.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof wireLogoutConfirm === 'function') {
+                wireLogoutConfirm('#sidebarLogoutForm');
+            }
+        });
+    </script>
     <script>
                 // ذخیره موقعیت اسکرول سایدبار قبل از خروج از صفحه
         window.addEventListener('beforeunload', function () {

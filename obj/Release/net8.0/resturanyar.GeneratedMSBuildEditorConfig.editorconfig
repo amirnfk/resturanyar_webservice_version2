@@ -48,6 +48,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdENvdXBvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/MessageList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWVzc2FnZUxpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/SendMessage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2VuZE1lc3NhZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/AppDownload/AppDownload.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwRG93bmxvYWRcQXBwRG93bmxvYWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -104,8 +112,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VyUmVwb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManageUsers.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VVc2Vycy5jc2h0bWw=
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManageStaff.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VTdGFmZi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/PaymentResult.cshtml]
@@ -202,6 +210,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_ConfirmModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db25maXJtTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_IndexLayout.cshtml]

@@ -25,7 +25,6 @@ wwwroot\css\bootstrap_icons.css
 wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\chooserestaurant.css
-wwwroot\css\dashboard.css
 wwwroot\css\fntawsom600.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
@@ -112,6 +111,7 @@ wwwroot\images\support2.png
 wwwroot\images\tabletfoodlist.jpg
 wwwroot\images\tablethome.jpg
 wwwroot\images\waiter_2453333.png
+wwwroot\js\app-toast.js
 wwwroot\js\authentication\apiinterceptor.js
 wwwroot\js\bootstrap.bundle.min.js
 wwwroot\js\bootstrap_bundle_min_poper.js
@@ -119,13 +119,16 @@ wwwroot\js\canvasconfetti.js
 wwwroot\js\chart.js
 wwwroot\js\chart.umd.min.js
 wwwroot\js\chooserestaurant.js
+wwwroot\js\confirm-modal.js
 wwwroot\js\dashboard.js
 wwwroot\js\home.js
 wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
+wwwroot\js\managerlogin.js
 wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
+wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
 wwwroot\js\site.js
 wwwroot\js\Sortable.min.js
@@ -202,4 +205,4 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\js\managerlogin.js
+wwwroot\css\dashboard.css

@@ -1,5 +1,4 @@
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.exe
-D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\appsettings.Development.json
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\appsettings.json
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.dll
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\PubTmp\Out\resturanyar.runtimeconfig.json

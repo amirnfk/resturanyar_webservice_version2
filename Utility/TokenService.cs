@@ -33,11 +33,15 @@ namespace resturanyar.Utility
                 new Claim(ClaimTypes.Role, "Owner")
             };
 
+            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
+            if (jwtDays <= 0)
+                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
+
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

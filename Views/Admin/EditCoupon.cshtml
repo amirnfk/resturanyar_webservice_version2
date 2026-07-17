@@ -521,7 +521,7 @@
                 var start = new Date($('#StartDate').val());
                 var end = new Date($('#EndDate').val());
                 if (start && end && start >= end) {
-                    alert('تاریخ شروع باید قبل از تاریخ پایان باشد');
+                    showToast('تاریخ شروع باید قبل از تاریخ پایان باشد', 'error');
                 }
             });
         });

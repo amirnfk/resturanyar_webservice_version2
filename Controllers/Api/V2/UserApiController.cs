@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
+using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.ViewModels;
@@ -26,59 +27,157 @@ namespace resturanyar.Controllers.Api.V2
     {
         private readonly AppDbContext _context;
         private readonly TokenService _tokenService;
+        private readonly AuthService _authService;
         private readonly IConfiguration _configuration;
+        private readonly MessageService _messageService;
 
         private readonly IHubContext<OrderHub> _hubContext;
 
         public UserApiController(
             AppDbContext context,
             TokenService tokenService,
+            AuthService authService,
             IConfiguration configuration,
-            IHubContext<OrderHub> hubContext) // <-- added
+            MessageService messageService,
+            IHubContext<OrderHub> hubContext)
         {
             _context = context;
             _tokenService = tokenService;
+            _authService = authService;
             _configuration = configuration;
+            _messageService = messageService;
             _hubContext = hubContext;
         }
+
         [AllowAnonymous]
         [HttpPost("generate-token")]
         public IActionResult GenerateTokenAction([FromBody] TokenRequestModel request)
         {
+            return StatusCode(StatusCodes.Status410Gone, new
+            {
+                success = false,
+                message = "این endpoint منسوخ شده است. از login/password یا login/otp استفاده کنید."
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login/password")]
+        public async Task<IActionResult> LoginWithPassword([FromBody] LoginPasswordRequest request)
+        {
             try
             {
-                var owner = _context.Owners.FirstOrDefault(c => c.Phone == request.PhoneNumber);
-                if (owner == null) return NotFound(new { success = false, message = "کاربری یافت نشد." });
-
-                string jwtToken = _tokenService.GenerateOwnerToken(owner);
-                string refreshTokenString = _tokenService.GenerateRefreshToken();
-
-                // Expirations
-                var jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
-                var refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
-                var jwtExpiration = DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
-                var refreshExpiration = DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
-
-                var newRefreshToken = new RefreshToken
+                if (request == null ||
+                    string.IsNullOrWhiteSpace(request.PhoneNumber) ||
+                    string.IsNullOrWhiteSpace(request.Password))
                 {
-                    Token = refreshTokenString,
-                    ExpiryTime = refreshExpiration,
-                    OwnerId = owner.Id
+                    return BadRequest(new { success = false, message = "شماره و رمز عبور الزامی است." });
+                }
 
-                };
-                _context.RefreshTokens.Add(newRefreshToken);
-                _context.SaveChanges();
+                var owner = await _authService.ValidatePasswordAsync(request.PhoneNumber, request.Password);
+                if (owner == null)
+                {
+                    return Unauthorized(new { success = false, message = "شماره تلفن یا رمز عبور نادرست است." });
+                }
 
-                // ❌ REMOVE this entire block:
-                // Response.Cookies.Append("X-Access-Token", jwtToken, new CookieOptions { ... });
+                if (_authService.ShouldSignInCookie(HttpContext))
+                    await _authService.SignInOwnerCookieAsync(owner);
 
-                // ✅ Keep only the JSON response for both Web & Mobile
+                var tokenPair = await _authService.IssueTokenPairAsync(owner);
+
                 return Ok(new
                 {
                     success = true,
-                    token = jwtToken,           // Store this in localStorage
-                    refreshToken = refreshTokenString, // Store this in localStorage
-                    expiresAt = jwtExpiration
+                    token = tokenPair.Token,
+                    refreshToken = tokenPair.RefreshToken,
+                    expiresAt = tokenPair.ExpiresAt,
+                    redirectUrl = "/Home/ChooseRestaurant"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا: " + ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login/otp")]
+        public async Task<IActionResult> LoginWithOtp([FromBody] LoginOtpRequest request)
+        {
+            try
+            {
+                if (request == null ||
+                    string.IsNullOrWhiteSpace(request.PhoneNumber) ||
+                    string.IsNullOrWhiteSpace(request.Code))
+                {
+                    return BadRequest(new { success = false, message = "شماره موبایل و کد تایید الزامی است." });
+                }
+
+                var otpResult = await _authService.ValidateOtpAsync(request.PhoneNumber, request.Code);
+                if (!otpResult.IsValid)
+                {
+                    return BadRequest(new { success = false, message = otpResult.ErrorMessage });
+                }
+
+                if (otpResult.NeedsRegistration)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        needsRegistration = true,
+                        phoneNumber = AuthService.NormalizePhone(request.PhoneNumber),
+                        registrationToken = otpResult.RegistrationToken,
+                        message = "کاربر یافت نشد. لطفاً اطلاعات ثبت‌نام را وارد کنید."
+                    });
+                }
+
+                if (_authService.ShouldSignInCookie(HttpContext))
+                    await _authService.SignInOwnerCookieAsync(otpResult.Owner);
+
+                var tokenPair = await _authService.IssueTokenPairAsync(otpResult.Owner);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "ورود با موفقیت انجام شد",
+                    token = tokenPair.Token,
+                    refreshToken = tokenPair.RefreshToken,
+                    expiresAt = tokenPair.ExpiresAt,
+                    redirectUrl = "/Home/ChooseRestaurant"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "خطا: " + ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            try
+            {
+                var (owner, errorMessage) = await _authService.RegisterOwnerAsync(
+                    request.PhoneNumber,
+                    request.Name,
+                    request.Password,
+                    request.RegistrationToken);
+
+                if (owner == null)
+                    return BadRequest(new { success = false, message = errorMessage });
+
+                if (_authService.ShouldSignInCookie(HttpContext))
+                    await _authService.SignInOwnerCookieAsync(owner);
+
+                var tokenPair = await _authService.IssueTokenPairAsync(owner);
+
+                return Ok(new
+                {
+                    success = true,
+                    token = tokenPair.Token,
+                    refreshToken = tokenPair.RefreshToken,
+                    expiresAt = tokenPair.ExpiresAt,
+                    redirectUrl = "/Home/ChooseRestaurant"
                 });
             }
             catch (Exception ex)
@@ -92,18 +191,17 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("refresh")]
         public IActionResult Refresh([FromBody] RefreshTokenRequestModel request)
         {
-            var owner = _context.Owners.FirstOrDefault(c => c.Phone == request.PhoneNumber);
-            if (owner == null) return Unauthorized(new { success = false, message = "کاربر نامعتبر است." });
+            if (request == null || string.IsNullOrWhiteSpace(request.RefreshToken))
+            {
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+            }
 
-            // 1. Find the specific token for THIS device
-            var existingToken = _context.RefreshTokens.FirstOrDefault(rt =>
-                rt.OwnerId == owner.Id &&
-                rt.Token == request.RefreshToken);
+            var existingToken = _context.RefreshTokens
+                .Include(rt => rt.Owner)
+                .FirstOrDefault(rt => rt.Token == request.RefreshToken);
 
-            // 2. Validate token existence and expiration
             if (existingToken == null || existingToken.ExpiryTime <= DateTime.UtcNow)
             {
-                // If expired, clean it up from the DB
                 if (existingToken != null)
                 {
                     _context.RefreshTokens.Remove(existingToken);
@@ -112,15 +210,24 @@ namespace resturanyar.Controllers.Api.V2
                 return Unauthorized(new { success = false, message = "نشست منقضی شده است. لطفا مجدد وارد شوید." });
             }
 
-            // 3. Generate new tokens (Token Rotation)
+            var owner = existingToken.Owner;
+            if (owner == null)
+            {
+                return Unauthorized(new { success = false, message = "کاربر نامعتبر است." });
+            }
+
             string newJwtToken = _tokenService.GenerateOwnerToken(owner);
             string newRefreshTokenString = _tokenService.GenerateRefreshToken();
 
-            // 4. Update the current session with the new refresh token
             existingToken.Token = newRefreshTokenString;
-            var refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
+            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
+            if (refreshDays <= 0)
+                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
             existingToken.ExpiryTime = DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
-            var jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
+
+            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
+            if (jwtDays <= 0)
+                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
             var jwtExpiration = DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
             _context.SaveChanges();
 
@@ -151,10 +258,7 @@ namespace resturanyar.Controllers.Api.V2
         }
          
 
-        public class TokenRequestModel
-        {
-            public string PhoneNumber { get; set; }
-        }
+   
 
    
     
@@ -537,9 +641,6 @@ namespace resturanyar.Controllers.Api.V2
             }
         }
 
-        [HttpGet("getrestaurantcode/{restaurantId}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        
         [HttpPost("addfood")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> AddFood([FromForm] FoodItemCreateRequest request)
@@ -1791,6 +1892,7 @@ namespace resturanyar.Controllers.Api.V2
             return Convert.ToBase64String(bytes);
         }
 
+        [HttpGet("getrestaurantcode/{restaurantId}")]
         public IActionResult GetRestaurantCode(int restaurantId)
         {
             try
@@ -1817,6 +1919,80 @@ namespace resturanyar.Controllers.Api.V2
             {
                 return StatusCode(500, new { success = false, message = "خطای سرور: " + ex.Message });
             }
+        }
+
+        [HttpGet("messages/unread-count")]
+        public async Task<IActionResult> GetMessagesUnreadCount([FromQuery] int restaurantId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (restaurantId <= 0)
+                return BadRequest(new { success = false, message = "شناسه رستوران نامعتبر است." });
+
+            if (!_messageService.ValidateRestaurantOwnership(restaurantId, ownerId))
+                return StatusCode(403, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+            var count = await _messageService.GetUnreadCountAsync(restaurantId);
+            return Ok(new { success = true, count });
+        }
+
+        [HttpGet("messages")]
+        public async Task<IActionResult> GetMessages([FromQuery] int restaurantId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (restaurantId <= 0)
+                return BadRequest(new { success = false, message = "شناسه رستوران نامعتبر است." });
+
+            if (!_messageService.ValidateRestaurantOwnership(restaurantId, ownerId))
+                return StatusCode(403, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+            var messages = await _messageService.GetMessagesForRestaurantAsync(restaurantId);
+            return Ok(new { success = true, messages });
+        }
+
+        [HttpGet("messages/unread")]
+        public async Task<IActionResult> GetUnreadMessages([FromQuery] int restaurantId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (restaurantId <= 0)
+                return BadRequest(new { success = false, message = "شناسه رستوران نامعتبر است." });
+
+            if (!_messageService.ValidateRestaurantOwnership(restaurantId, ownerId))
+                return StatusCode(403, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+            var messages = await _messageService.GetMessagesForRestaurantAsync(restaurantId, unreadOnly: true);
+            return Ok(new { success = true, messages });
+        }
+
+        [HttpPost("messages/mark-read")]
+        public async Task<IActionResult> MarkMessageRead([FromBody] MarkMessageReadRequest request)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (request == null || request.RestaurantId <= 0 || request.MessageId <= 0)
+                return BadRequest(new { success = false, message = "اطلاعات درخواست نامعتبر است." });
+
+            if (!_messageService.ValidateRestaurantOwnership(request.RestaurantId, ownerId))
+                return StatusCode(403, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+            var marked = await _messageService.MarkAsReadAsync(request.MessageId, request.RestaurantId);
+            if (!marked)
+                return NotFound(new { success = false, message = "پیام یافت نشد." });
+
+            return Ok(new { success = true, message = "پیام به عنوان خوانده‌شده علامت‌گذاری شد." });
+        }
+
+        private bool TryGetOwnerId(out int ownerId)
+        {
+            ownerId = 0;
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return !string.IsNullOrEmpty(claim) && int.TryParse(claim, out ownerId);
         }
     }
 }

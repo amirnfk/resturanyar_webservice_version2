@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using resturanyar.Models.AdminMessage;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.ViewModels.Admin;
 using resturanyar.Models.ViewModels.CopounViewModel;
+using resturanyar.Utility;
 using Resturanyar.Data;
 using System;
 using System.Collections.Generic;
@@ -17,12 +19,14 @@ namespace resturanyar.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly MessageService _messageService;
 
-        public AdminController(AppDbContext context, ILogger<HomeController> logger, IConfiguration configuration)
+        public AdminController(AppDbContext context, ILogger<HomeController> logger, IConfiguration configuration, MessageService messageService)
         {
             _context = context;
             _logger = logger;
             _configuration = configuration;
+            _messageService = messageService;
         }
 
         // ===== متد کمکی برای دریافت لیست OwnerIdهای حذف شده =====
@@ -1141,6 +1145,117 @@ namespace resturanyar.Controllers
                 await LoadCouponSelectLists(model);
                 return View(model);
             }
+        }
+
+        private async Task<List<RestaurantPickerItem>> LoadRestaurantPickerAsync()
+        {
+            return await _context.Restaurants
+                .Join(_context.Owners,
+                    r => r.owner_id,
+                    o => o.Id,
+                    (r, o) => new RestaurantPickerItem
+                    {
+                        RestaurantId = r.restaurant_id,
+                        RestaurantName = r.name,
+                        OwnerName = o.Name,
+                        OwnerPhone = o.Phone
+                    })
+                .OrderBy(x => x.RestaurantName)
+                .ToListAsync();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SendMessage()
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            var model = new SendRestaurantMessageViewModel
+            {
+                Restaurants = await LoadRestaurantPickerAsync()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage(SendRestaurantMessageViewModel model)
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            model.Restaurants = await LoadRestaurantPickerAsync();
+
+            if (model.MessageType == AdminMessageType.Private &&
+                (model.SelectedRestaurantIds == null || model.SelectedRestaurantIds.Length == 0))
+            {
+                ModelState.AddModelError(nameof(model.SelectedRestaurantIds), "برای پیام خصوصی حداقل یک رستوران انتخاب کنید.");
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var adminName = HttpContext.Session.GetString("AdminUsername");
+                await _messageService.CreateMessageAsync(
+                    model.Title,
+                    model.Body,
+                    model.MessageType,
+                    model.SelectedRestaurantIds ?? Array.Empty<int>(),
+                    adminName);
+
+                TempData["SuccessMessage"] = "پیام با موفقیت ارسال شد.";
+                return RedirectToAction(nameof(MessageList));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در ارسال پیام");
+                ModelState.AddModelError("", "خطا در ارسال پیام: " + ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MessageList()
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            var messages = await _context.AdminMessages
+                .AsNoTracking()
+                .Include(m => m.Recipients)
+                .OrderByDescending(m => m.CreatedAt)
+                .ToListAsync();
+
+            var totalRestaurants = await _context.Restaurants.CountAsync();
+
+            var viewModels = messages.Select(m => new AdminMessageListViewModel
+            {
+                Id = m.Id,
+                Title = m.Title,
+                MessageType = m.MessageType,
+                CreatedAt = m.CreatedAt,
+                CreatedByAdmin = m.CreatedByAdmin,
+                IsActive = m.IsActive,
+                RecipientCount = m.MessageType == AdminMessageType.Public
+                    ? totalRestaurants
+                    : m.Recipients.Count
+            }).ToList();
+
+            return View(viewModels);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeactivateMessage(int id)
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            await _messageService.DeactivateMessageAsync(id);
+            TempData["SuccessMessage"] = "پیام غیرفعال شد.";
+            return RedirectToAction(nameof(MessageList));
         }
     }
 }

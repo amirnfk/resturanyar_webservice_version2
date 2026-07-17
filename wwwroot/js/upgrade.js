@@ -209,7 +209,7 @@
     window.startZarinpalPayment = async function (planId, months) {
         const plan = subscriptions.find(s => s.id === planId);
         if (!plan) {
-            alert('اشتراک مورد نظر یافت نشد.');
+            showToast('اشتراک مورد نظر یافت نشد.', 'error');
             return;
         }
 
@@ -335,7 +335,7 @@
     document.getElementById('confirmPaymentBtn').addEventListener('click', async function () {
         const data = window._invoiceData;
         if (!data) {
-            alert('❌ اطلاعات پرداخت یافت نشد. لطفاً صفحه را مجدداً بارگذاری کنید.');
+            showToast('اطلاعات پرداخت یافت نشد. لطفاً صفحه را مجدداً بارگذاری کنید.', 'error');
             return;
         }
 
@@ -369,13 +369,13 @@
             if (result.success && result.url) {
                 window.location.href = result.url;
             } else {
-                alert(`❌ ${result.message || 'خطا در ایجاد پرداخت. لطفاً مجدداً تلاش کنید.'}`);
+                showToast(result.message || 'خطا در ایجاد پرداخت. لطفاً مجدداً تلاش کنید.', 'error');
                 payBtn.disabled = false;
                 payBtn.textContent = 'پرداخت نهایی';
             }
         } catch (err) {
             console.error('❌ خطا در ارتباط با سرور:', err);
-            alert('❌ خطا در ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید و مجدداً تلاش نمایید.');
+            showToast('خطا در ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید و مجدداً تلاش نمایید.', 'error');
             payBtn.disabled = false;
             payBtn.textContent = 'پرداخت نهایی';
         }
@@ -502,10 +502,10 @@
         const status = urlParams.get('Status');
         if (authority && status) {
             if (status === 'OK') {
-                alert('✅ پرداخت با موفقیت انجام شد. اشتراک شما فعال گردید.');
+                showToast('پرداخت با موفقیت انجام شد. اشتراک شما فعال گردید.', 'success');
                 setTimeout(() => location.reload(), 2000);
             } else {
-                alert('❌ پرداخت لغو شد یا با خطا مواجه گردید.');
+                showToast('پرداخت لغو شد یا با خطا مواجه گردید.', 'error');
             }
             window.history.replaceState({}, document.title, window.location.pathname);
         }

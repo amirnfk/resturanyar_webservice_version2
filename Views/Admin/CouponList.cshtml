@@ -679,14 +679,17 @@
             });
         });
 
-                     $(document).on('click', '.btn-delete', function () {
+                     $(document).on('click', '.btn-delete', async function () {
             var id = $(this).data('id');
             if (!id) {
-                alert('شناسه کد تخفیف نامعتبر است');
+                showToast('شناسه کد تخفیف نامعتبر است', 'error');
                 return;
             }
 
-            if (confirm('آیا از حذف این کد تخفیف اطمینان دارید؟')) {
+            if (!(await showConfirm({ message: 'آیا از حذف این کد تخفیف اطمینان دارید؟' }))) {
+                return;
+            }
+
                 $.ajax({
                     url: '@Url.Action("DeleteCoupon", "Admin")',
                     type: 'POST',
@@ -696,14 +699,13 @@
                         if (result.success) {
                             location.reload();
                         } else {
-                            alert(result.message);
+                            showToast(result.message, 'error');
                         }
                     },
                     error: function (xhr) {
-                        alert('خطا در حذف کد تخفیف (' + xhr.status + ')');
+                        showToast('خطا در حذف کد تخفیف (' + xhr.status + ')', 'error');
                     }
                 });
-            }
         });
 
     </script>

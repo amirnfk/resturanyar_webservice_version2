@@ -5094,6 +5094,10 @@
           "password": {
             "type": "string",
             "nullable": true
+          },
+          "registrationToken": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -432,15 +432,15 @@
         }
         function validateUserForm(name, password, roleId) {
             if (!isValidUsername(name)) {
-                alert("نام کاربری باید حداقل ۳ کاراکتر باشد.");
+                showToast('نام کاربری باید حداقل ۳ کاراکتر باشد.', 'error');
                 return false;
             }
             if (!isValidPassword(password)) {
-                alert("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+                showToast('رمز عبور باید حداقل ۶ کاراکتر باشد.', 'error');
                 return false;
             }
             if (!roleId || roleId === 0) {
-                alert("لطفاً نقش کاربر را انتخاب کنید.");
+                showToast('لطفاً نقش کاربر را انتخاب کنید.', 'error');
                 return false;
             }
             return true;
@@ -455,11 +455,11 @@
         $(".btn-delete").click(async function () {
             var restaurantId = @ViewBag.RestaurantId ?? 0;
             if (restaurantId === 0) {
-                alert("شناسه رستوران پیدا نشد.");
+                showToast('شناسه رستوران پیدا نشد.', 'error');
                 return;
             }
             var id = $(this).data("id");
-            if (!confirm("آیا مطمئن هستید که این کاربر حذف شود؟")) return;
+            if (!(await showConfirm({ message: 'آیا مطمئن هستید که این کاربر حذف شود؟' }))) return;
 
             try {
                 const response = await window.fetchWithAuth(
@@ -467,11 +467,11 @@
                     { method: 'DELETE' }
                 );
                 const res = await response.json();
-                alert(res.message);
+                showToast(res.message, res.success ? 'success' : 'error');
                 if (res.success) location.reload();
             } catch (error) {
                 // The interceptor already handles 401 & redirects, so this is for network errors
-                alert("خطا در حذف کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+                showToast('خطا در حذف کاربر: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             }
         });
 
@@ -510,10 +510,10 @@
 
                     new bootstrap.Modal(document.getElementById('infoModal')).show();
                 } else {
-                    alert("خطا در دریافت کد رستوران");
+                    showToast(res.message || 'خطا در دریافت کد رستوران', 'error');
                 }
             } catch (error) {
-                alert("خطا در دریافت کد رستوران: " + (error.message || "مشکل در ارتباط با سرور"));
+                showToast('خطا در دریافت کد رستوران: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             }
         });
 
@@ -562,10 +562,10 @@
                     body: JSON.stringify(payload)
                 });
                 const res = await response.json();
-                alert(res.message);
+                showToast(res.message, res.success ? 'success' : 'error');
                 if (res.success) location.reload();
             } catch (error) {
-                alert("خطا در ویرایش کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+                showToast('خطا در ویرایش کاربر: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             }
         });
 
@@ -588,7 +588,7 @@
 
             var restaurantId = @ViewBag.RestaurantId ?? 0;
             if (restaurantId === 0) {
-                alert("شناسه رستوران پیدا نشد.");
+                showToast('شناسه رستوران پیدا نشد.', 'error');
                 return;
             }
 
@@ -609,10 +609,10 @@
                     body: JSON.stringify(payload)
                 });
                 const res = await response.json();
-                alert(res.message);
+                showToast(res.message, res.success ? 'success' : 'error');
                 if (res.success) location.reload();
             } catch (error) {
-                alert("خطا در ثبت کاربر: " + (error.message || "مشکل در ارتباط با سرور"));
+                showToast('خطا در ثبت کاربر: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             }
         });
 

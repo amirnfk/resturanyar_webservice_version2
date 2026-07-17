@@ -103,20 +103,20 @@ $(document).ready(function () {
                         redirectAfterAdd(res.restaurant_id);
                     });
                 } else {
-                    alert("✅ " + res.message);
+                    showToast(res.message, 'success');
                     setTimeout(function () {
                         redirectAfterAdd(res.restaurant_id);
                     }, 1500);
                 }
             } else {
                 // Server returned error (non-200 or success false)
-                alert("❌ " + (res.message || 'خطا در ثبت رستوران'));
+                showToast(res.message || 'خطا در ثبت رستوران', 'error');
                 errorDiv.text(res.message || 'خطا').show();
             }
         } catch (error) {
             // Network errors or interceptor redirection (e.g., refresh failure)
             // The interceptor already redirects to login on auth failure, so we just show a generic error.
-            alert("❌ خطا در ارتباط با سرور: " + (error.message || ''));
+            showToast('خطا در ارتباط با سرور: ' + (error.message || ''), 'error');
             errorDiv.text('خطا در ارتباط با سرور').show();
         } finally {
             $btn.prop('disabled', false).text('افزودن');

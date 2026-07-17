@@ -206,7 +206,7 @@
     }
 
     async function deleteTable(id) {
-        if (!confirm("آیا از حذف این میز اطمینان دارید؟")) return;
+        if (!(await showConfirm({ message: 'آیا از حذف این میز اطمینان دارید؟' }))) return;
 
         try {
             const response = await window.fetchWithAuth(`${API_BASE}/deletetable`, {
@@ -233,56 +233,4 @@
     function clearErrors() {
         $("#errorContainer").addClass("d-none").html("");
     }
-
-    function showToast(message, type = 'success') {
-        document.querySelector('.custom-toast')?.remove();
-
-        const toast = document.createElement('div');
-        toast.className = `custom-toast toast-${type}`;
-        toast.innerHTML = `
-            <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
-            <div class="toast-message">${message}</div>
-            <div class="toast-close" style="cursor:pointer;margin-right:auto;font-size:20px;line-height:1;">&times;</div>
-        `;
-
-        toast.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            min-width: 240px;
-            background: ${type === 'success' ? '#1e7e34' : '#dc3545'};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            direction: rtl;
-            font-family: inherit;
-            animation: slideInLeft 0.3s ease;
-        `;
-
-        toast.querySelector('.toast-close').onclick = () => toast.remove();
-        document.body.appendChild(toast);
-
-        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
-    }
 </script>
-
-<style>
-    @@keyframes slideInLeft {
-        from {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-</style>

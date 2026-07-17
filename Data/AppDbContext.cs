@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
+using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
@@ -35,6 +36,9 @@ namespace Resturanyar.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<AdminMessage> AdminMessages { get; set; }
+        public DbSet<AdminMessageRecipient> AdminMessageRecipients { get; set; }
+        public DbSet<AdminMessageRead> AdminMessageReads { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -238,10 +242,58 @@ namespace Resturanyar.Data
 
 
             ConfigureSubscriptionEntities(modelBuilder);
+            ConfigureAdminMessageEntities(modelBuilder);
 
          
 
     }
+     private void ConfigureAdminMessageEntities(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AdminMessage>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.CreatedAt).HasDefaultValueSql("GETDATE()");
+                entity.Property(m => m.IsActive).HasDefaultValue(true);
+                entity.HasCheckConstraint("CK_AdminMessages_MessageType", "[MessageType] IN (0, 1)");
+            });
+
+            modelBuilder.Entity<AdminMessageRecipient>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.HasIndex(r => r.RestaurantId);
+                entity.HasIndex(r => new { r.MessageId, r.RestaurantId }).IsUnique();
+
+                entity.HasOne(r => r.Message)
+                    .WithMany(m => m.Recipients)
+                    .HasForeignKey(r => r.MessageId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne<Restaurant>()
+                    .WithMany()
+                    .HasForeignKey(r => r.RestaurantId)
+                    .HasPrincipalKey(r => r.restaurant_id)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<AdminMessageRead>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.HasIndex(r => r.RestaurantId);
+                entity.HasIndex(r => new { r.MessageId, r.RestaurantId }).IsUnique();
+                entity.Property(r => r.ReadAt).HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne(r => r.Message)
+                    .WithMany(m => m.Reads)
+                    .HasForeignKey(r => r.MessageId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne<Restaurant>()
+                    .WithMany()
+                    .HasForeignKey(r => r.RestaurantId)
+                    .HasPrincipalKey(r => r.restaurant_id)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
      private void ConfigureSubscriptionEntities(ModelBuilder modelBuilder)
         {
             // 📌 Configuration for Subscription entity

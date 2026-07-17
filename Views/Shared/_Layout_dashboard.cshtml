@@ -16,10 +16,24 @@
     <link rel="manifest" href="/site.webmanifest" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body data-restaurant-id="@(ViewBag.RestaurantId?.ToString() ?? "")">
     @RenderBody()
 
+    @await Html.PartialAsync("_ConfirmModal")
+    <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
+    <script>
+        wireLogoutConfirm('#logoutForm');
+    </script>
+    <script src="~/js/app-toast.js" asp-append-version="true"></script>
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    @if (ViewBag.RestaurantId != null)
+    {
+        <script type="module">
+            import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
+            window.fetchWithAuth = fetchWithAuth;
+        </script>
+        <script type="module" src="~/js/owner-messages.js" asp-append-version="true"></script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,99 @@
+@model resturanyar.Models.ViewModels.Admin.SendRestaurantMessageViewModel
+@{
+    ViewData["Title"] = "ارسال پیام به رستوران‌ها";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div dir="rtl" class="admin-msg-page">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="admin-msg-header">
+        <h1><i class="fas fa-paper-plane"></i> ارسال پیام</h1>
+        <a href="@Url.Action("MessageList")" class="btn btn-outline-secondary">پیام‌های ارسالی</a>
+    </div>
+
+    <form asp-action="SendMessage" method="post" class="admin-msg-form">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">عنوان پیام</label>
+            <input asp-for="Title" class="form-control" placeholder="مثلاً: به‌روزرسانی سیستم" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Body" class="form-label">متن پیام</label>
+            <textarea asp-for="Body" class="form-control" rows="6" placeholder="متن پیام را بنویسید..."></textarea>
+            <span asp-validation-for="Body" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">نوع پیام</label>
+            <div class="d-flex gap-4">
+                <div class="form-check">
+                    <input class="form-check-input msg-type-radio" type="radio" asp-for="MessageType" value="0" id="typePublic" checked />
+                    <label class="form-check-label" for="typePublic">عمومی (همه رستوران‌ها)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input msg-type-radio" type="radio" asp-for="MessageType" value="1" id="typePrivate" />
+                    <label class="form-check-label" for="typePrivate">خصوصی (رستوران‌های انتخابی)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3" id="restaurantPicker" style="display:none;">
+            <label class="form-label">انتخاب رستوران‌ها</label>
+            <div class="restaurant-picker-box">
+                @foreach (var r in Model.Restaurants)
+                {
+                    <label class="restaurant-picker-item">
+                        <input type="checkbox" name="SelectedRestaurantIds" value="@r.RestaurantId" />
+                        <span>@r.RestaurantName — @r.OwnerName (@r.OwnerPhone)</span>
+                    </label>
+                }
+            </div>
+            <span asp-validation-for="SelectedRestaurantIds" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="fas fa-paper-plane"></i> ارسال پیام
+        </button>
+    </form>
+</div>
+
+<style>
+    .admin-msg-page { padding: 1rem; }
+    .admin-msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .admin-msg-header h1 { font-size: 1.5rem; margin: 0; }
+    .admin-msg-form { max-width: 720px; }
+    .restaurant-picker-box {
+        max-height: 280px; overflow-y: auto;
+        border: 1px solid #dee2e6; border-radius: 8px; padding: .75rem;
+        background: #fafafa;
+    }
+    .restaurant-picker-item {
+        display: flex; align-items: center; gap: .5rem;
+        padding: .4rem 0; cursor: pointer;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const picker = document.getElementById('restaurantPicker');
+            const radios = document.querySelectorAll('.msg-type-radio');
+
+            function togglePicker() {
+                const isPrivate = document.getElementById('typePrivate').checked;
+                picker.style.display = isPrivate ? 'block' : 'none';
+            }
+
+            radios.forEach(r => r.addEventListener('change', togglePicker));
+            togglePicker();
+        });
+    </script>
+}

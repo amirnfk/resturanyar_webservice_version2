@@ -1403,11 +1403,11 @@
                             ]
                         });
                     } else {
-                        alert('خطا: ' + response.message);
+                        showToast('خطا: ' + response.message, 'error');
                     }
                 },
                 error: function () {
-                    alert('خطا در ارتباط با سرور');
+                    showToast('خطا در ارتباط با سرور', 'error');
                 }
             });
         });
@@ -1446,11 +1446,11 @@
                         createStatsTable(data, summary);
 
                     } else {
-                        alert('خطا: ' + response.message);
+                        showToast('خطا: ' + response.message, 'error');
                     }
                 },
                 error: function () {
-                    alert('خطا در ارتباط با سرور برای دریافت آمار اشتراک‌ها');
+                    showToast('خطا در ارتباط با سرور برای دریافت آمار اشتراک\u200cها', 'error');
                 }
             });
         });

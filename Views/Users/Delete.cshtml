@@ -13,5 +13,5 @@
 <form asp-action="DeleteConfirmed" method="post">
     <input type="hidden" asp-for="user_id" />
     <button type="submit" class="btn btn-danger">بله، حذف شود</button>
-    <a asp-action="ManageUsers" asp-controller="Home" asp-route-restaurantId="@Model.restaurant_id" class="btn btn-secondary">انصراف</a>
+    <a asp-action="ManageStaff" asp-controller="Home" asp-route-restaurantId="@Model.restaurant_id" class="btn btn-secondary">انصراف</a>
 </form>

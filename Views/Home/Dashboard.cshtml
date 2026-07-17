@@ -22,7 +22,7 @@
 
 <script src="~/js/chart.js"></script>
 
-<div class="dashboard-frame">
+<div class="dashboard-frame" data-restaurant-id="@(ViewBag.RestaurantId?.ToString() ?? "")">
     <!-- هدر -->
     <section class="dash-hero">
         <div class="dash-hero__bg"></div>
@@ -41,6 +41,10 @@
                 </div>
                 <!-- در بخش dash-hero__actions -->
                 <div class="dash-hero__actions">
+                    <button id="ownerMessageBtn" class="btn-chip" type="button" title="پیام‌ها">
+                        <i class="fa-solid fa-bell"></i>
+                        <span id="ownerMessageBadge" class="msg-badge owner-msg-badge" hidden></span>
+                    </button>
                     <button id="themeToggle" class="btn-chip" aria-label="تغییر تم">
                         <i class="fa-solid fa-moon"></i>
                     </button>
@@ -205,7 +209,7 @@
     <!-- ===== شبکه منوها (Grid Tiles) ===== -->
     <main class="dash-main">
         <div class="tiles">
-            <a class="tile fade-up tilt" href="@Url.Action("ManageUsers", "Home")" role="button" tabindex="0">
+            <a class="tile fade-up tilt" href="@Url.Action("ManageStaff", "Home")" role="button" tabindex="0">
                 <div class="tile__icon"><i class="fa-solid fa-users"></i></div>
                 <div class="tile__body">
                     <h3 class="tile__title">مدیریت کارکنان</h3>
@@ -322,21 +326,6 @@
             <p class="dash-footer__text">با رستوران‌یار دلاویتا، مدیریت کافه | رستوران شما ساده، دقیق و لذت‌بخش است.</p>
         </div>
     </footer>
-    <!-- کدهای قبلی شما... -->
-    <!-- Modal خروج از سیستم -->
-    <div id="customLogoutModal" class="custom-modal-overlay">
-        <div class="custom-modal-card">
-            <div class="custom-modal-icon">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            <h3 class="custom-modal-title">خروج از حساب کاربری</h3>
-            <p class="custom-modal-desc">آیا مطمئن هستید که می‌خواهید از پنل مدیریت خارج شوید؟</p>
-            <div class="custom-modal-actions">
-                <button type="button" id="btnCancelLogout" class="custom-modal-btn btn-cancel">انصراف</button>
-                <button type="button" id="btnConfirmLogout" class="custom-modal-btn btn-exit">بله، خارج می‌شوم</button>
-            </div>
-        </div>
-    </div>
 
 </div> <!-- پایان dashboard-frame -->
 
@@ -457,43 +446,4 @@
                 parentContainer.innerHTML = '<p style="text-align:center;color:#dc3545;font-size:0.8rem;">خطا در بارگذاری نمودار</p>';
             });
     });
- 
-
-    
-
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- کدهای مربوط به Modal خروج ---
-        const logoutForm = document.getElementById('logoutForm');
-        const logoutModal = document.getElementById('customLogoutModal');
-        const btnCancel = document.getElementById('btnCancelLogout');
-        const btnConfirm = document.getElementById('btnConfirmLogout');
-
-        if (logoutForm && logoutModal) {
-            // جلوگیری از ارسال مستقیم فرم و نمایش مودال
-            logoutForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                logoutModal.classList.add('active');
-            });
-
-            // بستن مودال هنگام کلیک روی دکمه "انصراف"
-            btnCancel.addEventListener('click', function() {
-                logoutModal.classList.remove('active');
-            });
-
-            // تایید و اجرای خروج هنگام کلیک روی دکمه "خارج می‌شوم"
-            btnConfirm.addEventListener('click', function() {
-                logoutForm.submit();
-            });
-
-            // بستن مودال در صورت کلیک کردن روی فضای خالی بیرون کادر
-            logoutModal.addEventListener('click', function(e) {
-                if (e.target === logoutModal) {
-                    logoutModal.classList.remove('active');
-                }
-            });
-        }
-    });
-</script>
-</html>

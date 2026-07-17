@@ -601,28 +601,27 @@
             });
             const res = await response.json();
             btn.html(orig).prop('disabled', false);
-            alert(res.message || "عملیات با موفقیت انجام شد");
+            showToast(res.message || 'عملیات با موفقیت انجام شد', res.success ? 'success' : 'error');
             if (res.success) {
                 $('#foodModal').modal('hide');
                 setTimeout(() => location.reload(), 500);
             }
         } catch (error) {
             btn.html(orig).prop('disabled', false);
-            // The interceptor already handles 401 & redirect, so we show the error
-            alert("خطا در ذخیره غذا: " + (error.message || "مشکل در ارتباط با سرور"));
+            showToast('خطا در ذخیره غذا: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
         }
     }
 
     // -----------------------------------------------------------------
     // DELETE
     async function deleteFood(id) {
-        if (!confirm("آیا از حذف این غذا مطمئن هستید؟")) return;
+        if (!(await showConfirm({ message: 'آیا از حذف این غذا مطمئن هستید؟' }))) return;
         try {
             const response = await window.fetchWithAuth(`${API_BASE}/deleteFood/${id}`, {
                 method: "DELETE"
             });
             const res = await response.json();
-            alert(res.message || "عملیات با موفقیت انجام شد");
+            showToast(res.message || 'عملیات با موفقیت انجام شد', res.success ? 'success' : 'error');
             if (res.success) {
                 const card = $(`[data-id='${id}']`);
                 card.fadeOut(200, function () {
@@ -633,7 +632,7 @@
                 });
             }
         } catch (error) {
-            alert("خطا در حذف غذا: " + (error.message || "مشکل در ارتباط با سرور"));
+            showToast('خطا در حذف غذا: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
         }
     }
 
@@ -651,7 +650,7 @@
             if (selectedCategoryId) select.val(String(selectedCategoryId));
             if (typeof cb === "function") cb();
         } catch (error) {
-            alert("خطا در بارگذاری دسته‌بندی‌ها: " + (error.message || "مشکل در ارتباط با سرور"));
+            showToast('خطا در بارگذاری دسته\u200cبندی\u200cها: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             if (typeof cb === "function") cb();
         }
     }
@@ -675,7 +674,7 @@
     // OPEN EDIT MODAL
     function openEditModal(id) {
         const card = $(`[data-id='${id}']`);
-        if (!card.length) { alert("غذا پیدا نشد!"); return; }
+        if (!card.length) { showToast('غذا پیدا نشد!', 'error'); return; }
 
         $("#modalTitle").text("ویرایش غذا");
         $("#foodId").val(id);
@@ -719,12 +718,12 @@
             if (data.success) {
                 const id = data.category_id || data.categoryId;
                 $("#category").append(`<option value="${id}" selected>${name}</option>`);
-                alert(data.message || "دسته‌بندی با موفقیت اضافه شد");
+                showToast(data.message || 'دسته\u200cبندی با موفقیت اضافه شد', 'success');
             } else {
-                alert("خطا: " + (data.message || "نامشخص"));
+                showToast('خطا: ' + (data.message || 'نامشخص'), 'error');
             }
         } catch (error) {
-            alert("خطا در افزودن دسته‌بندی: " + (error.message || "مشکل در ارتباط با سرور"));
+            showToast('خطا در افزودن دسته\u200cبندی: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
         }
     }
 

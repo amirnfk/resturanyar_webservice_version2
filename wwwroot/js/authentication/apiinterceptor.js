@@ -12,20 +12,18 @@ const processQueue = (error, token = null) => {
 
 export const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem('refreshToken');
-    const phone = localStorage.getItem('phone');
-    if (!refreshToken || !phone) throw new Error('No refresh token');
+    if (!refreshToken) throw new Error('No refresh token');
 
     const response = await fetch('/api/v2/UserApi/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber: phone, refreshToken })
+        body: JSON.stringify({ refreshToken })
     });
 
     if (!response.ok) throw new Error('Refresh failed');
     const data = await response.json();
 
     if (data.success) {
-        // ✅ Update both tokens in localStorage
         localStorage.setItem('accessToken', data.token);
         localStorage.setItem('refreshToken', data.refreshToken);
         return data.token;
@@ -35,30 +33,41 @@ export const refreshAccessToken = async () => {
 };
 
 const logoutAndRedirect = () => {
-    // Clear storage
+    const refreshToken = localStorage.getItem('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
+
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('phone');
 
-    // Optional: invalidate server-side session
-    fetch('/api/v2/UserApi/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(localStorage.getItem('refreshToken')) // pass the token before clearing
-    }).catch(() => { });
+    if (refreshToken) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
+        }
 
-    window.location.href = '/Home/ManagerLogin';
+        fetch('/api/v2/UserApi/logout', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(refreshToken)
+        }).catch(() => { });
+    }
+
+    window.location.href = '/Home/Logout';
 };
 
 export const fetchWithAuth = async (url, options = {}) => {
-    // 1. Inject the Authorization header
     const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+        logoutAndRedirect();
+        return Promise.reject(new Error('No access token'));
+    }
+
     const headers = {
         ...options.headers,
         'Authorization': `Bearer ${accessToken}`
     };
 
-    // Remove Content-Type if FormData is used (let browser set it)
     if (options.body && options.body instanceof FormData) {
         delete headers['Content-Type'];
     }
@@ -68,15 +77,12 @@ export const fetchWithAuth = async (url, options = {}) => {
     try {
         let response = await fetch(url, requestOptions);
 
-        // If 401, try to refresh
         if (response.status === 401) {
             if (isRefreshing) {
-                // Queue this request
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 })
                     .then((newToken) => {
-                        // Retry with the new token
                         const newHeaders = { ...headers, 'Authorization': `Bearer ${newToken}` };
                         return fetch(url, { ...options, headers: newHeaders });
                     })
@@ -89,23 +95,21 @@ export const fetchWithAuth = async (url, options = {}) => {
             isRefreshing = true;
             try {
                 const newToken = await refreshAccessToken();
-                isRefreshing = false;
                 processQueue(null, newToken);
 
-                // Retry the original request with the new token
                 const retryHeaders = { ...headers, 'Authorization': `Bearer ${newToken}` };
                 return fetch(url, { ...options, headers: retryHeaders });
             } catch (refreshError) {
-                isRefreshing = false;
                 processQueue(refreshError, null);
                 logoutAndRedirect();
                 return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
             }
         }
 
         return response;
     } catch (error) {
-        // Network errors
         return Promise.reject(error);
     }
 };

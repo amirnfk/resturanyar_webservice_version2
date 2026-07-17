@@ -307,6 +307,7 @@ namespace resturanyar.Controllers
                 PublicMenuToken = ViewBag.PublicMenuToken
             };
 
+            ViewBag.RestaurantId = restaurantId;
             return View(vm);
         }
 
@@ -357,7 +358,7 @@ namespace resturanyar.Controllers
         }
 
 
-        public IActionResult ManageUsers(int? restaurantId = null)
+        public IActionResult ManageStaff(int? restaurantId = null)
         {
             // اگر restaurantId به عنوان پارامتر نیامده، سعی کن از سشن بخوانی
             if (restaurantId == null)
@@ -830,7 +831,7 @@ namespace resturanyar.Controllers
                 _context.SaveChanges();
 
                 TempData["Success"] = "کاربر با موفقیت ثبت شد.";
-                return RedirectToAction("ManageUsers");
+                return RedirectToAction("ManageStaff");
             }
             catch (Exception ex)
             {
@@ -1916,13 +1917,21 @@ namespace resturanyar.Controllers
 
         }
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("ManagerLogin", "Home");
+        }
+
+        [HttpPost]
+        [ActionName("Logout")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogoutPost()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("ManagerLogin", "Home");
         }
 
 
@@ -1952,42 +1961,6 @@ namespace resturanyar.Controllers
 
 
 
-
-        [HttpPost]
-        public async Task<IActionResult> OtpVerify(string phone, string otpCode)
-        {
-            phone = phone?.Trim().Replace(" ", "");
-
-            // ۱. اعتبارسنجی ورودی‌ها
-            //if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(otpCode))
-            //{
-            //    return Json(new { success = false, message = "اطلاعات ناقص است." });
-            //}
-
-            // ۲. منطق استاتیک (فعلاً فرض می‌کنیم کد ۱۲۳۴ همیشه صحیح است)
-            if (otpCode != "1234")
-            {
-                return Json(new { success = false, message = "کد وارد شده صحیح نیست." });
-            }
-
-            // ۳. پیدا کردن کاربر (شبیه‌سازی شده - در مرحله بعد از دیتابیس بخوانید)
-            // فعلاً یک کاربر ساختگی می‌سازیم اگر در دیتابیس نباشد (فقط برای تست لاگین)
-            // در واقعیت باید از _context.Owners استفاده کنید
-
-            var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, "مدیر تست"), // نام را از دیتابیس بخوانید
-        new Claim("OwnerId", "1"), // آیدی را از دیتابیس بخوانید
-        new Claim(ClaimTypes.Role, "Owner")
-    };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-            return Json(new { success = true, redirectUrl = Url.Action("ChooseRestaurant", "Home") });
-        }
 
 
 

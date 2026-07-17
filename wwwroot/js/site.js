@@ -12,7 +12,11 @@ $.ajaxSetup({
     contentType: "application/json",
     error: function (xhr, status, error) {
         console.error("AJAX Error:", xhr.responseText);
-        alert("خطا در ارتباط با سرور: " + xhr.status);
+        if (typeof showToast === 'function') {
+            showToast('خطا در ارتباط با سرور: ' + xhr.status, 'error');
+        } else {
+            console.error('خطا در ارتباط با سرور: ' + xhr.status);
+        }
     }
 });
  

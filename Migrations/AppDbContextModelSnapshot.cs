@@ -111,6 +111,126 @@ namespace resturanyar.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("CreatedByAdmin")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<byte>("MessageType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminMessages", t =>
+                        {
+                            t.HasCheckConstraint("CK_AdminMessages_MessageType", "[MessageType] IN (0, 1)");
+                        });
+                });
+
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessageRead", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReadAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("MessageId", "RestaurantId")
+                        .IsUnique();
+
+                    b.ToTable("AdminMessageReads");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessageRecipient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("MessageId", "RestaurantId")
+                        .IsUnique();
+
+                    b.ToTable("AdminMessageRecipients");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.AuthorizationModels.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("resturanyar.Models.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -127,6 +247,9 @@ namespace resturanyar.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
@@ -135,6 +258,149 @@ namespace resturanyar.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.Copoun.Coupon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("LimitPerOwner")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<decimal?>("MaxDiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MinPurchaseAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("SpecificOwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SpecificRestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Coupons_Code");
+
+                    b.HasIndex("SpecificOwnerId");
+
+                    b.HasIndex("SpecificRestaurantId");
+
+                    b.ToTable("Coupons", t =>
+                        {
+                            t.HasCheckConstraint("CK_Coupon_DiscountType", "[DiscountType] IN ('Percentage', 'FixedAmount')");
+                        });
+                });
+
+            modelBuilder.Entity("resturanyar.Models.Copoun.CouponUsage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AppliedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CouponId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Success");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UsedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("RestaurantId");
+
+                    b.HasIndex("SubscriptionId")
+                        .HasDatabaseName("IX_CouponUsages_SubscriptionId");
+
+                    b.HasIndex("CouponId", "OwnerId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_CouponUsages_UniquePerOwner")
+                        .HasFilter("[Status] = 'Success' AND [CouponId] IS NOT NULL AND [OwnerId] IS NOT NULL");
+
+                    b.ToTable("CouponUsages");
                 });
 
             modelBuilder.Entity("resturanyar.Models.CustomerModels.Customer", b =>
@@ -169,19 +435,15 @@ namespace resturanyar.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("RestaurantId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("RestaurantId");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int?>("restaurant_id")
-                        .HasColumnType("int");
-
                     b.HasKey("CustomerId");
-
-                    b.HasIndex("restaurant_id");
 
                     b.HasIndex("RestaurantId", "Mobile")
                         .IsUnique();
@@ -326,6 +588,9 @@ namespace resturanyar.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -347,6 +612,8 @@ namespace resturanyar.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("RestaurantId");
 
@@ -557,6 +824,9 @@ namespace resturanyar.Migrations
                     b.Property<DateTime?>("CanceledAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -620,6 +890,9 @@ namespace resturanyar.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CouponId")
+                        .HasDatabaseName("IX_Subscriptions_CouponId");
 
                     b.HasIndex("EndDate");
 
@@ -790,6 +1063,51 @@ namespace resturanyar.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessageRead", b =>
+                {
+                    b.HasOne("resturanyar.Models.AdminMessage.AdminMessage", "Message")
+                        .WithMany("Reads")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("resturanyar.Models.Restaurant", null)
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Message");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessageRecipient", b =>
+                {
+                    b.HasOne("resturanyar.Models.AdminMessage.AdminMessage", "Message")
+                        .WithMany("Recipients")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("resturanyar.Models.Restaurant", null)
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Message");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.AuthorizationModels.RefreshToken", b =>
+                {
+                    b.HasOne("resturanyar.Models.Owner", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
             modelBuilder.Entity("resturanyar.Models.Category", b =>
                 {
                     b.HasOne("resturanyar.Models.Restaurant", "Restaurant")
@@ -801,17 +1119,65 @@ namespace resturanyar.Migrations
                     b.Navigation("Restaurant");
                 });
 
-            modelBuilder.Entity("resturanyar.Models.CustomerModels.Customer", b =>
+            modelBuilder.Entity("resturanyar.Models.Copoun.Coupon", b =>
                 {
-                    b.HasOne("resturanyar.Models.Restaurant", null)
+                    b.HasOne("resturanyar.Models.Owner", "SpecificOwner")
                         .WithMany()
-                        .HasForeignKey("RestaurantId")
+                        .HasForeignKey("SpecificOwnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("resturanyar.Models.Restaurant", "SpecificRestaurant")
+                        .WithMany()
+                        .HasForeignKey("SpecificRestaurantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("SpecificOwner");
+
+                    b.Navigation("SpecificRestaurant");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.Copoun.CouponUsage", b =>
+                {
+                    b.HasOne("resturanyar.Models.Copoun.Coupon", "Coupon")
+                        .WithMany("Usages")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("resturanyar.Models.Owner", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("resturanyar.Models.Restaurant", "Restaurant")
                         .WithMany()
-                        .HasForeignKey("restaurant_id");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("resturanyar.Models.Subscription", "Subscription")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coupon");
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Restaurant");
+
+                    b.Navigation("Subscription");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.CustomerModels.Customer", b =>
+                {
+                    b.HasOne("resturanyar.Models.Restaurant", "Restaurant")
+                        .WithMany()
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Restaurant");
                 });
@@ -844,6 +1210,10 @@ namespace resturanyar.Migrations
 
             modelBuilder.Entity("resturanyar.Models.Order", b =>
                 {
+                    b.HasOne("resturanyar.Models.CustomerModels.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("resturanyar.Models.Restaurant", null)
                         .WithMany()
                         .HasForeignKey("RestaurantId")
@@ -855,6 +1225,8 @@ namespace resturanyar.Migrations
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Status");
                 });
@@ -894,6 +1266,11 @@ namespace resturanyar.Migrations
 
             modelBuilder.Entity("resturanyar.Models.Subscription", b =>
                 {
+                    b.HasOne("resturanyar.Models.Copoun.Coupon", "Coupon")
+                        .WithMany()
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("resturanyar.Models.Owner", "Owner")
                         .WithMany("Subscriptions")
                         .HasForeignKey("OwnerId")
@@ -912,6 +1289,8 @@ namespace resturanyar.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Coupon");
+
                     b.Navigation("Owner");
 
                     b.Navigation("Restaurant");
@@ -926,9 +1305,21 @@ namespace resturanyar.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessage", b =>
+                {
+                    b.Navigation("Reads");
+
+                    b.Navigation("Recipients");
+                });
+
             modelBuilder.Entity("resturanyar.Models.Category", b =>
                 {
                     b.Navigation("FoodItems");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.Copoun.Coupon", b =>
+                {
+                    b.Navigation("Usages");
                 });
 
             modelBuilder.Entity("resturanyar.Models.Order", b =>

@@ -48,17 +48,20 @@ namespace Resturanyar.Controllers.Api
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration; // <-- اضافه شد
         private readonly PayamakSettings _payamakSettings;
+        private readonly AuthService _authService;
 
 
         public UserApiController(AppDbContext context,
             IHubContext<OrderHub> hubContext, 
             IConfiguration configuration,
-            IOptions<PayamakSettings> payamakOptions)
+            IOptions<PayamakSettings> payamakOptions,
+            AuthService authService)
         {
             _context = context;
             _hubContext = hubContext;
             _configuration = configuration;
             _payamakSettings = payamakOptions.Value;
+            _authService = authService;
         }
         private static string EncodePassword(string plainPassword)
         {
@@ -2503,70 +2506,44 @@ namespace Resturanyar.Controllers.Api
         {
             try
             {
-                // ۱. بررسی اعتبار ورودی‌ها
                 if (request == null || string.IsNullOrWhiteSpace(request.PhoneNumber) || string.IsNullOrWhiteSpace(request.Code))
                 {
                     return BadRequest(new { success = false, message = "شماره موبایل و کد تایید الزامی است." });
                 }
 
-                // ۲. پیدا کردن کد OTP معتبر در دیتابیس
-                var hashedInput = OtpHelper.HashOtp(request.Code);
-                var otpEntry = await _context.OtpEntries
-                    .Where(x => x.PhoneNumber == request.PhoneNumber
-                              && x.CodeHash == hashedInput
-                              && !x.Used)
-                    .OrderByDescending(x => x.ExpireAt)
-                    .FirstOrDefaultAsync();
-
-                // ۳. بررسی صحت کد و انقضای آن
-                if (otpEntry == null || otpEntry.ExpireAt < DateTime.UtcNow)
+                var otpResult = await _authService.ValidateOtpAsync(request.PhoneNumber, request.Code);
+                if (!otpResult.IsValid)
                 {
-                    return BadRequest(new { success = false, message = "کد تایید منقضی شده یا اشتباه است." });
+                    return BadRequest(new { success = false, message = otpResult.ErrorMessage });
                 }
 
-                // ۴. استفاده از کد (Mark as used)
-                otpEntry.Used = true;
-                await _context.SaveChangesAsync();
-
-                // ۵. پیدا کردن یا ساخت کاربر (Owner)
-                // ۵. پیدا کردن کاربر
-                var owner = await _context.Owners.FirstOrDefaultAsync(o => o.Phone == request.PhoneNumber);
-                if (owner == null)
+                if (otpResult.NeedsRegistration)
                 {
-                    // کاربر وجود ندارد - به فرانت بگو اطلاعات بگیرد
                     return Ok(new
                     {
                         success = false,
                         needsRegistration = true,
-                        phoneNumber = request.PhoneNumber,
+                        phoneNumber = AuthService.NormalizePhone(request.PhoneNumber),
+                        registrationToken = otpResult.RegistrationToken,
                         message = "کاربر یافت نشد. لطفاً اطلاعات ثبت‌نام را وارد کنید."
                     });
                 }
-                // ۶. ایجاد کوکی لاگین (منحصر به فرد برای وب)
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, owner.Name ?? "مدیر رستوران"),
-                    new Claim("OwnerId", owner.Id.ToString()),
-                    new Claim(ClaimTypes.Role, "Owner")
-                };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
+                await _authService.SignInOwnerCookieAsync(otpResult.Owner);
+                var tokenPair = await _authService.IssueTokenPairAsync(otpResult.Owner);
 
-                // لاگین کردن کاربر در سیستم
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                // ۷. بازگشت پاسخ موفقیت
                 return Ok(new
                 {
                     success = true,
                     message = "ورود با موفقیت انجام شد",
-                    redirectUrl = "/Home/ChooseRestaurant"
+                    redirectUrl = "/Home/ChooseRestaurant",
+                    token = tokenPair.Token,
+                    refreshToken = tokenPair.RefreshToken,
+                    expiresAt = tokenPair.ExpiresAt
                 });
             }
             catch (Exception ex)
             {
-                // مدیریت خطا شبیه سایر متدهای کنترلر
                 string fullErrorMessage = ex.Message;
                 Exception inner = ex.InnerException;
                 while (inner != null)
@@ -2589,31 +2566,31 @@ namespace Resturanyar.Controllers.Api
                     return BadRequest(new { success = false, message = "اطلاعات ناقص است." });
                 }
 
-                // بررسی مجدد که کاربر قبلاً ثبت نشده باشد
-                var existing = await _context.Owners.FirstOrDefaultAsync(o => o.Phone == request.PhoneNumber);
-                if (existing != null)
-                    return BadRequest(new { success = false, message = "این شماره قبلاً ثبت شده است." });
-
-                var owner = new Owner
+                if (string.IsNullOrWhiteSpace(request.RegistrationToken))
                 {
-                    Phone = request.PhoneNumber,
-                    Name = request.Name,
-                    Password = EncodePassword(request.Password)  
-                };
-                _context.Owners.Add(owner);
-                await _context.SaveChangesAsync();
+                    return BadRequest(new { success = false, message = "تایید OTP الزامی است. لطفاً دوباره کد تایید دریافت کنید." });
+                }
 
-                // لاگین
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, owner.Name),
-            new Claim("OwnerId", owner.Id.ToString()),
-            new Claim(ClaimTypes.Role, "Owner")
-        };
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+                var (owner, errorMessage) = await _authService.RegisterOwnerAsync(
+                    request.PhoneNumber,
+                    request.Name,
+                    request.Password,
+                    request.RegistrationToken);
 
-                return Ok(new { success = true, redirectUrl = "/Home/ChooseRestaurant" });
+                if (owner == null)
+                    return BadRequest(new { success = false, message = errorMessage });
+
+                await _authService.SignInOwnerCookieAsync(owner);
+                var tokenPair = await _authService.IssueTokenPairAsync(owner);
+
+                return Ok(new
+                {
+                    success = true,
+                    redirectUrl = "/Home/ChooseRestaurant",
+                    token = tokenPair.Token,
+                    refreshToken = tokenPair.RefreshToken,
+                    expiresAt = tokenPair.ExpiresAt
+                });
             }
             catch (Exception ex)
             {

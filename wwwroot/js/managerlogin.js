@@ -9,6 +9,23 @@
     });
 }
 
+function storeTokens(data, phone) {
+    if (!data || !data.token || !data.refreshToken) {
+        return false;
+    }
+    localStorage.setItem('accessToken', data.token);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    if (phone) {
+        localStorage.setItem('phone', phone);
+    }
+    return true;
+}
+
+const webClientHeaders = {
+    'Content-Type': 'application/json',
+    'X-Client': 'web'
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     // ===== inputs =====
     const passwordPhoneInput = document.querySelector('input[name="Phone"]');
@@ -132,23 +149,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch('/api/UserApi/verifyotpweb', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: webClientHeaders,
+            credentials: 'include',
             body: JSON.stringify({ phoneNumber: phone, code: otp })
         })
             .then(r => r.json())
-            // ADDED 'async' HERE
-            .then(async data => {
+            .then(data => {
                 if (data.success) {
-                    const tokenStored = await generateAndStoreV2Token(phone);
-                    if (tokenStored) {
-                        window.location.href = data.redirectUrl ?? location.reload();
+                    if (storeTokens(data, phone)) {
+                        window.location.href = data.redirectUrl ?? '/Home/ChooseRestaurant';
                     } else {
                         Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
                     }
                 } else if (data.needsRegistration) {
                     const modal = new bootstrap.Modal(document.getElementById('registerModal'));
                     modal.show();
-                    document.getElementById('btnRegisterSubmit').dataset.phone = data.phoneNumber;
+                    const registerBtn = document.getElementById('btnRegisterSubmit');
+                    registerBtn.dataset.phone = data.phoneNumber;
+                    registerBtn.dataset.registrationToken = data.registrationToken;
                 } else {
                     Swal.fire('خطا', data.message, 'error');
                 }
@@ -192,29 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (input) input.classList.remove('is-invalid');
         }
     }
-    async function generateAndStoreV2Token(phone) {
-        try {
-            const response = await fetch('/api/v2/UserApi/generate-token', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ PhoneNumber: phone })
-            });
 
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                localStorage.setItem('accessToken', data.token);
-                localStorage.setItem('refreshToken', data.refreshToken);
-                localStorage.setItem('phone', phone);
-                return true;
-            }
-            console.error('Token generation failed:', data.message || response.status);
-            return false;
-        } catch (error) {
-            console.error('Token generation error:', error);
-            return false;
-        }
-    }
     function validateRegisterForm() {
         let name = registerName.value.trim();
         let password = registerPassword.value;
@@ -254,8 +250,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     registerSubmitBtn.addEventListener('click', function () {
         const phone = this.dataset.phone;
+        const registrationToken = this.dataset.registrationToken;
         if (!phone) {
             Swal.fire('خطا', 'شماره تلفن یافت نشد', 'error');
+            return;
+        }
+        if (!registrationToken) {
+            Swal.fire('خطا', 'تایید OTP منقضی شده است. لطفاً دوباره کد تایید دریافت کنید.', 'error');
             return;
         }
 
@@ -272,15 +273,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fetch('/api/UserApi/registerandlogin', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phoneNumber: phone, name, password })
+            headers: webClientHeaders,
+            credentials: 'include',
+            body: JSON.stringify({
+                phoneNumber: phone,
+                name,
+                password,
+                registrationToken
+            })
         })
             .then(r => r.json())
-            .then(async data => {
+            .then(data => {
                 if (data.success) {
-                    const tokenStored = await generateAndStoreV2Token(phone);
-                    if (tokenStored) {
-                        window.location.href = data.redirectUrl;
+                    if (storeTokens(data, phone)) {
+                        window.location.href = data.redirectUrl ?? '/Home/ChooseRestaurant';
                     } else {
                         Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
                     }
@@ -336,41 +342,57 @@ document.addEventListener("DOMContentLoaded", function () {
         otpCodeInput.value = "";
     });
 
-    // ===== ورود با رمز عبور + ساخت توکن V2 قبل از ارسال فرم =====
+    // ===== ورود با رمز عبور از طریق V2 login/password =====
     const passwordForm = document.getElementById('passwordForm');
     if (passwordForm) {
         passwordForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // جلوگیری از ارسال عادی
+            e.preventDefault();
 
-            const phone = passwordPhoneInput ? passwordPhoneInput.value.trim() : '';
+            let phone = passwordPhoneInput ? passwordPhoneInput.value.trim() : '';
+            phone = toEnglishDigits(phone).replace(/\s+/g, '');
+            const password = passwordField ? passwordField.value : '';
             const submitBtn = passwordForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
 
-            // غیرفعال کردن دکمه و نمایش اسپینر
+            const mobileRegex = /^09\d{9}$/;
+            if (!mobileRegex.test(phone)) {
+                Swal.fire('خطا', 'شماره موبایل معتبر نیست', 'error');
+                return;
+            }
+            if (!password) {
+                Swal.fire('خطا', 'رمز عبور الزامی است', 'error');
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> در حال ورود...';
 
-            // تابع ارسال نهایی فرم
-            const finalSubmit = () => {
-                passwordForm.submit();
-                // پس از submit صفحه رفرش می‌شود، نیازی به بازگردانی دکمه نیست
-            };
-
-            if (phone) {
-                generateAndStoreV2Token(phone)
-                    .then(tokenStored => {
-                        if (tokenStored) {
-                            finalSubmit();
+            fetch('/api/v2/UserApi/login/password', {
+                method: 'POST',
+                headers: webClientHeaders,
+                credentials: 'include',
+                body: JSON.stringify({ phoneNumber: phone, password })
+            })
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (ok && data.success) {
+                        if (storeTokens(data, phone)) {
+                            window.location.href = data.redirectUrl ?? '/Home/ChooseRestaurant';
                         } else {
                             Swal.fire('خطا', 'خطا در دریافت توکن. لطفاً دوباره تلاش کنید.', 'error');
-                            submitBtn.disabled = false;
-                            submitBtn.textContent = originalText;
                         }
-                    });
-            } else {
-                // اگر شماره موجود نبود، مستقیماً فرم را ارسال کن
-                finalSubmit();
-            }
+                    } else {
+                        Swal.fire('خطا', data.message || 'ورود ناموفق بود', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('خطا', 'مشکل در ارتباط با سرور', 'error');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                });
         });
     }
 });

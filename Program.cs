@@ -69,7 +69,11 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 // ثبت سرویس ساخت توکن در Dependency Injection
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<resturanyar.Utility.TokenService>();
+builder.Services.AddScoped<resturanyar.Utility.AuthService>();
+builder.Services.AddScoped<resturanyar.Utility.MessageService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -103,11 +107,16 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
+var isProduction = !builder.Environment.IsDevelopment();
+var cookieSecurePolicy = isProduction ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(8);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 // using Microsoft.AspNetCore.Authentication.Cookies;
 builder.Services.AddHostedService<WarmupService>();
@@ -124,6 +133,8 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.Name = "ResturanyarAuth";
     options.ExpireTimeSpan = TimeSpan.FromHours(8);
     options.SlidingExpiration = true;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
@@ -277,11 +288,11 @@ app.UseMiddleware<OtpPhoneNumberExtractorMiddleware>();
 // 🔒 فعال‌سازی میدل‌ور Rate Limiting (دقیقاً بعد از Routing و قبل از مپ شدن کنترلرها و هاب‌ها)
 app.UseRateLimiter();
 
-app.MapHub<OrderHub>("/orderHub");
-
-app.UseSession();            // اگه هنوز سشن رو می‌خوای نگه داری (تا مرحله‌ی انتقال)
-app.UseAuthentication();     // <-- مهم: اول auth
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<OrderHub>("/orderHub");
 
 // ✳️ Middleware توکن فقط برای مسیر /api
 // ✳️ Middleware توکن فقط برای مسیر /api (به جز verifyotpweb)
@@ -296,7 +307,7 @@ app.UseWhen(context =>
         return false;
     }
 
-    return path.StartsWith("/api") && !path.Contains("verifyotpweb") && !path.Contains("sendPriceList") && !path.Contains("addrestaurant") && !path.Contains("registerandlogin");
+    return path.StartsWith("/api") && !path.Contains("verifyotpweb") && !path.Contains("otprequest") && !path.Contains("sendPriceList") && !path.Contains("addrestaurant") && !path.Contains("registerandlogin");
 }, appBuilder =>
 {
     appBuilder.UseMiddleware<StaticTokenMiddleware>();
