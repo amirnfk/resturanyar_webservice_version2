@@ -1,3 +1,4 @@
 ﻿@{
-    Layout = "_Layout";
+    var isAjax = Context.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+    Layout = isAjax ? "_AjaxLayout" : "_Layout";
 }

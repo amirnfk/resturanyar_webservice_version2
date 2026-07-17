@@ -1,309 +1,12 @@
 ﻿@model List<FoodItemViewModel>
 @{
-    var restaurantName = ViewBag.RestaurantName as string;
-    ViewData["Title"] = "لیست آیتم ها - " + @restaurantName;
+    ViewData["Title"] = "لیست آیتم ها";
     var placeholder = Url.Content("~/images/food_placeholder.jpg");
 }
 
-<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
-
-<style>
-    :root {
-        --primary: #ff7a00;
-        --primary-hover: #e66900;
-        --primary-light: rgba(255,122,0,0.08);
-        --bg-page: #f6f8fc;
-        --card-bg: #ffffff;
-        --card-border: #e9eef5;
-        --shadow-sm: 0 4px 12px rgba(15,23,42,0.04);
-        --shadow-md: 0 8px 24px rgba(15,23,42,0.06);
-        --shadow-lg: 0 16px 40px rgba(15,23,42,0.08);
-        --text-dark: #1e293b;
-        --text-muted: #64748b;
-        --radius-sm: 10px;
-        --radius-md: 16px;
-        --radius-lg: 20px;
-        --radius-pill: 999px;
-        --transition: 0.2s ease;
-    }
-
-    body {
-        background: var(--bg-page);
-        direction: rtl;
-        font-family: "IRANYekan", "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        color: var(--text-dark);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-    /* Scoped to this page */
-    .food-page {
-        direction: rtl;
-        font-family: "IRANYekan","IRANSans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    }
-
-    /* Toolbar */
-    .food-toolbar {
-        background: #fff;
-        border: 1px solid #e9eef5;
-        border-radius: 14px;
-        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
-        padding: 10px;
-    }
-
-        .food-toolbar .form-control, .food-toolbar .form-select {
-            border-radius: 10px;
-            border-color: #e6eaf0;
-        }
-
-    .btn-primary {
-        --bs-btn-bg: #ff7a00;
-        --bs-btn-border-color: #ff7a00;
-        --bs-btn-hover-bg: #f06700;
-        --bs-btn-hover-border-color: #f06700;
-        border-radius: 10px;
-        padding: .5rem .9rem;
-        font-weight: 700;
-        box-shadow: 0 8px 20px rgba(255,122,0,.22);
-        transition: transform .12s ease;
-    }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-        }
-
-    /* Card */
-    .food-card {
-        position: relative;
-        border: 1px solid #eef1f6;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
-        transition: transform .18s ease, box-shadow .18s ease;
-        height: 100%;
-    }
-
-        .food-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 18px 36px rgba(15,23,42,.1);
-        }
-
-    .food-img-wrap {
-        position: relative;
-        background: #f6f7fb;
-        aspect-ratio: 4/3;
-        overflow: hidden;
-    }
-
-    .food-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform .28s ease;
-        display: block;
-    }
-
-    .food-card:hover .food-img {
-        transform: scale(1.03);
-    }
-
-    .food-body {
-        padding: 10px 12px;
-    }
-
-    .food-title {
-        font-weight: 900;
-        font-size: 1rem;
-        color: #111827;
-        margin: 0 0 4px;
-    }
-
-    .food-desc {
-        color: #6b7280;
-        font-size: .88rem;
-        margin-bottom: 6px;
-        min-height: 42px;
-    }
-
-    .chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 9px;
-        border-radius: 999px;
-        border: 1px solid #eef1f6;
-        background: #f8fafc;
-        color: #475569;
-        font-size: .8rem;
-        margin-inline-end: 6px;
-    }
-
-    .price-area {
-        display: flex;
-        align-items: baseline;
-        gap: 8px;
-        margin-top: 4px;
-        flex-wrap: wrap;
-    }
-
-    .price-old {
-        text-decoration: line-through;
-        color: #9ca3af;
-        font-size: .9rem;
-    }
-
-    .price-new {
-        color: #10b981;
-        font-weight: 900;
-        font-size: 1rem;
-    }
-
-        .price-new.no-discount {
-            color: #10b981;
-        }
-
-    .food-footer {
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        padding: 8px 10px;
-        background: #fbfbfc;
-        border-top: 1px solid #eef1f6;
-    }
-
-        .food-footer .btn {
-            border-radius: 8px;
-            font-weight: 700;
-            padding: .32rem .6rem;
-            font-size: .82rem;
-        }
-
-    .badge-availability {
-        border-radius: 999px;
-        padding: .25rem .5rem;
-        font-weight: 800;
-    }
-
-    /* Not Available */
-    .is-unavailable {
-        border-color: rgba(239,68,68,.35);
-    }
-
-        .is-unavailable .food-img {
-            filter: grayscale(100%) contrast(.9) brightness(.9);
-        }
-
-        .is-unavailable .food-body, .is-unavailable .food-footer {
-            opacity: .7;
-        }
-
-        .is-unavailable .food-img-wrap::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(45deg, rgba(239,68,68,.08) 0 10px, rgba(239,68,68,.16) 10px 20px);
-            pointer-events: none;
-        }
-
-        .is-unavailable .food-img-wrap::after {
-            content: "ناموجود";
-            position: absolute;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            color: rgba(239,68,68,.9);
-            font-weight: 900;
-            font-size: 1.05rem;
-            transform: rotate(-18deg);
-            pointer-events: none;
-            text-shadow: 0 2px 8px rgba(0,0,0,.12);
-        }
-
-        .is-unavailable .badge-availability {
-            background-color: #ef4444 !important;
-        }
-
-    /* Ribbon for discount */
-    .ribbon {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-        color: #fff;
-        border-radius: 4px 12px 12px 4px;
-        padding: 4px 10px;
-        font-size: 11px;
-        font-weight: 800;
-        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-        z-index: 2;
-    }
-
-    /* Minimal on mobile */
-    @@media (max-width: 576px) {
-        h2 {
-            font-size: 1.05rem;
-        }
-
-        .food-toolbar {
-            padding: 8px;
-        }
-
-            .food-toolbar .form-control, .food-toolbar .form-select {
-                font-size: .86rem;
-            }
-
-        .food-card {
-            border-radius: 10px;
-            box-shadow: 0 8px 18px rgba(15,23,42,.06);
-        }
-
-        .food-img-wrap {
-            aspect-ratio: 1/1;
-        }
-
-        .food-body {
-            padding: 8px 10px;
-        }
-
-        .food-title {
-            font-size: .95rem;
-            margin-bottom: 2px;
-        }
-
-        .food-desc, .chip {
-            display: none;
-        }
-
-        .price-area {
-            gap: 6px;
-        }
-
-        .price-old {
-            font-size: .8rem;
-        }
-
-        .price-new {
-            font-size: .95rem;
-        }
-
-        .food-footer {
-            padding: 7px 9px;
-        }
-
-            .food-footer .btn {
-                font-size: .76rem;
-                padding: .28rem .5rem;
-            }
-
-        .ribbon {
-            padding: 3px 8px;
-            font-size: 9px;
-            top: 6px;
-            right: 6px;
-        }
-    }
-</style>
+@section Styles {
+    <link rel="stylesheet" href="~/css/food-list.css" asp-append-version="true" />
+}
 
 <div class="container food-page mt-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
@@ -445,11 +148,11 @@
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <label class="form-label">قیمت <span class="text-danger">*</span></label>
-                                    <input type="number" id="price" name="price" class="form-control" required />
+                                    <input type="text" id="price" name="price" class="form-control price-input" inputmode="numeric" dir="ltr" required autocomplete="off" placeholder="مثلاً ۱۵۰٬۰۰۰" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">قیمت با تخفیف</label>
-                                    <input type="number" id="discountPrice" name="discountPrice" class="form-control" />
+                                    <input type="text" id="discountPrice" name="discountPrice" class="form-control price-input" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="مثلاً ۱۲۰٬۰۰۰" />
                                 </div>
                             </div>
                             <div class="form-check mt-3">
@@ -460,7 +163,12 @@
                         <div class="col-md-5">
                             <label class="form-label">عکس</label>
                             <input type="file" id="image" name="image" class="form-control mb-2" accept="image/*" />
-                            <img id="imgPreview" class="img-preview" src="@placeholder" alt="پیش‌نمایش تصویر" style="width:100%; aspect-ratio:4/3; border:1px dashed #e5e7eb; border-radius:12px; object-fit:cover;">
+                            <div class="food-image-preview-wrap">
+                                <img id="imgPreview" class="img-preview" src="@placeholder" alt="پیش‌نمایش تصویر" />
+                                <button type="button" id="btnRemoveImage" class="btn btn-sm btn-danger food-image-remove-btn d-none" title="حذف تصویر">
+                                    <i class="fas fa-trash-alt ms-1"></i> حذف تصویر
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -473,19 +181,122 @@
     </div>
 </div>
 
-<script src="~/js/jquery_3.6.0.min.js"></script>
-<script src="~/js/bootstrap.bundle.min.js"></script>
-
-<!-- Import the interceptor and expose it globally -->
-<script type="module">
-    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
-    window.fetchWithAuth = fetchWithAuth;
-</script>
-
 <script>
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
-    const API_BASE = "/api/v2/UserApi";
-    let compressedImageFile = null;
+    var API_BASE = "/api/v2/UserApi";
+    var compressedImageFile = null;
+    var removeImageFlag = false;
+    var foodImagePlaceholder = "@placeholder";
+
+    function isFoodPlaceholderImage(src) {
+        if (!src) return true;
+        return src.indexOf("food_placeholder") !== -1;
+    }
+
+    function updateImageControls() {
+        var src = document.getElementById("imgPreview")?.src || "";
+        var showRemove = !isFoodPlaceholderImage(src);
+        $("#btnRemoveImage").toggleClass("d-none", !showRemove);
+    }
+
+    function resetFoodImageState() {
+        compressedImageFile = null;
+        removeImageFlag = false;
+        var input = document.getElementById("image");
+        if (input) input.value = "";
+        $("#imgPreview").attr("src", foodImagePlaceholder);
+        updateImageControls();
+    }
+
+    async function removeFoodImage() {
+        if (!(await showConfirm({ message: "آیا از حذف تصویر مطمئن هستید؟" }))) return;
+        removeImageFlag = true;
+        compressedImageFile = null;
+        var input = document.getElementById("image");
+        if (input) input.value = "";
+        $("#imgPreview").attr("src", foodImagePlaceholder);
+        updateImageControls();
+    }
+
+    function normalizePriceDigits(value) {
+        var persian = "۰۱۲۳۴۵۶۷۸۹";
+        var arabic = "٠١٢٣٤٥٦٧٨٩";
+        return String(value || "")
+            .replace(/[۰-۹]/g, function (d) { return String(persian.indexOf(d)); })
+            .replace(/[٠-٩]/g, function (d) { return String(arabic.indexOf(d)); })
+            .replace(/[^\d]/g, "");
+    }
+
+    function formatPriceDigits(digits) {
+        if (!digits) return "";
+        return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function parsePriceInput(value) {
+        var digits = normalizePriceDigits(value);
+        if (!digits) return NaN;
+        return parseInt(digits, 10);
+    }
+
+    function formatPriceInput(value) {
+        var digits = typeof value === "number"
+            ? String(Math.max(0, value))
+            : normalizePriceDigits(value);
+        return formatPriceDigits(digits);
+    }
+
+    function getPriceCursorAfterDigits(formatted, digitCount) {
+        if (!formatted) return 0;
+        if (digitCount <= 0) return 0;
+        var seen = 0;
+        for (var i = 0; i < formatted.length; i++) {
+            if (/\d/.test(formatted[i])) {
+                seen++;
+                if (seen >= digitCount) return i + 1;
+            }
+        }
+        return formatted.length;
+    }
+
+    function handlePriceInput(input) {
+        if (!input) return;
+        var cursor = input.selectionStart || 0;
+        var digitsBeforeCursor = normalizePriceDigits(input.value.slice(0, cursor)).length;
+        var digits = normalizePriceDigits(input.value);
+        if (digits.length > 12) digits = digits.slice(0, 12);
+
+        var formatted = formatPriceDigits(digits);
+        input.value = formatted;
+
+        var newCursor = getPriceCursorAfterDigits(formatted, digitsBeforeCursor);
+        if (typeof input.setSelectionRange === "function") {
+            input.setSelectionRange(newCursor, newCursor);
+        }
+    }
+
+    function setPriceInput(selector, value) {
+        var num = typeof value === "number" ? value : parsePriceInput(value);
+        $(selector).val(isNaN(num) || num <= 0 ? "" : formatPriceDigits(String(num)));
+    }
+
+    function onFoodImageChange() {
+        const input = document.getElementById("image");
+        if (!input) return;
+        if (input.files && input.files[0]) {
+            removeImageFlag = false;
+            compressImage(input.files[0], 800, 800, 0.8).then(function (file) {
+                compressedImageFile = file;
+                document.getElementById("imgPreview").src = URL.createObjectURL(compressedImageFile);
+                updateImageControls();
+            }).catch(function () {
+                compressedImageFile = input.files[0];
+                document.getElementById("imgPreview").src = URL.createObjectURL(input.files[0]);
+                updateImageControls();
+            });
+        } else if (!removeImageFlag) {
+            resetFoodImageState();
+        }
+    }
 
     // -----------------------------------------------------------------
     // Helper: show / clear validation errors
@@ -505,20 +316,6 @@
 
     // -----------------------------------------------------------------
     // Image compression (unchanged)
-    document.getElementById("image").addEventListener("change", async function () {
-        if (this.files && this.files[0]) {
-            try {
-                compressedImageFile = await compressImage(this.files[0], 800, 800, 0.8);
-                document.getElementById("imgPreview").src = URL.createObjectURL(compressedImageFile);
-            } catch (e) {
-                compressedImageFile = this.files[0];
-                document.getElementById("imgPreview").src = URL.createObjectURL(this.files[0]);
-            }
-        } else {
-            document.getElementById("imgPreview").src = "@placeholder";
-        }
-    });
-
     function compressImage(file, maxW, maxH, q) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -556,9 +353,9 @@
         const id = $("#foodId").val();
         const name = $("#name").val().trim();
         const categoryId = parseInt($("#category").val());
-        const price = parseInt($("#price").val());
+        const price = parsePriceInput($("#price").val());
         const discountVal = $("#discountPrice").val();
-        const discountPrice = discountVal ? parseInt(discountVal) : null;
+        const discountPrice = discountVal ? parsePriceInput(discountVal) : null;
         const isAvailable = $("#isAvailable").prop("checked");
 
         // Validation
@@ -582,6 +379,7 @@
         fd.append("DiscountPrice", discountPrice || 0);
         fd.append("IsAvailable", isAvailable);
         if (compressedImageFile) fd.append("Image", compressedImageFile);
+        if (id && removeImageFlag && !compressedImageFile) fd.append("RemoveImage", 2);
 
         let url = `${API_BASE}/addfood`;
         let method = "POST";
@@ -661,8 +459,7 @@
         $("#modalTitle").text("افزودن غذا");
         $("#foodForm")[0].reset();
         $("#foodId").val("");
-        compressedImageFile = null;
-        $("#imgPreview").attr("src", "@placeholder");
+        resetFoodImageState();
         clearErrors();
         loadCategoriesIntoModal("", function () {
             new bootstrap.Modal(document.getElementById("foodModal")).show();
@@ -680,19 +477,21 @@
         $("#foodId").val(id);
         $("#name").val(card.data("name") || "");
         $("#description").val(card.data("description") || "");
-        $("#price").val(parseInt(card.data("price")) || 0);
-        // discountPrice: if there's a discount, set it; otherwise 0
+        setPriceInput("#price", card.data("price"));
         const discount = parseInt(card.data("discount")) || 0;
         const price = parseInt(card.data("price")) || 0;
-        $("#discountPrice").val(discount ? price - discount : 0);
+        setPriceInput("#discountPrice", discount ? price - discount : 0);
         $("#isAvailable").prop("checked",
             card.data("isavailable") === true ||
             card.data("isavailable") === "True" ||
             card.data("isavailable") === "true"
         );
         const img = card.data("image");
-        $("#imgPreview").attr("src", img ? img : "@placeholder");
+        removeImageFlag = false;
         compressedImageFile = null;
+        document.getElementById("image").value = "";
+        $("#imgPreview").attr("src", img ? img : foodImagePlaceholder);
+        updateImageControls();
         clearErrors();
 
         loadCategoriesIntoModal(card.data("category"), function () {
@@ -702,11 +501,6 @@
 
     // -----------------------------------------------------------------
     // ADD CATEGORY (via modal button)
-    $("#btnAddCategoryModal").on("click", function () {
-        const name = prompt("نام دسته‌بندی جدید را وارد کنید:");
-        if (name && name.trim() !== "") addCategory(name.trim());
-    });
-
     async function addCategory(name) {
         try {
             const response = await window.fetchWithAuth(`${API_BASE}/addcategory`, {
@@ -797,8 +591,25 @@
 
     // -----------------------------------------------------------------
     // INITIALIZATION
-    $(function () {
+    function initFoodListPage() {
+        resetFoodImageState();
+        $("#filterCategory").find('option:not(:first)').remove();
+
+        $("#image").off("change.foodList").on("change.foodList", onFoodImageChange);
+        $("#btnRemoveImage").off("click.foodList").on("click.foodList", removeFoodImage);
+        $("#price, #discountPrice")
+            .off("input.foodList")
+            .on("input.foodList", function () { handlePriceInput(this); });
+        $("#btnAddCategoryModal").off("click.foodList").on("click.foodList", function () {
+            const name = prompt("نام دسته‌بندی جدید را وارد کنید:");
+            if (name && name.trim() !== "") addCategory(name.trim());
+        });
+        $("#searchBox, #filterCategory, #filterAvailability, #sortBy")
+            .off("input.foodList change.foodList")
+            .on("input.foodList change.foodList", applyFilters);
+
         populateFilterCategories();
-        $("#searchBox, #filterCategory, #filterAvailability, #sortBy").on("input change", applyFilters);
-    });
+    }
+
+    window.initFoodListPage = initFoodListPage;
 </script>

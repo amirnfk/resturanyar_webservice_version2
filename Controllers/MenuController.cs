@@ -96,6 +96,11 @@ public class MenuController : Controller
             .ToListAsync();
 
         ViewBag.RestaurantId = restaurantId;
+        ViewBag.RestaurantName = await _context.Restaurants
+            .AsNoTracking()
+            .Where(r => r.restaurant_id == restaurantId)
+            .Select(r => r.name)
+            .FirstOrDefaultAsync() ?? "";
         return View(items);
     }
 

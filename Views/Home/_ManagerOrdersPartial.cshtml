@@ -6,11 +6,6 @@
 }
 
 <style>
-    body {
-        direction: rtl;
-        font-family: "IRANYekan", Tahoma, sans-serif;
-    }
-
     /* ---------- کارت کلی هر سفارش ---------- */
     .order-card {
         border-radius: 16px;
@@ -125,7 +120,7 @@
 
     /* ---------- استایل بخش اطلاعات مشتری ---------- */
     .customer-info {
-        background: linear-gradient(135deg, #e9f5ff 0%, #d9ecff 100%);
+        background: linear-gradient(135deg, rgba(255, 122, 0, 0.08) 0%, rgba(255, 122, 0, 0.14) 100%);
         border-radius: 12px;
         padding: 8px 16px;
         margin-bottom: 12px;
@@ -134,19 +129,19 @@
         align-items: center;
         gap: 10px;
         font-size: 0.85rem;
-        border-right: 4px solid #0d6efd;
+        border-right: 4px solid #ff7a00;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         direction: rtl;
     }
 
         .customer-info i {
             font-size: 1.2rem;
-            color: #0d6efd;
+            color: #ff7a00;
         }
 
         .customer-info .customer-name {
             font-weight: 700;
-            color: #0a58ca;
+            color: #e66900;
         }
 
         .customer-info .customer-mobile {
@@ -409,8 +404,8 @@
 
             @if (!string.IsNullOrWhiteSpace(order.Description))
             {
-                <div class="alert alert-light py-2 px-3 mb-3 border-start border-3 border-primary">
-                    📝 @order.Description
+                <div class="alert alert-light py-2 px-3 mb-3 border-start border-3 border-primary order-description-text">
+                    <i class="fa-solid fa-note-sticky ms-1"></i> @order.Description
                 </div>
             }
 
@@ -562,7 +557,7 @@
     }
 else
 {
-    <div class="alert alert-warning text-center fs-5">📭 هیچ سفارشی یافت نشد.</div>
+    <div class="alert alert-warning text-center fs-5"><i class="fa-solid fa-inbox ms-2"></i> هیچ سفارشی یافت نشد.</div>
 }
 <script src="~/js/invoice-print.js" asp-append-version="true"></script>
 
@@ -662,8 +657,8 @@ else
         const createdAt = metaText.match(/ثبت: (.+?)\|/)?.[1]?.trim() || '';
         const updatedAt = metaText.match(/آخرین تغییر: (.+)/)?.[1]?.trim() || '';
 
-        const description = orderCard.querySelector('.alert-light')
-            ?.innerText.replace(/^📝\s*/, '').trim() || '';
+        const description = orderCard.querySelector('.order-description-text')
+            ?.innerText.trim() || '';
 
         const items = [...orderCard.querySelectorAll('.food-row')].map(row => ({
             name:     row.querySelector('.food-name')?.innerText.trim() || '',
@@ -705,7 +700,7 @@ else
         const toast = document.createElement('div');
         toast.className = `custom-toast toast-${type}`;
         toast.innerHTML = `
-            <div class="toast-icon">${type === 'success' ? '✅' : '❌'}</div>
+            <div class="toast-icon">${type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>'}</div>
             <div class="toast-message">${message}</div>
             <div class="toast-close" style="cursor:pointer;margin-right:auto;font-size:20px;line-height:1;">&times;</div>
         `;

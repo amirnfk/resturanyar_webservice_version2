@@ -78,8 +78,13 @@
     }
 
     function getTierIcon(tier) {
-        const icons = { 'free': '🌱', 'bronze': '🥉', 'silver': '🥈', 'gold': '👑' };
-        return icons[tier] || '📦';
+        const icons = {
+            'free': '<i class="fa-solid fa-seedling"></i>',
+            'bronze': '<i class="fa-solid fa-medal"></i>',
+            'silver': '<i class="fa-solid fa-medal"></i>',
+            'gold': '<i class="fa-solid fa-crown"></i>'
+        };
+        return icons[tier] || '<i class="fa-solid fa-box"></i>';
     }
 
     function getCtaClass(tier) {
@@ -88,7 +93,7 @@
     }
 
     function getPopularBadge(tier, sub) {
-        if (tier === 'gold') return '<span class="popular-badge gold-badge">⭐ پیشنهاد ویژه</span>';
+        if (tier === 'gold') return '<span class="popular-badge gold-badge"><i class="fa-solid fa-star ms-1"></i> پیشنهاد ویژه</span>';
         return '';
     }
 
@@ -108,10 +113,12 @@
         const features = getFeatureList(sub);
         const featureItems = features.map(f => {
             let iconClass = 'neutral';
-            let iconSymbol = '✓';
+            let iconSymbol = '<i class="fa-solid fa-check"></i>';
             if (typeof f.icon === 'function') {
                 iconClass = f.icon(f.value);
-                iconSymbol = f.value ? '✓' : '✗';
+                iconSymbol = f.value
+                    ? '<i class="fa-solid fa-check"></i>'
+                    : '<i class="fa-solid fa-xmark"></i>';
             }
             return `
                 <li>
@@ -184,7 +191,7 @@
     function renderCards() {
         const grid = document.getElementById('pricingGrid');
         if (!subscriptions.length) {
-            grid.innerHTML = '<div class="error-state"><p>🚫 اشتراکی برای نمایش یافت نشد.</p><button onclick="location.reload()">تلاش مجدد</button></div>';
+            grid.innerHTML = '<div class="error-state"><p><i class="fa-solid fa-ban ms-1"></i> اشتراکی برای نمایش یافت نشد.</p><button onclick="location.reload()">تلاش مجدد</button></div>';
             return;
         }
         grid.innerHTML = subscriptions.map(sub => buildCard(sub)).join('');
@@ -209,7 +216,7 @@
     window.startZarinpalPayment = async function (planId, months) {
         const plan = subscriptions.find(s => s.id === planId);
         if (!plan) {
-            alert('اشتراک مورد نظر یافت نشد.');
+            showToast('اشتراک مورد نظر یافت نشد.', 'error');
             return;
         }
 
@@ -267,7 +274,7 @@
 
         const data = window._invoiceData;
         if (!data) {
-            msg.textContent = '⚠️ خطا در اطلاعات پرداخت.';
+            msg.textContent = 'خطا در اطلاعات پرداخت.';
             msg.className = 'discount-message error';
             return;
         }
@@ -292,7 +299,7 @@
             const result = await response.json();
 
             if (!result.success) {
-                msg.textContent = `❌ ${result.message || 'کد تخفیف نامعتبر است.'}`;
+                msg.innerHTML = `<i class="fa-solid fa-circle-xmark ms-1"></i> ${result.message || 'کد تخفیف نامعتبر است.'}`;
                 msg.className = 'discount-message error';
                 applyBtn.disabled = false;
                 applyBtn.textContent = 'اعمال';
@@ -313,8 +320,7 @@
             document.getElementById('invoiceFinalPrice').innerHTML = formatPriceShort(finalPrice);
 
             msg.innerHTML = `
-        
-        <span class="sub-message">🎉  از تخفیف خود لذت ببرید   🎉</span>
+        <span class="sub-message"><i class="fa-solid fa-gift ms-1"></i> از تخفیف خود لذت ببرید <i class="fa-solid fa-gift me-1"></i></span>
     `;
             msg.className = 'discount-message success';
 
@@ -323,7 +329,7 @@
 
         } catch (err) {
             console.error('خطا در اعتبارسنجی کد تخفیف:', err);
-            msg.textContent = '⚠️ خطا در ارتباط با سرور. لطفاً مجدداً تلاش کنید.';
+            msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation ms-1"></i> خطا در ارتباط با سرور. لطفاً مجدداً تلاش کنید.';
             msg.className = 'discount-message error';
         }
 
@@ -335,13 +341,13 @@
     document.getElementById('confirmPaymentBtn').addEventListener('click', async function () {
         const data = window._invoiceData;
         if (!data) {
-            alert('❌ اطلاعات پرداخت یافت نشد. لطفاً صفحه را مجدداً بارگذاری کنید.');
+            showToast('اطلاعات پرداخت یافت نشد. لطفاً صفحه را مجدداً بارگذاری کنید.', 'error');
             return;
         }
 
         const payBtn = this;
         payBtn.disabled = true;
-        payBtn.textContent = '⏳ در حال پردازش...';
+        payBtn.innerHTML = '<span class="spinner-border spinner-border-sm ms-1"></span> در حال پردازش...';
 
         const payload = {
             RestaurantId: currentRestaurantIdFromServer,
@@ -369,13 +375,13 @@
             if (result.success && result.url) {
                 window.location.href = result.url;
             } else {
-                alert(`❌ ${result.message || 'خطا در ایجاد پرداخت. لطفاً مجدداً تلاش کنید.'}`);
+                showToast(result.message || 'خطا در ایجاد پرداخت. لطفاً مجدداً تلاش کنید.', 'error');
                 payBtn.disabled = false;
                 payBtn.textContent = 'پرداخت نهایی';
             }
         } catch (err) {
             console.error('❌ خطا در ارتباط با سرور:', err);
-            alert('❌ خطا در ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید و مجدداً تلاش نمایید.');
+            showToast('خطا در ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید و مجدداً تلاش نمایید.', 'error');
             payBtn.disabled = false;
             payBtn.textContent = 'پرداخت نهایی';
         }
@@ -405,12 +411,12 @@
         }
 
         // تاست تبریک زیبا
-        showCelebrationToast('🎉 تبریک! کد تخفیف با موفقیت اعمال شد');
+        showCelebrationToast('<i class="fa-solid fa-gift ms-1"></i> تبریک! کد تخفیف با موفقیت اعمال شد');
     }
 
     function showCelebrationToast(message) {
         const toast = document.createElement('div');
-        toast.textContent = message;
+        toast.innerHTML = message;
         Object.assign(toast.style, {
             position: 'fixed',
             bottom: '30px',
@@ -502,10 +508,10 @@
         const status = urlParams.get('Status');
         if (authority && status) {
             if (status === 'OK') {
-                alert('✅ پرداخت با موفقیت انجام شد. اشتراک شما فعال گردید.');
+                showToast('پرداخت با موفقیت انجام شد. اشتراک شما فعال گردید.', 'success');
                 setTimeout(() => location.reload(), 2000);
             } else {
-                alert('❌ پرداخت لغو شد یا با خطا مواجه گردید.');
+                showToast('پرداخت لغو شد یا با خطا مواجه گردید.', 'error');
             }
             window.history.replaceState({}, document.title, window.location.pathname);
         }

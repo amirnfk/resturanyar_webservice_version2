@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "مدیریت دسته‌بندی‌ها";
 }
-
-<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
 <style>
     :root {
         --primary: #ff7a00;
@@ -25,8 +23,7 @@
         --transition: 0.2s ease;
     }
 
-    body {
-        background: var(--bg-page);
+    .category-page {
         direction: rtl;
         font-family: 'IRANYekan', 'IRANSans', system-ui, -apple-system, sans-serif;
         color: var(--text-dark);
@@ -40,34 +37,191 @@
         border-radius: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         border: none;
-        cursor: grab;
         transition: box-shadow 0.2s;
         position: relative;
     }
 
-        .card:active {
-            cursor: grabbing;
-        }
-
-    /* آیکون کشیدن در کارت */
-    .drag-handle {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        cursor: grab;
-        color: #adb5bd;
-        font-size: 1.2rem;
-        line-height: 1;
-        user-select: none;
+    .category-order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 720px;
+        margin: 0 auto;
     }
 
-        .drag-handle:active {
+    .category-order-item {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+        .category-order-item.is-dragging {
+            opacity: 0.55;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-order-item.sortable-chosen {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+    .category-order-main {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .category-drag-handle {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        background: #f8fafc;
+        color: #64748b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        touch-action: none;
+        transition: var(--transition);
+    }
+
+        .category-drag-handle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .category-drag-handle:active {
             cursor: grabbing;
         }
 
+    .category-order-num {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .category-order-name {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .category-move-btns {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+        .category-move-btns .btn {
+            width: 34px;
+            height: 28px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .category-move-btns .btn:disabled {
+            opacity: 0.35;
+        }
+
+    .category-actions {
+        display: inline-flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .category-order-save-bar {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        z-index: 1050;
+        background: #fff;
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-pill);
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        max-width: calc(100vw - 24px);
+    }
+
+        .category-order-save-bar .save-bar-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+
+    @@media (max-width: 576px) {
+        .category-order-item {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .category-order-main {
+            width: 100%;
+        }
+
+        .category-actions {
+            justify-content: flex-end;
+        }
+
+        .category-order-save-bar {
+            flex-direction: column;
+            align-items: stretch;
+            border-radius: var(--radius-md);
+            bottom: 12px;
+        }
+
+            .category-order-save-bar .btn {
+                width: 100%;
+            }
+    }
+
     .sortable-drag {
-        opacity: 0.5;
-        cursor: grabbing;
+        opacity: 0.85;
+    }
+
+    .sortable-ghost {
+        opacity: 0.35;
+        background: var(--primary-light);
+        border-style: dashed;
+    }
+
+    /* legacy drag handle - unused */
+    .drag-handle {
+        display: none;
     }
 
     .btn-primary {
@@ -97,62 +251,43 @@
         }
 
     .order-badge {
-        background-color: #e9ecef;
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: #495057;
+        display: none;
     }
 
     /* هشدار راهنما */
     .drag-hint {
-        background: #e9f0ff;
+        background: var(--primary-light);
         border-right: 4px solid var(--primary);
         border-radius: 12px;
-        padding: 10px 15px;
+        padding: 12px 16px;
         margin-bottom: 20px;
-        font-size: 0.85rem;
+        font-size: 0.88rem;
         color: #1e2a3a;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
         .drag-hint i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-left: 8px;
             color: var(--primary);
         }
-
-    .close-hint {
-        background: transparent;
-        border: none;
-        color: #6c757d;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0 5px;
-    }
 </style>
 
-<div class="container mt-4">
+<div class="container category-page mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2></h2>
         <div>
-            <button class="btn btn-primary me-2" onclick="openAddCategoryModal()">افزودن دسته‌بندی</button>
-            <button class="btn btn-outline-primary" id="saveOrderBtn" style="display:none;">ذخیره ترتیب</button>
+            <button class="btn btn-primary" onclick="openAddCategoryModal()">افزودن دسته‌بندی</button>
         </div>
     </div>
 
-    <!-- هینت راهنما (قابل بستن) -->
-    <div id="dragHint" class="drag-hint" style="display: none;">
-        <div>
-            <i class="bi bi-arrows-move"></i>
-            <strong>تغییر ترتیب دسته‌بندی‌ها:</strong> کافیست هر دسته‌بندی را با کشیدن ماوس (درگ کردن) جابه‌جا کنید، سپس دکمه «ذخیره ترتیب» را بزنید. این کار باعث تغییر ترتیب نمایش دسته بندی های منو شما می شود..
-        </div>
-        
+    <div id="dragHint" class="drag-hint">
+        <i class="fas fa-sort"></i>
+        <strong>ترتیب منو:</strong>
+        با دکمه‌های <i class="fas fa-chevron-up"></i> و <i class="fas fa-chevron-down"></i> هر دسته را یک پله جابه‌جا کنید،
+        یا آیکون <i class="fas fa-grip-vertical"></i> را بکشید. در پایان «ذخیره ترتیب منو» را بزنید.
     </div>
 
     @if (!Model.Any())
@@ -161,25 +296,38 @@
     }
     else
     {
-        <!-- wrapper برای Sortable -->
-        <div id="sortable-list" class="row">
+        <!-- لیست عمودی برای تغییر ترتیب -->
+        <div id="sortable-list" class="category-order-list">
             @foreach (var cat in Model.OrderBy(c => c.DisplayOrder))
             {
-                <div class="col-12 col-md-6 col-lg-4 mb-3" data-id="@cat.CategoryId">
-                    <div class="card p-3 h-100">
-                        <!-- آیکون کشیدن (دسته) -->
-                        <div class="drag-handle">⋮⋮</div>
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="mb-0">@cat.CategoryName</h5>
-                            <span class="order-badge">ترتیب: @cat.DisplayOrder</span>
+                <div class="category-order-item" data-id="@cat.CategoryId">
+                    <div class="category-order-main">
+                        <button type="button" class="category-drag-handle" title="کشیدن برای جابجایی" aria-label="کشیدن برای جابجایی">
+                            <i class="fas fa-grip-vertical"></i>
+                        </button>
+                        <span class="category-order-num">@cat.DisplayOrder</span>
+                        <h5 class="category-order-name">@cat.CategoryName</h5>
+                        <div class="category-move-btns">
+                            <button type="button" class="btn btn-sm btn-outline-secondary category-move-up" title="انتقال به بالا" aria-label="انتقال به بالا">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary category-move-down" title="انتقال به پایین" aria-label="انتقال به پایین">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
                         </div>
-                        <div class="mt-3 d-flex justify-content-between">
-                            <button class="btn btn-sm btn-warning" onclick="openEditCategoryModal(@cat.CategoryId)">ویرایش</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteCategory(@cat.CategoryId)">حذف</button>
-                        </div>
+                    </div>
+                    <div class="category-actions">
+                        <button type="button" class="btn btn-sm btn-warning" onclick="openEditCategoryModal(@cat.CategoryId)">ویرایش</button>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteCategory(@cat.CategoryId)">حذف</button>
                     </div>
                 </div>
             }
+        </div>
+
+        <div id="orderSaveBar" class="category-order-save-bar d-none">
+            <span class="save-bar-text"><i class="fas fa-exclamation-circle text-warning ms-1"></i> ترتیب منو تغییر کرد</span>
+            <button type="button" class="btn btn-primary btn-sm" id="saveOrderBtn">ذخیره ترتیب منو</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelOrderBtn">انصراف</button>
         </div>
     }
 </div>
@@ -213,55 +361,90 @@
  
 @Html.AntiForgeryToken()
 
-<!-- CategoryList.cshtml - Updated JavaScript Section -->
-<script src="~/js/jquery_3.6.0.min.js"></script>
-<script src="~/js/bootstrap.bundle.min.js"></script>
+@section Scripts {
 <script src="~/js/Sortable.min.js" asp-append-version="true"></script>
-
-<!-- Import the interceptor and expose it globally -->
-<script type="module">
-    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
-    window.fetchWithAuth = fetchWithAuth;
-</script>
-
 <script>
-    const API_BASE = "/api/v2/UserApi";
+    var API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
-    var token = $('input[name="__RequestVerificationToken"]').val();
-
-    // ============================================================
-    // SORTABLE - Drag & Drop reordering
-    // ============================================================
-    var sortableContainer = document.getElementById('sortable-list');
+    var sortableContainer = null;
     var sortable = null;
-    if (sortableContainer) {
-        sortable = new Sortable(sortableContainer, {
-            animation: 300,
-            handle: '.card',
-            ghostClass: 'sortable-drag',
-            onEnd: function() {
-                $('#saveOrderBtn').show();
-            }
+    var initialCategoryOrder = [];
+
+    function getCategoryItems() {
+        return $('#sortable-list .category-order-item');
+    }
+
+    function updateOrderNumbers() {
+        getCategoryItems().each(function (index) {
+            $(this).find('.category-order-num').text(index + 1);
         });
     }
 
-    // Show hint once
-    function showHintOnce() {
-        $('#dragHint').slideDown(300);
+    function updateMoveButtons() {
+        var $items = getCategoryItems();
+        $items.each(function (index) {
+            var $item = $(this);
+            $item.find('.category-move-up').prop('disabled', index === 0);
+            $item.find('.category-move-down').prop('disabled', index === $items.length - 1);
+        });
     }
 
-    // ============================================================
-    // SAVE ORDER - Keep using the existing Home controller action
-    // ============================================================
-    $('#saveOrderBtn').click(function() {
+    function getCurrentCategoryOrder() {
+        return getCategoryItems().map(function () {
+            return parseInt($(this).attr('data-id'), 10);
+        }).get();
+    }
+
+    function isOrderChanged() {
+        var current = getCurrentCategoryOrder();
+        if (current.length !== initialCategoryOrder.length) return true;
+        for (var i = 0; i < current.length; i++) {
+            if (current[i] !== initialCategoryOrder[i]) return true;
+        }
+        return false;
+    }
+
+    function markOrderDirty() {
+        updateOrderNumbers();
+        updateMoveButtons();
+        if (isOrderChanged()) {
+            $('#orderSaveBar').removeClass('d-none');
+        } else {
+            $('#orderSaveBar').addClass('d-none');
+        }
+    }
+
+    function moveCategoryItem($item, direction) {
+        if (!$item || !$item.length) return;
+        if (direction === 'up') {
+            var $prev = $item.prev('.category-order-item');
+            if ($prev.length) $item.insertBefore($prev);
+        } else {
+            var $next = $item.next('.category-order-item');
+            if ($next.length) $item.insertAfter($next);
+        }
+        markOrderDirty();
+    }
+
+    function saveCategoryOrder() {
         var items = [];
-        $('#sortable-list .col-12').each(function(index) {
-            var categoryId = $(this).data('id');
+        getCategoryItems().each(function (index) {
+            var categoryId = parseInt($(this).attr('data-id'), 10);
+            if (!categoryId) return;
             items.push({
                 categoryId: categoryId,
                 displayOrder: index + 1
             });
         });
+
+        if (!items.length) {
+            showToast('دسته\u200cبندی\u200cای برای ذخیره ترتیب یافت نشد', 'error');
+            return;
+        }
+
+        var $btn = $('#saveOrderBtn');
+        var originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm ms-1"></span> در حال ذخیره...');
 
         $.ajax({
             url: '@Url.Action("UpdateCategoriesOrder", "Home")',
@@ -269,27 +452,32 @@
             contentType: 'application/json',
             data: JSON.stringify(items),
             headers: {
-                'RequestVerificationToken': token
+                'RequestVerificationToken': getAntiForgeryToken()
             },
-            success: function(res) {
+            success: function (res) {
+                $btn.prop('disabled', false).html(originalHtml);
                 if (res.success) {
-                    showToast('ترتیب دسته‌بندی‌ها با موفقیت ذخیره شد', 'success');
-                    setTimeout(() => location.reload(), 1000);
+                    showToast('ترتیب منو با موفقیت ذخیره شد', 'success');
+                    initialCategoryOrder = getCurrentCategoryOrder();
+                    $('#orderSaveBar').addClass('d-none');
                 } else {
                     showToast('خطا در ذخیره ترتیب: ' + (res.message || 'خطای ناشناخته'), 'error');
                 }
             },
-            error: function(xhr) {
-                let msg = 'خطا در ارتباط با سرور';
+            error: function (xhr) {
+                $btn.prop('disabled', false).html(originalHtml);
+                var msg = 'خطا در ارتباط با سرور';
                 if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
                 showToast(msg, 'error');
             }
         });
-    });
+    }
 
-    // ============================================================
-    // OPEN ADD CATEGORY MODAL
-    // ============================================================
+    function getAntiForgeryToken() {
+        var input = document.querySelector('input[name="__RequestVerificationToken"]');
+        return input ? input.value : '';
+    }
+
     function openAddCategoryModal() {
         $("#modalTitle").text("افزودن دسته‌بندی");
         $("#categoryId").val("");
@@ -303,7 +491,7 @@
     // ============================================================
     function openEditCategoryModal(id) {
         const cardDiv = $(`[data-id='${id}']`);
-        const name = cardDiv.find('h5').text();
+        const name = cardDiv.find('.category-order-name').text();
         $("#categoryId").val(id);
         $("#categoryName").val(name);
         $("#modalTitle").text("ویرایش دسته‌بندی");
@@ -392,10 +580,51 @@
         $("#errorContainer").addClass("d-none").html("");
     }
 
-    // ============================================================
-    // INITIALIZATION
-    // ============================================================
-    $(document).ready(function() {
-        showHintOnce();
-    });
+    function initCategoryListPage() {
+        if (sortable) {
+            sortable.destroy();
+            sortable = null;
+        }
+
+        sortableContainer = document.getElementById('sortable-list');
+        initialCategoryOrder = getCurrentCategoryOrder();
+        updateOrderNumbers();
+        updateMoveButtons();
+        $('#orderSaveBar').addClass('d-none');
+
+        if (sortableContainer) {
+            sortable = new Sortable(sortableContainer, {
+                animation: 180,
+                handle: '.category-drag-handle',
+                draggable: '.category-order-item',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'is-dragging',
+                forceFallback: true,
+                fallbackTolerance: 3,
+                onEnd: function () {
+                    markOrderDirty();
+                }
+            });
+        }
+
+        $('#sortable-list')
+            .off('click.categoryList', '.category-move-up')
+            .on('click.categoryList', '.category-move-up', function () {
+                moveCategoryItem($(this).closest('.category-order-item'), 'up');
+            })
+            .off('click.categoryList', '.category-move-down')
+            .on('click.categoryList', '.category-move-down', function () {
+                moveCategoryItem($(this).closest('.category-order-item'), 'down');
+            });
+
+        $('#saveOrderBtn').off('click.categoryList').on('click.categoryList', saveCategoryOrder);
+
+        $('#cancelOrderBtn').off('click.categoryList').on('click.categoryList', function () {
+            location.reload();
+        });
+    }
+
+    window.initCategoryListPage = initCategoryListPage;
 </script>
+}

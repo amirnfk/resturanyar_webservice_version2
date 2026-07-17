@@ -123,15 +123,21 @@
                         <div id="registerNameError" class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-3 text-start">
+                    <div class="mb-3 text-start position-relative">
                         <label class="form-label fw-bold small">رمز عبور</label>
-                        <input id="registerPassword" type="password" class="form-control form-control-lg custom-input text-end" placeholder="رمز عبور (حداقل ۶ کاراکتر)" />
+                        <input id="registerPassword" type="password" class="form-control form-control-lg custom-input text-end pr-5" placeholder="رمز عبور (حداقل ۶ کاراکتر)" />
+                        <span class="password-toggle-icon" id="toggleRegisterPassword" role="button" tabindex="0" aria-label="نمایش رمز عبور">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </span>
                         <div id="registerPasswordError" class="invalid-feedback"></div>
                     </div>
 
-                    <div class="mb-3 text-start">
+                    <div class="mb-3 text-start position-relative">
                         <label class="form-label fw-bold small">تکرار رمز عبور</label>
-                        <input id="registerConfirmPassword" type="password" class="form-control form-control-lg custom-input text-end" placeholder="دوباره رمز عبور را وارد کنید" />
+                        <input id="registerConfirmPassword" type="password" class="form-control form-control-lg custom-input text-end pr-5" placeholder="دوباره رمز عبور را وارد کنید" />
+                        <span class="password-toggle-icon" id="toggleRegisterConfirmPassword" role="button" tabindex="0" aria-label="نمایش تکرار رمز عبور">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </span>
                         <div id="registerConfirmError" class="invalid-feedback"></div>
                     </div>
 
@@ -143,13 +149,6 @@
         </div>
     </div>
 
-    <script>
-        (function () {
-            if (localStorage.getItem('accessToken') && document.cookie.includes('.AspNetCore.Cookies')) {
-                window.location.href = '/Home/ChooseRestaurant';
-            }
-        })();
-    </script>
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
     <script>
         (function() {

@@ -1,0 +1,10 @@
+@inject Resturanyar.Data.AppDbContext AppDbContext
+@{
+    var layoutRestaurantName = RestaurantViewHelper.ResolveRestaurantName(User, AppDbContext, ViewBag.RestaurantName);
+    var layoutPageTitle = PageTitleHelper.WithRestaurant(ViewData["Title"]?.ToString(), layoutRestaurantName);
+}
+<div class="ajax-page-root" data-page-title="@layoutPageTitle">
+    @await RenderSectionAsync("Styles", required: false)
+    @RenderBody()
+    @await RenderSectionAsync("Scripts", required: false)
+</div>

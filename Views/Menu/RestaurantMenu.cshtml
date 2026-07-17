@@ -12,377 +12,17 @@
 
     var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);
 }
-<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
-<link href="~/css/bootstrap-icons.css" rel="stylesheet" />
-@* <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap" rel="stylesheet" /> *@
-<style>
-    :root {
-        --primary: #ff7a1a;
-        --primary-2: #ff9e53;
-        --accent: #00c2a8;
-        --bg: #fff7ef;
-        --card: #ffffff;
-        --text: #212529;
-        --muted: #6d7385;
-        --shadow: 0 12px 40px rgba(0,0,0,.08);
-        --radius: 18px;
-    }
 
-    body {
-        direction: rtl;
-        font-family: "IRANYekan",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-        background: radial-gradient(1400px 600px at 100% -10%, rgba(255,122,26,.12), transparent 60%), radial-gradient(1000px 400px at -5% 105%, rgba(0,194,168,.10), transparent 60%), var(--bg);
-        color: var(--text);
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-    }
+@section Styles {
+    <link href="~/css/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/restaurant-menu.css" asp-append-version="true" />
+}
 
-    /* Hero */
-    .menu-hero {
-        position: relative;
-        padding: 64px 16px 24px;
-        text-align: center;
-        overflow: hidden;
-    }
-
-        .menu-hero .title {
-            font-weight: 900;
-            font-size: clamp(24px,4.4vw,40px);
-        }
-
-        .menu-hero .subtitle {
-            color: var(--muted);
-            max-width: 760px;
-            margin: 8px auto 0;
-            font-size: clamp(14px,2.4vw,18px);
-        }
-
-    .blob {
-        position: absolute;
-        inset: auto -10% 0 -10%;
-        height: 65%;
-        background: radial-gradient(600px 180px at 78% 20%, rgba(255,122,26,.08), transparent 60%), radial-gradient(500px 160px at 20% 80%, rgba(0,194,168,.08), transparent 60%);
-        pointer-events: none;
-    }
-
-    /* Sticky toolbar */
-    .menu-toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        backdrop-filter: saturate(140%) blur(10px);
-        background: rgba(255,255,255,.65);
-        border-bottom: 1px solid rgba(0,0,0,.06);
-        box-shadow: 0 6px 16px rgba(0,0,0,.06);
-    }
-
-    .toolbar-inner {
-        padding: 10px 12px;
-    }
-
-    .search-wrap {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        background: #fff;
-        border: 1px solid rgba(0,0,0,.06);
-        border-radius: 999px;
-        padding: 6px 10px;
-        box-shadow: var(--shadow);
-    }
-
-        .search-wrap input {
-            border: 0;
-            outline: 0;
-            background: transparent;
-            width: 100%;
-            font-size: 15px;
-        }
-
-    .filters {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .filter-chip {
-        border-radius: 999px;
-        border: 1px solid rgba(0,0,0,.08);
-        background: #fff;
-        color: #333;
-        padding: 6px 12px;
-        font-weight: 700;
-        font-size: 13px;
-    }
-
-        .filter-chip.active, .sort-select {
-            background: linear-gradient(90deg,var(--primary),var(--primary-2));
-            color: #fff;
-            border: 0;
-        }
-
-    .sort-select {
-        border-radius: 999px;
-        padding: 6px 12px;
-        font-weight: 800;
-        font-size: 13px;
-    }
-
-    /* Category chips scroller */
-    .chip-scroller {
-        display: flex;
-        gap: 8px;
-        overflow: auto;
-        padding: 8px 2px 10px;
-    }
-
-        .chip-scroller::-webkit-scrollbar {
-            height: 8px;
-        }
-
-    .chip {
-        border: 0;
-        border-radius: 999px;
-        background: #fff;
-        color: #444;
-        padding: 8px 14px;
-        font-weight: 800;
-        box-shadow: var(--shadow);
-        white-space: nowrap;
-    }
-
-        .chip .count {
-            background: #f1f3f5;
-            color: #555;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 12px;
-            margin-inline-start: 6px;
-        }
-
-        .chip.active-category {
-            background: linear-gradient(135deg,var(--primary),var(--primary-2));
-            color: #fff;
-        }
-
-            .chip.active-category .count {
-                background: rgba(255,255,255,.25);
-                color: #fff;
-            }
-
-    /* Sections */
-    .container-section {
-        padding: 28px 0;
-    }
-
-    .cat-title {
-        font-weight: 900;
-        font-size: clamp(18px,2.6vw,24px);
-        margin: 14px 0 18px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-        .cat-title i {
-            color: var(--primary);
-        }
-
-    /* Cards */
-    .food-card {
-        perspective: 1000px;
-    }
-
-        .food-card .card {
-            border: 0;
-            border-radius: var(--radius);
-            overflow: hidden;
-            background: var(--card);
-            box-shadow: var(--shadow);
-            transition: transform .25s ease, box-shadow .25s ease;
-        }
-
-            .food-card .card:hover {
-                transform: translateY(-6px) rotateX(2deg);
-            }
-
-    .img-wrap {
-        position: relative;
-    }
-
-        .img-wrap img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-        }
-
-    .gradient-over {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,.35), transparent 60%);
-        pointer-events: none;
-    }
-
-    .discount-ribbon {
-        position: absolute;
-        inset-inline-start: -6px;
-        inset-block-start: 12px;
-        background: linear-gradient(135deg,#24c768,#0aa84e);
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 800;
-        box-shadow: var(--shadow);
-    }
-
-    .sold-badge {
-        position: absolute;
-        inset-inline-end: 12px;
-        inset-block-start: 12px;
-        background: linear-gradient(135deg,#ff6b6b,#ff3b3b);
-        color: #fff;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 12px;
-        box-shadow: var(--shadow);
-    }
-
-    .card-body {
-        padding: 12px 14px;
-        text-align: center;
-    }
-
-    .card-title {
-        font-size: 1.05rem;
-        font-weight: 800;
-        margin: 0 0 4px;
-    }
-
-    .card-text {
-        color: #6c757d;
-        font-size: .9rem;
-        min-height: 38px;
-    }
-
-    .price-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 6px;
-    }
-
-    .price {
-        color: #1f8f5f;
-        font-weight: 900;
-    }
-
-    .old-price {
-        color: #adb5bd;
-        text-decoration: line-through;
-        font-size: .85rem;
-    }
-
-    .card-actions {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 10px;
-    }
-
-    .btn-quick, .btn-add {
-        border-radius: 999px;
-        padding: 6px 12px;
-        font-weight: 800;
-        font-size: 13px;
-        color: #fff;
-        border: 0;
-        background: linear-gradient(135deg,var(--primary),var(--primary-2));
-    }
-
-    .btn-add {
-        background: linear-gradient(135deg,var(--primary),var(--primary-2));
-        color: #fff;
-        border: 0;
-    }
-
-    .sold-out .card {
-        filter: grayscale(.5);
-        opacity: .72;
-    }
-
-    .sold-out .btn-add {
-        pointer-events: none;
-        opacity: .65;
-    }
-
-    /* Reveal */
-    .reveal {
-        opacity: 0;
-        transform: translateY(14px);
-        transition: .6s ease;
-    }
-
-        .reveal.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-    /* Back to top */
-    .back-top {
-        position: fixed;
-        inset-inline-end: 16px;
-        inset-block-end: 16px;
-        width: 46px;
-        height: 46px;
-        border-radius: 50%;
-        background: linear-gradient(135deg,var(--primary),var(--primary-2));
-        color: #fff;
-        border: 0;
-        display: grid;
-        place-items: center;
-        box-shadow: var(--shadow);
-        opacity: 0;
-        transform: translateY(18px);
-        transition: .25s ease;
-        z-index: 999;
-    }
-
-        .back-top.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-    /* Media */
-    @@media (max-width:576px) {
-        .img-wrap img {
-            height: 160px;
-        }
-
-        .search-wrap {
-            padding: 6px 12px;
-        }
-    }
-    /* Keyframes example for subtle shimmer on images while loading (optional) */
-    @@keyframes shimmer {
-        0% {
-            background-position: -200% 0;
-        }
-
-        100% {
-            background-position: 200% 0;
-        }
-    }
-</style>
-
+<div class="restaurant-menu-page">
 <!-- Hero -->
 <section class="menu-hero">
-    @* <h1 class="title">منوی کافه | رستوران</h1> *@
-    @* <p class="subtitle">منوی دیجیتال با ظاهر مدرن، فیلتر هوشمند، دسته‌بندی سریع و نمایش تخفیف‌ها</p> *@
+    <h1 class="title">منوی رستوران</h1>
+    <p class="subtitle">جستجو، فیلتر و مشاهده آیتم‌ها بر اساس دسته‌بندی</p>
     <div class="blob"></div>
 </section>
 
@@ -490,12 +130,12 @@
 
 <!-- Quick view modal -->
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius:16px;">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+        <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="row g-0">
                     <div class="col-md-6">
-                        <img id="qvImg" src="@placeholder" class="w-100 h-100" style="object-fit:cover; border-radius:16px 0 0 16px;" alt="">
+                        <img id="qvImg" src="@placeholder" class="w-100 h-100" alt="">
                     </div>
                     <div class="col-md-6 p-3 p-md-4">
                         <h5 id="qvTitle" class="fw-bold mb-2"></h5>
@@ -506,7 +146,6 @@
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-dark rounded-pill px-3" data-bs-dismiss="modal"><i class="bi bi-x-lg ms-1"></i> بستن</button>
-                            <button class="btn btn-warning rounded-pill px-3 text-white"><i class="bi bi-bag-plus ms-1"></i> افزودن به سفارش</button>
                         </div>
                     </div>
                 </div>
@@ -517,6 +156,8 @@
 
 <!-- Back to top -->
 <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="bi bi-arrow-up"></i></button>
+
+</div>
 
 <script>
     (function(){
@@ -668,4 +309,3 @@
       applyFilters();
     })();
 </script>
-<script src="~/js/bootstrap.bundle.min.js"></script>

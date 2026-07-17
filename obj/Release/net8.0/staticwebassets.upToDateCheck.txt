@@ -17,6 +17,7 @@ wwwroot\apple-icon-precomposed.png
 wwwroot\apple-icon.png
 wwwroot\apple-touch-icon.png
 wwwroot\browserconfig.xml
+wwwroot\css\add-order.css
 wwwroot\css\all.min.css
 wwwroot\css\bootstrap-icons.css
 wwwroot\css\bootstrap.min.css
@@ -25,6 +26,7 @@ wwwroot\css\bootstrap_icons.css
 wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\chooserestaurant.css
+wwwroot\css\dashboard.css
 wwwroot\css\fntawsom600.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
@@ -42,12 +44,18 @@ wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.woff
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
+wwwroot\css\food-list.css
 wwwroot\css\home.css
 wwwroot\css\jalalidatepicker.min.css
+wwwroot\css\manager-order-list.css
 wwwroot\css\managerlogin.css
 wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
+wwwroot\css\messages.css
 wwwroot\css\ownerlogin.css
+wwwroot\css\public-menu-qrcode.css
+wwwroot\css\public-menu.css
+wwwroot\css\restaurant-menu.css
 wwwroot\css\share.css
 wwwroot\css\simple_share.css
 wwwroot\css\site.css
@@ -128,8 +136,10 @@ wwwroot\js\jquery_3.6.0.min.js
 wwwroot\js\managerlogin.js
 wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
+wwwroot\js\messages.js
 wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
+wwwroot\js\sidebar-nav.js
 wwwroot\js\site.js
 wwwroot\js\Sortable.min.js
 wwwroot\js\sweetalert2@11.js
@@ -205,4 +215,3 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\css\dashboard.css

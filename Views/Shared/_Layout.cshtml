@@ -1,11 +1,18 @@
+@inject Resturanyar.Data.AppDbContext AppDbContext
+@using Microsoft.EntityFrameworkCore
+@{
+    var layoutRestaurantName = RestaurantViewHelper.ResolveRestaurantName(User, AppDbContext, ViewBag.RestaurantName);
+    var layoutPageTitle = PageTitleHelper.WithRestaurant(ViewData["Title"]?.ToString(), layoutRestaurantName);
+}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - رستورانیار دلاویتا</title>
+    <title>@layoutPageTitle - رستورانیار دلاویتا</title>
     <link rel="icon" type="image/png" href="~/images/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/fntawsom600.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @* <link rel="stylesheet" href="~/resturanyar.styles.css" asp-append-version="true" /> *@
@@ -19,10 +26,12 @@
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")">
+<body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")" data-restaurant-name="@layoutRestaurantName">
 
     @if (User.Identity.IsAuthenticated)
     {
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
         <!-- Mobile Menu Button -->
         @* <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
             <i class="fas fa-bars"></i>
@@ -38,59 +47,68 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="/home/Dashboard" class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                <a href="/home/Dashboard" class="nav-item @(currentAction == "Dashboard" ? "active" : "")">
                     <i class="fas fa-home"></i>
                     <span>داشبورد</span>
                 </a>
-                <a href="@Url.Action("ManageStaff", "Home")" class="nav-item">
+                <a href="@Url.Action("ManageStaff", "Home")" class="nav-item @(currentAction == "ManageStaff" ? "active" : "")">
                     <i class="fas fa-users"></i>
                     <span>مدیریت کارکنان</span>
                 </a>
-                <a href="@Url.Action("FoodList", "Home")" class="nav-item">
+                <a href="@Url.Action("FoodList", "Home")" class="nav-item @(currentAction == "FoodList" ? "active" : "")">
                     <i class="fas fa-utensils"></i>
                     <span>لیست غذاها</span>
                 </a>
-                <a href="@Url.Action("AddOrder", "Home")" class="nav-item">
+                <a href="@Url.Action("AddOrder", "Home")" class="nav-item @(currentAction == "AddOrder" ? "active" : "")">
                     <i class="fas fa-cart-plus"></i>
                     <span>ثبت سفارش جدید</span>
                 </a>
-                <a href="@Url.Action("ManagerOrderList", "Home")" class="nav-item">
+                <a href="@Url.Action("ManagerOrderList", "Home")" class="nav-item @(currentAction == "ManagerOrderList" ? "active" : "")">
                     <i class="fas fa-clipboard-check"></i>
                     <span>لیست سفارشات</span>
                 </a>
-                <a href="@Url.Action("CategoryList", "Home")" class="nav-item">
+                <a href="@Url.Action("CategoryList", "Home")" class="nav-item @(currentAction == "CategoryList" ? "active" : "")">
                     <i class="fas fa-layer-group"></i>
                     <span>مدیریت دسته بندی ها</span>
                 </a>
-                <a href="@Url.Action("TableList", "Home")" class="nav-item">
+                <a href="@Url.Action("TableList", "Home")" class="nav-item @(currentAction == "TableList" ? "active" : "")">
                     <i class="fas fa-chair"></i>
                     <span>مدیریت میزها</span>
                 </a>
-                <a href="@Url.Action("CustomersList", "Home")" class="nav-item">
+                <a href="@Url.Action("CustomersList", "Home")" class="nav-item @(currentAction == "CustomersList" ? "active" : "")">
                     <i class="fas fa-address-book"></i>
                     <span>مدیریت و آنالیز مشتریان</span>
                 </a>
                
-                <a href="@Url.Action("RestaurantMenu", "Menu")" class="nav-item">
+                <a href="@Url.Action("RestaurantMenu", "Menu")" class="nav-item @(currentController == "Menu" && currentAction == "RestaurantMenu" ? "active" : "")">
                     <i class="fas fa-book-open"></i>
                     <span>منو</span>
                 </a>
-                <a href="@Url.Action("PublicMenuQRCode", "Menu")" class="nav-item">
+                <a href="@Url.Action("PublicMenuQRCode", "Menu")" class="nav-item @(currentController == "Menu" && currentAction == "PublicMenuQRCode" ? "active" : "")">
                     <i class="fas fa-qrcode"></i>
                     <span>منوی عمومی</span>
                 </a>
-                <a href="@Url.Action("ManagerReports", "Home")" class="nav-item">
+                <a href="@Url.Action("ManagerReports", "Home")" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
                     <i class="fas fa-chart-line"></i>
                     <span>گزارش گیری</span>
                 </a>
                 <!-- آیتم اشتراک رستوران -->
-                <a href="@Url.Action("RestaurantSubscription", "Home")" class="nav-item">
+                <a href="@Url.Action("RestaurantSubscription", "Home")" class="nav-item @(currentAction == "RestaurantSubscription" ? "active" : "")">
                     <i class="fas fa-crown"></i>
                     <span>اشتراک رستوران</span>
                 </a>
 
+                <!-- آیتم پیام‌ها -->
+                <a href="@Url.Action("Messages", "Home")"
+                   class="nav-item @(currentAction == "Messages" ? "active" : "")"
+                   id="navMessages">
+                    <i class="fas fa-envelope"></i>
+                    <span>پیام‌ها</span>
+                    <span id="navMessagesBadge" class="nav-item-badge" hidden></span>
+                </a>
+
                 <!-- آیتم پشتیبانی -->
-                <a href="@Url.Action("Support", "Home")" class="nav-item">
+                <a href="@Url.Action("Support", "Home")" class="nav-item @(currentAction == "Support" ? "active" : "")">
                     <i class="fas fa-headset"></i>
                     <span>پشتیبانی</span>
                 </a>
@@ -123,7 +141,7 @@
                     </button>
                     <div class="page-title">
                         @* <i class="@(ViewData["PageIcon"]?.ToString() ?? "fas fa-home")"></i> *@
-                        <span>@ViewData["Title"]</span>
+                        <span>@layoutPageTitle</span>
                     </div>
                 </div>
 
@@ -134,7 +152,7 @@
                 <div class="topbar-actions">
                     <button id="ownerMessageBtn" class="action-btn" type="button" title="پیام‌ها">
                         <i class="fas fa-bell"></i>
-                        <span id="ownerMessageBadge" class="badge-dot owner-msg-badge" hidden></span>
+                        <span id="ownerMessageBadge" class="owner-msg-badge" hidden></span>
                     </button>
 
                     <div class="user-profile" >
@@ -153,7 +171,7 @@
             </header>
 
             <div class="page-wrapper">
-                <div class="content-card">
+                <div class="content-card" id="contentCard">
                     @RenderBody()
                 </div>
             </div>
@@ -237,11 +255,13 @@
             //     }
             // });
 
-            // Active link highlighting
-            document.querySelectorAll('.nav-item').forEach(link => {
-                if (link.href === window.location.href) {
-                    link.classList.add('active');
-                }
+            // Active link highlighting (fallback for full page loads)
+            document.querySelectorAll('.sidebar-nav a.nav-item').forEach(function (link) {
+                try {
+                    var linkPath = new URL(link.href, window.location.origin).pathname.toLowerCase();
+                    var currentPath = window.location.pathname.toLowerCase();
+                    link.classList.toggle('active', linkPath === currentPath);
+                } catch (e) { /* ignore */ }
             });
 
            
@@ -304,6 +324,14 @@
             window.fetchWithAuth = fetchWithAuth;
         </script>
         <script type="module" src="~/js/owner-messages.js" asp-append-version="true"></script>
+        <script src="~/js/sidebar-nav.js" asp-append-version="true"></script>
+        <script>
+            $(function () {
+                if (typeof window.runSidebarPageInit === 'function') {
+                    window.runSidebarPageInit();
+                }
+            });
+        </script>
     }
 
 </body>

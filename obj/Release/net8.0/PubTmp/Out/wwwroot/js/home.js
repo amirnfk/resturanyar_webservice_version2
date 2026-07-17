@@ -57,11 +57,66 @@
     document.addEventListener('scroll', onScroll, {passive: true });
         back.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth' }));
 
+        // Mobile top nav collapse
+        function initMobileTopNav() {
+            const menu = document.getElementById('topNavMenu');
+            const toggler = document.getElementById('topNavToggler');
+            if (!menu || !toggler || typeof bootstrap === 'undefined') return;
+
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false });
+
+            const setTogglerState = (isOpen) => {
+                toggler.classList.toggle('collapsed', !isOpen);
+                toggler.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            };
+
+            toggler.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (menu.classList.contains('show') || menu.classList.contains('collapsing')) {
+                    bsCollapse.hide();
+                } else {
+                    bsCollapse.show();
+                }
+            });
+
+            menu.addEventListener('shown.bs.collapse', () => setTogglerState(true));
+            menu.addEventListener('hidden.bs.collapse', () => setTogglerState(false));
+
+            menu.querySelectorAll('a.nav-link, a.btn-manager').forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (menu.classList.contains('show')) bsCollapse.hide();
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                if (window.innerWidth >= 768) return;
+                if (!menu.classList.contains('show')) return;
+                if (toggler.contains(event.target) || menu.contains(event.target)) return;
+                bsCollapse.hide();
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && menu.classList.contains('show')) {
+                    bsCollapse.hide();
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initMobileTopNav);
+        } else {
+            initMobileTopNav();
+        }
+
         // Bootstrap scrollspy refresh (after bundle loaded)
         window.addEventListener('load', () => {
           if (typeof bootstrap !== 'undefined') {
-            const spy = bootstrap.ScrollSpy.getOrCreateInstance(document.body);
-            window.addEventListener('resize', () => spy.refresh());
+            const spyTarget = document.querySelector('#nav');
+            if (spyTarget) {
+              const spy = bootstrap.ScrollSpy.getOrCreateInstance(document.body);
+              window.addEventListener('resize', () => spy.refresh());
+            }
           }
         });
 

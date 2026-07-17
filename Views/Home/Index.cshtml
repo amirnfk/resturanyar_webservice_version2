@@ -67,7 +67,14 @@
                     <p class="fs-4 fw-bold text-green">کافه و رستوران خودت را هوشمند مدیریت کن</p>                    <p class="hero-sub mb-4">رستورانیار: پلتفرم کامل برای مدیریت منوی دیجیتال، سفارش‌گیری سریع گارسون، ارسال به آشپزخانه و صندوق هوشمند. کارایی را افزایش دهید و خطای انسانی را به صفر برسانید.</p>
                     <div class="d-flex flex-wrap gap-2">
                         <a href="/resturanyar-pricelist" class="btn btn-cta"><i class="fa-solid fa-download ms-1"></i> دریافت لیست قیمت</a>
-                        <a href="/Home/ManagerLogin" class="btn btn-manager  d-sm-inline-flex"> ورود مدیر</a>
+                        @if (User.Identity?.IsAuthenticated == true && User.GetOwnerId() != null)
+                        {
+                            <a href="@(User.GetRestaurantId() != null ? "/Home/Dashboard" : "/Home/ChooseRestaurant")" class="btn btn-manager d-sm-inline-flex">پنل مدیریت</a>
+                        }
+                        else
+                        {
+                            <a href="/Home/ManagerLogin" class="btn btn-manager d-sm-inline-flex">ورود مدیر</a>
+                        }
 
                     </div>
 
@@ -95,7 +102,7 @@
                                 <span class="tablet-btn"></span>
                             </div>
                         </div>
-                        <div class="tablet-badge"><i class="fa-solid fa-circle-check"></i> اتصال یکپارچه: سفارش‌گیر گارسون ↔️ پنل آشپزخانه ↔️ صندوق</div>
+                        <div class="tablet-badge"><i class="fa-solid fa-circle-check"></i> اتصال یکپارچه: سفارش‌گیر گارسون <i class="fa-solid fa-right-left mx-1"></i> پنل آشپزخانه <i class="fa-solid fa-right-left mx-1"></i> صندوق</div>
                     </div>
                 </div>
             </div>
@@ -270,7 +277,14 @@
                             <a href="https://cafebazaar.ir/app/com.musiclrc.resturanyar" target="_blank" rel="noopener" class="store-btn">
                                 <i class="fa-solid fa-store ms-1"></i>   دریافت از کافه‌بازار
                             </a>
-                            <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex"> ورود مدیر</a>
+                            @if (User.Identity?.IsAuthenticated == true && User.GetOwnerId() != null)
+                            {
+                                <a href="@(User.GetRestaurantId() != null ? "/Home/Dashboard" : "/Home/ChooseRestaurant")" class="btn btn-manager d-none d-sm-inline-flex">پنل مدیریت</a>
+                            }
+                            else
+                            {
+                                <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex">ورود مدیر</a>
+                            }
 
                         </div>
                     </div>
@@ -490,11 +504,6 @@
     </script>
 
     <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="fa-solid fa-arrow-up"></i></button>
-
-    <script src="~/js/home.js" asp-append-version="true"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="~/js/bootstrap.bundle.min.js" defer></script>
 
     <!-- Structured Data -->
     <script type="application/ld+json">

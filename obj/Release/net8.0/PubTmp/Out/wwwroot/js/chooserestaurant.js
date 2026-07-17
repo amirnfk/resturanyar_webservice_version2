@@ -39,7 +39,7 @@ $(document).ready(function () {
             '    <div class="modal-content text-center rounded-4 shadow border-0 p-3">' +
             '      <div class="modal-body">' +
             '        <div class="mb-3"><i class="fa-solid fa-gift fa-3x text-orange"></i></div>' +
-            '        <h5 class="fw-bold text-orange mb-2">تبریک! 🎉</h5>' +
+            '        <h5 class="fw-bold text-orange mb-2"><i class="fa-solid fa-gift ms-1"></i> تبریک!</h5>' +
             '        <p class="mb-3">' + message + '</p>' +
             '        <button type="button" class="btn btn-orange w-100 fw-bold" id="closeTrialModalBtn">متوجه شدم</button>' +
             '      </div>' +
@@ -103,20 +103,20 @@ $(document).ready(function () {
                         redirectAfterAdd(res.restaurant_id);
                     });
                 } else {
-                    alert("✅ " + res.message);
+                    showToast(res.message, 'success');
                     setTimeout(function () {
                         redirectAfterAdd(res.restaurant_id);
                     }, 1500);
                 }
             } else {
                 // Server returned error (non-200 or success false)
-                alert("❌ " + (res.message || 'خطا در ثبت رستوران'));
+                showToast(res.message || 'خطا در ثبت رستوران', 'error');
                 errorDiv.text(res.message || 'خطا').show();
             }
         } catch (error) {
             // Network errors or interceptor redirection (e.g., refresh failure)
             // The interceptor already redirects to login on auth failure, so we just show a generic error.
-            alert("❌ خطا در ارتباط با سرور: " + (error.message || ''));
+            showToast('خطا در ارتباط با سرور: ' + (error.message || ''), 'error');
             errorDiv.text('خطا در ارتباط با سرور').show();
         } finally {
             $btn.prop('disabled', false).text('افزودن');

@@ -2,9 +2,9 @@
     'use strict';
 
     var icons = {
-        success: '\u2713',
-        error: '\u2715',
-        info: '\u2139'
+        success: '<i class="fa-solid fa-circle-check" aria-hidden="true"></i>',
+        error: '<i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>',
+        info: '<i class="fa-solid fa-circle-info" aria-hidden="true"></i>'
     };
 
     function escapeHtml(text) {

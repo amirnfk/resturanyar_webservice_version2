@@ -26,7 +26,12 @@ $.ajaxSetup({
 
  
         window.addEventListener('goftino_ready', function () {
-            document.getElementById("open_chat").addEventListener("click", function () {
+            var openChat = document.getElementById("open_chat");
+            var closeChat = document.getElementById("close_chat");
+            var toggleChat = document.getElementById("toggle_chat");
+            if (!openChat || !closeChat || !toggleChat) return;
+
+            openChat.addEventListener("click", function () {
                 Goftino.setUser({
                     email: '...',
                     name: '...',
@@ -39,11 +44,11 @@ $.ajaxSetup({
 
                 Goftino.open();
             });
-        document.getElementById("close_chat").addEventListener("click", function () {
-            Goftino.close();
+            closeChat.addEventListener("click", function () {
+                Goftino.close();
+            });
+            toggleChat.addEventListener("click", function () {
+                Goftino.toggle();
+            });
         });
-        document.getElementById("toggle_chat").addEventListener("click", function () {
-            Goftino.toggle();
-        });
-    });
  

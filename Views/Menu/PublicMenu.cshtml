@@ -2,7 +2,6 @@
     Layout = "~/Views/Shared/_Layout_public.cshtml";
 }
 
-
 @model List<resturanyar.Models.FoodItemViewModel>
 @{
     ViewData["Title"] = "منوی رستوران";
@@ -10,530 +9,28 @@
     var groups = Model
       .GroupBy(f => new { f.CategoryId, f.CategoryName, f.CategoryDisplayOrder })
       .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, g.Key.CategoryDisplayOrder, Items = g.ToList() })
-      .OrderBy(g => g.CategoryDisplayOrder)      // مرتب‌سازی بر اساس ترتیب
-      .ThenBy(g => g.CategoryName)               // در صورت برابری بر اساس نام
+      .OrderBy(g => g.CategoryDisplayOrder)
+      .ThenBy(g => g.CategoryName)
       .ToList();
     var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);
 }
 
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
-<link href="~/css/bootstrap-icons.css" rel="stylesheet" />
-@* <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800;900&display=swap" rel="stylesheet" /> *@
-<style>
-    :root {
-        --primary: #ff7a1a;
-        --primary-2: #ff9e53;
-        --accent: #00c2a8;
-        --bg: #fff7ef;
-        --card: #ffffff;
-        --text: #212529;
-        --muted: #6d7385;
-        --shadow: 0 12px 40px rgba(0,0,0,.08);
-        --radius: 18px;
-        --toolbar-h: 72px;
-        --safe-bottom: env(safe-area-inset-bottom,0px);
-    }
-
-    body {
-        direction: rtl;
-        font-family: "IRANYekan",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-        background: radial-gradient(1400px 600px at 100% -10%, rgba(255,122,26,.12), transparent 60%), radial-gradient(1000px 400px at -5% 105%, rgba(0,194,168,.10), transparent 60%), var(--bg);
-        color: var(--text);
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        -webkit-tap-highlight-color: transparent
-    }
-
-    .menu-hero {
-        position: relative;
-        padding: 40px 12px 14px;
-        text-align: center;
-        overflow: hidden
-    }
-
-        .menu-hero .title {
-            font-weight: 900;
-            font-size: clamp(20px,5vw,36px)
-        }
-
-    .blob {
-        position: absolute;
-        inset: auto -10% 0 -10%;
-        height: 50%;
-        background: radial-gradient(600px 180px at 78% 20%, rgba(255,122,26,.08), transparent 60%), radial-gradient(500px 160px at 20% 80%, rgba(0,194,168,.08), transparent 60%);
-        pointer-events: none
-    }
-
-    .menu-toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        backdrop-filter: saturate(140%) blur(10px);
-        background: rgba(255,255,255,.75);
-        border-bottom: 1px solid rgba(0,0,0,.06);
-        box-shadow: 0 6px 16px rgba(0,0,0,.06)
-    }
-
-    .toolbar-inner {
-        padding: 8px 10px
-    }
-
-    .search-wrap {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        background: #fff;
-        border: 1px solid rgba(0,0,0,.06);
-        border-radius: 12px;
-        padding: 6px 10px;
-        box-shadow: 0 6px 16px rgba(0,0,0,.04)
-    }
-
-        .search-wrap input {
-            border: 0;
-            outline: 0;
-            background: transparent;
-            width: 100%;
-            font-size: 15px
-        }
-
-    .filters {
-        display: flex;
-        gap: 8px;
-        flex-wrap: nowrap;
-        overflow: auto;
-        padding-bottom: 2px;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x proximity
-    }
-
-    .filter-chip {
-        scroll-snap-align: start;
-        border-radius: 999px;
-        border: 1px solid rgba(0,0,0,.08);
-        background: #fff;
-        color: #333;
-        padding: 6px 12px;
-        font-weight: 700;
-        font-size: 13px;
-        white-space: nowrap
-    }
-
-        .filter-chip.active {
-            background: linear-gradient(90deg,var(--primary),var(--primary-2));
-            color: #fff;
-            border: 0
-        }
-
-    .chip-scroller {
-        display: flex;
-        gap: 8px;
-        overflow: auto;
-        padding: 8px 2px 10px;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x proximity
-    }
-
-        .chip-scroller::-webkit-scrollbar {
-            height: 6px
-        }
-
-    .chip {
-        border: 0;
-        border-radius: 999px;
-        background: #fff;
-        color: #444;
-        padding: 8px 14px;
-        font-weight: 800;
-        box-shadow: 0 6px 16px rgba(0,0,0,.05);
-        white-space: nowrap;
-        scroll-snap-align: start
-    }
-
-        .chip .count {
-            background: #f1f3f5;
-            color: #555;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 12px;
-            margin-inline-start: 6px
-        }
-
-        .chip.active-category {
-            background: linear-gradient(135deg,var(--primary),var(--primary-2));
-            color: #fff
-        }
-
-            .chip.active-category .count {
-                background: rgba(255,255,255,.25);
-                color: #fff
-            }
-
-    .container-section {
-        padding: 18px 0
-    }
-
-    .category-section {
-        scroll-margin-top: calc(var(--toolbar-h) + 10px);
-        content-visibility: auto;
-        contain-intrinsic-size: 600px
-    }
-
-    .cat-title {
-        font-weight: 900;
-        font-size: clamp(16px,3.8vw,22px);
-        margin: 10px 0 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px
-    }
-
-        .cat-title i {
-            color: var(--primary)
-        }
-
-    .food-card .card {
-        border: 0;
-        border-radius: 16px;
-        overflow: hidden;
-        background: var(--card);
-        box-shadow: 0 8px 18px rgba(0,0,0,.06);
-        transition: transform .25s ease, box-shadow .25s ease
-    }
-    @@media (hover:hover) {
-        .food-card .card:hover
-
-    {
-        transform: translateY(-4px)
-    }
-
-    }
-
-    .img-wrap {
-        position: relative
-    }
-
-        .img-wrap img {
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-            display: block;
-            aspect-ratio: 4/3
-        }
-
-    .gradient-over {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,.28), transparent 60%);
-        pointer-events: none
-    }
-
-    .discount-ribbon {
-        position: absolute;
-        inset-inline-start: 8px;
-        inset-block-start: 12px;
-        background: linear-gradient(135deg,#24c768,#0aa84e);
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 800;
-        box-shadow: 0 6px 16px rgba(0,0,0,.08)
-    }
-
-    .sold-badge {
-        position: absolute;
-        inset-inline-end: 8px;
-        inset-block-start: 12px;
-        background: linear-gradient(135deg,#ff6b6b,#ff3b3b);
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-weight: 800;
-        font-size: 12px;
-        box-shadow: 0 6px 16px rgba(0,0,0,.08)
-    }
-
-    .card-body {
-        padding: 10px 12px;
-        text-align: center
-    }
-
-    .card-title {
-        font-size: 1rem;
-        font-weight: 800;
-        margin: 0 0 4px
-    }
-
-    .card-text {
-        color: #6c757d;
-        font-size: .9rem;
-        min-height: 36px
-    }
-
-    .price-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 6px
-    }
-
-    .price {
-        color: #1f8f5f;
-        font-weight: 900
-    }
-
-    .old-price {
-        color: #adb5bd;
-        text-decoration: line-through;
-        font-size: .85rem
-    }
-
-    .card-actions {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 10px
-    }
-
-    .btn-quick, .btn-add {
-        border-radius: 12px;
-        padding: 8px 12px;
-        font-weight: 800;
-        font-size: 13px;
-        border: 1px solid rgba(0,0,0,.08);
-        background: #fff
-    }
-
-    .btn-add {
-        background: linear-gradient(135deg,var(--primary),var(--primary-2));
-        color: #fff;
-        border: 0
-    }
-
-    .sold-out .card {
-        filter: grayscale(.4);
-        opacity: .78
-    }
-
-    .sold-out .btn-add {
-        pointer-events: none;
-        opacity: .65
-    }
-
-    .reveal {
-        opacity: 0;
-        transform: translateY(12px);
-        transition: .45s ease
-    }
-
-        .reveal.show {
-            opacity: 1;
-            transform: translateY(0)
-        }
-
-    .back-top {
-        position: fixed;
-        inset-inline-end: 12px;
-        inset-block-end: calc(12px + var(--safe-bottom));
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: linear-gradient(135deg,var(--primary),var(--primary-2));
-        color: #fff;
-        border: 0;
-        display: grid;
-        place-items: center;
-        box-shadow: 0 8px 18px rgba(0,0,0,.12);
-        opacity: 0;
-        transform: translateY(16px);
-        transition: .25s ease;
-        z-index: 998
-    }
-
-        .back-top.show {
-            opacity: 1;
-            transform: translateY(0)
-        }
-    /* FAB notebook */
-    .note-fab {
-        position: fixed;
-        inset-inline-end: 12px;
-        inset-block-end: calc(64px + var(--safe-bottom));
-        z-index: 999;
-        border: 0;
-        border-radius: 14px;
-        background: #111;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 12px;
-        box-shadow: 0 10px 24px rgba(0,0,0,.2)
-    }
-
-        .note-fab .badge {
-            background: linear-gradient(135deg,var(--primary),var(--primary-2));
-        }
-    /* Offcanvas note */
-    .offcanvas-header {
-        border-bottom: 1px solid #eee
-    }
-
-    .offcanvas-footer {
-        border-top: 1px solid #eee;
-        background: #fff;
-        position: sticky;
-        bottom: 0
-    }
-
-    .note-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        padding: 8px;
-        border-bottom: 1px dashed #eee
-    }
-
-        .note-item .title {
-            font-weight: 700
-        }
-
-    .qty-group {
-        display: flex;
-        align-items: center;
-        gap: 6px
-    }
-
-    .qty-btn {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        background: #fff;
-        display: grid;
-        place-items: center
-    }
-
-    .note-empty {
-        padding: 24px;
-        text-align: center;
-        color: #777
-    }
-
-    .note-text {
-        width: 100%;
-        min-height: 80px;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        padding: 8px 10px
-    }
-    @@media (max-width:576px) {
-        .img-wrap img
-
-    {
-        height: 140px
-    }
-
-    /* .card-actions .btn-quick, .card-actions .btn-add { */
-    /*     width: 42px; */
-    /*     height: 42px; */
-    /*     padding: 0; */
-    /*     border-radius: 12px; */
-    /*     font-size: 0 */
-    /* } */
-
-    /*     .card-actions .btn-quick i, .card-actions .btn-add i { */
-    /*         font-size: 18px */
-    /*     } */
-
-    .note-fab {
-        padding: 9px 10px
-    }
-
-    }
-
-    .restaurant-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255, 122, 26, 0.12);
-        backdrop-filter: blur(8px);
-        padding: 6px 18px;
-        border-radius: 100px;
-        margin-bottom: 12px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--primary);
-        border: 1px solid rgba(255, 122, 26, 0.2);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .restaurant-name-glow {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: linear-gradient(135deg, #ff7a1a, #ff9e53);
-        padding: 8px 24px;
-        border-radius: 60px;
-        margin-bottom: 16px;
-        box-shadow: 0 10px 25px -5px rgba(255, 122, 26, 0.4);
-    }
-
-    .glow-text {
-        font-size: 1.3rem;
-        font-weight: 900;
-        color: white;
-        letter-spacing: -0.5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .star-icon {
-        color: #ffd700;
-        font-size: 1.2rem;
-        filter: drop-shadow(0 0 4px rgba(255,215,0,0.6));
-    }
-
-    .title {
-        font-weight: 900;
-        font-size: clamp(22px,6vw,40px);
-        background: linear-gradient(135deg, #212529, #4a4e54);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-        margin-bottom: 8px;
-    }
-
-    .subtitle {
-        color: var(--muted);
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-</style>
-
+@section Styles {
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/restaurant-menu.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/public-menu.css" asp-append-version="true" />
+}
+
+<div class="public-menu-page">
 <section class="menu-hero">
-    <section class="menu-hero">
-        <div class="hero-content">
-            <div class="restaurant-name-glow">
-               
-                <span class="glow-text">  منوی @ViewBag.RestaurantName  </span>
-              
-            </div>
-           
-            <p class="subtitle">✨ طعم‌های خاص، لحظه‌های به‌یادماندنی ✨</p>
+    <div class="hero-content">
+        <div class="restaurant-name-glow">
+            <span class="glow-text">منوی @ViewBag.RestaurantName</span>
         </div>
-        <div class="blob"></div>
-    </section>
-   
-    
+        <p class="subtitle"><i class="fa-solid fa-wand-magic-sparkles ms-1"></i> طعم‌های خاص، لحظه‌های به‌یادماندنی <i class="fa-solid fa-wand-magic-sparkles me-1"></i></p>
+    </div>
     <div class="blob"></div>
 </section>
 
@@ -573,12 +70,10 @@
     @if (Model == null || !Model.Any())
     {
         <div class="text-center py-5">
-            <div class="card shadow-sm border-0 mx-auto" style="max-width:420px;border-radius:1rem;">
-                <div class="card-body">
-                    <div style="font-size:3rem;">🍴</div>
-                    <h5 class="mt-3 mb-2 fw-bold">منو در حال حاضر خالی است</h5>
-                    <p class="text-muted mb-0">به زودی غذاهای خوشمزه به این منو اضافه خواهند شد.</p>
-                </div>
+            <div class="menu-empty-state p-4 mx-auto">
+                <div class="emoji"><i class="fa-solid fa-utensils"></i></div>
+                <h5 class="mt-3 mb-2 fw-bold">منو در حال حاضر خالی است</h5>
+                <p class="text-muted mb-0">به زودی غذاهای خوشمزه به این منو اضافه خواهند شد.</p>
             </div>
         </div>
     }
@@ -656,11 +151,11 @@
 <!-- Quick view modal -->
 <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
-        <div class="modal-content" style="border-radius:16px;">
+        <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="row g-0">
                     <div class="col-md-6">
-                        <img id="qvImg" src="@placeholder" class="w-100 h-100" style="object-fit:cover; border-radius:16px 0 0 16px;" alt="">
+                        <img id="qvImg" src="@placeholder" class="w-100 h-100" alt="">
                     </div>
                     <div class="col-md-6 p-3 p-md-4">
                         <h5 id="qvTitle" class="fw-bold mb-2"></h5>
@@ -720,6 +215,8 @@
 
 <button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="bi bi-arrow-up"></i></button>
 
+</div>
+
 <script>
     (function(){
     const chips = Array.from(document.querySelectorAll("[data-scroll]"));
@@ -734,7 +231,7 @@
     // Toolbar var
     const setToolbarVar = () => {
     const h = (toolbar?.offsetHeight || 0);
-    document.documentElement.style.setProperty("--toolbar-h", h + "px");
+    document.documentElement.style.setProperty("--menu-toolbar-h", h + "px");
     };
     setToolbarVar(); window.addEventListener("resize", setToolbarVar);
 

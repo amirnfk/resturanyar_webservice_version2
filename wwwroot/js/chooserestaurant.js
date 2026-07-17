@@ -39,7 +39,7 @@ $(document).ready(function () {
             '    <div class="modal-content text-center rounded-4 shadow border-0 p-3">' +
             '      <div class="modal-body">' +
             '        <div class="mb-3"><i class="fa-solid fa-gift fa-3x text-orange"></i></div>' +
-            '        <h5 class="fw-bold text-orange mb-2">تبریک! 🎉</h5>' +
+            '        <h5 class="fw-bold text-orange mb-2"><i class="fa-solid fa-gift ms-1"></i> تبریک!</h5>' +
             '        <p class="mb-3">' + message + '</p>' +
             '        <button type="button" class="btn btn-orange w-100 fw-bold" id="closeTrialModalBtn">متوجه شدم</button>' +
             '      </div>' +

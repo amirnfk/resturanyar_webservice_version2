@@ -2,9 +2,6 @@
     ViewData["Title"] = "مدیریت و آنالیز مشتریان";
     var placeholder = Url.Content("~/images/customer_placeholder.png");
 }
-<link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
-
-<link rel="stylesheet" href="~/css/toastr.min.css" />
 <style>
     :root {
         --primary: #ff7a00;
@@ -25,8 +22,7 @@
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    body {
-        background: var(--bg-page);
+    .customers-page {
         direction: rtl;
         font-family: "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         color: var(--text-dark);
@@ -357,7 +353,7 @@
         }
 </style>
 
-<div class="container py-4">
+<div class="container customers-page py-4">
     <!-- هدر صفحه -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0 fw-black">   </h4>
@@ -594,26 +590,10 @@
         </div>
     </div>
 </div>
-
-<script src="~/js/jquery_3.6.0.min.js"></script>
-<script src="~/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/toastr.min.js"></script>
-<script src="~/js/chart.umd.min.js"></script>
-
-<script type="module">
-    import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
-    window.fetchWithAuth = fetchWithAuth;
-</script>
-
+@section Scripts {
+<script src="~/js/chart.umd.min.js" asp-append-version="true"></script>
 <script>
-    const API_BASE = "/api/v2/UserApi";
-    toastr.options = {
-        "positionClass": "toast-top-left",
-        "timeOut": "3000",
-        "closeButton": true,
-        "progressBar": true,
-        "rtl": true
-    };
+    var API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
     var currentPage = 1;
     var pageSize = 12;
@@ -621,12 +601,30 @@
     var editingCustomerId = 0;
     var currentPeriod = "all";
     var currentSortBy = "TotalSpent";
+    var customersListPageId = 0;
+    var trendChart = null;
+
+    function isCustomersListPageCurrent(pageId) {
+        return pageId === customersListPageId;
+    }
+
+    function destroyCustomersListPage() {
+        customersListPageId++;
+        if (trendChart) {
+            trendChart.destroy();
+            trendChart = null;
+        }
+    }
+    window.destroyCustomersListPage = destroyCustomersListPage;
 
     async function loadInsightsCards() {
+        const pageId = customersListPageId;
         try {
             const response = await window.fetchWithAuth(`${API_BASE}/getcustomerinsights/${restaurantId}`);
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load insights');
             const responseData = await response.json();
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (responseData.success) {
                 const data = responseData.data;
 
@@ -692,14 +690,16 @@
                     if (bestHtml === '') bestHtml = '<div class="text-center py-5 text-muted small">مشتری دارای سفارش یافت نشد</div>';
                     $("#bestCustomersList").html(bestHtml);
                 } else {
-                    toastr.error(responseData.message);
+                    showToast(responseData.message, 'error');
                 }
             } catch (error) {
-                toastr.error("خطا در دریافت اطلاعات کارت‌ها");
+                if (!isCustomersListPageCurrent(pageId)) return;
+                showToast("خطا در دریافت اطلاعات کارت‌ها", 'error');
             }
     }
 
     async function loadCustomers(page, search, period, sortBy) {
+        const pageId = customersListPageId;
         currentPage = page || 1;
         currentSearch = search !== undefined ? search : currentSearch;
         currentPeriod = period !== undefined ? period : currentPeriod;
@@ -716,8 +716,10 @@
                 sortBy: currentSortBy
             });
             const response = await window.fetchWithAuth(`${API_BASE}/getcustomerswithstats/${restaurantId}?${params}`);
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load customers');
             const responseData = await response.json();
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (responseData.success) {
                 if (responseData.data && responseData.data.length > 0) {
                     renderCustomersWithStats(responseData.data);
@@ -728,21 +730,26 @@
                     $("#totalRecordsInfo").hide();
                 }
             } else {
-                toastr.error(responseData.message);
+                showToast(responseData.message, 'error');
             }
         } catch (error) {
-            toastr.error("خطا در دریافت لیست مشتریان");
+            if (!isCustomersListPageCurrent(pageId)) return;
+            showToast("خطا در دریافت لیست مشتریان", 'error');
         } finally {
-            $("#loadingSpinner").addClass("d-none");
+            if (isCustomersListPageCurrent(pageId)) {
+                $("#loadingSpinner").addClass("d-none");
+            }
         }
     }
 
-    let trendChart = null;
     async function loadDashboardStats() {
+        const pageId = customersListPageId;
         try {
             const response = await window.fetchWithAuth(`${API_BASE}/getdashboardstats/${restaurantId}`);
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load dashboard stats');
             const responseData = await response.json();
+            if (!isCustomersListPageCurrent(pageId)) return;
             if (responseData.success) {
                 const s = responseData.data;
                     $("#totalCustomers").text(s.totalActiveCustomers.toLocaleString('fa-IR'));
@@ -753,8 +760,11 @@
                     $("#topCustomerAmount").text(s.topCustomerTotalSpent.toLocaleString('fa-IR') + " تومان");
                     $("#topCustomerOrders").text(s.topCustomerOrders.toLocaleString('fa-IR'));
 
+                    const chartCanvas = document.getElementById('trendChart');
+                    if (!chartCanvas) return;
+
                     if (trendChart) trendChart.destroy();
-                    const ctx = document.getElementById('trendChart').getContext('2d');
+                    const ctx = chartCanvas.getContext('2d');
 
                     // ایجاد گرادینت زیر خطوط نمودار برای زیبایی دوچندان محیط گراف
                     const orangeGradient = ctx.createLinearGradient(0, 0, 0, 200);
@@ -839,10 +849,11 @@
                         }
                     });
                 } else {
-                    toastr.error(responseData.message);
+                    showToast(responseData.message, 'error');
                 }
             } catch (error) {
-                toastr.error("خطا در دریافت اطلاعات داشبورد");
+                if (!isCustomersListPageCurrent(pageId)) return;
+                showToast("خطا در دریافت اطلاعات داشبورد", 'error');
             }
     }
 
@@ -952,179 +963,15 @@
         $("#paginationContainer").html(html);
     }
 
-    // ایونت لیسنرهای باتن‌ها و فیلترها
-    $("#btnApplyFilter").click(function () {
-        currentPeriod = $("#periodSelect").val();
-        currentSortBy = $("#sortBySelect").val();
-        loadCustomers(1, currentSearch, currentPeriod, currentSortBy);
-    });
+    var deleteId = 0;
 
-    $("#btnResetSearch").click(function () {
-        $("#searchInput").val("");
-        $("#periodSelect").val("all");
-        $("#sortBySelect").val("TotalSpent");
-        currentSearch = "";
-        currentPeriod = "all";
-        currentSortBy = "TotalSpent";
-        loadCustomers(1, "", "all", "TotalSpent");
-        toastr.info("فیلترها و مرتب‌سازی بازنشانی شدند");
-    });
-
-    $("#btnSearch").click(function () {
-        let rawSearch = $("#searchInput").val().trim();
-        currentSearch = toEnglishDigits(rawSearch);
-        loadCustomers(1, currentSearch);
-    });
-
-    $("#searchInput").on("keypress", function (e) {
-        if (e.which === 13) {
-            $("#btnSearch").click();
-        }
-    });
-
-    $("#btnAddCustomer").click(function () {
-        editingCustomerId = 0;
-        $("#modalTitle").text("افزودن مشتری جدید");
-        $("#customerId").val("0");
-        $("#fullName").val("");
-        $("#mobile").val("");
-        $("#description").val("");
-        $("#customerModal").modal("show");
-    });
-
-    $(document).on("click", ".edit-customer", function () {
-        editingCustomerId = $(this).data("id");
-        $("#modalTitle").text("ویرایش حساب مشتری");
-        $("#customerId").val(editingCustomerId);
-        $("#fullName").val($(this).data("name"));
-        $("#mobile").val($(this).data("mobile"));
-        $("#description").val($(this).data("desc"));
-        $("#customerModal").modal("show");
-    });
-
-      $("#btnSaveCustomer").click(async function () {
-        const id = $("#customerId").val();
-        let fullName = $("#fullName").val().trim();
-        let mobile = $("#mobile").val().trim();
-        const description = $("#description").val().trim();
-
-        if (id === "0") {
-            if (fullName !== "") {
-                if (mobile === "") {
-                    mobile = generateAutoMobile();
-                }
-            } else {
-                if (!mobile) {
-                    toastr.warning("شماره موبایل الزامی است");
-                    $("#mobile").focus();
-                    return;
-                }
-                if (!/^09[0-9]{9}$/.test(mobile)) {
-                    toastr.warning("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید");
-                    $("#mobile").focus();
-                    return;
-                }
-                fullName = "مشتری مهمان";
-            }
-        } else {
-            if (!mobile) {
-                toastr.warning("شماره موبایل الزامی است");
-                $("#mobile").focus();
-                return;
-            }
-            if (!/^09[0-9]{9}$/.test(mobile)) {
-                toastr.warning("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید");
-                $("#mobile").focus();
-                return;
-            }
-            if (!fullName) {
-                fullName = "مشتری مهمان";
-            }
-        }
-
-        const payload = id === "0" ? {
-            restaurantId: restaurantId,
-            fullName: fullName,
-            mobile: mobile,
-            description: description
-        } : {
-            customerId: parseInt(id),
-            restaurantId: restaurantId,
-            fullName: fullName,
-            mobile: mobile,
-            description: description
-        };
-
-        let url = `${API_BASE}/addcustomer`;
-        let method = "POST";
-        if (id !== "0") {
-            url = `${API_BASE}/editcustomer`;
-            method = "PUT";
-        }
-
-        try {
-            const response = await window.fetchWithAuth(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const res = await response.json();
-            if (res.success) {
-                toastr.success(res.message);
-                $("#customerModal").modal("hide");
-                loadCustomers(currentPage, currentSearch);
-                loadDashboardStats();
-                loadInsightsCards();
-            } else {
-                toastr.error(res.message);
-            }
-        } catch (error) {
-            toastr.error("خطا در برقراری ارتباط با سرور");
-        }
-    });
-      function generateAutoMobile() {
-        const prefix = '991';
-        const timestamp = Date.now().toString();
-        const eightDigits = timestamp.slice(2, 10);
-        const random = Math.floor(Math.random() * 10);
+    function generateAutoMobile() {
+        var prefix = '991';
+        var timestamp = Date.now().toString();
+        var eightDigits = timestamp.slice(2, 10);
+        var random = Math.floor(Math.random() * 10);
         return prefix + eightDigits + random;
     }
-    let deleteId = 0;
-    $(document).on("click", ".delete-customer", function () {
-        deleteId = $(this).data("id");
-        $("#deleteModal").modal("show");
-    });
-
-    $("#confirmDelete").click(async function () {
-        try {
-            const response = await window.fetchWithAuth(`${API_BASE}/deletecustomer`, {
-                method: "DELETE",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    customerId: deleteId,
-                    restaurantId: restaurantId
-                })
-            });
-            const res = await response.json();
-            if (res.success) {
-                toastr.success(res.message);
-                $("#deleteModal").modal("hide");
-                loadCustomers(currentPage, currentSearch);
-                loadDashboardStats();
-                loadInsightsCards();
-            } else {
-                toastr.error(res.message);
-            }
-        } catch (error) {
-            toastr.error("خطا در حذف اطلاعات مشتری");
-        }
-    });
-
-    $(document).on("click", ".page-link", function (e) {
-        e.preventDefault();
-        const page = $(this).data("page");
-        if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy);
-    });
 
     function escapeHtml(str) {
         if (!str) return "";
@@ -1138,15 +985,201 @@
 
     function toEnglishDigits(str) {
         if (!str) return "";
-        const arabicMap = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
-        const persianMap = { '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9' };
-        let result = str;
-        for (let [key, value] of Object.entries(persianMap)) result = result.split(key).join(value);
-        for (let [key, value] of Object.entries(arabicMap)) result = result.split(key).join(value);
+        var arabicMap = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
+        var persianMap = { '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9' };
+        var result = str;
+        for (var key in persianMap) result = result.split(key).join(persianMap[key]);
+        for (var key in arabicMap) result = result.split(key).join(arabicMap[key]);
         return result;
     }
-    
-    $(document).ready(function () {
+
+    function bindCustomersListEvents() {
+        var ns = '.customersList';
+
+        $("#btnApplyFilter").off('click' + ns).on('click' + ns, function () {
+            currentPeriod = $("#periodSelect").val();
+            currentSortBy = $("#sortBySelect").val();
+            loadCustomers(1, currentSearch, currentPeriod, currentSortBy);
+        });
+
+        $("#btnResetSearch").off('click' + ns).on('click' + ns, function () {
+            $("#searchInput").val("");
+            $("#periodSelect").val("all");
+            $("#sortBySelect").val("TotalSpent");
+            currentSearch = "";
+            currentPeriod = "all";
+            currentSortBy = "TotalSpent";
+            loadCustomers(1, "", "all", "TotalSpent");
+            showToast("فیلترها و مرتب‌سازی بازنشانی شدند", 'info');
+        });
+
+        $("#btnSearch").off('click' + ns).on('click' + ns, function () {
+            var rawSearch = $("#searchInput").val().trim();
+            currentSearch = toEnglishDigits(rawSearch);
+            loadCustomers(1, currentSearch);
+        });
+
+        $("#searchInput").off('keypress' + ns).on('keypress' + ns, function (e) {
+            if (e.which === 13) {
+                $("#btnSearch").click();
+            }
+        });
+
+        $("#btnAddCustomer").off('click' + ns).on('click' + ns, function () {
+            editingCustomerId = 0;
+            $("#modalTitle").text("افزودن مشتری جدید");
+            $("#customerId").val("0");
+            $("#fullName").val("");
+            $("#mobile").val("");
+            $("#description").val("");
+            $("#customerModal").modal("show");
+        });
+
+        $(document).off('click' + ns, '.edit-customer').on('click' + ns, '.edit-customer', function () {
+            editingCustomerId = $(this).data("id");
+            $("#modalTitle").text("ویرایش حساب مشتری");
+            $("#customerId").val(editingCustomerId);
+            $("#fullName").val($(this).data("name"));
+            $("#mobile").val($(this).data("mobile"));
+            $("#description").val($(this).data("desc"));
+            $("#customerModal").modal("show");
+        });
+
+        $("#btnSaveCustomer").off('click' + ns).on('click' + ns, async function () {
+            var id = $("#customerId").val();
+            var fullName = $("#fullName").val().trim();
+            var mobile = $("#mobile").val().trim();
+            var description = $("#description").val().trim();
+
+            if (id === "0") {
+                if (fullName !== "") {
+                    if (mobile === "") {
+                        mobile = generateAutoMobile();
+                    }
+                } else {
+                    if (!mobile) {
+                        showToast("شماره موبایل الزامی است", 'info');
+                        $("#mobile").focus();
+                        return;
+                    }
+                    if (!/^09[0-9]{9}$/.test(mobile)) {
+                        showToast("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید", 'info');
+                        $("#mobile").focus();
+                        return;
+                    }
+                    fullName = "مشتری مهمان";
+                }
+            } else {
+                if (!mobile) {
+                    showToast("شماره موبایل الزامی است", 'info');
+                    $("#mobile").focus();
+                    return;
+                }
+                if (!/^09[0-9]{9}$/.test(mobile)) {
+                    showToast("شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید", 'info');
+                    $("#mobile").focus();
+                    return;
+                }
+                if (!fullName) {
+                    fullName = "مشتری مهمان";
+                }
+            }
+
+            var payload = id === "0" ? {
+                restaurantId: restaurantId,
+                fullName: fullName,
+                mobile: mobile,
+                description: description
+            } : {
+                customerId: parseInt(id),
+                restaurantId: restaurantId,
+                fullName: fullName,
+                mobile: mobile,
+                description: description
+            };
+
+            var url = API_BASE + "/addcustomer";
+            var method = "POST";
+            if (id !== "0") {
+                url = API_BASE + "/editcustomer";
+                method = "PUT";
+            }
+
+            try {
+                var response = await window.fetchWithAuth(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                var res = await response.json();
+                if (res.success) {
+                    showToast(res.message, 'success');
+                    $("#customerModal").modal("hide");
+                    loadCustomers(currentPage, currentSearch);
+                    loadDashboardStats();
+                    loadInsightsCards();
+                } else {
+                    showToast(res.message, 'error');
+                }
+            } catch (error) {
+                showToast("خطا در برقراری ارتباط با سرور", 'error');
+            }
+        });
+
+        $(document).off('click' + ns, '.delete-customer').on('click' + ns, '.delete-customer', function () {
+            deleteId = $(this).data("id");
+            $("#deleteModal").modal("show");
+        });
+
+        $("#confirmDelete").off('click' + ns).on('click' + ns, async function () {
+            try {
+                var response = await window.fetchWithAuth(API_BASE + "/deletecustomer", {
+                    method: "DELETE",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerId: deleteId,
+                        restaurantId: restaurantId
+                    })
+                });
+                var res = await response.json();
+                if (res.success) {
+                    showToast(res.message, 'success');
+                    $("#deleteModal").modal("hide");
+                    loadCustomers(currentPage, currentSearch);
+                    loadDashboardStats();
+                    loadInsightsCards();
+                } else {
+                    showToast(res.message, 'error');
+                }
+            } catch (error) {
+                showToast("خطا در حذف اطلاعات مشتری", 'error');
+            }
+        });
+
+        $(document).off('click' + ns, '.page-link').on('click' + ns, '.page-link', function (e) {
+            e.preventDefault();
+            var page = $(this).data("page");
+            if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy);
+        });
+    }
+
+    function initCustomersListPage() {
+        customersListPageId++;
+        if (trendChart) {
+            trendChart.destroy();
+            trendChart = null;
+        }
+
+        currentPage = 1;
+        pageSize = 12;
+        currentSearch = "";
+        editingCustomerId = 0;
+        currentPeriod = "all";
+        currentSortBy = "TotalSpent";
+        deleteId = 0;
+
+        bindCustomersListEvents();
+
         if (restaurantId > 0) {
             loadCustomers(1, "", "all", "TotalSpent");
             loadDashboardStats();
@@ -1154,5 +1187,8 @@
         } else {
             $("#customersList").html('<div class="alert alert-danger text-center">شناسه رستوران نامعتبر است</div>');
         }
-    });
+    }
+
+    window.initCustomersListPage = initCustomersListPage;
 </script>
+}

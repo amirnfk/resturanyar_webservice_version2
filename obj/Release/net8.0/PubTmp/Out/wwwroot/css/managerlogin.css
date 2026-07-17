@@ -74,10 +74,25 @@ body, html {
 
 .password-toggle-icon {
     position: absolute;
-    right: 15px; /* فاصله از چپ در حالت RTL */
-    top: 40px; /* تنظیم ارتفاع متناسب با لیبل */
+    right: 15px;
+    top: 40px;
     cursor: pointer;
     z-index: 10;
+    line-height: 0;
+}
+
+    .password-toggle-icon:focus {
+        outline: none;
+    }
+
+    .password-toggle-icon:focus-visible {
+        outline: 2px solid #FF8800;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+.custom-input.pr-5 {
+    padding-right: 2.75rem;
 }
 
 /* ----------------------------------------------------

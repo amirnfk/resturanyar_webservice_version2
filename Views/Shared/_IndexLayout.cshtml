@@ -81,6 +81,31 @@
             background: rgba(15, 17, 23, 0.8);
         }
         /* واکنش‌گرایی: در موبایل منوی بالایی جمع شود */
+        @@media (max-width: 767.98px) {
+            .top-nav .navbar-toggler {
+                position: relative;
+                z-index: 1045;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                padding: 0.35rem 0.6rem;
+            }
+
+            .top-nav .navbar-toggler-icon {
+                width: 1.4em;
+                height: 1.4em;
+            }
+
+            .top-nav .navbar-collapse {
+                margin-top: 0.65rem;
+                padding-top: 0.65rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+            }
+
+            .top-nav .navbar-collapse.show {
+                max-height: calc(100vh - 72px);
+                overflow-y: auto;
+            }
+        }
+
         @@media (max-width: 768px) {
             .top-nav .nav-link {
                 padding: 4px 8px;
@@ -147,7 +172,7 @@
             </a>
 
             <!-- دکمه همبرگر (فقط در موبایل دیده می‌شود) -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavMenu"
+            <button class="navbar-toggler collapsed" type="button" id="topNavToggler"
                     aria-controls="topNavMenu" aria-expanded="false" aria-label="تغییر منو">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -174,7 +199,14 @@
                     <button class="theme-toggle" id="themeToggle" aria-label="تغییر تم">
                         <i class="fa-solid fa-moon"></i>
                     </button>
-                    <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex">ورود مدیر</a>
+                    @if (User.Identity?.IsAuthenticated == true && User.GetOwnerId() != null)
+                    {
+                        <a href="@(User.GetRestaurantId() != null ? "/Home/Dashboard" : "/Home/ChooseRestaurant")" class="btn btn-manager d-none d-sm-inline-flex">پنل مدیریت</a>
+                    }
+                    else
+                    {
+                        <a href="/Home/ManagerLogin" class="btn btn-manager d-none d-sm-inline-flex">ورود مدیر</a>
+                    }
                     <!-- در موبایل هم می‌توانید دکمه را به صورت جداگانه نمایش دهید -->
                 </div>
             </div>
@@ -210,7 +242,14 @@
                         <li><a class="text-reset text-decoration-none" href="/#features">ویژگی‌ها</a></li>
                         <li><a class="text-reset text-decoration-none" href="/#screens">تصاویر</a></li>
                         <li><a class="text-reset text-decoration-none" href="/#download">دانلود</a></li>
-                        <li><a class="text-reset text-decoration-none" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                        @if (User.Identity?.IsAuthenticated == true && User.GetOwnerId() != null)
+                        {
+                            <li><a class="text-reset text-decoration-none" href="@(User.GetRestaurantId() != null ? "/Home/Dashboard" : "/Home/ChooseRestaurant")">پنل مدیریت</a></li>
+                        }
+                        else
+                        {
+                            <li><a class="text-reset text-decoration-none" href="/Home/ManagerLogin">ورود مدیر</a></li>
+                        }
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -229,7 +268,7 @@
     </footer>
 
     <!-- ===== اسکریپت‌های عمومی ===== -->
-    <script src="~/js/bootstrap.bundle.min.js" defer></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/home.js" asp-append-version="true"></script>
  
     @await RenderSectionAsync("Scripts", required: false)

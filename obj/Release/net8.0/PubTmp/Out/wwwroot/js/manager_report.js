@@ -189,12 +189,10 @@ function wireExportLink() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initManagerReportsPage() {
     initializeDatepickers();
     wireExportLink();
     setupEventListeners();
-    window.addEventListener('beforeunload', () => {
-        destroyAllCharts();
-        removeAllEventListeners();
-    });
-});
+}
+
+window.initManagerReportsPage = initManagerReportsPage;

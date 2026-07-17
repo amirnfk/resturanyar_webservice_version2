@@ -1,13 +1,9 @@
 ﻿@model List<Resturanyar.Data.User>
 
 @{
-    var restaurantName = ViewBag.RestaurantName as string;
-    ViewData["Title"] = "مدیریت کارکنان - "+@restaurantName;
-   
+    ViewData["Title"] = "مدیریت کارکنان";
 }
 
-<link href="~/css/bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="~/css/bootstrap_icons.css">
 
 <style>
     :root {
@@ -29,8 +25,7 @@
         --transition: 0.2s ease;
     }
 
-    body {
-        background: var(--bg-page);
+    .staff-page {
         direction: rtl;
         font-family: "IRANYekan", "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         color: var(--text-dark);
@@ -167,7 +162,7 @@
         }
 </style>
 
-<div class="container mt-4">
+<div class="container staff-page mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         @* <h2 class="text-center m-0">مدیریت کارکنان - @restaurantName</h2> *@
          
@@ -393,10 +388,6 @@
         </div>
     </div>
 </div>
-
-
-<script src="~/js/jquery_3.6.0.min.js"></script>
-<script src="~/js/bootstrap.bundle.min.js"></script>
 <script type="module">
     // Import the interceptor and expose it globally
     import { fetchWithAuth } from '/js/authentication/apiinterceptor.js';
@@ -405,10 +396,8 @@
 
 <script>
     // All the logic below uses window.fetchWithAuth (provided by the interceptor)
-    // No need to manually set Authorization headers – the interceptor does it.
-       
-    $(document).ready(function () {
-        // ----- Helper: apply role defaults to checkboxes -----
+
+    function initManageStaffPage() {
         function applyRoleDefaults(roleId, modal) {
             var base = (modal === 'edit') ? '#edit' : '#add';
             roleId = parseInt(roleId) || 0;
@@ -423,7 +412,6 @@
             $(base + 'PaymentPermission').prop('checked', payment);
         }
 
-        // ----- Validation helpers -----
         function isValidUsername(username) {
             return username && username.length >= 3;
         }
@@ -446,13 +434,11 @@
             return true;
         }
 
-        // ----- BASE64 helpers (for password decoding) -----
         function decodeBase64(str) {
             try { return atob(str); } catch { return ""; }
         }
 
-        // ----- 1. DELETE user -----
-        $(".btn-delete").click(async function () {
+        $(".btn-delete").off('click.manageStaff').on('click.manageStaff', async function () {
             var restaurantId = @ViewBag.RestaurantId ?? 0;
             if (restaurantId === 0) {
                 showToast('شناسه رستوران پیدا نشد.', 'error');
@@ -470,18 +456,15 @@
                 showToast(res.message, res.success ? 'success' : 'error');
                 if (res.success) location.reload();
             } catch (error) {
-                // The interceptor already handles 401 & redirects, so this is for network errors
                 showToast('خطا در حذف کاربر: ' + (error.message || 'مشکل در ارتباط با سرور'), 'error');
             }
         });
 
-        // ----- 2. SHOW INFO (QR) -----
-        $(".btn-show-info").click(async function () {
+        $(".btn-show-info").off('click.manageStaff').on('click.manageStaff', async function () {
             var name = $(this).data("name");
             var password = decodeBase64($(this).data("password"));
             var restaurantId = $(this).data("restaurantid");
 
-            // Read permissions from the card
             const $card = $(this).closest(".user-card");
             const hasOrder   = !$card.find(".perm-order").hasClass("inactive");
             const hasKitchen = !$card.find(".perm-kitchen").hasClass("inactive");
@@ -517,8 +500,7 @@
             }
         });
 
-        // ----- 3. EDIT user – open modal and fill data -----
-        $(".btn-edit").click(function () {
+        $(".btn-edit").off('click.manageStaff').on('click.manageStaff', function () {
             var password = decodeBase64($(this).data("password"));
             $("#editUserId").val($(this).data("id"));
             $("#editName").val($(this).data("name"));
@@ -526,7 +508,6 @@
             $("#editRole").val($(this).data("role_id"));
             $("#editRestaurantId").val($(this).data("restaurantid"));
 
-            // Set checkboxes from data attributes (store as int 1/0)
             $("#editOrderPermission").prop("checked", $(this).data("order_management_permission") == 1);
             $("#editKitchenPermission").prop("checked", $(this).data("kitchen_management_permission") == 1);
             $("#editPaymentPermission").prop("checked", $(this).data("payment_management_permission") == 1);
@@ -534,8 +515,7 @@
             new bootstrap.Modal(document.getElementById('editModal')).show();
         });
 
-        // ----- 4. SAVE EDIT -----
-        $("#saveEdit").click(async function () {
+        $("#saveEdit").off('click.manageStaff').on('click.manageStaff', async function () {
             var id = parseInt($("#editUserId").val());
             var name = $("#editName").val().trim();
             var password = $("#editPassword").val().trim();
@@ -569,8 +549,7 @@
             }
         });
 
-        // ----- 5. OPEN ADD USER modal -----
-        $("#btnAddUser, #btnAddUserEmpty").click(function () {
+        $("#btnAddUser, #btnAddUserEmpty").off('click.manageStaff').on('click.manageStaff', function () {
             $("#addName").val('');
             $("#addPassword").val('');
             $("#addRole").val('2');
@@ -578,8 +557,7 @@
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
         });
 
-        // ----- 6. SAVE ADD USER -----
-        $("#saveAddUser").click(async function () {
+        $("#saveAddUser").off('click.manageStaff').on('click.manageStaff', async function () {
             var name = $("#addName").val().trim();
             var password = $("#addPassword").val().trim();
             var role_id = parseInt($("#addRole").val());
@@ -616,12 +594,13 @@
             }
         });
 
-        // ----- 7. ROLE change events (apply defaults) -----
-        $("#addRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+        $("#addRole").off('change.manageStaff').on('change.manageStaff', function () {
             applyRoleDefaults($(this).val(), 'add');
         });
-        $("#editRole").off('change.applyDefaults').on('change.applyDefaults', function () {
+        $("#editRole").off('change.manageStaff').on('change.manageStaff', function () {
             applyRoleDefaults($(this).val(), 'edit');
         });
-    });
+    }
+
+    window.initManageStaffPage = initManageStaffPage;
 </script>

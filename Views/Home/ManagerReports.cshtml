@@ -12,96 +12,86 @@
     if (ViewData["ToFaDate"] != null) { toFaDate = ViewData["ToFaDate"].ToString(); }
     if (ViewData["TopN"] != null) { topN = Convert.ToInt32(ViewData["TopN"]); }
 }
-<!DOCTYPE html>
 
-<html lang="fa">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" />
+@section Styles {
     <link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
-    <link rel="stylesheet" href="~/css/manager_report.css" asp-append-version="true"/>
-</head>
-<body>
+    <link rel="stylesheet" href="~/css/manager_report.css" asp-append-version="true" />
+}
 
-    <div class="filter-card p-4 mb-4 position-relative">
-        <div class="loading-overlay">
-            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+<div class="filter-card p-4 mb-4 position-relative">
+    <div class="loading-overlay">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+
+    <form id="reportFilterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerReports","Home")">
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label">وضعیت</label>
+            <select name="statusId" class="form-select">
+                <option value="-1" selected="@(filterStatusId == -1 ? "selected" : null)">همه</option>
+                <option value="0" selected="@(filterStatusId == 0 ? "selected" : null)">فعال‌ها</option>
+                @if (Model?.StatusMap != null)
+                {
+                    foreach (var kv in Model.StatusMap)
+                    {
+                        <option value="@kv.Key" selected="@(filterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
+                    }
+                }
+            </select>
         </div>
 
-        <form id="reportFilterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerReports","Home")">
-            <div class="col-md-2 col-sm-6">
-                <label class="form-label">وضعیت</label>
-                <select name="statusId" class="form-select">
-                    <option value="-1" selected="@(filterStatusId == -1 ? "selected" : null)">همه</option>
-                    <option value="0" selected="@(filterStatusId == 0 ? "selected" : null)">فعال‌ها</option>
-                    @if (Model?.StatusMap != null)
-                    {
-                        foreach (var kv in Model.StatusMap)
-                        {
-                            <option value="@kv.Key" selected="@(filterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
-                        }
-                    }
-                </select>
-            </div>
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label">از تاریخ</label>
+            <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@fromFaDate" readonly />
+            <input type="hidden" name="from" id="fromIso" value="@(Model?.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+        </div>
 
-            <div class="col-md-2 col-sm-6">
-                <label class="form-label">از تاریخ</label>
-                <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@fromFaDate" readonly />
-                <input type="hidden" name="from" id="fromIso" value="@(Model?.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
-            </div>
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label">تا تاریخ</label>
+            <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@toFaDate" readonly />
+            <input type="hidden" name="to" id="toIso" value="@(Model?.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+        </div>
 
-            <div class="col-md-2 col-sm-6">
-                <label class="form-label">تا تاریخ</label>
-                <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@toFaDate" readonly />
-                <input type="hidden" name="to" id="toIso" value="@(Model?.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
-            </div>
+        <div class="col-md-2 col-sm-6">
+            <label class="form-label">تعداد آیتم‌های برتر</label>
+            <select name="topN" class="form-select">
+                <option value="5" selected="@(topN == 5 ? "selected" : null)">5</option>
+                <option value="8" selected="@(topN == 8 ? "selected" : null)">8</option>
+                <option value="10" selected="@(topN == 10 ? "selected" : null)">10</option>
+                <option value="15" selected="@(topN == 15 ? "selected" : null)">15</option>
+            </select>
+        </div>
 
-            <div class="col-md-2 col-sm-6">
-                <label class="form-label">تعداد آیتم‌های برتر</label>
-                <select name="topN" class="form-select">
-                    <option value="5" selected="@(topN == 5 ? "selected" : null)">5</option>
-                    <option value="8" selected="@(topN == 8 ? "selected" : null)">8</option>
-                    <option value="10" selected="@(topN == 10 ? "selected" : null)">10</option>
-                    <option value="15" selected="@(topN == 15 ? "selected" : null)">15</option>
-                </select>
-            </div>
+        <div class="col-md-2 col-sm-6">
+            <button type="submit" class="btn btn-primary w-100">اعمال</button>
+        </div>
 
-            <div class="col-md-2 col-sm-6">
-                <button type="submit" class="btn btn-primary w-100">اعمال</button>
-            </div>
+        <div class="col-md-2 col-sm-6">
+            <a id="exportBtn" class="btn btn-success w-100"
+               href="@Url.Action("ExportOrdersToExcel", "Home")">
+                دانلود اکسل
+            </a>
+        </div>
 
-            <div class="col-md-2 col-sm-6">
-                <a id="exportBtn" class="btn btn-success w-100"
-                   href="@Url.Action("ExportOrdersToExcel", "Home")">
-                    دانلود اکسل
-                </a>
-            </div>
+        <input type="hidden" name="period" id="periodInput" value="@(Model?.Period ?? "")" />
 
-            <input type="hidden" name="period" id="periodInput" value="@(Model?.Period ?? "")" />
+        <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "today" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "week" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "quarter" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "year" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
+        </div>
+    </form>
+</div>
 
-            <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                <a href="@Url.Action("ManagerReports", "Home", new { period = "today" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
-                <a href="@Url.Action("ManagerReports", "Home", new { period = "week" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
-                <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
-                <a href="@Url.Action("ManagerReports", "Home", new { period = "quarter" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
-                <a href="@Url.Action("ManagerReports", "Home", new { period = "year" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
-            </div>
-        </form>
-    </div>
+<div id="reportsContainer">
+    @await Html.PartialAsync("_ManagerReportsPartial", Model)
+</div>
 
-    <div id="reportsContainer">
-        @await Html.PartialAsync("_ManagerReportsPartial", Model)
-    </div>
-
-    <script src="~/js/jquery_3.6.0.min.js"></script>
+@section Scripts {
     <script src="~/js/jalalidatepicker.min.js"></script>
-   
     <script>
         window.__exportExcelUrl = "@Url.Action("ExportOrdersToExcel", "Home")";
     </script>
     <script src="~/js/manager_report.js" asp-append-version="true"></script>
-
-</body>
-</html>
+}

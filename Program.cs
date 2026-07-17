@@ -52,6 +52,10 @@ builder.Services.AddCors(options =>
 // ✳️ افزودن کنترلرهای API و MVC
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "RequestVerificationToken";
+});
 builder.Services.AddSignalR();
 // ✳️ افزودن Swagger با Security Definition
 builder.Services.AddEndpointsApiExplorer();
@@ -180,8 +184,8 @@ builder.Services.AddRateLimiter(options =>
             _ => new FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
-                PermitLimit = 60,                // 60 requests per minute
-                QueueLimit = 0,
+                PermitLimit = 120,                
+                QueueLimit = 10,
                 Window = TimeSpan.FromMinutes(1)
             });
     });

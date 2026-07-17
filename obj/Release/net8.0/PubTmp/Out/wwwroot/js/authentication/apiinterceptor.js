@@ -12,13 +12,12 @@ const processQueue = (error, token = null) => {
 
 export const refreshAccessToken = async () => {
     const refreshToken = localStorage.getItem('refreshToken');
-    const phone = localStorage.getItem('phone');
-    if (!refreshToken || !phone) throw new Error('No refresh token');
+    if (!refreshToken) throw new Error('No refresh token');
 
     const response = await fetch('/api/v2/UserApi/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber: phone, refreshToken })
+        body: JSON.stringify({ refreshToken })
     });
 
     if (!response.ok) throw new Error('Refresh failed');

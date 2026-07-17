@@ -1,0 +1,197 @@
+:root {
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.public-menu-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(1200px 500px at 100% -8%, rgba(255, 122, 0, 0.1), transparent 58%),
+        radial-gradient(900px 380px at -5% 105%, rgba(0, 194, 168, 0.08), transparent 58%),
+        var(--menu-bg, #f6f8fc);
+}
+
+.public-menu-page .menu-toolbar {
+    top: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.public-menu-page .menu-hero {
+    padding: 1.75rem 0.75rem 1rem;
+}
+
+.public-menu-page .hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.public-menu-page .restaurant-name-glow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--menu-primary), var(--menu-primary-2));
+    padding: 0.5rem 1.35rem;
+    border-radius: var(--menu-radius-pill);
+    margin-bottom: 0.75rem;
+    box-shadow: 0 10px 24px rgba(255, 122, 0, 0.32);
+}
+
+.public-menu-page .glow-text {
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.public-menu-page .menu-hero .subtitle {
+    font-weight: 500;
+    font-size: 0.88rem;
+}
+
+.public-menu-page .category-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 600px;
+}
+
+/* Notebook FAB */
+.note-fab {
+    position: fixed;
+    inset-inline-end: 12px;
+    inset-block-end: calc(64px + var(--safe-bottom));
+    z-index: 130;
+    border: 0;
+    border-radius: 14px;
+    background: #1e293b;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.75rem;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.note-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.3);
+}
+
+.note-fab.pulse {
+    animation: noteFabPulse 0.3s ease;
+}
+
+@keyframes noteFabPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.note-fab .badge {
+    background: linear-gradient(135deg, var(--menu-primary), var(--menu-primary-2));
+    font-weight: 700;
+}
+
+.public-menu-page .back-top {
+    inset-block-end: calc(12px + var(--safe-bottom));
+}
+
+/* Offcanvas notebook */
+#noteCanvas .offcanvas-header {
+    border-bottom: 1px solid var(--menu-border);
+    background: #fff;
+}
+
+#noteCanvas .offcanvas-footer {
+    border-top: 1px solid var(--menu-border);
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+}
+
+.note-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.65rem 0.25rem;
+    border-bottom: 1px dashed var(--menu-border);
+}
+
+.note-item .title {
+    font-weight: 700;
+    color: var(--menu-text);
+}
+
+.qty-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--menu-border);
+    background: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: var(--menu-transition);
+}
+
+.qty-btn:hover {
+    border-color: rgba(255, 122, 0, 0.35);
+    color: var(--menu-primary);
+}
+
+.note-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--menu-muted);
+    font-size: 0.9rem;
+}
+
+.note-text {
+    width: 100%;
+    min-height: 80px;
+    border-radius: 12px;
+    border: 1px solid var(--menu-border);
+    padding: 0.55rem 0.75rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color var(--menu-transition), box-shadow var(--menu-transition);
+}
+
+.note-text:focus {
+    outline: none;
+    border-color: rgba(255, 122, 0, 0.45);
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+/* Empty menu state */
+.menu-empty-state {
+    max-width: 420px;
+    margin: 0 auto;
+    border: 1px dashed var(--menu-border);
+    border-radius: var(--menu-radius);
+    background: #fff;
+    box-shadow: var(--menu-shadow-sm);
+}
+
+.menu-empty-state .emoji {
+    font-size: 2.75rem;
+    line-height: 1;
+    color: var(--menu-primary);
+}
+
+@media (max-width: 576px) {
+    .note-fab {
+        padding: 0.55rem 0.65rem;
+        font-size: 0.85rem;
+    }
+
+    .public-menu-page .menu-hero {
+        padding-top: 1.25rem;
+    }
+}

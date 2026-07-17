@@ -1,0 +1,159 @@
+:root {
+    --primary: #ff7a00;
+    --primary-hover: #e66900;
+    --primary-light: rgba(255, 122, 0, 0.08);
+    --card-border: #e9eef5;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --transition: 0.2s ease;
+}
+
+.orders-page {
+    direction: rtl;
+    font-family: "IRANYekan", "IRANSans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    line-height: 1.5;
+    animation: ordersPageFadeIn 0.45s ease-out;
+}
+
+@keyframes ordersPageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.orders-page .filter-card {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    transition: box-shadow var(--transition);
+    --filter-control-height: 38px;
+}
+
+    .orders-page .filter-card:hover {
+        box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+    }
+
+.orders-page .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.orders-page .filter-card .form-control,
+.orders-page .filter-card .form-select {
+    border-radius: var(--radius-sm);
+    border-color: #e6eaf0;
+    transition: var(--transition);
+    min-height: var(--filter-control-height);
+}
+
+    .orders-page .filter-card .form-control:focus,
+    .orders-page .filter-card .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+.orders-page .btn-primary {
+    --bs-btn-bg: #ff7a00;
+    --bs-btn-border-color: #ff7a00;
+    --bs-btn-hover-bg: #f06700;
+    --bs-btn-hover-border-color: #f06700;
+    --bs-btn-active-bg: var(--primary-hover);
+    --bs-btn-active-border-color: var(--primary-hover);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    padding: 0.6rem 1.1rem;
+    box-shadow: 0 8px 20px rgba(255, 122, 0, 0.2);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+    .orders-page .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(255, 122, 0, 0.28);
+    }
+
+.orders-page .btn-outline-secondary {
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    padding: 0.6rem 1.1rem;
+    transition: var(--transition);
+}
+
+    .orders-page .btn-outline-secondary:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+
+.orders-page .quick-filter-btn {
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+    .orders-page .quick-filter-btn.active,
+    .orders-page .quick-filter-btn:hover {
+        background-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+        color: #fff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(255, 122, 0, 0.22);
+    }
+
+.orders-page .filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+    .orders-page .filter-actions .btn {
+        flex: 1 1 0;
+        height: var(--filter-control-height);
+        min-height: var(--filter-control-height);
+        padding: 0 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2;
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+
+.orders-page .customer-info {
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.08) 0%, rgba(255, 122, 0, 0.14) 100%);
+    border-right-color: var(--primary);
+}
+
+    .orders-page .customer-info i {
+        color: var(--primary);
+    }
+
+    .orders-page .customer-info .customer-name {
+        color: var(--primary-hover);
+    }
+
+.orders-page .border-primary {
+    border-color: var(--primary) !important;
+}
+
+.orders-page .pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    color: #475569;
+}
+
+.orders-page .pagination .page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.orders-page .pagination .page-link:hover {
+    color: var(--primary);
+}

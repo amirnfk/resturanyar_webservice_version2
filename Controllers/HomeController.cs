@@ -102,6 +102,18 @@ namespace resturanyar.Controllers
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
 
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var ownerId = User.FindFirst("OwnerId")?.Value;
+                if (!string.IsNullOrEmpty(ownerId))
+                {
+                    if (User.GetRestaurantId() != null)
+                        return RedirectToAction(nameof(Dashboard));
+
+                    return RedirectToAction(nameof(ChooseRestaurant));
+                }
+            }
+
             return View();
         }
 
@@ -1893,6 +1905,16 @@ namespace resturanyar.Controllers
             ViewBag.RestaurantId = restaurantId.Value;
             return View();
         }
+        public IActionResult Messages()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            return View();
+        }
+
         public async Task<IActionResult> Support()
         {
             int? restaurantId = User.GetRestaurantId();
