@@ -1164,6 +1164,8 @@
     }
 
     function initCustomersListPage() {
+        if (!document.querySelector('.customers-page')) return;
+
         customersListPageId++;
         if (trendChart) {
             trendChart.destroy();

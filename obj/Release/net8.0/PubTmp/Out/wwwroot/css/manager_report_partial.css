@@ -1,68 +1,177 @@
-﻿.kpi-card {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.06);
-    padding: 20px;
-    background: #fff;
+﻿.manager-reports-page {
+    --mr-card-bg: var(--login-card-bg, #ffffff);
+    --mr-text: var(--login-text, #1a1a2e);
+    --mr-muted: var(--login-muted, #6d7385);
+    --mr-border: var(--login-border, rgba(0, 0, 0, 0.08));
+    --mr-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+    --mr-radius: 16px;
+}
+
+.manager-reports-page .kpi-card {
+    border: 1px solid var(--mr-border);
+    border-radius: var(--mr-radius);
+    box-shadow: var(--mr-shadow);
+    padding: 1.25rem 1.1rem;
+    background: var(--mr-card-bg);
     height: 100%;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-    .kpi-card:hover {
-        transform: translateY(-2px);
-    }
-
-.kpi-title {
-    font-size: .9rem;
-    color: #6c757d;
-    margin-bottom: .25rem;
-    font-weight: 600;
+.manager-reports-page .kpi-card::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, var(--kpi-accent, #ff7a00), var(--kpi-accent-2, #ff5400));
 }
 
-.kpi-value {
-    font-size: 1.4rem;
+.manager-reports-page .row.g-3 > .col-md-3:nth-child(1) .kpi-card {
+    --kpi-accent: #3b82f6;
+    --kpi-accent-2: #2563eb;
+}
+
+.manager-reports-page .row.g-3 > .col-md-3:nth-child(2) .kpi-card {
+    --kpi-accent: #ff7a00;
+    --kpi-accent-2: #ff5400;
+}
+
+.manager-reports-page .row.g-3 > .col-md-3:nth-child(3) .kpi-card {
+    --kpi-accent: #8b5cf6;
+    --kpi-accent-2: #7c3aed;
+}
+
+.manager-reports-page .row.g-3 > .col-md-3:nth-child(4) .kpi-card {
+    --kpi-accent: #10b981;
+    --kpi-accent-2: #059669;
+}
+
+.manager-reports-page .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+}
+
+.manager-reports-page .kpi-title {
+    font-size: 0.85rem;
+    color: var(--mr-muted);
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+
+.manager-reports-page .kpi-value {
+    font-size: clamp(1.15rem, 2.5vw, 1.45rem);
     font-weight: 800;
-    color: #2c3e50;
+    color: var(--mr-text);
+    line-height: 1.35;
+    word-break: break-word;
 }
 
-.kpi-badge {
-    font-size: .8rem;
-    margin-top: 0.5rem;
-    display: block;
+.manager-reports-page .kpi-badge {
+    font-size: 0.78rem;
+    margin-top: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
 }
 
-.chart-card {
-    border: none;
-    border-radius: 16px;
-    box-shadow: 0 6px 24px rgba(0,0,0,.05);
-    background: #fff;
-    padding: 20px;
+.manager-reports-page .chart-card {
+    border: 1px solid var(--mr-border);
+    border-radius: var(--mr-radius);
+    box-shadow: var(--mr-shadow);
+    background: var(--mr-card-bg);
+    padding: 1.25rem;
     height: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+    transition: box-shadow 0.2s ease;
 }
 
-.chart-container {
+.manager-reports-page .chart-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.manager-reports-page .chart-card h6 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--mr-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.manager-reports-page .chart-card h6::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a00, #ff5400);
+    flex-shrink: 0;
+}
+
+.manager-reports-page .chart-container {
     position: relative;
     height: 300px;
     width: 100%;
 }
 
-.no-data-chart {
+.manager-reports-page .no-data-chart {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #6c757d;
-    font-style: italic;
+    color: var(--mr-muted);
+    font-style: normal;
+    font-size: 0.92rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    border: 1px dashed var(--mr-border);
 }
 
-/* تنظیم کل صفحه به راست‌چین و فونت فارسی */
-body, html {
-    direction: rtl;
-    font-family: 'IRANYekan', 'Tahoma', sans-serif;
+[data-theme="dark"] .manager-reports-page .no-data-chart {
+    background: rgba(255, 255, 255, 0.03);
 }
 
-/* برای اعداد داخل نمودارها اگر فارسی می‌خواهید (اختیاری) */
-.latin-numbers {
-    font-feature-settings: "ss02"; /* برای نمایش اعداد لاتین در برخی فونت‌ها */
+.manager-reports-page .alert-warning {
+    border-radius: var(--mr-radius);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+}
+
+@media (max-width: 991.98px) {
+    .manager-reports-page .chart-container {
+        height: 260px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .manager-reports-page .kpi-card {
+        padding: 1rem;
+    }
+
+    .manager-reports-page .kpi-value {
+        font-size: 1.1rem;
+    }
+
+    .manager-reports-page .chart-card {
+        padding: 1rem;
+    }
+
+    .manager-reports-page .chart-container {
+        height: 220px;
+    }
+
+    .manager-reports-page .row.g-3.mt-3,
+    .manager-reports-page .row.g-3.mt-1 {
+        margin-top: 0.75rem !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .manager-reports-page .kpi-badge {
+        font-size: 0.72rem;
+    }
 }

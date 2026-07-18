@@ -77,6 +77,10 @@ namespace Resturanyar.Data
                 .HasForeignKey(o => o.RestaurantId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => new { o.RestaurantId, o.CreatedAt })
+                .HasDatabaseName("IX_Orders_RestaurantId_CreatedAt");
+
             // 📌 Relationship: User -> Role
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)

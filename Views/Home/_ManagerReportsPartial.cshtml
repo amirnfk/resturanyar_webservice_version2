@@ -1,9 +1,5 @@
-﻿﻿@using System.Text.Json
+﻿@using System.Text.Json
 @model resturanyar.Models.ManagerReportViewModel
-
-<link rel="stylesheet" href="~/css/bootstrap-icons.css">
-<link rel="stylesheet" href="~/css/manager_report_partial.css" asp-append-version="true">
-<script src="~/js/chart.umd.min.js"></script>
 
 @{
     if (Model == null)
@@ -178,4 +174,3 @@
         topRevValues: @Html.Raw(JsonSerializer.Serialize(topRevValues))
     };
 </script>
-<script src="~/js/manager_report_partial.js" asp-append-version="true" ></script>

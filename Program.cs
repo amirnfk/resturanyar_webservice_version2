@@ -240,16 +240,9 @@ using (var scope = app.Services.CreateScope())
             Log.Warning(ex, "Could not ensure Articles.UpdatedAt column.");
         }
 
-        if (!resturanyar.Data.ArticleDbSeeder.Seed(db, app.Environment.ContentRootPath))
+        if (!resturanyar.Data.ArticleDbSeeder.Seed(db))
         {
             Log.Warning("Article seed did not run at startup. It will retry on the first visit to /articles.");
-        }
-
-        var syncArticles = builder.Configuration.GetValue<bool>("ArticleContent:SyncOnStartup");
-        if (syncArticles)
-        {
-            var synced = resturanyar.Data.ArticleContentUpdater.SyncFromContentFolder(db, app.Environment.ContentRootPath);
-            Log.Information("Article content sync completed. {Count} article(s) upserted.", synced);
         }
     }
     catch (Exception ex)

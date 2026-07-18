@@ -682,6 +682,9 @@ namespace resturanyar.Migrations
 
                     b.HasIndex("StatusId");
 
+                    b.HasIndex("RestaurantId", "CreatedAt")
+                        .HasDatabaseName("IX_Orders_RestaurantId_CreatedAt");
+
                     b.ToTable("Orders");
                 });
 

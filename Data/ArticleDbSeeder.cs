@@ -6,7 +6,7 @@ namespace resturanyar.Data
 {
     public static class ArticleDbSeeder
     {
-        public static bool Seed(AppDbContext context, string? contentRootPath = null)
+        public static bool Seed(AppDbContext context)
         {
             try
             {
@@ -19,16 +19,6 @@ namespace resturanyar.Data
                 if (context.Articles.Any())
                 {
                     return true;
-                }
-
-                if (!string.IsNullOrWhiteSpace(contentRootPath))
-                {
-                    var synced = ArticleContentUpdater.SyncFromContentFolder(context, contentRootPath);
-                    if (synced > 0)
-                    {
-                        Log.Information("Seeded {Count} articles from content files.", synced);
-                        return true;
-                    }
                 }
 
                 var articles = GetSeedArticles();

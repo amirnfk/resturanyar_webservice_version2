@@ -24,30 +24,28 @@ function registerListener(element, event, handler) {
     window.eventListeners.push({ element, event, handler });
 }
 
-// اجرای اسکریپت‌های داخل پارشیال پس از تزریق HTML
-function replaceAndExecuteScripts(container) {
+// اجرای اسکریپت‌های inline داخل پارشیال
+function runInlineScripts(container) {
     if (!container) return;
-    const scripts = container.querySelectorAll('script');
-    scripts.forEach(oldScript => {
-        const newScript = document.createElement('script');
-        // کپی ویژگی‌ها (src و ...)
-        [...oldScript.attributes].forEach(attr => newScript.setAttribute(attr.name, attr.value));
 
-        // اگر Chart.js قبلا لود شده، دوباره لود نکن
-        const isChartJs = newScript.src && /chart(\.umd)?\.min\.js/i.test(newScript.src);
-        if (isChartJs && window.Chart) {
-            oldScript.remove();
-            return;
-        }
+    container.querySelectorAll('script').forEach(function (oldScript) {
+        const code = oldScript.textContent || '';
+        oldScript.remove();
+        if (!code.trim()) return;
 
-        // کپی محتوای inline
-        if (!newScript.src) {
-            newScript.text = oldScript.text || oldScript.textContent || '';
-        }
-
-        // جایگزینی و اجرا
-        oldScript.parentNode.replaceChild(newScript, oldScript);
+        const script = document.createElement('script');
+        script.textContent = code;
+        document.body.appendChild(script);
+        script.remove();
     });
+}
+
+function sanitizePartialHtml(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('link, script[src], style').forEach(function (node) {
+        node.remove();
+    });
+    return doc.body.innerHTML;
 }
 
 function jalali_to_gregorian(jy, jm, jd) {
@@ -149,21 +147,25 @@ async function loadReports(url) {
     destroyAllCharts();
     try {
         const res = await fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Reports-Partial': 'true'
+            },
             cache: 'no-cache'
         });
         if (res.ok) {
             const html = await res.text();
             const container = document.getElementById('reportsContainer');
-            container.innerHTML = html;
+            container.innerHTML = sanitizePartialHtml(html);
+            runInlineScripts(container);
 
-            // اجرای اسکریپت‌های داخل پارشیال (برای ساخت نمودارها)
-            replaceAndExecuteScripts(container);
+            if (typeof window.initManagerReportCharts === 'function') {
+                window.initManagerReportCharts();
+            }
 
             initializeDatepickers();
             wireExportLink();
             setupEventListeners();
-            if (window.gc) window.gc();
         } else {
             console.error('Error loading reports:', res.status);
             document.getElementById('reportsContainer').innerHTML =
@@ -190,9 +192,14 @@ function wireExportLink() {
 }
 
 function initManagerReportsPage() {
+    if (!document.getElementById('reportFilterForm')) return;
+
     initializeDatepickers();
     wireExportLink();
     setupEventListeners();
+    if (typeof window.initManagerReportCharts === 'function') {
+        window.initManagerReportCharts();
+    }
 }
 
 window.initManagerReportsPage = initManagerReportsPage;

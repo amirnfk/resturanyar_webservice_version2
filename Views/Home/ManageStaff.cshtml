@@ -398,6 +398,8 @@
     // All the logic below uses window.fetchWithAuth (provided by the interceptor)
 
     function initManageStaffPage() {
+        if (!document.querySelector('.staff-page')) return;
+
         function applyRoleDefaults(roleId, modal) {
             var base = (modal === 'edit') ? '#edit' : '#add';
             roleId = parseInt(roleId) || 0;

@@ -612,6 +612,8 @@
     }
 
     function initRestaurantSubscriptionPage() {
+        if (!document.querySelector('.subscription-page')) return;
+
         if (restaurantId) {
             loadSubscription();
         } else {

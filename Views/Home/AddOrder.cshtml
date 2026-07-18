@@ -762,6 +762,8 @@
     }
 
     function initAddOrderPage() {
+        if (!document.getElementById('submitOrderBtn')) return;
+
         cart = [];
         selectedCustomerId = null;
         isSubmittingOrder = false;

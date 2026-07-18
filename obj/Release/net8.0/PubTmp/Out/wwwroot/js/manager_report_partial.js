@@ -1,5 +1,6 @@
-﻿(function () {
+﻿window.initManagerReportCharts = function initManagerReportCharts() {
     if (!window.chartInstances) window.chartInstances = {};
+    if (typeof Chart === 'undefined') return;
 
     const data = window.managerReportData || {};
     const {
@@ -20,7 +21,6 @@
     const hasQtyData = topQtyLabels.length > 0;
     const hasRevData = topRevLabels.length > 0;
 
-    // فرمت اعداد به تومان (فارسی)
     function mkCurrency(v) {
         try {
             return new Intl.NumberFormat('fa-IR').format(v);
@@ -29,7 +29,6 @@
         }
     }
 
-    // فونت فارسی برای نمودارها
     const persianFont = {
         family: "'IRANYekan', 'IRANYekan', 'Tahoma', sans-serif",
         size: 11
@@ -54,7 +53,6 @@
         return options;
     }
 
-    // نابودی نمودارهای قبلی
     ['salesChart', 'statusChart', 'topQtyChart', 'topRevChart'].forEach(id => {
         if (window.chartInstances[id]) {
             window.chartInstances[id].destroy();
@@ -62,7 +60,6 @@
         }
     });
 
-    // نمودار روند فروش و تعداد سفارش
     if (hasSalesData) {
         const ctx = document.getElementById('salesChart');
         if (ctx) {
@@ -123,7 +120,6 @@
         }
     }
 
-    
     if (hasStatusData) {
         const ctx = document.getElementById('statusChart');
         if (ctx) {
@@ -148,7 +144,6 @@
         }
     }
 
-    
     if (hasQtyData) {
         const ctx = document.getElementById('topQtyChart');
         if (ctx) {
@@ -171,7 +166,6 @@
         }
     }
 
-    
     if (hasRevData) {
         const ctx = document.getElementById('topRevChart');
         if (ctx) {
@@ -201,12 +195,4 @@
             });
         }
     }
-
-    
-    window.addEventListener('beforeunload', () => {
-        Object.values(window.chartInstances).forEach(c => {
-            if (c && typeof c.destroy === 'function') c.destroy();
-        });
-        window.chartInstances = {};
-    });
-})();
+};

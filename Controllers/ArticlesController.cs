@@ -115,7 +115,7 @@ namespace resturanyar.Controllers
             }
 
             _logger.LogInformation("Articles table is empty. Running seed...");
-            if (!ArticleDbSeeder.Seed(_context, Directory.GetCurrentDirectory()))
+            if (!ArticleDbSeeder.Seed(_context))
             {
                 _logger.LogWarning("Article seed did not complete. Check Logs/log.txt for details.");
             }

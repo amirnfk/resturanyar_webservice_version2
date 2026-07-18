@@ -1123,3 +1123,11 @@ C:\Users\anoorafkan\AppData\Local\Temp\resturanyar-article-verify\resturanyar.de
 C:\Users\anoorafkan\AppData\Local\Temp\resturanyar-article-verify\resturanyar.runtimeconfig.json
 C:\Users\anoorafkan\AppData\Local\Temp\resturanyar-article-verify\resturanyar.dll
 C:\Users\anoorafkan\AppData\Local\Temp\resturanyar-article-verify\resturanyar.pdb
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\cafe-vs-restaurant-software.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\customer-loyalty-tips.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\digital-menu-qr-guide.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\fastfood-order-management.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\free-restaurant-management-software.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\kitchen-order-management.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\restaurant-kpi-reporting.json
+D:\aspnet projects\resturanyar\resturanyar_webservice_version2\bin\Debug\net8.0\Data\ArticleContent\restaurant-pos-features.json

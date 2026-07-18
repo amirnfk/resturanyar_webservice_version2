@@ -226,25 +226,38 @@
         return null;
     }
 
-    function runPageInit() {
-        var initFns = [
-            'initFoodListPage',
-            'initAddOrderPage',
-            'initCategoryListPage',
-            'initTableListPage',
-            'initManagerOrderListPage',
-            'initManagerReportsPage',
-            'initRestaurantSubscriptionPage',
-            'initPublicMenuQRCodePage',
-            'initCustomersListPage',
-            'initManageStaffPage',
-            'initMessagesPage'
-        ];
-        initFns.forEach(function (name) {
-            if (typeof window[name] === 'function') {
-                window[name]();
+    var PAGE_INIT_MAP = [
+        ['/home/foodlist', 'initFoodListPage'],
+        ['/home/addorder', 'initAddOrderPage'],
+        ['/home/categorylist', 'initCategoryListPage'],
+        ['/home/tablelist', 'initTableListPage'],
+        ['/home/managerorderlist', 'initManagerOrderListPage'],
+        ['/home/managerreports', 'initManagerReportsPage'],
+        ['/home/restaurantsubscription', 'initRestaurantSubscriptionPage'],
+        ['/menu/publicmenuqrcode', 'initPublicMenuQRCodePage'],
+        ['/home/customerslist', 'initCustomersListPage'],
+        ['/home/managestaff', 'initManageStaffPage'],
+        ['/home/messages', 'initMessagesPage']
+    ];
+
+    function resolvePageInitName(url) {
+        try {
+            var path = new URL(url, window.location.origin).pathname.toLowerCase();
+            for (var i = 0; i < PAGE_INIT_MAP.length; i++) {
+                var route = PAGE_INIT_MAP[i][0];
+                if (path === route || path.endsWith(route)) {
+                    return PAGE_INIT_MAP[i][1];
+                }
             }
-        });
+        } catch (e) { /* ignore */ }
+        return null;
+    }
+
+    function runPageInit(forUrl) {
+        var initName = resolvePageInitName(forUrl || window.location.href);
+        if (initName && typeof window[initName] === 'function') {
+            window[initName]();
+        }
     }
 
     window.runSidebarPageInit = runPageInit;
@@ -269,6 +282,24 @@
                 signal: currentAbortController.signal,
                 credentials: 'same-origin'
             });
+
+            if (response.redirected) {
+                try {
+                    var requestedUrl = new URL(url, window.location.origin).href;
+                    if (response.url !== requestedUrl) {
+                        window.location.href = response.url;
+                        return;
+                    }
+                } catch (e) {
+                    window.location.href = response.url;
+                    return;
+                }
+            }
+
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = url;
+                return;
+            }
 
             if (!response.ok) {
                 window.location.href = url;
@@ -299,7 +330,7 @@
 
             window.scrollTo({ top: 0, behavior: 'auto' });
             document.getElementById('sidebar')?.classList.remove('open');
-            runPageInit();
+            runPageInit(url);
         } catch (error) {
             if (error.name !== 'AbortError') {
                 window.location.href = url;

@@ -1,58 +1,149 @@
-﻿.filter-card {
-    background: #fff;
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0 3px 20px rgba(0,0,0,.04);
-    transition: .3s;
+﻿.manager-reports-page {
+    --mr-primary: var(--nb-primary, #ff7a00);
+    --mr-primary-2: var(--nb-primary-2, #ff5400);
+    --mr-card-bg: var(--login-card-bg, #ffffff);
+    --mr-text: var(--login-text, #1a1a2e);
+    --mr-muted: var(--login-muted, #6d7385);
+    --mr-border: var(--login-border, rgba(0, 0, 0, 0.08));
+    --mr-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+    --mr-radius: 18px;
 }
 
-    .filter-card:hover {
-        box-shadow: 0 3px 25px rgba(0,0,0,.07);
-    }
+.manager-reports-page .filter-card {
+    background: var(--mr-card-bg);
+    border: 1px solid var(--mr-border);
+    border-radius: var(--mr-radius);
+    box-shadow: var(--mr-shadow);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
 
-.btn-primary {
-    background: linear-gradient(90deg,#008cff,#0061ff);
+.manager-reports-page .filter-card:hover {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.manager-reports-page .filter-card .form-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--mr-muted);
+    margin-bottom: 0.35rem;
+}
+
+.manager-reports-page .filter-card .form-control,
+.manager-reports-page .filter-card .form-select {
+    background-color: var(--mr-card-bg);
+    border-color: var(--mr-border);
+    color: var(--mr-text);
+    border-radius: 12px;
+    min-height: 42px;
+    font-size: 0.92rem;
+}
+
+.manager-reports-page .filter-card .form-control:focus,
+.manager-reports-page .filter-card .form-select:focus {
+    border-color: rgba(255, 122, 0, 0.45);
+    box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.12);
+}
+
+.manager-reports-page .btn-primary {
+    background: linear-gradient(135deg, var(--mr-primary), var(--mr-primary-2));
     border: none;
+    font-weight: 700;
+    padding: 0.6rem 1.3rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(255, 122, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manager-reports-page .btn-primary:hover {
+    background: linear-gradient(135deg, var(--mr-primary-2), var(--mr-primary));
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255, 122, 0, 0.32);
+}
+
+.manager-reports-page #exportBtn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(46, 204, 113, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.manager-reports-page #exportBtn:hover {
+    background: linear-gradient(135deg, #27ae60, #219a52);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(46, 204, 113, 0.32);
+}
+
+.manager-reports-page .quick-filter-btn {
+    border-radius: 999px;
+    font-size: 0.88rem;
     font-weight: 600;
-    padding: .6rem 1.3rem;
+    padding: 0.45rem 1rem;
+    border-color: var(--mr-border);
+    color: var(--mr-muted);
+    background: var(--mr-card-bg);
+    transition: all 0.2s ease;
 }
 
-    .btn-primary:hover {
-        background: linear-gradient(90deg,#0061ff,#008cff);
-    }
-
-.quick-filter-btn {
-    border-radius: 30px;
-    font-size: .9rem;
-    transition: .2s;
+.manager-reports-page .quick-filter-btn:hover,
+.manager-reports-page .quick-filter-btn.active {
+    background: linear-gradient(135deg, var(--mr-primary), var(--mr-primary-2)) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(255, 122, 0, 0.28);
 }
 
-    .quick-filter-btn.active, .quick-filter-btn:hover {
-        background: #0d6efd !important;
-        color: #fff !important;
-        transform: scale(1.05);
-    }
-
-.loading-overlay {
+.manager-reports-page .loading-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255,255,255,0.8);
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(2px);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    border-radius: 18px;
+    border-radius: var(--mr-radius);
 }
 
-.no-data-message {
+[data-theme="dark"] .manager-reports-page .loading-overlay {
+    background-color: rgba(17, 21, 31, 0.82);
+}
+
+.manager-reports-page .loading-overlay .spinner-border {
+    color: var(--mr-primary) !important;
+}
+
+.manager-reports-page .no-data-message {
     text-align: center;
     padding: 2rem;
-    color: #6c757d;
+    color: var(--mr-muted);
 }
 
-#reportFilterForm .btn {
-    height: 38px;
+.manager-reports-page #reportFilterForm .btn {
+    min-height: 42px;
+}
+
+.manager-reports-page #reportFilterForm .col-12.pt-3 {
+    border-top: 1px dashed var(--mr-border);
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 767.98px) {
+    .manager-reports-page .filter-card {
+        padding: 1rem !important;
+        border-radius: 16px;
+    }
+
+    .manager-reports-page .quick-filter-btn {
+        flex: 1 1 calc(50% - 0.5rem);
+        text-align: center;
+    }
+
+    .manager-reports-page #reportFilterForm .col-md-2 {
+        margin-bottom: 0.25rem;
+    }
 }

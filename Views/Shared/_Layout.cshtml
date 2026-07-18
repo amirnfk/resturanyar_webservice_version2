@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/fntawsom600.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @* <link rel="stylesheet" href="~/resturanyar.styles.css" asp-append-version="true" /> *@
     <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
@@ -26,6 +27,15 @@
     <link rel="manifest" href="/site.webmanifest" />
 
     @await RenderSectionAsync("Styles", required: false)
+    <script>
+        (function () {
+            try {
+                if (window.innerWidth > 768 && localStorage.getItem('sidebarCollapsed') === 'true') {
+                    document.documentElement.classList.add('sidebar-is-collapsed');
+                }
+            } catch (e) { }
+        })();
+    </script>
 </head>
 <body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")" data-restaurant-name="@layoutRestaurantName">
 
@@ -89,7 +99,7 @@
                     <i class="fas fa-qrcode"></i>
                     <span>منوی عمومی</span>
                 </a>
-                <a href="@Url.Action("ManagerReports", "Home")" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
+                <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
                     <i class="fas fa-chart-line"></i>
                     <span>گزارش گیری</span>
                 </a>
@@ -137,7 +147,15 @@
             <header class="topbar">
                 <!-- سمت چپ: عنوان صفحه + دکمه موبایل -->
                 <div class="topbar-left">
-                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+                    <button type="button"
+                            class="sidebar-desktop-toggle"
+                            data-sidebar-toggle
+                            aria-label="جمع/باز کردن منو"
+                            aria-expanded="true"
+                            title="جمع کردن منو">
+                        <i class="fas fa-outdent"></i>
+                    </button>
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" type="button" aria-label="باز کردن منو">
                         <i class="fas fa-bars"></i>
                     </button>
                     <div class="page-title">
@@ -200,23 +218,101 @@
                     topbar.classList.remove('scrolled');
                 }
             });
-            // Sidebar Functions
-            function toggleSidebar() {
-                // const sidebar = document.getElementById('sidebar');
-                // sidebar.classList.toggle('collapsed');
-                // localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            function isDesktopSidebar() {
+                return window.innerWidth > 768;
             }
 
-            function toggleMobileSidebar() {
-                const sidebar = document.getElementById('sidebar');
+            function updateSidebarToggleState(collapsed) {
+                document.querySelectorAll('[data-sidebar-toggle]').forEach(function (btn) {
+                    btn.classList.toggle('is-collapsed', collapsed);
+                    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+                    btn.setAttribute('title', collapsed ? 'باز کردن منو' : 'جمع کردن منو');
+                    var icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.className = collapsed ? 'fas fa-indent' : 'fas fa-outdent';
+                    }
+                });
+            }
+
+            function setSidebarCollapsed(collapsed, persist) {
+                var sidebar = document.getElementById('sidebar');
+                if (!sidebar || !isDesktopSidebar()) return;
+
+                var isCollapsed = sidebar.classList.contains('collapsed');
+                if (isCollapsed === collapsed) {
+                    document.documentElement.classList.toggle('sidebar-is-collapsed', collapsed);
+                    updateSidebarToggleState(collapsed);
+                    return;
+                }
+
+                sidebar.classList.toggle('collapsed', collapsed);
+                document.documentElement.classList.toggle('sidebar-is-collapsed', collapsed);
+                if (persist !== false) {
+                    localStorage.setItem('sidebarCollapsed', collapsed ? 'true' : 'false');
+                }
+                updateSidebarToggleState(collapsed);
+            }
+
+            function toggleSidebar(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                if (!isDesktopSidebar()) return;
+
+                var sidebar = document.getElementById('sidebar');
+                if (!sidebar) return;
+                setSidebarCollapsed(!sidebar.classList.contains('collapsed'));
+            }
+
+            function toggleMobileSidebar(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                var sidebar = document.getElementById('sidebar');
+                var mobileBtn = document.querySelector('.mobile-menu-btn');
+                if (!sidebar) return;
+
                 sidebar.classList.toggle('open');
+                var isOpen = sidebar.classList.contains('open');
+                if (mobileBtn) {
+                    mobileBtn.classList.toggle('open', isOpen);
+                }
             }
 
-            // Load saved sidebar state
-            // const savedSidebarState = localStorage.getItem('sidebarCollapsed');
-            // if (savedSidebarState === 'true') {
-            //     document.getElementById('sidebar').classList.add('collapsed');
-            // }
+            function loadSidebarState() {
+                if (!isDesktopSidebar()) return;
+                setSidebarCollapsed(localStorage.getItem('sidebarCollapsed') === 'true', false);
+            }
+
+            document.querySelectorAll('[data-sidebar-toggle]').forEach(function (btn) {
+                btn.addEventListener('click', toggleSidebar);
+            });
+
+            loadSidebarState();
+
+            var sidebarLayoutMode = isDesktopSidebar() ? 'desktop' : 'mobile';
+            window.addEventListener('resize', function () {
+                var sidebar = document.getElementById('sidebar');
+                if (!sidebar) return;
+
+                var desktop = isDesktopSidebar();
+                var mode = desktop ? 'desktop' : 'mobile';
+                if (mode === sidebarLayoutMode) return;
+
+                sidebarLayoutMode = mode;
+                if (desktop) {
+                    sidebar.classList.remove('open');
+                    document.querySelector('.mobile-menu-btn')?.classList.remove('open');
+                    loadSidebarState();
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    document.documentElement.classList.remove('sidebar-is-collapsed');
+                    updateSidebarToggleState(false);
+                }
+            });
 
             // Theme Functions
             function toggleTheme() {
@@ -245,16 +341,17 @@
             }
 
             // Close mobile sidebar when clicking outside
-            // document.addEventListener('click', function(event) {
-            //     const sidebar = document.getElementById('sidebar');
-            //     const mobileBtn = document.querySelector('.mobile-menu-btn');
+            document.addEventListener('click', function (event) {
+                var sidebar = document.getElementById('sidebar');
+                var mobileBtn = document.querySelector('.mobile-menu-btn');
 
-            //     if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-            //         if (!sidebar.contains(event.target) && !mobileBtn.contains(event.target)) {
-            //             sidebar.classList.remove('open');
-            //         }
-            //     }
-            // });
+                if (!sidebar || isDesktopSidebar() || !sidebar.classList.contains('open')) return;
+
+                if (!sidebar.contains(event.target) && !(mobileBtn && mobileBtn.contains(event.target))) {
+                    sidebar.classList.remove('open');
+                    mobileBtn?.classList.remove('open');
+                }
+            });
 
             // Active link highlighting (fallback for full page loads)
             document.querySelectorAll('.sidebar-nav a.nav-item').forEach(function (link) {

@@ -15,9 +15,12 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/manager_report.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/manager_report_partial.css" asp-append-version="true" />
 }
 
+<div class="manager-reports-page">
 <div class="filter-card p-4 mb-4 position-relative">
     <div class="loading-overlay">
         <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
@@ -87,11 +90,14 @@
 <div id="reportsContainer">
     @await Html.PartialAsync("_ManagerReportsPartial", Model)
 </div>
+</div>
 
 @section Scripts {
+    <script src="~/js/chart.umd.min.js"></script>
     <script src="~/js/jalalidatepicker.min.js"></script>
     <script>
         window.__exportExcelUrl = "@Url.Action("ExportOrdersToExcel", "Home")";
     </script>
+    <script src="~/js/manager_report_partial.js" asp-append-version="true"></script>
     <script src="~/js/manager_report.js" asp-append-version="true"></script>
 }

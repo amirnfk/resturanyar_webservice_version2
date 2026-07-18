@@ -1,7 +1,11 @@
 ﻿@{
     Layout = "~/Views/Shared/_IndexLayout.cshtml";
     ViewData["Title"] = "رستورانیار | نرم‌افزار مدیریت رستوران و منوی دیجیتال";
+    ViewData["BodyClass"] = "page-index";
+}
 
+@section Styles {
+    <link href="~/css/index-page.css" rel="stylesheet" asp-append-version="true" />
 }
 
     <nav id="nav" class="navbar navbar-expand-lg sticky-top py-2 d-none d-lg-block">
@@ -18,7 +22,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="collapse navbar-collapse">
+            <div class="collapse navbar-collapse" id="navMenu">
                 <ul class="navbar-nav me-auto gap-lg-2">
 
                     <li class="nav-item"><a class="nav-link" href="#features">امکانات</a></li>
@@ -190,7 +194,7 @@
                         </div>
                     </div>
                     <div class="step fade-up">
-                        <div class="step-dot"><i class="fa-solid fa-kitchen-set"></i></div>
+                    <div class="step-dot"><i class="fa-solid fa-fire"></i></div>
                         <div>
                             <h6 class="fw-bold mb-1">نمایش سفارش در آشپزخانه</h6>
                             <p class="muted mb-0">سفارش گارسون در آشپزخانه از طریق تبلت یا پرینتر روئیت می شود.</p>
@@ -286,7 +290,7 @@
                             <div class="col-6">
                                 <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
                                     <div class="d-flex align-items-center gap-2">
-                                        <i class="fa-solid fa-headset text-info"></i>
+                                        <i class="fa-solid fa-angles-down text-info"></i>
                                         <div><div class="fw-bold">پشتیبانی واقعی</div><small class="opacity-75">۷ روز هفته</small></div>
                                     </div>
                                 </div>
@@ -294,7 +298,7 @@
                             <div class="col-6">
                                 <div class="feature-card text-white" style="background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.12);">
                                     <div class="d-flex align-items-center gap-2">
-                                        <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
+                                    <i class="fa-solid fa-angles-down"></i>
                                         <div><div class="fw-bold">نصب آسان</div><small class="opacity-75">آماده بهره‌برداری فوری</small></div>
                                     </div>
                                 </div>
@@ -490,25 +494,35 @@
     </script>
     <script>
         window.addEventListener('goftino_ready', function () {
-            document.getElementById("open_chat").addEventListener("click", function () {
-                Goftino.setUser({
-                    email: '...',
-                    name: '...',
-                    about: 'Resturanyar...',
-                    phone: '...',
-                    avatar: '...',
+            var openChat = document.getElementById("open_chat");
+            var closeChat = document.getElementById("close_chat");
+            var toggleChat = document.getElementById("toggle_chat");
 
-                    forceUpdate: true
+            if (openChat) {
+                openChat.addEventListener("click", function () {
+                    Goftino.setUser({
+                        email: '...',
+                        name: '...',
+                        about: 'Resturanyar...',
+                        phone: '...',
+                        avatar: '...',
+                        forceUpdate: true
+                    });
+                    Goftino.open();
                 });
+            }
 
-                Goftino.open();
-            });
-            document.getElementById("close_chat").addEventListener("click", function () {
-                Goftino.close();
-            });
-            document.getElementById("toggle_chat").addEventListener("click", function () {
-                Goftino.toggle();
-            });
+            if (closeChat) {
+                closeChat.addEventListener("click", function () {
+                    Goftino.close();
+                });
+            }
+
+            if (toggleChat) {
+                toggleChat.addEventListener("click", function () {
+                    Goftino.toggle();
+                });
+            }
         });
     </script>
 }

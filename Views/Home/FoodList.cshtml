@@ -592,6 +592,8 @@
     // -----------------------------------------------------------------
     // INITIALIZATION
     function initFoodListPage() {
+        if (!document.getElementById('foodList')) return;
+
         resetFoodImageState();
         $("#filterCategory").find('option:not(:first)').remove();
 

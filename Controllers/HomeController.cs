@@ -899,6 +899,9 @@ namespace resturanyar.Controllers
 
             var activeStatuses = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 12 };
 
+            if (string.IsNullOrEmpty(period) && !from.HasValue && !to.HasValue)
+                period = "month";
+
             // Period calculation
             if (!string.IsNullOrEmpty(period))
             {
@@ -933,7 +936,7 @@ namespace resturanyar.Controllers
             if (to.HasValue && to.Value.TimeOfDay == TimeSpan.Zero)
                 to = to.Value.Date.AddDays(1).AddTicks(-1);
 
-            var ordersQuery = _context.Orders.Where(o => o.RestaurantId == restaurantId);
+            var ordersQuery = _context.Orders.AsNoTracking().Where(o => o.RestaurantId == restaurantId);
 
             if (statusId > 0)
                 ordersQuery = ordersQuery.Where(o => o.StatusId == statusId);
@@ -943,16 +946,16 @@ namespace resturanyar.Controllers
             if (from.HasValue) ordersQuery = ordersQuery.Where(o => o.CreatedAt >= from.Value);
             if (to.HasValue) ordersQuery = ordersQuery.Where(o => o.CreatedAt <= to.Value);
 
-            var totalOrders = await ordersQuery.CountAsync();
-            var paidOrders = await ordersQuery.Where(o => o.StatusId == 11).CountAsync();
-            var cancelledOrders = await ordersQuery.Where(o => o.StatusId == 9 || o.StatusId == 10).CountAsync();
-
             var statusGroups = await ordersQuery
                 .GroupBy(o => o.StatusId)
                 .Select(g => new { StatusId = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            var orderItemsQuery = _context.OrderItems
+            var totalOrders = statusGroups.Sum(g => g.Count);
+            var paidOrders = statusGroups.Where(g => g.StatusId == 11).Sum(g => g.Count);
+            var cancelledOrders = statusGroups.Where(g => g.StatusId is 9 or 10).Sum(g => g.Count);
+
+            var orderItemsQuery = _context.OrderItems.AsNoTracking()
                 .Where(oi => oi.Order.RestaurantId == restaurantId);
 
             if (statusId > 0)
@@ -963,25 +966,35 @@ namespace resturanyar.Controllers
             if (from.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt >= from.Value);
             if (to.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt <= to.Value);
 
-            var totalRevenue = await orderItemsQuery.SumAsync(
-    oi => (decimal)oi.Quantity *
-    (
-        oi.UnitPriceWithDiscount.HasValue &&
-        oi.UnitPriceWithDiscount.Value > 0
-            ? oi.UnitPriceWithDiscount.Value
-            : oi.UnitPrice
-    ));
-            var paidRevenue = await orderItemsQuery
-      .Where(oi => oi.Order.StatusId == 11)
-      .SumAsync(oi => (decimal)oi.Quantity *
-      (
-          oi.UnitPriceWithDiscount.HasValue &&
-          oi.UnitPriceWithDiscount.Value > 0
-              ? oi.UnitPriceWithDiscount.Value
-              : oi.UnitPrice
-      ));
+            var itemAggregates = await orderItemsQuery
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    TotalRevenue = g.Sum(oi =>
+                        (decimal)oi.Quantity *
+                        (
+                            oi.UnitPriceWithDiscount.HasValue &&
+                            oi.UnitPriceWithDiscount.Value > 0
+                                ? oi.UnitPriceWithDiscount.Value
+                                : oi.UnitPrice
+                        )),
+                    PaidRevenue = g.Sum(oi =>
+                        oi.Order.StatusId == 11
+                            ? (decimal)oi.Quantity *
+                              (
+                                  oi.UnitPriceWithDiscount.HasValue &&
+                                  oi.UnitPriceWithDiscount.Value > 0
+                                      ? oi.UnitPriceWithDiscount.Value
+                                      : oi.UnitPrice
+                              )
+                            : 0m),
+                    TotalItemsCount = g.Sum(oi => (int?)oi.Quantity) ?? 0
+                })
+                .FirstOrDefaultAsync();
 
-            var totalItemsCount = await orderItemsQuery.SumAsync(oi => (int?)oi.Quantity) ?? 0;
+            var totalRevenue = itemAggregates?.TotalRevenue ?? 0m;
+            var paidRevenue = itemAggregates?.PaidRevenue ?? 0m;
+            var totalItemsCount = itemAggregates?.TotalItemsCount ?? 0;
 
             var salesByDay = await orderItemsQuery
                 .GroupBy(oi => oi.Order.CreatedAt.Date)
@@ -989,59 +1002,39 @@ namespace resturanyar.Controllers
                 {
                     Day = g.Key,
                     Revenue = g.Sum(oi =>
-     (decimal)oi.Quantity *
-     (
-         oi.UnitPriceWithDiscount.HasValue &&
-         oi.UnitPriceWithDiscount.Value > 0
-             ? oi.UnitPriceWithDiscount.Value
-             : oi.UnitPrice
-     )),
+                        (decimal)oi.Quantity *
+                        (
+                            oi.UnitPriceWithDiscount.HasValue &&
+                            oi.UnitPriceWithDiscount.Value > 0
+                                ? oi.UnitPriceWithDiscount.Value
+                                : oi.UnitPrice
+                        )),
                     Orders = g.Select(oi => oi.OrderId).Distinct().Count()
                 })
                 .OrderBy(x => x.Day)
                 .ToListAsync();
 
-            var topByQty = await orderItemsQuery
-     .GroupBy(oi => oi.FoodItemId)  // فقط بر اساس FoodItemId گروه‌بندی کن
-     .Select(g => new TopItemDto
-     {
-         FoodItemId = g.Key,
-         Name = g.FirstOrDefault().FoodName ?? "بدون نام",
-         ImageUrl = g.FirstOrDefault().FoodImageUrl ?? "/uploads/food_default.jpg",
-         Quantity = g.Sum(x => x.Quantity),
-         Revenue = g.Sum(x =>
-             (decimal)x.Quantity *
-             (
-                 x.UnitPriceWithDiscount.HasValue &&
-                 x.UnitPriceWithDiscount.Value > 0
-                     ? x.UnitPriceWithDiscount.Value
-                     : x.UnitPrice
-             ))
-     })
-     .OrderByDescending(x => x.Quantity)
-     .Take(topN)
-     .ToListAsync();
+            var allTopItems = await orderItemsQuery
+                .GroupBy(oi => oi.FoodItemId)
+                .Select(g => new TopItemDto
+                {
+                    FoodItemId = g.Key,
+                    Name = g.FirstOrDefault()!.FoodName ?? "بدون نام",
+                    ImageUrl = g.FirstOrDefault()!.FoodImageUrl ?? "/uploads/food_default.jpg",
+                    Quantity = g.Sum(x => x.Quantity),
+                    Revenue = g.Sum(x =>
+                        (decimal)x.Quantity *
+                        (
+                            x.UnitPriceWithDiscount.HasValue &&
+                            x.UnitPriceWithDiscount.Value > 0
+                                ? x.UnitPriceWithDiscount.Value
+                                : x.UnitPrice
+                        ))
+                })
+                .ToListAsync();
 
-            var topByRev = await orderItemsQuery
-        .GroupBy(oi => oi.FoodItemId)  // فقط بر اساس FoodItemId گروه‌بندی کن
-        .Select(g => new TopItemDto
-        {
-            FoodItemId = g.Key,
-            Name = g.FirstOrDefault().FoodName ?? "بدون نام",
-            ImageUrl = g.FirstOrDefault().FoodImageUrl ?? "/uploads/food_default.jpg",
-            Quantity = g.Sum(x => x.Quantity),
-            Revenue = g.Sum(x =>
-                (decimal)x.Quantity *
-                (
-                    x.UnitPriceWithDiscount.HasValue &&
-                    x.UnitPriceWithDiscount.Value > 0
-                        ? x.UnitPriceWithDiscount.Value
-                        : x.UnitPrice
-                ))
-        })
-        .OrderByDescending(x => x.Revenue)
-        .Take(topN)
-        .ToListAsync();
+            var topByQty = allTopItems.OrderByDescending(x => x.Quantity).Take(topN).ToList();
+            var topByRev = allTopItems.OrderByDescending(x => x.Revenue).Take(topN).ToList();
 
             var vm = new ManagerReportViewModel
             {
@@ -1070,7 +1063,7 @@ namespace resturanyar.Controllers
             foreach (var sg in statusGroups)
                 vm.StatusCounts[sg.StatusId] = sg.Count;
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            if (Request.Headers["X-Reports-Partial"] == "true")
                 return PartialView("_ManagerReportsPartial", vm);
 
             return View("ManagerReports", vm);
@@ -1559,11 +1552,8 @@ namespace resturanyar.Controllers
             // ارسال period به ViewData برای فعال‌سازی دکمه‌ها
             ViewData["CurrentPeriod"] = period?.ToLower();
 
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            if (Request.Headers["X-Orders-Partial"] == "true")
                 return PartialView("_ManagerOrdersPartial", vm);
-
-
-
 
             return View("ManagerOrderList", vm);
         }

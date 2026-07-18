@@ -581,6 +581,8 @@
     }
 
     function initCategoryListPage() {
+        if (!document.getElementById('sortable-list')) return;
+
         if (sortable) {
             sortable.destroy();
             sortable = null;
@@ -628,5 +630,6 @@
     window.initCategoryListPage = initCategoryListPage;
 </script>
 }
+</script>
 </script>
 </script>

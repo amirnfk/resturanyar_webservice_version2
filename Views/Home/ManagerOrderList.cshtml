@@ -180,6 +180,13 @@
 
             if (!ordersContainer || !filterForm) return;
 
+            if (window._managerOrderListAbortController) {
+                window._managerOrderListAbortController.abort();
+            }
+
+            window._managerOrderListAbortController = new AbortController();
+            var signal = window._managerOrderListAbortController.signal;
+
 
 
             function jalali_to_gregorian(jy, jm, jd) {
@@ -276,11 +283,30 @@
 
             async function loadOrders(url) {
 
-                var res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                var res = await fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Orders-Partial': 'true'
+                    }
+                });
+                var html = await res.text();
+                var doc = new DOMParser().parseFromString(html, 'text/html');
+                doc.querySelectorAll('style, link[rel="stylesheet"], script[src]').forEach(function (node) {
+                    node.remove();
+                });
+                ordersContainer.innerHTML = doc.body.innerHTML;
 
-                ordersContainer.innerHTML = await res.text();
+                ordersContainer.querySelectorAll('script:not([src])').forEach(function (oldScript) {
+                    var code = oldScript.textContent || '';
+                    oldScript.remove();
+                    if (!code.trim()) return;
+                    var script = document.createElement('script');
+                    script.textContent = code;
+                    document.body.appendChild(script);
+                    script.remove();
+                });
 
-                setTimeout(initializeDatepickers, 200);
+                setTimeout(initializeDatepickers, 100);
 
             }
 
@@ -332,7 +358,7 @@
 
                 loadOrders(filterForm.action + '?' + query + '&page=1');
 
-            });
+            }, { signal: signal });
 
 
 
@@ -346,7 +372,7 @@
 
                     resetFilters();
 
-                });
+                }, { signal: signal });
 
             }
 
@@ -368,7 +394,7 @@
 
                     loadOrders(btn.href);
 
-                });
+                }, { signal: signal });
 
             });
 
@@ -386,7 +412,7 @@
 
                 }
 
-            });
+            }, { signal: signal });
 
 
 
