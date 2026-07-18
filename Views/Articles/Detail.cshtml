@@ -8,62 +8,121 @@
     var absoluteImageUrl = imageUrl.StartsWith("http")
         ? imageUrl
         : "https://resturanyar.ir" + imageUrl;
+    var hasCover = !string.IsNullOrWhiteSpace(Model.FeaturedImageUrl);
+    var wordCount = System.Text.RegularExpressions.Regex.Matches(
+        System.Text.RegularExpressions.Regex.Replace(Model.Content ?? "", "<[^>]+>", " "),
+        @"\S+").Count;
+    var readMinutes = Math.Max(1, (int)Math.Ceiling(wordCount / 200.0));
+    var faqs = ViewData["ArticleFaqs"] as IReadOnlyList<resturanyar.Utility.ArticleSchemaHelper.FaqItem>
+        ?? Array.Empty<resturanyar.Utility.ArticleSchemaHelper.FaqItem>();
+    var faqJsonLd = resturanyar.Utility.ArticleSchemaHelper.BuildFaqPageJsonLd(faqs);
+    var dateModified = (Model.UpdatedAt ?? Model.PublishedAt).ToString("yyyy-MM-dd");
 }
 
 @section Styles {
     @await Html.PartialAsync("_ArticleStyles")
 }
 
-<section class="article-hero">
-    <div class="container">
-        <nav class="breadcrumb-nav" aria-label="مسیر">
-            <a href="/">خانه</a>
-            <span class="mx-2">/</span>
-            <a href="/articles">مقالات</a>
-            <span class="mx-2">/</span>
-            <span>@Model.Title</span>
-        </nav>
-        <p class="article-meta mb-2">
-            <i class="fa-regular fa-calendar ms-1"></i> @Model.PublishedAt.ToString("yyyy/MM/dd")
-            <span class="mx-2">|</span>
-            <i class="fa-regular fa-user ms-1"></i> @Model.Author
-        </p>
-        <h1>@Model.Title</h1>
-    </div>
-</section>
+<div class="articles-page">
+    <section class="article-detail-hero @(hasCover ? "has-cover" : "")">
+        @if (hasCover)
+        {
+            <div class="article-detail-hero-bg" style="background-image: url('@Model.FeaturedImageUrl');"></div>
+        }
+        <div class="container article-detail-hero-content">
+            <nav class="breadcrumb-nav" aria-label="مسیر">
+                <a href="/">خانه</a>
+                <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-left"></i></span>
+                <a href="/articles">مقالات</a>
+                <span class="breadcrumb-sep"><i class="fa-solid fa-chevron-left"></i></span>
+                <span>@Model.Title</span>
+            </nav>
 
-<section class="article-content">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                @if (!string.IsNullOrWhiteSpace(Model.FeaturedImageUrl))
-                {
-                    <img src="@Model.FeaturedImageUrl" alt="@Model.Title" class="img-fluid rounded-4 shadow mb-4" loading="lazy" style="max-height:360px; width:100%; object-fit:cover;">
-                }
-
-                @Html.Raw(Model.Content)
-
-                <div class="cta-box">
-                    <h3 class="fw-bold">رستورانیار را رایگان امتحان کنید</h3>
-                    <p style="opacity:.9;">با اشتراک تستی، تمام امکانات نرم‌افزار مدیریت رستوران را بدون ریسک بررسی کنید.</p>
-                    <a href="/resturanyar-pricelist" class="btn btn-light btn-lg px-4 me-2">دریافت لیست قیمت</a>
-                    <a href="/Home/ManagerLogin" class="btn btn-cta btn-lg px-4">شروع رایگان</a>
-                </div>
+            <div class="article-meta-row">
+                <span class="article-meta-chip">
+                    <i class="fa-regular fa-calendar"></i>
+                    @Model.PublishedAt.ToString("yyyy/MM/dd")
+                </span>
+                <span class="article-meta-chip">
+                    <i class="fa-regular fa-user"></i>
+                    @Model.Author
+                </span>
+                <span class="article-meta-chip">
+                    <i class="fa-regular fa-clock"></i>
+                    @readMinutes دقیقه مطالعه
+                </span>
             </div>
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="highlight-box">
-                    <h3 class="h5 fw-bold mb-3">صفحات مرتبط</h3>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="/restaurant-management">نرم‌افزار مدیریت رستوران</a></li>
-                        <li class="mb-2"><a href="/digital-menu">منوی دیجیتال QR</a></li>
-                        <li class="mb-2"><a href="/customer-club">باشگاه مشتریان</a></li>
-                        <li><a href="/articles">همه مقالات</a></li>
-                    </ul>
+
+            <h1>@Model.Title</h1>
+        </div>
+    </section>
+
+    <section class="article-body-section">
+        <div class="container">
+            <div class="article-layout">
+                <div class="article-main">
+                    <article class="article-main-card">
+                        @* تصویر شاخص در هیرو نمایش داده می‌شود؛ از تکرار در متن جلوگیری می‌کنیم *@
+
+                        <div class="article-prose">
+                            @Html.Raw(Model.Content)
+                        </div>
+
+                        <div class="cta-box">
+                            <h3>رستورانیار را رایگان امتحان کنید</h3>
+                            <p>با اشتراک تستی، تمام امکانات نرم‌افزار مدیریت رستوران را بدون ریسک بررسی کنید.</p>
+                            <div class="cta-actions">
+                                <a href="/resturanyar-pricelist" class="btn-cta-light">دریافت لیست قیمت</a>
+                                <a href="/Home/ManagerLogin" class="btn-cta-outline">شروع رایگان</a>
+                            </div>
+                        </div>
+                    </article>
                 </div>
+
+                <aside class="article-sidebar">
+                    <div class="sidebar-card">
+                        <div class="sidebar-author">
+                            <div class="sidebar-author-avatar">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </div>
+                            <div>
+                                <div class="sidebar-author-name">@Model.Author</div>
+                                <div class="sidebar-author-role">نویسنده مقاله</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-card-title">
+                            <i class="fa-solid fa-link"></i>
+                            صفحات مرتبط
+                        </h3>
+                        <ul class="sidebar-links">
+                            <li><a href="/restaurant-management"><i class="fa-solid fa-arrow-left"></i> نرم‌افزار مدیریت رستوران</a></li>
+                            <li><a href="/digital-menu"><i class="fa-solid fa-arrow-left"></i> منوی دیجیتال QR</a></li>
+                            <li><a href="/customer-club"><i class="fa-solid fa-arrow-left"></i> باشگاه مشتریان</a></li>
+                            <li><a href="/articles"><i class="fa-solid fa-arrow-left"></i> همه مقالات</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-card" style="background: linear-gradient(135deg, rgba(255,122,26,0.08), rgba(0,194,168,0.06)); border-color: rgba(255,122,26,0.15);">
+                        <h3 class="sidebar-card-title">
+                            <i class="fa-solid fa-rocket"></i>
+                            آماده شروع هستید؟
+                        </h3>
+                        <p style="font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px;">
+                            همین الان نرم‌افزار را رایگان تست کنید و مدیریت رستوران را متحول کنید.
+                        </p>
+                        <a href="/Home/ManagerLogin" class="article-read-more" style="width: 100%; justify-content: center;">
+                            ورود / ثبت‌نام
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </div>
+                </aside>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 
 @section StructuredData {
     <script type="application/ld+json">
@@ -75,6 +134,7 @@
           "image": "@absoluteImageUrl",
           "author": { "@@type": "Organization", "name": "@Model.Author" },
           "datePublished": "@Model.PublishedAt.ToString("yyyy-MM-dd")",
+          "dateModified": "@dateModified",
           "mainEntityOfPage": { "@@type": "WebPage", "@@id": "https://resturanyar.ir/articles/@Model.Slug" },
           "publisher": {
             "@@type": "Organization",
@@ -94,4 +154,10 @@
           ]
         }
     </script>
+    @if (!string.IsNullOrEmpty(faqJsonLd))
+    {
+        <script type="application/ld+json">
+            @Html.Raw(faqJsonLd)
+        </script>
+    }
 }

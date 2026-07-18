@@ -2031,3 +2031,11 @@ D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.pdb
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\ref\resturanyar.dll
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\cafe-vs-restaurant-software.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\customer-loyalty-tips.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\digital-menu-qr-guide.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\fastfood-order-management.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\free-restaurant-management-software.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\kitchen-order-management.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\restaurant-kpi-reporting.json
+E:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\bin\Release\net8.0\Data\ArticleContent\restaurant-pos-features.json

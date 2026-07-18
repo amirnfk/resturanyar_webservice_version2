@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using resturanyar.Models;
 using resturanyar.Models.AdminMessage;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.ViewModels.Admin;
@@ -1256,6 +1257,275 @@ namespace resturanyar.Controllers
             await _messageService.DeactivateMessageAsync(id);
             TempData["SuccessMessage"] = "پیام غیرفعال شد.";
             return RedirectToAction(nameof(MessageList));
+        }
+
+        // ===== مدیریت مقالات =====
+        [HttpGet]
+        public async Task<IActionResult> ArticleList()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return RedirectToAction("AdminLogin");
+
+                var articles = await _context.Articles
+                    .OrderByDescending(a => a.PublishedAt)
+                    .ThenByDescending(a => a.Id)
+                    .Select(a => new ArticleListItemViewModel
+                    {
+                        Id = a.Id,
+                        Title = a.Title,
+                        Slug = a.Slug,
+                        PublishedAt = a.PublishedAt,
+                        IsPublished = a.IsPublished,
+                        Author = a.Author
+                    })
+                    .ToListAsync();
+
+                return View(articles);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت لیست مقالات");
+                TempData["ErrorMessage"] = $"خطا در دریافت لیست مقالات: {ex.Message}";
+                return View(new List<ArticleListItemViewModel>());
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CreateArticle()
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            return View(new ArticleAdminViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateArticle(ArticleAdminViewModel model)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return RedirectToAction("AdminLogin");
+
+                await PrepareArticleModelAsync(model, isEdit: false);
+
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                var featuredImageUrl = await SaveFeaturedImageAsync(model);
+                var slug = await SlugHelper.EnsureUniqueSlugAsync(_context, model.Slug.Trim());
+
+                var article = new Article
+                {
+                    Title = model.Title.Trim(),
+                    Slug = slug,
+                    MetaDescription = model.MetaDescription.Trim(),
+                    Keywords = string.IsNullOrWhiteSpace(model.Keywords) ? null : model.Keywords.Trim(),
+                    Content = model.Content,
+                    PublishedAt = model.PublishedAt,
+                    IsPublished = model.IsPublished,
+                    Author = model.Author.Trim(),
+                    FeaturedImageUrl = featuredImageUrl ?? model.FeaturedImageUrl?.Trim(),
+                    UpdatedAt = DateTime.Now
+                };
+
+                _context.Articles.Add(article);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"مقاله «{article.Title}» با موفقیت ایجاد شد.";
+                return RedirectToAction(nameof(ArticleList));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در ایجاد مقاله");
+                ModelState.AddModelError("", "خطا در ایجاد مقاله: " + ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditArticle(int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return RedirectToAction("AdminLogin");
+
+                var article = await _context.Articles.FindAsync(id);
+                if (article == null)
+                    return NotFound();
+
+                var model = new ArticleAdminViewModel
+                {
+                    Id = article.Id,
+                    Title = article.Title,
+                    Slug = article.Slug,
+                    MetaDescription = article.MetaDescription,
+                    Keywords = article.Keywords,
+                    Content = article.Content,
+                    PublishedAt = article.PublishedAt,
+                    IsPublished = article.IsPublished,
+                    Author = article.Author,
+                    FeaturedImageUrl = article.FeaturedImageUrl
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در بارگذاری فرم ویرایش مقاله");
+                return StatusCode(500, "خطای داخلی سرور");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditArticle(ArticleAdminViewModel model)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return RedirectToAction("AdminLogin");
+
+                if (!model.Id.HasValue)
+                    return NotFound();
+
+                await PrepareArticleModelAsync(model, isEdit: true);
+
+                if (!ModelState.IsValid)
+                    return View(model);
+
+                var article = await _context.Articles.FindAsync(model.Id.Value);
+                if (article == null)
+                    return NotFound();
+
+                var featuredImageUrl = await SaveFeaturedImageAsync(model);
+                var slug = await SlugHelper.EnsureUniqueSlugAsync(_context, model.Slug.Trim(), model.Id);
+
+                article.Title = model.Title.Trim();
+                article.Slug = slug;
+                article.MetaDescription = model.MetaDescription.Trim();
+                article.Keywords = string.IsNullOrWhiteSpace(model.Keywords) ? null : model.Keywords.Trim();
+                article.Content = model.Content;
+                article.PublishedAt = model.PublishedAt;
+                article.IsPublished = model.IsPublished;
+                article.Author = model.Author.Trim();
+                article.FeaturedImageUrl = featuredImageUrl ?? model.FeaturedImageUrl?.Trim();
+                article.UpdatedAt = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "مقاله با موفقیت به‌روزرسانی شد.";
+                return RedirectToAction(nameof(ArticleList));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در ویرایش مقاله");
+                ModelState.AddModelError("", "خطا در ویرایش مقاله: " + ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteArticle([FromBody] int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return Unauthorized();
+
+                var article = await _context.Articles.FindAsync(id);
+                if (article == null)
+                    return Json(new { success = false, message = $"مقاله با ID {id} یافت نشد" });
+
+                _context.Articles.Remove(article);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "مقاله با موفقیت حذف شد" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در حذف مقاله");
+                return Json(new { success = false, message = "خطا در حذف مقاله: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleArticlePublish([FromBody] int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                    return Unauthorized();
+
+                var article = await _context.Articles.FindAsync(id);
+                if (article == null)
+                    return Json(new { success = false, message = $"مقاله با ID {id} یافت نشد" });
+
+                article.IsPublished = !article.IsPublished;
+                await _context.SaveChangesAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    isPublished = article.IsPublished,
+                    message = article.IsPublished ? "مقاله منتشر شد." : "مقاله از حالت انتشار خارج شد."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در تغییر وضعیت انتشار مقاله");
+                return Json(new { success = false, message = "خطا در تغییر وضعیت: " + ex.Message });
+            }
+        }
+
+        private async Task PrepareArticleModelAsync(ArticleAdminViewModel model, bool isEdit)
+        {
+            if (string.IsNullOrWhiteSpace(model.Slug) && !string.IsNullOrWhiteSpace(model.Title))
+                model.Slug = SlugHelper.GenerateSlug(model.Title);
+
+            if (string.IsNullOrWhiteSpace(model.Slug))
+                ModelState.AddModelError(nameof(model.Slug), "اسلاگ الزامی است. برای عنوان فارسی، اسلاگ انگلیسی را دستی وارد کنید.");
+
+            var slugExists = await _context.Articles.AnyAsync(a =>
+                a.Slug == model.Slug.Trim() && (!isEdit || !model.Id.HasValue || a.Id != model.Id.Value));
+
+            if (slugExists)
+                ModelState.AddModelError(nameof(model.Slug), "این اسلاگ قبلاً استفاده شده است");
+
+            if (model.FeaturedImage != null && model.FeaturedImage.Length > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(model.FeaturedImage.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(extension))
+                    ModelState.AddModelError(nameof(model.FeaturedImage), "فرمت تصویر مجاز نیست. فرمت‌های مجاز: jpg, png, gif, webp");
+
+                if (model.FeaturedImage.Length > 5 * 1024 * 1024)
+                    ModelState.AddModelError(nameof(model.FeaturedImage), "حجم تصویر نباید بیشتر از 5 مگابایت باشد");
+            }
+        }
+
+        private async Task<string?> SaveFeaturedImageAsync(ArticleAdminViewModel model)
+        {
+            if (model.FeaturedImage == null || model.FeaturedImage.Length == 0)
+                return null;
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "articles");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.FeaturedImage.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.FeaturedImage.CopyToAsync(stream);
+            }
+
+            return $"/uploads/articles/{uniqueFileName}";
         }
     }
 }

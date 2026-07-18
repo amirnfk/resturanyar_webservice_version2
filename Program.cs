@@ -230,9 +230,26 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        if (!resturanyar.Data.ArticleDbSeeder.Seed(db))
+        try
+        {
+            db.Database.ExecuteSqlRaw(
+                "IF COL_LENGTH('Articles', 'UpdatedAt') IS NULL ALTER TABLE Articles ADD UpdatedAt datetime2 NULL;");
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Could not ensure Articles.UpdatedAt column.");
+        }
+
+        if (!resturanyar.Data.ArticleDbSeeder.Seed(db, app.Environment.ContentRootPath))
         {
             Log.Warning("Article seed did not run at startup. It will retry on the first visit to /articles.");
+        }
+
+        var syncArticles = builder.Configuration.GetValue<bool>("ArticleContent:SyncOnStartup");
+        if (syncArticles)
+        {
+            var synced = resturanyar.Data.ArticleContentUpdater.SyncFromContentFolder(db, app.Environment.ContentRootPath);
+            Log.Information("Article content sync completed. {Count} article(s) upserted.", synced);
         }
     }
     catch (Exception ex)

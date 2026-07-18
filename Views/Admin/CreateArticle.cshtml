@@ -1,0 +1,11 @@
+@model resturanyar.Models.ViewModels.Admin.ArticleAdminViewModel
+
+@{
+    ViewData["Title"] = "ایجاد مقاله جدید";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["FormAction"] = "CreateArticle";
+    ViewData["PageTitle"] = "ایجاد مقاله جدید";
+    ViewData["SubmitLabel"] = "ذخیره مقاله";
+}
+
+@await Html.PartialAsync("_ArticleForm", Model)

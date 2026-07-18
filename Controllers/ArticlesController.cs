@@ -92,7 +92,7 @@ namespace resturanyar.Controllers
 
             ViewData["Seo"] = new SeoMetadata
             {
-                Title = article.Title + " | رستورانیار",
+                Title = ArticleSchemaHelper.TrimSeoTitle(article.Title) + " | رستورانیار",
                 Description = article.MetaDescription,
                 Keywords = article.Keywords,
                 CanonicalUrl = SeoDefaults.SiteUrl + "/articles/" + article.Slug,
@@ -101,6 +101,8 @@ namespace resturanyar.Controllers
                     : SeoDefaults.SiteUrl + article.FeaturedImageUrl,
                 OgType = "article"
             };
+
+            ViewData["ArticleFaqs"] = ArticleSchemaHelper.ExtractFaqs(article.Content);
 
             return View(article);
         }
@@ -113,7 +115,7 @@ namespace resturanyar.Controllers
             }
 
             _logger.LogInformation("Articles table is empty. Running seed...");
-            if (!ArticleDbSeeder.Seed(_context))
+            if (!ArticleDbSeeder.Seed(_context, Directory.GetCurrentDirectory()))
             {
                 _logger.LogWarning("Article seed did not complete. Check Logs/log.txt for details.");
             }

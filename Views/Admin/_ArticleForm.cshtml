@@ -1,0 +1,440 @@
+@model resturanyar.Models.ViewModels.Admin.ArticleAdminViewModel
+
+@{
+    var formAction = ViewData["FormAction"]?.ToString() ?? "CreateArticle";
+    var pageTitle = ViewData["PageTitle"]?.ToString() ?? "مقاله جدید";
+    var submitLabel = ViewData["SubmitLabel"]?.ToString() ?? "ذخیره مقاله";
+    var isEdit = Model.Id.HasValue;
+}
+
+<div class="article-form-page" dir="rtl">
+    <div class="form-hero">
+        <div>
+            <h1><i class="fas fa-pen-fancy"></i> @pageTitle</h1>
+            <p>محتوای HTML مقاله در صفحه عمومی <a href="/articles" target="_blank">/articles</a> نمایش داده می‌شود.</p>
+        </div>
+        <a href="@Url.Action("ArticleList")" class="btn-back">
+            <i class="fas fa-arrow-right"></i> بازگشت به لیست
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="form-alert alert-success-modern">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+
+    <form asp-action="@formAction" method="post" enctype="multipart/form-data" id="articleForm">
+        @Html.AntiForgeryToken()
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+
+        <div asp-validation-summary="ModelOnly" class="form-alert alert-danger-modern"></div>
+
+        <div class="form-grid">
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-file-alt"></i> اطلاعات اصلی</h2>
+
+                <div class="form-group">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control-modern" id="articleTitle" placeholder="عنوان مقاله" />
+                    <span asp-validation-for="Title" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Slug"></label>
+                    <input asp-for="Slug" class="form-control-modern slug-input" id="articleSlug" placeholder="example-article-slug" dir="ltr" />
+                    <small class="form-hint">فقط حروف انگلیسی کوچک، اعداد و خط تیره. از عنوان به‌صورت خودکار پر می‌شود.</small>
+                    <span asp-validation-for="Slug" class="field-error"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Author"></label>
+                        <input asp-for="Author" class="form-control-modern" />
+                        <span asp-validation-for="Author" class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PublishedAt"></label>
+                        <input asp-for="PublishedAt" type="datetime-local" class="form-control-modern" />
+                        <span asp-validation-for="PublishedAt" class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="toggle-label publish-toggle">
+                        <input asp-for="IsPublished" type="checkbox" class="form-check-input" />
+                        <span class="toggle-switch"></span>
+                        <span>منتشر شده (در سایت نمایش داده شود)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-search"></i> SEO</h2>
+
+                <div class="form-group">
+                    <label asp-for="MetaDescription"></label>
+                    <textarea asp-for="MetaDescription" class="form-control-modern" rows="3" maxlength="500" id="metaDescription"></textarea>
+                    <small class="form-hint"><span id="metaCharCount">0</span> / 500 کاراکتر</small>
+                    <span asp-validation-for="MetaDescription" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Keywords"></label>
+                    <input asp-for="Keywords" class="form-control-modern" placeholder="کلمه۱, کلمه۲, ..." />
+                    <span asp-validation-for="Keywords" class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-image"></i> تصویر شاخص</h2>
+
+                <div class="form-group">
+                    <label asp-for="FeaturedImageUrl"></label>
+                    <input asp-for="FeaturedImageUrl" class="form-control-modern" id="featuredImageUrl" placeholder="/images/sample.jpg" dir="ltr" />
+                    <span asp-validation-for="FeaturedImageUrl" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FeaturedImage">یا آپلود تصویر جدید</label>
+                    <input asp-for="FeaturedImage" type="file" accept="image/*" class="form-control-modern" id="featuredImageFile" />
+                    <span asp-validation-for="FeaturedImage" class="field-error"></span>
+                </div>
+
+                <div class="image-preview-wrap" id="imagePreviewWrap" style="@(string.IsNullOrWhiteSpace(Model.FeaturedImageUrl) ? "display:none;" : "")">
+                    <img src="@Model.FeaturedImageUrl" alt="پیش‌نمایش" id="imagePreview" class="image-preview" />
+                </div>
+            </div>
+
+            <div class="form-section form-section-full">
+                <h2 class="section-title"><i class="fas fa-align-right"></i> متن مقاله</h2>
+                <textarea asp-for="Content" id="articleContent" class="form-control-modern"></textarea>
+                <span asp-validation-for="Content" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> @submitLabel
+            </button>
+            <a href="@Url.Action("ArticleList")" class="btn-cancel">انصراف</a>
+            @if (isEdit && Model.IsPublished && !string.IsNullOrWhiteSpace(Model.Slug))
+            {
+                <a href="/articles/@Model.Slug" target="_blank" rel="noopener" class="btn-preview">
+                    <i class="fas fa-external-link-alt"></i> مشاهده در سایت
+                </a>
+            }
+        </div>
+    </form>
+</div>
+
+<style>
+        .article-form-page {
+            padding: 8px 4px 40px;
+            --form-primary: #ff7a1a;
+            --form-primary-dark: #e56a0f;
+        }
+
+        .form-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background:
+                radial-gradient(500px 180px at 100% 0%, rgba(255,255,255,.15), transparent 55%),
+                linear-gradient(135deg, #ff7a1a 0%, #ff5400 100%);
+            border-radius: 24px;
+            padding: 28px 32px;
+            color: #fff;
+            margin-bottom: 24px;
+            box-shadow: 0 16px 40px rgba(255, 122, 26, .28);
+        }
+
+        .form-hero h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-hero p { margin: 0; opacity: .9; font-size: .9rem; }
+        .form-hero a { color: #fff; text-decoration: underline; }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,.2);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-back:hover { background: rgba(255,255,255,.3); color: #fff; text-decoration: none; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-section {
+            background: #fff;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 6px 24px rgba(0,0,0,.05);
+            border: 1px solid rgba(0,0,0,.04);
+            transition: box-shadow .2s ease;
+        }
+
+        .form-section:focus-within {
+            box-shadow: 0 8px 32px rgba(255, 122, 26, .08);
+        }
+
+        .form-section-full { grid-column: 1 / -1; }
+
+        .section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #334155;
+            margin: 0 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i { color: var(--form-primary); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; color: #475569; margin-bottom: 6px; font-size: .9rem; }
+
+        .form-control-modern {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: .95rem;
+            transition: border-color .2s ease, box-shadow .2s ease;
+            background: #fff;
+        }
+
+        .form-control-modern:focus {
+            outline: none;
+            border-color: var(--form-primary);
+            box-shadow: 0 0 0 3px rgba(255, 122, 26, .15);
+        }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-hint { display: block; color: #94a3b8; font-size: .8rem; margin-top: 4px; }
+        .field-error { color: #dc2626; font-size: .82rem; display: block; margin-top: 4px; }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .publish-toggle .form-check-input { display: none; }
+
+        .toggle-switch {
+            width: 48px;
+            height: 26px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            position: relative;
+            transition: background .2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            right: 3px;
+            transition: transform .2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+        }
+
+        .publish-toggle .form-check-input:checked + .toggle-switch {
+            background: var(--form-primary);
+        }
+
+        .publish-toggle .form-check-input:checked + .toggle-switch::after {
+            transform: translateX(-22px);
+        }
+
+        .image-preview-wrap { margin-top: 12px; }
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--form-primary), #ff5400);
+            color: #fff;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 8px 24px rgba(255, 122, 26, .3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 122, 26, .4);
+        }
+
+        .btn-cancel, .btn-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-cancel { background: #f1f5f9; color: #475569; }
+        .btn-cancel:hover { background: #e2e8f0; color: #334155; text-decoration: none; }
+        .btn-preview { background: #ecfeff; color: #0891b2; }
+        .btn-preview:hover { background: #cffafe; color: #0e7490; text-decoration: none; }
+
+        .form-alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .alert-success-modern { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .alert-danger-modern { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        @@media (max-width: 900px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7.2.0/tinymce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tinymce-i18n@24.7.29/langs6/fa.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+        (function () {
+            var slugManuallyEdited = @(isEdit ? "true" : "false");
+
+            function generateSlug(text) {
+                if (!text) return '';
+                return text.trim().toLowerCase()
+                    .replace(/[\s_]+/g, '-')
+                    .replace(/[^a-z0-9\-]/g, '')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+            }
+
+            function updateMetaCount() {
+                var el = document.getElementById('metaDescription');
+                var countEl = document.getElementById('metaCharCount');
+                if (el && countEl) {
+                    countEl.textContent = (el.value || '').length;
+                }
+            }
+
+            function updateImagePreview(src) {
+                var wrap = document.getElementById('imagePreviewWrap');
+                var img = document.getElementById('imagePreview');
+                if (!wrap || !img) return;
+                if (src) {
+                    img.src = src;
+                    wrap.style.display = 'block';
+                } else {
+                    wrap.style.display = 'none';
+                }
+            }
+
+            document.getElementById('articleTitle')?.addEventListener('input', function () {
+                if (!slugManuallyEdited) {
+                    document.getElementById('articleSlug').value = generateSlug(this.value);
+                }
+            });
+
+            document.getElementById('articleSlug')?.addEventListener('input', function () {
+                slugManuallyEdited = true;
+            });
+
+            document.getElementById('metaDescription')?.addEventListener('input', updateMetaCount);
+            updateMetaCount();
+
+            document.getElementById('featuredImageUrl')?.addEventListener('input', function () {
+                updateImagePreview(this.value);
+            });
+
+            document.getElementById('featuredImageFile')?.addEventListener('change', function () {
+                var file = this.files && this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) { updateImagePreview(e.target.result); };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            tinymce.init({
+                selector: '#articleContent',
+                directionality: 'rtl',
+                language: 'fa',
+                height: 480,
+                menubar: false,
+                plugins: 'lists link image code table autoresize',
+                toolbar: 'undo redo | blocks | bold italic underline | alignright aligncenter alignleft | bullist numlist | link image | table | code',
+                content_style: 'body { font-family: Vazir, Tahoma, sans-serif; font-size: 15px; direction: rtl; }',
+                branding: false,
+                promotion: false,
+                setup: function (editor) {
+                    editor.on('change', function () { editor.save(); });
+                }
+            });
+
+            document.getElementById('articleForm')?.addEventListener('submit', function () {
+                if (tinymce.get('articleContent')) {
+                    tinymce.get('articleContent').save();
+                }
+            });
+        })();
+</script>

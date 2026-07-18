@@ -1,0 +1,444 @@
+@model List<resturanyar.Models.ViewModels.Admin.ArticleListItemViewModel>
+
+@{
+    ViewData["Title"] = "مدیریت مقالات";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var totalArticles = Model.Count;
+    var publishedCount = Model.Count(a => a.IsPublished);
+    var draftCount = totalArticles - publishedCount;
+}
+
+<div class="article-page" dir="rtl">
+
+    <div class="article-hero">
+        <div class="article-hero-text">
+            <h1><i class="fas fa-newspaper"></i> مدیریت مقالات</h1>
+            <p>ایجاد، ویرایش و انتشار مقالات وبلاگ رستورانیار</p>
+        </div>
+        <a href="@Url.Action("CreateArticle")" class="btn-create">
+            <i class="fas fa-plus"></i>
+            <span>مقاله جدید</span>
+        </a>
+    </div>
+
+    <div class="article-stats">
+        <div class="stat-card stat-purple">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@totalArticles.ToString("N0")</span>
+                <span class="stat-label">کل مقالات</span>
+            </div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@publishedCount.ToString("N0")</span>
+                <span class="stat-label">منتشر شده</span>
+            </div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-eye-slash"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">@draftCount.ToString("N0")</span>
+                <span class="stat-label">پیش‌نویس</span>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="article-alert alert-success-modern">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["SuccessMessage"]</span>
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="article-alert alert-danger-modern">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>@TempData["ErrorMessage"]</span>
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+        </div>
+    }
+
+    <div class="article-card">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-newspaper"></i></div>
+                <h3>هیچ مقاله‌ای ثبت نشده است</h3>
+                <p>برای شروع، اولین مقاله خود را ایجاد کنید.</p>
+                <a href="@Url.Action("CreateArticle")" class="btn-create">
+                    <i class="fas fa-plus"></i> ایجاد اولین مقاله
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table article-table" id="articleTable">
+                    <thead>
+                        <tr>
+                            <th>عنوان</th>
+                            <th>اسلاگ</th>
+                            <th>نویسنده</th>
+                            <th>تاریخ انتشار</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr data-id="@item.Id">
+                                <td>
+                                    <span class="article-title">@item.Title</span>
+                                </td>
+                                <td>
+                                    <code class="slug-chip">@item.Slug</code>
+                                </td>
+                                <td>@item.Author</td>
+                                <td><span class="date-text">@item.PublishedAt.ToString("yyyy/MM/dd")</span></td>
+                                <td>
+                                    <span class="status-badge status-@(item.IsPublished ? "published" : "draft")">
+                                        <span class="status-dot"></span>
+                                        @(item.IsPublished ? "منتشر شده" : "پیش‌نویس")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        @if (item.IsPublished)
+                                        {
+                                            <a href="/articles/@item.Slug" target="_blank" rel="noopener"
+                                               class="action-btn btn-view" title="مشاهده در سایت">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        }
+                                        <a href="@Url.Action("EditArticle", new { id = item.Id })"
+                                           class="action-btn btn-edit" title="ویرایش">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="action-btn btn-toggle"
+                                                data-id="@item.Id"
+                                                data-published="@item.IsPublished.ToString().ToLower()"
+                                                title="@(item.IsPublished ? "لغو انتشار" : "انتشار")">
+                                            <i class="fas @(item.IsPublished ? "fa-eye-slash" : "fa-eye")"></i>
+                                        </button>
+                                        <button type="button" class="action-btn btn-delete"
+                                                data-id="@item.Id" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <style>
+        .article-page {
+            --a-primary: #ff7a1a;
+            --a-primary-dark: #e56a0f;
+            --a-accent: #00c2a8;
+            padding: 8px 4px 40px;
+        }
+
+        .article-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background:
+                radial-gradient(600px 200px at 0% 0%, rgba(255,255,255,.18), transparent 60%),
+                linear-gradient(135deg, #ff7a1a 0%, #ff5400 55%, #ff9e53 100%);
+            border-radius: 24px;
+            padding: 32px 36px;
+            color: #fff;
+            box-shadow: 0 16px 40px rgba(255, 122, 26, .32);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-hero::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.08);
+            top: -60px;
+            left: -40px;
+        }
+
+        .article-hero-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .article-hero-text h1 {
+            font-size: 1.75rem;
+            font-weight: 900;
+            margin: 0 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .article-hero-text p { margin: 0; opacity: .9; font-size: .95rem; }
+
+        .btn-create {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,.96);
+            color: var(--a-primary-dark);
+            font-weight: 800;
+            padding: 13px 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            border: none;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 8px 22px rgba(0,0,0,.16);
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(0,0,0,.22);
+            color: var(--a-primary-dark);
+            text-decoration: none;
+        }
+
+        .article-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 22px 24px;
+            box-shadow: 0 8px 28px rgba(0,0,0,.06);
+            border: 1px solid rgba(0,0,0,.04);
+            transition: transform .2s ease;
+        }
+
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .stat-purple .stat-icon { background: linear-gradient(135deg,#ff7a1a,#ff5400); }
+        .stat-green .stat-icon { background: linear-gradient(135deg,#10b981,#059669); }
+        .stat-orange .stat-icon { background: linear-gradient(135deg,#64748b,#475569); }
+
+        .stat-value { display: block; font-size: 1.6rem; font-weight: 800; color: #1e293b; line-height: 1; }
+        .stat-label { display: block; font-size: .85rem; color: #64748b; margin-top: 4px; }
+
+        .article-alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .alert-success-modern { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .alert-danger-modern { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+        .alert-close { margin-right: auto; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: inherit; opacity: .7; }
+
+        .article-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.06);
+            border: 1px solid rgba(0,0,0,.04);
+        }
+
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 3rem; color: #cbd5e1; margin-bottom: 16px; }
+        .empty-state h3 { color: #334155; margin-bottom: 8px; }
+        .empty-state p { color: #64748b; margin-bottom: 20px; }
+
+        .article-table { width: 100% !important; border-collapse: separate; border-spacing: 0; }
+        .article-table thead th {
+            background: linear-gradient(180deg, #fafafa, #f5f5f5);
+            color: #475569;
+            font-weight: 800;
+            padding: 16px 14px;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+            font-size: .85rem;
+        }
+
+        .article-table tbody td {
+            padding: 16px 14px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .article-table tbody tr {
+            transition: background .15s ease;
+        }
+
+        .article-table tbody tr:hover {
+            background: rgba(255, 122, 26, .03);
+        }
+
+        .article-title { font-weight: 700; color: #1e293b; }
+        .slug-chip {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: .8rem;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .date-text { color: #64748b; font-size: .9rem; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: .82rem;
+            font-weight: 600;
+        }
+
+        .status-published { background: #ecfdf5; color: #047857; }
+        .status-draft { background: #fff7ed; color: #c2410c; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+        .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform .15s ease, opacity .15s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover { transform: scale(1.08); }
+        .btn-edit { background: #fff4eb; color: #e56a0f; }
+        .btn-view { background: #ecfeff; color: #0891b2; }
+        .btn-toggle { background: #fef3c7; color: #d97706; }
+        .btn-delete { background: #fef2f2; color: #dc2626; }
+
+        @@media (max-width: 768px) {
+            .article-hero { padding: 22px; text-align: center; justify-content: center; }
+            .article-hero-text h1 { justify-content: center; }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            if ($('#articleTable').length) {
+                $('#articleTable').DataTable({
+                    language: { url: "//cdn.datatables.net/plug-ins/1.10.24/i18n/Persian.json" },
+                    order: [[3, "desc"]],
+                    pageLength: 25,
+                    responsive: true
+                });
+            }
+
+            $(document).on('click', '.btn-delete', async function () {
+                var id = $(this).data('id');
+                if (!id) {
+                    showToast('شناسه مقاله نامعتبر است', 'error');
+                    return;
+                }
+
+                if (!(await showConfirm({ message: 'آیا از حذف این مقاله اطمینان دارید؟' }))) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("DeleteArticle", "Admin")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(id),
+                    success: function (result) {
+                        if (result.success) {
+                            showToast(result.message, 'success');
+                            location.reload();
+                        } else {
+                            showToast(result.message, 'error');
+                        }
+                    },
+                    error: function (xhr) {
+                        showToast('خطا در حذف مقاله (' + xhr.status + ')', 'error');
+                    }
+                });
+            });
+
+            $(document).on('click', '.btn-toggle', async function () {
+                var id = $(this).data('id');
+                var isPublished = $(this).data('published') === true || $(this).data('published') === 'true';
+                var message = isPublished
+                    ? 'آیا می‌خواهید این مقاله را از حالت انتشار خارج کنید؟'
+                    : 'آیا می‌خواهید این مقاله را منتشر کنید؟';
+
+                if (!(await showConfirm({ message: message }))) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("ToggleArticlePublish", "Admin")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(id),
+                    success: function (result) {
+                        if (result.success) {
+                            showToast(result.message, 'success');
+                            location.reload();
+                        } else {
+                            showToast(result.message, 'error');
+                        }
+                    },
+                    error: function (xhr) {
+                        showToast('خطا در تغییر وضعیت (' + xhr.status + ')', 'error');
+                    }
+                });
+            });
+        });
+    </script>
+}
