@@ -1,0 +1,37 @@
+/* Public menu rendered inside manager dashboard layout */
+
+body:has(.pm-app--embedded) {
+    background: var(--bg-page, #f6f8fc) !important;
+    overscroll-behavior: auto !important;
+    overscroll-behavior-y: auto !important;
+    overflow-y: auto !important;
+    height: auto !important;
+}
+
+.content-card:has(.pm-app--embedded) {
+    overflow: visible;
+}
+
+.pm-app--embedded {
+    --pm-dashboard-topbar-h: 72px;
+    min-height: auto;
+    margin: -0.25rem -0.5rem 0;
+    border-radius: 16px;
+    overflow: visible;
+}
+
+.pm-app--embedded .pm-topbar {
+    top: var(--pm-dashboard-topbar-h);
+    z-index: 1010;
+}
+
+.pm-app--embedded .pm-sticky {
+    top: calc(var(--pm-dashboard-topbar-h) + var(--pm-topbar-h, 72px));
+}
+
+@media (max-width: 768px) {
+    .pm-app--embedded {
+        margin: -18px -18px 0;
+        border-radius: 12px;
+    }
+}

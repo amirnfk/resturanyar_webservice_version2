@@ -4,6 +4,7 @@
  
 }
 
+@using resturanyar.Utility
 @model DashboardStatsViewModel
 @{
     ViewData["Title"] = "داشبورد";
@@ -17,23 +18,19 @@
     var primaryColor = Model?.PrimaryColor ?? "#f97316";
     var secondaryColor = Model?.SecondaryColor ?? "#fff7ed";
     var logoUrl = Model?.LogoUrl ?? "/images/logo.png";
-    var backgroundImageUrl = Model?.BackgroundImageUrl ?? "/images/backgrounds/preset-warm.jpg";
+    var backgroundImageUrl = Model?.BackgroundImageUrl ?? RestaurantBackgroundOptions.DefaultUrl;
 }
-<style>
-    :root {
-        --primary: @primaryColor;
-        --primary-2: @secondaryColor;
-        --gradient-primary: linear-gradient(135deg, @primaryColor, @secondaryColor);
-    }
 
-    body::before {
-        background-image: url('@backgroundImageUrl') !important;
-    }
-</style>
-<!DOCTYPE html>
-<html dir="rtl" lang="fa">
-<link rel="stylesheet" href="~/css/all.min.css">
-<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
+@section Styles {
+    <style>
+        :root {
+            --primary: @primaryColor;
+            --primary-2: @secondaryColor;
+            --gradient-primary: linear-gradient(135deg, @primaryColor, @secondaryColor);
+            --dashboard-background-image: url('@backgroundImageUrl');
+        }
+    </style>
+}
 
 <script src="~/js/chart.js"></script>
 

@@ -1,0 +1,844 @@
+/* =========================================================
+   PUBLIC MENU TEMPLATES — Distinct premium experiences
+   ========================================================= */
+
+.pm-app {
+    --pm-primary: var(--menu-primary, #e85d04);
+    --pm-primary-2: var(--menu-primary-2, #ff922b);
+}
+
+/* Shared atmospheric hero glow under topbar */
+.pm-app .pm-topbar {
+    position: relative;
+    overflow: hidden;
+}
+
+.pm-app .pm-topbar__glow {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background-image: var(--pm-type-bg, none);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pm-app .pm-topbar__inner {
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================================
+   DEFAULT — Warm modern restaurant
+   ========================================================= */
+.menu-template--default {
+    --menu-primary: #e85d04;
+    --menu-primary-2: #ff922b;
+    --pm-primary: #e85d04;
+    --pm-primary-2: #ff922b;
+    --pm-bg: #f7f3ee;
+    --pm-surface: #ffffff;
+    --pm-surface-2: #faf7f2;
+    --pm-text: #1c1917;
+    --pm-muted: #78716c;
+    --pm-border: rgba(28, 25, 23, 0.08);
+    background:
+        radial-gradient(900px 420px at 100% -10%, rgba(232, 93, 4, 0.12), transparent 55%),
+        radial-gradient(700px 360px at -10% 110%, rgba(255, 146, 43, 0.1), transparent 50%),
+        var(--pm-bg);
+}
+
+.menu-template--default .pm-cat.is-active,
+.menu-template--default .pm-cat.active-category {
+    background: linear-gradient(135deg, var(--pm-primary), var(--pm-primary-2));
+}
+
+.menu-template--default .pm-section__title::after {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 3px;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: linear-gradient(to left, var(--pm-primary), transparent);
+}
+
+/* =========================================================
+   FAST FOOD — Bold dark neon energy
+   ========================================================= */
+.menu-template--fastfood {
+    --menu-primary: #ef4444;
+    --menu-primary-2: #f59e0b;
+    --pm-primary: #ef4444;
+    --pm-primary-2: #f59e0b;
+    --pm-bg: #0e0e14;
+    --pm-surface: #181824;
+    --pm-surface-2: #222233;
+    --pm-text: #f8fafc;
+    --pm-muted: #94a3b8;
+    --pm-border: rgba(255, 255, 255, 0.08);
+    background:
+        radial-gradient(circle at 100% 0%, rgba(239, 68, 68, 0.28), transparent 42%),
+        radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.18), transparent 40%),
+        var(--pm-bg);
+}
+
+.menu-template--fastfood .pm-topbar,
+.menu-template--fastfood .pm-sticky {
+    background: rgba(14, 14, 20, 0.88);
+}
+
+.menu-template--fastfood .pm-topbar__glow { opacity: 0.28; }
+
+.menu-template--fastfood .pm-brand__logo {
+    border-radius: 50%;
+    border: 2px solid #facc15;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.35);
+}
+
+.menu-template--fastfood .pm-brand__badge {
+    background: linear-gradient(135deg, #ef4444, #f59e0b);
+    color: #111;
+}
+
+.menu-template--fastfood .pm-cat.is-active,
+.menu-template--fastfood .pm-cat.active-category {
+    background: linear-gradient(135deg, #ef4444, #f59e0b);
+    color: #111;
+}
+
+.menu-template--fastfood .pm-cat.is-active .pm-cat__count {
+    background: rgba(0, 0, 0, 0.18);
+    color: #111;
+}
+
+.menu-template--fastfood .pm-badge--sale {
+    background: linear-gradient(135deg, #facc15, #f97316);
+    color: #111;
+}
+
+.menu-template--fastfood .pm-cartbar {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.menu-template--fastfood .pm-cartbar__count {
+    background: #111;
+    color: #facc15;
+}
+
+@media (max-width: 575.98px) {
+    .menu-template--fastfood .pm-grid {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 6px;
+        margin-inline: -4px;
+        padding-inline: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .menu-template--fastfood .pm-grid::-webkit-scrollbar { display: none; }
+    .menu-template--fastfood .pm-card {
+        flex: 0 0 72%;
+        max-width: 72%;
+        scroll-snap-align: start;
+    }
+}
+
+.menu-template--fastfood .pm-section__title {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.95rem;
+}
+
+/* =========================================================
+   CAFE — Soft, cozy horizontal rows
+   ========================================================= */
+.menu-template--cafe {
+    --menu-primary: #8b5e3c;
+    --menu-primary-2: #c99465;
+    --pm-primary: #8b5e3c;
+    --pm-primary-2: #c99465;
+    --pm-bg: #faf6f1;
+    --pm-surface: #fffcf8;
+    --pm-surface-2: #f3ebe2;
+    --pm-text: #3d2c1e;
+    --pm-muted: #8b7355;
+    --pm-border: rgba(139, 94, 60, 0.14);
+    background:
+        radial-gradient(800px 360px at 50% -15%, rgba(139, 94, 60, 0.1), transparent 55%),
+        linear-gradient(180deg, #faf6f1, #f1e8dc);
+}
+
+.menu-template--cafe .pm-brand__logo {
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+.menu-template--cafe .pm-brand__badge {
+    border: 1px dashed color-mix(in srgb, var(--pm-primary) 35%, transparent);
+}
+
+.menu-template--cafe .pm-section__title {
+    font-style: italic;
+    font-weight: 700;
+    color: #6b4f3a;
+}
+
+@media (max-width: 575.98px) {
+    .menu-template--cafe .pm-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .menu-template--cafe .pm-card {
+        flex-direction: row;
+        align-items: stretch;
+        min-height: 112px;
+    }
+
+    .menu-template--cafe .pm-card__media {
+        flex: 0 0 112px;
+        width: 112px;
+        aspect-ratio: auto;
+        height: auto;
+        align-self: stretch;
+    }
+
+    .menu-template--cafe .pm-card__media img {
+        border-radius: 0 18px 18px 0;
+    }
+
+    .menu-template--cafe .pm-card__body {
+        padding: 10px 12px;
+        justify-content: center;
+    }
+
+    .menu-template--cafe .pm-card__desc {
+        -webkit-line-clamp: 1;
+    }
+
+    .menu-template--cafe .pm-card__title {
+        -webkit-line-clamp: 1;
+        font-size: 0.95rem;
+    }
+}
+
+/* =========================================================
+   KABABI — Charcoal & gold grill
+   ========================================================= */
+.menu-template--kababi {
+    --menu-primary: #d97706;
+    --menu-primary-2: #b45309;
+    --pm-primary: #d97706;
+    --pm-primary-2: #b45309;
+    --pm-bg: #140e0b;
+    --pm-surface: #211612;
+    --pm-surface-2: #2c1c16;
+    --pm-text: #fef3e2;
+    --pm-muted: #d4a574;
+    --pm-border: rgba(212, 165, 116, 0.16);
+    background:
+        radial-gradient(ellipse at top, rgba(180, 83, 9, 0.28), transparent 50%),
+        linear-gradient(180deg, #140e0b, #1f1510);
+}
+
+.menu-template--kababi .pm-topbar,
+.menu-template--kababi .pm-sticky {
+    background: rgba(20, 14, 11, 0.9);
+}
+
+.menu-template--kababi .pm-topbar__glow { opacity: 0.35; }
+
+.menu-template--kababi .pm-brand__logo {
+    border: 2px solid #fbbf24;
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.22);
+}
+
+.menu-template--kababi .pm-brand__badge {
+    background: linear-gradient(135deg, #92400e, #b45309);
+    color: #fef3c7;
+}
+
+.menu-template--kababi .pm-cat.is-active,
+.menu-template--kababi .pm-cat.active-category {
+    background: linear-gradient(135deg, #b45309, #92400e);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.menu-template--kababi .pm-section__title {
+    color: #fbbf24;
+    border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+    padding-bottom: 8px;
+}
+
+.menu-template--kababi .pm-price__now { color: #fcd34d; }
+
+.menu-template--kababi .pm-card {
+    background: linear-gradient(165deg, #2a1a14, #1d120e);
+    border-color: rgba(212, 165, 116, 0.22);
+}
+
+.menu-template--kababi .pm-cartbar {
+    background: linear-gradient(135deg, #92400e, #78350f);
+}
+
+/* =========================================================
+   SONATI — Traditional Persian elegance
+   ========================================================= */
+.menu-template--sonati {
+    --menu-primary: #1e3a5f;
+    --menu-primary-2: #3d6b9a;
+    --pm-primary: #1e3a5f;
+    --pm-primary-2: #3d6b9a;
+    --pm-bg: #f3ebe0;
+    --pm-surface: #fffcf7;
+    --pm-surface-2: #efe6d8;
+    --pm-text: #1e3a5f;
+    --pm-muted: #5c6b7a;
+    --pm-border: rgba(30, 58, 95, 0.12);
+    background:
+        repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(201, 184, 150, 0.07) 14px, rgba(201, 184, 150, 0.07) 28px),
+        linear-gradient(180deg, #f3ebe0, #ebe1d2);
+}
+
+.menu-template--sonati .pm-brand__logo {
+    border-radius: 50%;
+    border: 3px double #c9b896;
+    padding: 2px;
+}
+
+.menu-template--sonati .pm-brand__badge {
+    background: #1e3a5f;
+    color: #fef3c7;
+}
+
+.menu-template--sonati .pm-section {
+    background: rgba(255, 252, 247, 0.82);
+    border: 1px solid rgba(201, 184, 150, 0.55);
+    border-radius: 16px;
+    padding: 14px 12px 16px;
+    box-shadow: 4px 4px 0 rgba(30, 58, 95, 0.05);
+}
+
+.menu-template--sonati .pm-section__head {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+}
+
+.menu-template--sonati .pm-section__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-template--sonati .pm-section__title::before,
+.menu-template--sonati .pm-section__title::after {
+    content: "✦";
+    color: #d4af37;
+    font-size: 0.75rem;
+}
+
+.menu-template--sonati .pm-card {
+    border: 1.5px solid #c9b896;
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 rgba(30, 58, 95, 0.06);
+}
+
+.menu-template--sonati .pm-cat.is-active,
+.menu-template--sonati .pm-cat.active-category {
+    background: #1e3a5f;
+}
+
+.menu-template--sonati .pm-add {
+    border-radius: 10px;
+}
+
+/* =========================================================
+   MODERN — Glass dark premium
+   ========================================================= */
+.menu-template--modern {
+    --menu-primary: #6366f1;
+    --menu-primary-2: #a855f7;
+    --pm-primary: #6366f1;
+    --pm-primary-2: #a855f7;
+    --pm-bg: #090b12;
+    --pm-surface: rgba(255, 255, 255, 0.05);
+    --pm-surface-2: rgba(255, 255, 255, 0.08);
+    --pm-text: #e8edf5;
+    --pm-muted: #8b95a8;
+    --pm-border: rgba(255, 255, 255, 0.1);
+    background:
+        radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.22), transparent 40%),
+        radial-gradient(circle at 90% 100%, rgba(168, 85, 247, 0.16), transparent 40%),
+        var(--pm-bg);
+}
+
+.menu-template--modern .pm-topbar,
+.menu-template--modern .pm-sticky {
+    background: rgba(9, 11, 18, 0.78);
+    backdrop-filter: blur(22px);
+}
+
+.menu-template--modern .pm-topbar__glow { opacity: 0.22; filter: grayscale(0.2); }
+
+.menu-template--modern .pm-brand__logo {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.menu-template--modern .pm-brand__badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: #c7d2fe;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.menu-template--modern .pm-brand__name {
+    background: linear-gradient(135deg, #fff, #c7d2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.menu-template--modern .pm-search,
+.menu-template--modern .pm-filter,
+.menu-template--modern .pm-cat {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.menu-template--modern .pm-cat.is-active,
+.menu-template--modern .pm-cat.active-category {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(168, 85, 247, 0.9));
+}
+
+.menu-template--modern .pm-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.menu-template--modern .pm-section__title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.menu-template--modern .pm-price__now { color: #a5b4fc; }
+
+.menu-template--modern .pm-add {
+    border-radius: 999px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+
+.menu-template--modern .pm-cartbar {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.menu-template--modern .pm-sheet__content,
+.menu-template--modern .pm-notebook {
+    background: #12151f !important;
+    color: #e8edf5;
+}
+
+@media (max-width: 575.98px) {
+    .menu-template--modern .pm-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-template--modern .pm-card__media {
+        aspect-ratio: 16 / 10;
+    }
+
+    .menu-template--modern .pm-card__title {
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+}
+
+/* =========================================================
+   ORGANIC — Clean farm-to-table menu
+   ========================================================= */
+.menu-template--organic {
+    --menu-primary: #356b2f;
+    --menu-primary-2: #6d8f2b;
+    --pm-primary: #356b2f;
+    --pm-primary-2: #6d8f2b;
+    --pm-accent-orange: #e87817;
+    --pm-bg: #f7f4eb;
+    --pm-surface: #fffdf8;
+    --pm-surface-2: #f1eddf;
+    --pm-text: #253525;
+    --pm-muted: #687267;
+    --pm-border: rgba(53, 107, 47, 0.16);
+    --pm-shadow: 0 8px 24px rgba(44, 74, 39, 0.08);
+    background-image:
+        radial-gradient(circle at 100% 0, rgba(109, 143, 43, 0.12), transparent 32rem),
+        radial-gradient(circle at 0 100%, rgba(232, 120, 23, 0.08), transparent 28rem),
+        linear-gradient(rgba(53, 107, 47, 0.025) 1px, transparent 1px);
+    background-color: var(--pm-bg);
+    background-size: auto, auto, 100% 36px;
+}
+
+.menu-template--organic .pm-topbar {
+    background: rgba(255, 253, 248, 0.94);
+    border-bottom: 1px solid var(--pm-border);
+    box-shadow: 0 5px 20px rgba(44, 74, 39, 0.06);
+}
+
+.menu-template--organic .pm-topbar__glow {
+    display: block;
+    opacity: 0.09;
+    background-position: center 42%;
+}
+
+.menu-template--organic .pm-topbar__inner {
+    position: relative;
+    z-index: 1;
+}
+
+.menu-template--organic .pm-brand {
+    gap: 11px;
+}
+
+.menu-template--organic .pm-brand__logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--pm-accent-orange);
+    box-shadow: 0 0 0 4px rgba(53, 107, 47, 0.1);
+    background: var(--pm-surface);
+}
+
+.menu-template--organic .pm-brand__badge {
+    padding: 2px 9px;
+    color: var(--pm-primary);
+    background: rgba(109, 143, 43, 0.12);
+    border: 1px solid rgba(109, 143, 43, 0.18);
+}
+
+.menu-template--organic .pm-brand__name {
+    font-family: Georgia, "Times New Roman", "IRANYekan", serif;
+    font-size: 1.18rem;
+    font-weight: 900;
+    color: var(--pm-primary);
+    letter-spacing: 0.02em;
+}
+
+.menu-template--organic .pm-brand__tagline {
+    color: var(--pm-accent-orange);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.menu-template--organic .pm-meta-pill {
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--pm-primary);
+    border-color: var(--pm-border);
+}
+
+.menu-template--organic .pm-sticky {
+    background: rgba(247, 244, 235, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom-color: var(--pm-border);
+}
+
+.menu-template--organic .pm-search,
+.menu-template--organic .pm-filter {
+    background: var(--pm-surface);
+    border-color: var(--pm-border);
+}
+
+.menu-template--organic .pm-search:focus-within {
+    border-color: rgba(53, 107, 47, 0.45);
+    box-shadow: 0 0 0 4px rgba(53, 107, 47, 0.09);
+}
+
+.menu-template--organic .pm-filter.is-on {
+    background: rgba(232, 120, 23, 0.12);
+    border-color: rgba(232, 120, 23, 0.32);
+    color: #a6500d;
+}
+
+.menu-template--organic .pm-cat {
+    background: var(--pm-surface);
+    border: 1px solid var(--pm-border);
+    color: var(--pm-primary);
+}
+
+.menu-template--organic .pm-cat.is-active,
+.menu-template--organic .pm-cat.active-category {
+    background: linear-gradient(135deg, var(--pm-primary), var(--pm-primary-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 5px 14px rgba(53, 107, 47, 0.2);
+}
+
+.menu-template--organic .pm-cat.is-active .pm-cat__count {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.menu-template--organic .pm-section__head {
+    align-items: center;
+    margin-bottom: 13px;
+    border-bottom: 1px dashed rgba(53, 107, 47, 0.18);
+}
+
+.menu-template--organic .pm-section__title {
+    position: relative;
+    top: 1px;
+    min-width: 138px;
+    padding: 8px 16px 8px 26px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(100deg, var(--pm-primary), var(--pm-primary-2));
+    border-radius: 999px 8px 8px 999px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 50%, 100% 100%, 0 100%);
+}
+
+.menu-template--organic .pm-section:nth-child(even) .pm-section__title {
+    background: linear-gradient(100deg, #d96810, #f39a27);
+}
+
+.menu-template--organic .pm-section__count {
+    margin-inline-start: auto;
+    padding-inline-start: 8px;
+    background: var(--pm-bg);
+    color: var(--pm-muted);
+    font-size: 0.72rem;
+}
+
+.menu-template--organic .pm-section__count::before {
+    content: "❧ ";
+    color: var(--pm-primary);
+}
+
+.menu-template--organic .pm-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.menu-template--organic .pm-card {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    min-height: 116px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px dotted rgba(53, 107, 47, 0.24);
+    border-radius: 14px;
+    box-shadow: none;
+    background: rgba(255, 253, 248, 0.78);
+}
+
+.menu-template--organic .pm-card__media {
+    flex: 0 0 108px;
+    width: 108px;
+    height: 108px;
+    margin: 4px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid rgba(53, 107, 47, 0.16);
+    box-shadow: 0 5px 15px rgba(44, 74, 39, 0.12);
+}
+
+.menu-template--organic .pm-card__shade {
+    display: none;
+}
+
+.menu-template--organic .pm-badge--sale {
+    top: 3px;
+    inset-inline-start: 3px;
+    background: var(--pm-accent-orange);
+    color: #fff;
+    font-size: 0.62rem;
+}
+
+.menu-template--organic .pm-badge--sold {
+    top: 3px;
+    inset-inline-end: 3px;
+}
+
+.menu-template--organic .pm-card__body {
+    justify-content: center;
+    padding: 12px 12px 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.menu-template--organic .pm-card__title {
+    color: var(--pm-primary);
+    font-weight: 900;
+    font-size: 0.94rem;
+}
+
+.menu-template--organic .pm-card__title::before {
+    content: "❧";
+    margin-inline-end: 5px;
+    color: var(--pm-primary-2);
+}
+
+.menu-template--organic .pm-card__desc {
+    color: var(--pm-muted);
+    font-size: 0.74rem;
+    line-height: 1.55;
+    -webkit-line-clamp: 2;
+}
+
+.menu-template--organic .pm-card__foot {
+    margin-top: 8px;
+}
+
+.menu-template--organic .pm-price__now {
+    color: var(--pm-accent-orange);
+    font-weight: 900;
+}
+
+.menu-template--organic .pm-price__now small {
+    color: var(--pm-accent-orange);
+    opacity: 0.85;
+}
+
+.menu-template--organic .pm-price__old {
+    color: #9ca89c;
+}
+
+.menu-template--organic .pm-add {
+    width: 36px;
+    height: 36px;
+    background: var(--pm-accent-orange);
+    box-shadow: 0 4px 10px rgba(232, 120, 23, 0.22);
+}
+
+.menu-template--organic .pm-cartbar {
+    background: linear-gradient(135deg, var(--pm-primary), var(--pm-primary-2));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.menu-template--organic .pm-organic-footer {
+    max-width: 720px;
+    margin: 4px auto 0;
+    padding: 0 16px 28px;
+    text-align: center;
+}
+
+.menu-template--organic .pm-organic-footer__thanks {
+    margin: 0 0 8px;
+    font-family: "IRANYekan", system-ui, sans-serif;
+    font-style: italic;
+    color: var(--pm-muted);
+    font-size: 0.82rem;
+}
+
+.menu-template--organic .pm-organic-footer__slogan {
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--pm-primary), var(--pm-primary-2));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    box-shadow: 0 7px 20px rgba(53, 107, 47, 0.16);
+}
+
+.menu-template--organic .pm-sheet__content,
+.menu-template--organic .pm-notebook {
+    background: var(--pm-surface) !important;
+    color: var(--pm-text);
+}
+
+.menu-template--organic .pm-btn--primary,
+.menu-template--organic .pm-btn--primary#qvAddBtn {
+    background: linear-gradient(135deg, var(--pm-primary), var(--pm-primary-2));
+}
+
+.menu-template--organic .pm-empty__visual {
+    color: var(--pm-primary);
+}
+
+@media (min-width: 768px) {
+    .menu-template--organic .pm-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 18px;
+    }
+
+    .menu-template--organic .pm-card {
+        min-height: 126px;
+    }
+
+    .menu-template--organic .pm-card__media {
+        flex-basis: 116px;
+        width: 116px;
+        height: 116px;
+    }
+}
+
+@media (min-width: 1100px) {
+    .menu-template--organic .pm-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .menu-template--organic .pm-main,
+    .menu-template--organic .pm-topbar__inner,
+    .menu-template--organic .pm-sticky,
+    .menu-template--organic .pm-organic-footer {
+        max-width: 960px;
+    }
+}
+
+@media (max-width: 380px) {
+    .menu-template--organic .pm-card__media {
+        flex-basis: 88px;
+        width: 88px;
+        height: 88px;
+        align-self: center;
+    }
+
+    .menu-template--organic .pm-card__body {
+        padding-inline: 9px;
+    }
+
+    .menu-template--organic .pm-meta-pill {
+        display: none;
+    }
+}
+
+/* Dark template sheet/notebook polish */
+.menu-template--fastfood .pm-sheet__content,
+.menu-template--fastfood .pm-notebook,
+.menu-template--kababi .pm-sheet__content,
+.menu-template--kababi .pm-notebook {
+    background: var(--pm-surface) !important;
+    color: var(--pm-text);
+}
+
+.menu-template--fastfood .pm-sheet__close,
+.menu-template--kababi .pm-sheet__close,
+.menu-template--modern .pm-sheet__close {
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+}
+
+.menu-template--fastfood .pm-notebook__note textarea,
+.menu-template--kababi .pm-notebook__note textarea,
+.menu-template--modern .pm-notebook__note textarea,
+.menu-template--organic .pm-notebook__note textarea {
+    background: var(--pm-surface-2);
+    color: var(--pm-text);
+    border-color: var(--pm-border);
+}

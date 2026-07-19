@@ -96,13 +96,20 @@ public class MenuController : Controller
                   })
             .ToListAsync();
 
-        ViewBag.RestaurantId = restaurantId;
-        ViewBag.RestaurantName = await _context.Restaurants
+        var restaurantName = await _context.Restaurants
             .AsNoTracking()
             .Where(r => r.restaurant_id == restaurantId)
             .Select(r => r.name)
             .FirstOrDefaultAsync() ?? "";
-        return View(items);
+
+        ViewBag.RestaurantId = restaurantId;
+        ViewBag.RestaurantName = restaurantName;
+        ViewBag.EmbeddedMenu = true;
+
+        var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurantId);
+        RestaurantSettingsHelper.PopulateMenuPresentation(ViewData, settingsDto, restaurantName);
+
+        return View("PublicMenu", items);
     }
 
     // 📌 QR Code
@@ -217,10 +224,7 @@ public class MenuController : Controller
             ViewBag.RestaurantName = restaurant.name;
 
             var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurant.restaurant_id);
-            ViewBag.PrimaryColor = settingsDto.PrimaryColor;
-            ViewBag.SecondaryColor = settingsDto.SecondaryColor;
-            ViewBag.LogoUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.LogoUrl, RestaurantSettingsHelper.DefaultLogoPath);
-            ViewBag.BackgroundImageUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.BackgroundImageUrl, RestaurantSettingsHelper.DefaultBackgroundPath);
+            RestaurantSettingsHelper.PopulateMenuPresentation(ViewData, settingsDto, restaurant.name);
 
             return View(items);
         }

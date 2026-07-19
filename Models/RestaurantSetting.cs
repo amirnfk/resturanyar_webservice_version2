@@ -23,6 +23,12 @@ namespace resturanyar.Models
         [MaxLength(500)]
         public string? LogoUrl { get; set; }
 
+        [MaxLength(80)]
+        public string? MenuHeroBadge { get; set; }
+
+        [MaxLength(160)]
+        public string? MenuTagline { get; set; }
+
         public Restaurant Restaurant { get; set; } = null!;
     }
 }

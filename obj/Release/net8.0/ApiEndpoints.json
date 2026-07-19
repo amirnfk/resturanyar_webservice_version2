@@ -3041,6 +3041,16 @@
         "IsRequired": false
       },
       {
+        "Name": "MenuHeroBadge",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "MenuTagline",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "Logo",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false

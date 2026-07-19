@@ -2,11 +2,12 @@
     Layout = "_SimpleLayout";
 }
 
+@using resturanyar.Utility
 @model AddRestaurantRequest
 @{
     ViewData["Title"] = "انتخاب یا افزودن کافه یا رستوران";
     var restaurants = ViewBag.Restaurants as List<Restaurant>;
-   
+    var backgroundImageUrl = ViewBag.BackgroundImageUrl as string ?? RestaurantBackgroundOptions.DefaultUrl;
 }
 
 <!DOCTYPE html>
@@ -19,6 +20,10 @@
     <link href="~/css/all.min.css" rel="stylesheet">
     <link href="~/css/chooserestaurant.css" rel="stylesheet" asp-append-version="true">
     <link href="~/css/simple_share.css" rel="stylesheet" asp-append-version="true">
+    <style>
+        :root { --page-background-image: url('@backgroundImageUrl'); }
+        .login-bg-wrapper { background-image: var(--page-background-image) !important; }
+    </style>
 </head>
 <body class="bg-light">
 

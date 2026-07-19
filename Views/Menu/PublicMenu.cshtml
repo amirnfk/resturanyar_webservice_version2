@@ -1,511 +1,661 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout_public.cshtml";
-}
-
-@model List<resturanyar.Models.FoodItemViewModel>
+﻿@model List<resturanyar.Models.FoodItemViewModel>
+@using resturanyar.Utility
 @{
-    ViewData["Title"] = "منوی رستوران";
+    var embeddedMenu = ViewBag.EmbeddedMenu == true;
+    Layout = embeddedMenu ? "~/Views/Shared/_Layout.cshtml" : "~/Views/Shared/_Layout_public.cshtml";
+    ViewData["Title"] = ViewBag.RestaurantName != null ? $"منوی {ViewBag.RestaurantName}" : "منوی رستوران";
     var placeholder = Url.Content("~/images/food_placeholder.jpg");
-    var primaryColor = ViewBag.PrimaryColor as string ?? "#f97316";
-    var secondaryColor = ViewBag.SecondaryColor as string ?? "#fff7ed";
-    var backgroundImageUrl = ViewBag.BackgroundImageUrl as string ?? "/images/backgrounds/preset-warm.jpg";
     var logoUrl = ViewBag.LogoUrl as string ?? "/images/logo.png";
-    var groups = Model
+    var restaurantName = ViewBag.RestaurantName as string ?? "رستوران";
+    var menuTemplateId = ViewBag.MenuTemplateId as string ?? "default";
+    var menuTagline = ViewBag.MenuTemplateTagline as string ?? "طعم‌های خاص، لحظه‌های به‌یادماندنی";
+    var menuBadge = ViewBag.MenuTemplateBadge as string ?? "منوی دیجیتال";
+    var menuThemeColor = ViewBag.MenuThemeColor as string ?? "#e85d04";
+    var menuTypeBackgroundUrl = ViewBag.MenuTypeBackgroundUrl as string ?? RestaurantBackgroundOptions.DefaultUrl;
+    var groups = (Model ?? new List<resturanyar.Models.FoodItemViewModel>())
       .GroupBy(f => new { f.CategoryId, f.CategoryName, f.CategoryDisplayOrder })
       .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, g.Key.CategoryDisplayOrder, Items = g.ToList() })
       .OrderBy(g => g.CategoryDisplayOrder)
       .ThenBy(g => g.CategoryName)
       .ToList();
     var categoryCounts = groups.ToDictionary(g => g.CategoryId, g => g.Items.Count);
+    var totalItems = groups.Sum(g => g.Items.Count);
 }
 
 @section Styles {
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
-    <link href="~/css/bootstrap-icons.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/restaurant-menu.css" asp-append-version="true" />
+    @if (!embeddedMenu)
+    {
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+        <link href="~/css/bootstrap-icons.css" rel="stylesheet" />
+    }
+    <meta name="theme-color" content="@menuThemeColor" />
     <link rel="stylesheet" href="~/css/public-menu.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/public-menu-templates.css" asp-append-version="true" />
+    @if (embeddedMenu)
+    {
+        <link rel="stylesheet" href="~/css/public-menu-embedded.css" asp-append-version="true" />
+    }
     <style>
         :root {
-            --menu-primary: @primaryColor;
-            --menu-primary-2: @secondaryColor;
-        }
-
-        .public-menu-page {
-            background:
-                linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
-                url('@backgroundImageUrl') center / cover no-repeat fixed;
+            --pm-accent: @menuThemeColor;
+            --pm-type-bg: url('@menuTypeBackgroundUrl');
         }
     </style>
 }
 
-<div class="public-menu-page">
-<section class="menu-hero">
-    <div class="hero-content">
-        <img src="@logoUrl" alt="لوگوی @ViewBag.RestaurantName" class="menu-hero-logo">
-        <div class="restaurant-name-glow">
-            <span class="glow-text">منوی @ViewBag.RestaurantName</span>
-        </div>
-        <p class="subtitle"><i class="fa-solid fa-wand-magic-sparkles ms-1"></i> طعم‌های خاص، لحظه‌های به‌یادماندنی <i class="fa-solid fa-wand-magic-sparkles me-1"></i></p>
-    </div>
-    <div class="blob"></div>
-</section>
+<div class="pm-app menu-template--@menuTemplateId@(embeddedMenu ? " pm-app--embedded" : "")" data-menu-template="@menuTemplateId" data-restaurant-name="@restaurantName">
 
-<div class="menu-toolbar">
-    <div class="container">
-        <div class="toolbar-inner">
-            <div class="row g-2 align-items-center">
-                <div class="col-12 col-md-6">
-                    <div class="search-wrap">
-                        <i class="bi bi-search"></i>
-                        <input id="searchBox" type="search" inputmode="search" enterkeyhint="search" placeholder="جستجو نام/توضیح غذا..." aria-label="جستجو">
-                        <button id="clearSearch" class="btn btn-sm btn-light rounded-pill d-none" aria-label="پاک کردن جستجو"><i class="bi bi-x-lg"></i></button>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mt-1 mt-md-0">
-                    <div class="filters" role="tablist" aria-label="فیلترها">
-                        <button class="filter-chip" id="onlyAvailable" aria-pressed="false"><i class="bi bi-check2-circle ms-1"></i> فقط موجود</button>
-                        <button class="filter-chip" id="onlyDiscount" aria-pressed="false"><i class="bi bi-percent ms-1"></i> فقط تخفیف‌دار</button>
-                    </div>
+    <header class="pm-topbar" id="pmTopbar">
+        <div class="pm-topbar__inner">
+            <div class="pm-brand">
+                <img src="@logoUrl" alt="" class="pm-brand__logo" width="44" height="44" />
+                <div class="pm-brand__text">
+                    <span class="pm-brand__badge">@menuBadge</span>
+                    <h1 class="pm-brand__name">@restaurantName</h1>
+                    <p class="pm-brand__tagline">@menuTagline</p>
                 </div>
             </div>
-            <div class="chip-scroller mt-2" id="categoryChips">
-                <button type="button" class="chip active-category" data-scroll="top"><i class="bi bi-grid-3x3-gap ms-1"></i> همه</button>
+            @if (totalItems > 0)
+            {
+                <div class="pm-topbar__meta" aria-hidden="true">
+                    <span class="pm-meta-pill"><i class="bi bi-grid"></i> @totalItems</span>
+                </div>
+            }
+        </div>
+        <div class="pm-topbar__glow" aria-hidden="true"></div>
+    </header>
+
+    <div class="pm-sticky" id="pmSticky">
+        <div class="pm-search">
+            <i class="bi bi-search pm-search__icon" aria-hidden="true"></i>
+            <input id="searchBox" type="search" inputmode="search" enterkeyhint="search"
+                   placeholder="جستجوی غذا..." aria-label="جستجوی غذا" autocomplete="off" />
+            <button type="button" id="clearSearch" class="pm-search__clear is-hidden" aria-label="پاک کردن">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="pm-filters" role="group" aria-label="فیلترها">
+            <button type="button" class="pm-filter" id="onlyAvailable" aria-pressed="false">
+                <i class="bi bi-check2-circle"></i><span>موجود</span>
+            </button>
+            <button type="button" class="pm-filter" id="onlyDiscount" aria-pressed="false">
+                <i class="bi bi-percent"></i><span>تخفیف‌دار</span>
+            </button>
+        </div>
+
+        @if (groups.Any())
+        {
+            <nav class="pm-cats" id="categoryChips" aria-label="دسته‌بندی‌ها">
+                <button type="button" class="pm-cat is-active" data-scroll="top">
+                    <span>همه</span>
+                </button>
                 @foreach (var g in groups)
                 {
-                    <button type="button" class="chip" data-scroll="cat-@g.CategoryId">
-                        <i class="bi bi-tags ms-1"></i> @g.CategoryName
-                        <span class="count">@categoryCounts[g.CategoryId]</span>
+                    <button type="button" class="pm-cat" data-scroll="cat-@g.CategoryId">
+                        <span>@g.CategoryName</span>
+                        <em class="pm-cat__count">@categoryCounts[g.CategoryId]</em>
                     </button>
                 }
-            </div>
-        </div>
+            </nav>
+        }
     </div>
-</div>
-
-<div class="container container-section">
-    @if (Model == null || !Model.Any())
-    {
-        <div class="text-center py-5">
-            <div class="menu-empty-state p-4 mx-auto">
-                <div class="emoji"><i class="fa-solid fa-utensils"></i></div>
-                <h5 class="mt-3 mb-2 fw-bold">منو در حال حاضر خالی است</h5>
-                <p class="text-muted mb-0">به زودی غذاهای خوشمزه به این منو اضافه خواهند شد.</p>
-            </div>
-        </div>
-    }
-    else
-    {
-        @foreach (var g in groups)
+    <main class="pm-main" id="pmMain">
+        @if (!groups.Any())
         {
-            <section class="category-section reveal" id="cat-@g.CategoryId">
-                <h4 class="cat-title"><i class="bi bi-star-fill"></i> @g.CategoryName</h4>
-                <div class="row g-3">
-                    @foreach (var item in g.Items)
-                    {
-                        var hasDiscount = item.DiscountPrice > 0 && item.DiscountPrice != item.Price;
-                        var finalPrice = hasDiscount ? item.DiscountPrice : item.Price;
-                        var itemKey = $"{item.CategoryId}|{item.Name}";
-                        <div class="col-6 col-md-4 col-lg-3 food-card @(item.IsAvailable ? "" : "sold-out")"
-                             data-name="@($"{item.Name} {item.Description}".ToLowerInvariant())"
-                             data-available="@(item.IsAvailable ? 1 : 0)"
-                             data-discount="@(hasDiscount ? 1 : 0)"
-                             data-price="@finalPrice"
-                             data-name-sort="@item.Name"
-                             data-item-key="@itemKey"
-                             data-item-name="@item.Name"
-                             data-item-price="@finalPrice">
-                            <div class="card h-100">
-                                <div class="img-wrap">
-                                    <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)"
-                                         alt="تصویر @item.Name" loading="lazy" decoding="async"
-                                         sizes="(max-width: 576px) 50vw, (max-width: 992px) 33vw, 25vw"
-                                         onerror="this.onerror=null; this.src='@placeholder';" />
-                                    <span class="gradient-over"></span>
+            <div class="pm-empty">
+                <div class="pm-empty__visual" aria-hidden="true">
+                    <i class="bi bi-cup-hot"></i>
+                </div>
+                <h2 class="pm-empty__title">منو هنوز آماده نیست</h2>
+                <p class="pm-empty__text">به‌زودی آیتم‌های خوشمزه اینجا نمایش داده می‌شوند.</p>
+            </div>
+        }
+        else
+        {
+            <div class="pm-no-results is-hidden" id="pmNoResults">
+                <div class="pm-empty__visual" aria-hidden="true"><i class="bi bi-search"></i></div>
+                <h2 class="pm-empty__title">نتیجه‌ای پیدا نشد</h2>
+                <p class="pm-empty__text">عبارت جستجو یا فیلترها را تغییر دهید.</p>
+                <button type="button" class="pm-btn pm-btn--ghost" id="pmResetFilters">حذف فیلترها</button>
+            </div>
+
+            @foreach (var g in groups)
+            {
+                <section class="pm-section reveal" id="cat-@g.CategoryId">
+                    <header class="pm-section__head">
+                        <h2 class="pm-section__title">@g.CategoryName</h2>
+                        <span class="pm-section__count">@categoryCounts[g.CategoryId] آیتم</span>
+                    </header>
+
+                    <div class="pm-grid">
+                        @foreach (var item in g.Items)
+                        {
+                            var hasDiscount = item.DiscountPrice > 0 && item.DiscountPrice != item.Price;
+                            var finalPrice = hasDiscount ? item.DiscountPrice : item.Price;
+                            var itemKey = $"{item.CategoryId}|{item.Name}";
+                            var imgSrc = string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl;
+                            var discountPercent = hasDiscount
+                                ? (int)Math.Round(((item.Price - item.DiscountPrice) / item.Price) * 100)
+                                : 0;
+
+                            <article class="pm-card food-card @(item.IsAvailable ? "" : "is-soldout")"
+                                     data-name="@($"{item.Name} {item.Description}".ToLowerInvariant())"
+                                     data-available="@(item.IsAvailable ? 1 : 0)"
+                                     data-discount="@(hasDiscount ? 1 : 0)"
+                                     data-price="@finalPrice"
+                                     data-item-key="@itemKey"
+                                     data-item-name="@item.Name"
+                                     data-item-price="@finalPrice"
+                                     data-item-desc="@item.Description"
+                                     data-item-img="@imgSrc">
+                                <button type="button" class="pm-card__media btn-quick"
+                                        data-bs-toggle="modal" data-bs-target="#quickViewModal"
+                                        data-title="@item.Name"
+                                        data-desc="@item.Description"
+                                        data-img="@imgSrc"
+                                        aria-label="جزئیات @item.Name">
+                                    <img src="@imgSrc" alt="" loading="lazy" decoding="async"
+                                         onerror="this.onerror=null;this.src='@placeholder';" />
+                                    <span class="pm-card__shade"></span>
                                     @if (hasDiscount)
                                     {
-                                        var discountPercent = (int)Math.Round(((item.Price - item.DiscountPrice) / item.Price) * 100);
-                                        <span class="discount-ribbon"><i class="bi bi-lightning-fill ms-1"></i>@discountPercent% تخفیف</span>
+                                        <span class="pm-badge pm-badge--sale">@discountPercent٪</span>
                                     }
                                     @if (!item.IsAvailable)
                                     {
-                                        <span class="sold-badge">ناموجود</span>
+                                        <span class="pm-badge pm-badge--sold">ناموجود</span>
                                     }
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">@item.Name</h5>
-                                    <p class="card-text">@item.Description</p>
-                                    <div class="price-wrap">
-                                        @if (hasDiscount)
-                                        {
-                                            <span class="old-price">@item.Price.ToString("N0") تومان</span>
-                                        }
-                                        <span class="price">@finalPrice.ToString("N0") تومان</span>
-                                    </div>
-                                    <div class="card-actions">
-                                        <button class="btn-quick" type="button"
-                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"
-                                                data-title="@item.Name"
-                                                data-desc="@item.Description"
-                                                data-img="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)">
-                                              نمایش
-                                        </button>
-                                        <button class="btn-add" type="button" @(item.IsAvailable ? "" : "disabled")
-                                                aria-label="افزودن @item.Name">
-                                              افزودن
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </section>
-        }
-    }
-</div>
+                                </button>
 
-<!-- Quick view modal -->
-<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
-        <div class="modal-content">
-            <div class="modal-body p-0">
-                <div class="row g-0">
-                    <div class="col-md-6">
-                        <img id="qvImg" src="@placeholder" class="w-100 h-100" alt="">
+                                <div class="pm-card__body">
+                                    <h3 class="pm-card__title">@item.Name</h3>
+                                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        <p class="pm-card__desc">@item.Description</p>
+                                    }
+                                    <div class="pm-card__foot">
+                                        <div class="pm-price">
+                                            @if (hasDiscount)
+                                            {
+                                                <span class="pm-price__old">@item.Price.ToString("N0")</span>
+                                            }
+                                            <span class="pm-price__now">@finalPrice.ToString("N0") <small>تومان</small></span>
+                                        </div>
+                                        <button type="button" class="pm-add btn-add" @(item.IsAvailable ? "" : "disabled")
+                                                aria-label="افزودن @item.Name">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        }
                     </div>
-                    <div class="col-md-6 p-3 p-md-4">
-                        <h5 id="qvTitle" class="fw-bold mb-2"></h5>
-                        <p id="qvDesc" class="text-muted mb-3"></p>
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <span id="qvPrice" class="fw-bolder text-success"></span>
-                        </div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <button class="btn btn-warning rounded-pill px-3 text-white" id="qvAddBtn">
-                                <i class="bi bi-bag-plus ms-1"></i> افزودن به دفترچه
-                            </button>
-                            <button class="btn btn-dark rounded-pill px-3" data-bs-dismiss="modal">
-                                <i class="bi bi-x-lg ms-1"></i> بستن
-                            </button>
-                        </div>
-                    </div>
+                </section>
+            }
+        }
+    </main>
+
+    @if (menuTemplateId == "organic")
+    {
+        <footer class="pm-organic-footer">
+            <p class="pm-organic-footer__thanks">ممنون که کنار ما بودید</p>
+            <p class="pm-organic-footer__slogan">غذای خوب • حال خوب • خاطره‌های زیبا</p>
+        </footer>
+    }
+
+    <div class="pm-cartbar is-hidden" id="pmCartBar" role="button" tabindex="0"
+         data-bs-toggle="offcanvas" data-bs-target="#noteCanvas" aria-controls="noteCanvas"
+         aria-label="باز کردن دفترچه سفارش">
+        <div class="pm-cartbar__count" id="noteCount">0</div>
+        <div class="pm-cartbar__label">
+            <strong>دفترچه سفارش</strong>
+            <span id="noteTotal">۰ تومان</span>
+        </div>
+        <div class="pm-cartbar__cta">
+            مشاهده <i class="bi bi-chevron-left"></i>
+        </div>
+    </div>
+
+    <div class="modal fade pm-sheet" id="quickViewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-sm-down">
+            <div class="modal-content pm-sheet__content">
+                <button type="button" class="pm-sheet__close" data-bs-dismiss="modal" aria-label="بستن">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <div class="pm-sheet__handle" aria-hidden="true"></div>
+                <div class="pm-sheet__media">
+                    <img id="qvImg" src="@placeholder" alt="" />
+                </div>
+                <div class="pm-sheet__body">
+                    <h2 id="qvTitle" class="pm-sheet__title"></h2>
+                    <p id="qvDesc" class="pm-sheet__desc"></p>
+                    <div class="pm-sheet__price" id="qvPrice"></div>
+                    <button type="button" class="pm-btn pm-btn--primary pm-btn--block" id="qvAddBtn">
+                        <i class="bi bi-plus-circle"></i> افزودن به دفترچه
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Notebook Offcanvas -->
-<button type="button" class="note-fab" data-bs-toggle="offcanvas" data-bs-target="#noteCanvas" aria-controls="noteCanvas">
-    <i class="bi bi-journal-text"></i>
-    <span class="d-none d-sm-inline">دفترچه</span>
-    <span class="badge rounded-pill" id="noteCount">0</span>
-    <span class="ms-1 small" id="noteTotal">0 تومان</span>
-</button>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="noteCanvas" aria-labelledby="noteCanvasLabel">
-    <div class="offcanvas-header">
-        <h5 id="noteCanvasLabel" class="mb-0"><i class="bi bi-journal-text ms-1"></i> دفترچه سفارش من</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    <div class="offcanvas offcanvas-bottom pm-notebook" tabindex="-1" id="noteCanvas"
+         aria-labelledby="noteCanvasLabel" data-bs-scroll="false">
+        <div class="pm-notebook__handle" aria-hidden="true"></div>
+        <div class="offcanvas-header pm-notebook__head">
+            <div>
+                <h2 id="noteCanvasLabel" class="pm-notebook__title">دفترچه سفارش</h2>
+                <p class="pm-notebook__sub"><span id="noteItemsCount">0</span> آیتم</p>
+            </div>
+            <button type="button" class="pm-sheet__close" data-bs-dismiss="offcanvas" aria-label="بستن">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="offcanvas-body pm-notebook__body">
+            <div id="noteList" class="pm-notebook__list">
+                <div class="pm-note-empty">
+                    <i class="bi bi-bag"></i>
+                    <p>هنوز چیزی اضافه نکرده‌اید</p>
+                    <span>با دکمه + روی کارت‌ها شروع کنید</span>
+                </div>
+            </div>
+            <div class="pm-notebook__note">
+                <label for="noteText">یادداشت برای گارسون</label>
+                <textarea id="noteText" rows="2" placeholder="مثل: بدون پیاز، کم‌نمک..."></textarea>
+            </div>
+        </div>
+        <div class="pm-notebook__foot">
+            <div class="pm-notebook__total">
+                <span>جمع کل</span>
+                <strong id="noteTotalBottom">۰ تومان</strong>
+            </div>
+            <div class="pm-notebook__actions">
+                <button type="button" class="pm-btn pm-btn--soft" id="btnCopy"><i class="bi bi-clipboard"></i> کپی</button>
+                <button type="button" class="pm-btn pm-btn--primary" id="btnShare"><i class="bi bi-share"></i> اشتراک</button>
+                <button type="button" class="pm-btn pm-btn--danger-ghost" id="btnClear" aria-label="پاک‌سازی"><i class="bi bi-trash3"></i></button>
+            </div>
+        </div>
     </div>
-    <div class="offcanvas-body d-flex flex-column">
-        <div id="noteList" class="flex-grow-1">
-            <div class="note-empty">هنوز چیزی اضافه نکرده‌اید. از دکمه‌های افزودن روی کارت‌ها استفاده کنید.</div>
-        </div>
-        <div class="mt-2">
-            <label class="form-label small text-muted">یادداشت برای گارسون (اختیاری)</label>
-<textarea id="noteText" class="note-text" placeholder="مثل: بدون پیاز، کم‌نمک، نوشابه رژیمی..."></textarea>
-        </div>
-    </div>
-    <div class="offcanvas-footer p-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <div><span class="fw-bold">جمع کل:</span> <span id="noteTotalBottom" class="text-success fw-bold">0 تومان</span></div>
-            <div class="text-muted"><i class="bi bi-list-check ms-1"></i> تعداد آیتم‌ها: <span id="noteItemsCount">0</span></div>
-        </div>
-        <div class="d-flex gap-2 flex-wrap">
-            <button class="btn btn-outline-secondary flex-fill" id="btnCopy"><i class="bi bi-clipboard ms-1"></i> کپی</button>
-            <button class="btn btn-outline-secondary flex-fill" id="btnShare"><i class="bi bi-share ms-1"></i> اشتراک‌گذاری</button>
-            <button class="btn btn-outline-danger flex-fill" id="btnClear"><i class="bi bi-trash ms-1"></i> پاک‌سازی</button>
-        </div>
-    </div>
+
+    <button type="button" id="backTop" class="pm-backtop" aria-label="بازگشت به بالا">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <div class="pm-toast" id="pmToast" role="status" aria-live="polite"></div>
 </div>
-
-<button id="backTop" class="back-top" aria-label="بازگشت به بالا"><i class="bi bi-arrow-up"></i></button>
-
-</div>
-
 <script>
-    (function(){
-    const chips = Array.from(document.querySelectorAll("[data-scroll]"));
-    const sections = Array.from(document.querySelectorAll(".category-section"));
-    const searchBox = document.getElementById("searchBox");
-    const clearBtn = document.getElementById("clearSearch");
-    const onlyAvailable = document.getElementById("onlyAvailable");
-    const onlyDiscount = document.getElementById("onlyDiscount");
-    const toolbar = document.querySelector(".menu-toolbar");
-    const backTop = document.getElementById("backTop");
+(function () {
+    'use strict';
 
-    // Toolbar var
-    const setToolbarVar = () => {
-    const h = (toolbar?.offsetHeight || 0);
-    document.documentElement.style.setProperty("--menu-toolbar-h", h + "px");
-    };
-    setToolbarVar(); window.addEventListener("resize", setToolbarVar);
+    var sticky = document.getElementById('pmSticky');
+    var topbar = document.getElementById('pmTopbar');
+    var searchBox = document.getElementById('searchBox');
+    var clearBtn = document.getElementById('clearSearch');
+    var onlyAvailable = document.getElementById('onlyAvailable');
+    var onlyDiscount = document.getElementById('onlyDiscount');
+    var backTop = document.getElementById('backTop');
+    var cartBar = document.getElementById('pmCartBar');
+    var noResults = document.getElementById('pmNoResults');
+    var chips = Array.prototype.slice.call(document.querySelectorAll('[data-scroll]'));
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.pm-section'));
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.food-card'));
+    var qv = document.getElementById('quickViewModal');
+    var qvAddBtn = document.getElementById('qvAddBtn');
+    var noteText = document.getElementById('noteText');
+    var STORAGE_KEY = 'ryar_menu_note_v1';
+    var root = document.querySelector('.pm-app');
+    var embeddedMenu = !!(root && root.classList.contains('pm-app--embedded'));
+    var dashboardTopbarHeight = embeddedMenu ? 72 : 0;
+    var categoryNav = document.getElementById('categoryChips');
+    var q = '', fAvail = false, fDisc = false;
+    var state = loadState();
 
-    // CSS.escape shim
-    if (typeof window.CSS === "undefined" || typeof CSS.escape !== "function") {
-    window.CSS = window.CSS || {};
-    CSS.escape = function (value) {
-    return String(value).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, '\\$&');
-    };
-    }
-
-    // Reveal
-    const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if (e.isIntersecting){ e.target.classList.add("show"); io.unobserve(e.target);} });
-    }, {threshold:.12, rootMargin:"120px 0px"});
-    document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
-
-    // Scroll to section
-    function scrollToSection(id){
-    const off = (toolbar?.offsetTop ?? 0) + (toolbar?.offsetHeight || 0) + 8;
-    if (id === "top"){ window.scrollTo({ top: 0, behavior: "smooth" }); return; }
-    const el = document.getElementById(id);
-    if (el) window.scrollTo({ top: el.offsetTop - off, behavior: "smooth" });
-    }
-    chips.forEach(btn => btn.addEventListener("click", ()=> scrollToSection(btn.dataset.scroll), {passive:true}));
-
-    // Active chip
-    let ticking = false;
-    const updateActive = ()=>{
-    if (ticking) return; ticking = true;
-    requestAnimationFrame(()=>{
-    const y = window.scrollY + (toolbar?.offsetHeight || 0) + 12;
-    let current = "top";
-    sections.forEach(s => { if (y >= s.offsetTop) current = s.id; });
-    chips.forEach(b => b.classList.toggle("active-category", b.dataset.scroll === current));
-    ticking = false;
-    });
-    };
-    window.addEventListener("scroll", updateActive, { passive:true });
-    window.addEventListener("load", updateActive);
-    window.addEventListener("resize", updateActive);
-
-    // Filters + search
-    const cards = Array.from(document.querySelectorAll(".food-card"));
-    let q = "", fAvail = false, fDisc = false, sort = "popular";
-    function applyFilters(){
-    cards.forEach(card=>{
-    const matchText = !q || card.dataset.name.indexOf(q) !== -1;
-    const matchAvail = !fAvail || card.dataset.available === "1";
-    const matchDisc = !fDisc || card.dataset.discount === "1";
-    const show = matchText && matchAvail && matchDisc;
-    card.classList.toggle("d-none", !show);
-    });
-    sections.forEach(sec=>{
-    const anyVisible = sec.querySelector(".food-card:not(.d-none)") !== null;
-    sec.classList.toggle("d-none", !anyVisible);
-    });
-    }
-    function debounce(fn, delay){ let t; return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), delay); }; }
-    searchBox?.addEventListener("input", debounce(()=>{
-    q = (searchBox.value || "").trim().toLowerCase();
-    clearBtn.classList.toggle("d-none", !q);
-    applyFilters();
-    }, 160));
-    searchBox?.addEventListener("keydown", (e)=>{ if (e.key === "Enter") searchBox.blur(); });
-    clearBtn?.addEventListener("click", ()=>{ searchBox.value = ""; q = ""; clearBtn.classList.add("d-none"); applyFilters(); searchBox.blur(); });
-    onlyAvailable?.addEventListener("click", ()=>{ fAvail = !fAvail; onlyAvailable.classList.toggle("active"); onlyAvailable.setAttribute("aria-pressed", String(fAvail)); applyFilters(); });
-    onlyDiscount?.addEventListener("click", ()=>{ fDisc = !fDisc; onlyDiscount.classList.toggle("active"); onlyDiscount.setAttribute("aria-pressed", String(fDisc)); applyFilters(); });
-
-    // Quick view modal populate + add-to-note
-    const qv = document.getElementById("quickViewModal");
-    const qvAddBtn = document.getElementById("qvAddBtn");
-    if (qv){
-    qv.addEventListener("show.bs.modal", (ev)=>{
-    const btn = ev.relatedTarget; if (!btn) return;
-    const card = btn.closest(".food-card");
-    const title = btn.getAttribute("data-title") || card?.dataset.itemName || "";
-    const desc = btn.getAttribute("data-desc") || "";
-    const img = btn.getAttribute("data-img") || "";
-    const priceNum = +(card?.dataset.itemPrice || card?.dataset.price || 0);
-    qv.querySelector("#qvTitle").textContent = title;
-    qv.querySelector("#qvDesc").textContent = desc;
-    qv.querySelector("#qvImg").src = img;
-    qv.querySelector("#qvPrice").textContent = formatPrice(priceNum);
-    // attach payload to add button
-    qvAddBtn.dataset.key = card?.dataset.itemKey || (title || "") ;
-    qvAddBtn.dataset.name = title;
-    qvAddBtn.dataset.price = String(priceNum || 0);
-    });
+    function getScrollOffset() {
+        return dashboardTopbarHeight
+            + (topbar ? topbar.offsetHeight : 0)
+            + (sticky ? sticky.offsetHeight : 0);
     }
 
-    // ===== Notebook logic (localStorage) =====
-    const STORAGE_KEY = "ryar_menu_note_v1";
-
-    function loadState(){
-    try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { items: [], note: "" };
-    const s = JSON.parse(raw);
-    if (!Array.isArray(s.items)) s.items = [];
-    if (typeof s.note !== "string") s.note = "";
-    return s;
-    } catch { return { items: [], note: "" }; }
-    }
-    function saveState(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    renderNote();
-    }
-    function formatPrice(n){
-    n = Number(n)||0;
-    return n.toLocaleString("fa-IR") + " تومان";
-    }
-    function upsertItem(key, name, price, delta){
-    if (!key) return;
-    const idx = state.items.findIndex(x => x.key === key);
-    if (idx === -1 && delta > 0){
-    state.items.push({ key, name, price: Number(price)||0, qty: delta });
-    } else if (idx > -1){
-    state.items[idx].qty += delta;
-    if (state.items[idx].qty <= 0) state.items.splice(idx,1);
-    }
-    saveState();
-    pingFab();
-    }
-    function removeItem(key){
-    const idx = state.items.findIndex(x => x.key === key);
-    if (idx > -1){ state.items.splice(idx,1); saveState(); pingFab(); }
-    }
-    function calcTotals(){
-    const count = state.items.reduce((s,it)=> s + it.qty, 0);
-    const total = state.items.reduce((s,it)=> s + (it.qty * (Number(it.price)||0)), 0);
-    return { count, total };
-    }
-    function renderNote(){
-    const list = document.getElementById("noteList");
-    const {count,total} = calcTotals();
-    // fab
-    document.getElementById("noteCount").textContent = String(count);
-    document.getElementById("noteTotal").textContent = formatPrice(total);
-    // offcanvas footer
-    document.getElementById("noteItemsCount").textContent = String(count);
-    document.getElementById("noteTotalBottom").textContent = formatPrice(total);
-    // textarea
-    noteText.value = state.note || "";
-    // list
-    if (!state.items.length){
-    list.innerHTML = '<div class="note-empty">هنوز چیزی اضافه نکرده‌اید. از دکمه‌های افزودن روی کارت‌ها استفاده کنید.</div>';
-    return;
-    }
-    list.innerHTML = state.items.map(it => `
-    <div class="note-item" data-key="${it.key}">
-    <div class="flex-grow-1">
-    <div class="title">${escapeHtml(it.name)}</div>
-    <div class="text-muted small">${formatPrice(it.price)}</div>
-    </div>
-    <div class="qty-group">
-    <button class="qty-btn" data-action="dec" aria-label="کاهش"><i class="bi bi-dash"></i></button>
-    <div class="fw-bold" style="min-width:28px; text-align:center">${it.qty}</div>
-    <button class="qty-btn" data-action="inc" aria-label="افزایش"><i class="bi bi-plus"></i></button>
-    </div>
-    <button class="btn btn-sm btn-outline-danger ms-1" data-action="remove" aria-label="حذف"><i class="bi bi-x-lg"></i></button>
-    </div>
-    `).join("");
-    }
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
-    function pingFab(){
-    const fab = document.querySelector(".note-fab");
-    fab?.classList.add("pulse");
-    setTimeout(()=> fab?.classList.remove("pulse"), 300);
+    function getSectionTop(section) {
+        return section.getBoundingClientRect().top + window.scrollY;
     }
 
-    let state = loadState();
+    function setStickyOffset() {
+        var th = topbar ? topbar.offsetHeight : 0;
+        var sh = sticky ? sticky.offsetHeight : 0;
+        document.documentElement.style.setProperty('--pm-topbar-h', th + 'px');
+        document.documentElement.style.setProperty('--pm-sticky-h', (th + sh) + 'px');
+        document.documentElement.style.setProperty('--pm-toolbar-h', sh + 'px');
+    }
+    setStickyOffset();
+    window.addEventListener('resize', setStickyOffset);
 
-    // Connect all "Add" buttons on cards
-    document.addEventListener("click", (e)=>{
-    const addBtn = e.target.closest(".btn-add");
-    if (addBtn){
-    const card = addBtn.closest(".food-card");
-    if (!card) return;
-    const key = card.dataset.itemKey || (card.dataset.itemName || "");
-    const name = card.dataset.itemName || card.querySelector(".card-title")?.textContent || "بدون‌نام";
-    const price = +(card.dataset.itemPrice || card.dataset.price || 0);
-    upsertItem(key, name, price, 1);
+    if (typeof window.CSS === 'undefined' || typeof CSS.escape !== 'function') {
+        window.CSS = window.CSS || {};
+        CSS.escape = function (v) { return String(v).replace(/[^a-zA-Z0-9_\u00A0-\uFFFF-]/g, '\\$&'); };
     }
-    // Offcanvas qty actions
-    const actionBtn = e.target.closest(".qty-btn, .btn-outline-danger");
-    if (actionBtn && actionBtn.closest("#noteList")){
-    const wrap = actionBtn.closest(".note-item"); if (!wrap) return;
-    const key = wrap.dataset.key;
-    const act = actionBtn.dataset.action;
-    if (act === "inc") upsertItem(key, "", 0, 1);
-    else if (act === "dec") upsertItem(key, "", 0, -1);
-    else if (act === "remove") removeItem(key);
+
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('is-shown'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.08, rootMargin: '80px 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+    function scrollToSection(id) {
+        var offset = getScrollOffset() + 8;
+        if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+        var el = document.getElementById(id);
+        if (el) window.scrollTo({ top: getSectionTop(el) - offset, behavior: 'smooth' });
     }
+    chips.forEach(function (btn) {
+        btn.addEventListener('click', function () { scrollToSection(btn.dataset.scroll); }, { passive: true });
     });
 
-    // Quick view add button
-    qvAddBtn?.addEventListener("click", ()=>{
-    const key = qvAddBtn.dataset.key || "";
-    const name = qvAddBtn.dataset.name || "";
-    const price = +(qvAddBtn.dataset.price || 0);
-    upsertItem(key, name, price, 1);
+    function scrollActiveChipIntoView(active) {
+        if (!active || !categoryNav) return;
+
+        var navRect = categoryNav.getBoundingClientRect();
+        var activeRect = active.getBoundingClientRect();
+        if (activeRect.left >= navRect.left && activeRect.right <= navRect.right) return;
+
+        var delta = (activeRect.left + activeRect.width / 2) - (navRect.left + navRect.width / 2);
+        categoryNav.scrollBy({ left: delta, behavior: 'smooth' });
+    }
+
+    var ticking = false;
+    function updateActive() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+            var y = window.scrollY + getScrollOffset() + 16;
+            var current = 'top';
+            sections.forEach(function (s) {
+                if (y >= getSectionTop(s)) current = s.id;
+            });
+            chips.forEach(function (b) {
+                b.classList.toggle('is-active', b.dataset.scroll === current);
+            });
+            scrollActiveChipIntoView(document.querySelector('.pm-cat.is-active'));
+            ticking = false;
+        });
+    }
+    window.addEventListener('scroll', updateActive, { passive: true });
+    window.addEventListener('load', updateActive);
+
+    function applyFilters() {
+        var any = false;
+        cards.forEach(function (card) {
+            var matchText = !q || (card.dataset.name || '').indexOf(q) !== -1;
+            var matchAvail = !fAvail || card.dataset.available === '1';
+            var matchDisc = !fDisc || card.dataset.discount === '1';
+            var show = matchText && matchAvail && matchDisc;
+            card.classList.toggle('is-hidden', !show);
+            card.classList.toggle('d-none', !show);
+            if (show) any = true;
+        });
+        sections.forEach(function (sec) {
+            var visible = sec.querySelector('.food-card:not(.is-hidden):not(.d-none)');
+            sec.classList.toggle('is-hidden', !visible);
+            sec.classList.toggle('d-none', !visible);
+        });
+        if (noResults) noResults.classList.toggle('is-hidden', any || !cards.length);
+    }
+
+    function debounce(fn, delay) {
+        var t; return function () {
+            var args = arguments, ctx = this;
+            clearTimeout(t);
+            t = setTimeout(function () { fn.apply(ctx, args); }, delay);
+        };
+    }
+
+    searchBox && searchBox.addEventListener('input', debounce(function () {
+        q = (searchBox.value || '').trim().toLowerCase();
+        clearBtn && clearBtn.classList.toggle('is-hidden', !q);
+        applyFilters();
+    }, 140));
+    searchBox && searchBox.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') searchBox.blur();
+    });
+    clearBtn && clearBtn.addEventListener('click', function () {
+        searchBox.value = ''; q = '';
+        clearBtn.classList.add('is-hidden');
+        applyFilters(); searchBox.blur();
+    });
+    onlyAvailable && onlyAvailable.addEventListener('click', function () {
+        fAvail = !fAvail;
+        onlyAvailable.classList.toggle('is-on', fAvail);
+        onlyAvailable.setAttribute('aria-pressed', String(fAvail));
+        applyFilters();
+    });
+    onlyDiscount && onlyDiscount.addEventListener('click', function () {
+        fDisc = !fDisc;
+        onlyDiscount.classList.toggle('is-on', fDisc);
+        onlyDiscount.setAttribute('aria-pressed', String(fDisc));
+        applyFilters();
+    });
+    var resetBtn = document.getElementById('pmResetFilters');
+    resetBtn && resetBtn.addEventListener('click', function () {
+        q = ''; fAvail = false; fDisc = false;
+        if (searchBox) searchBox.value = '';
+        clearBtn && clearBtn.classList.add('is-hidden');
+        onlyAvailable && onlyAvailable.classList.remove('is-on');
+        onlyDiscount && onlyDiscount.classList.remove('is-on');
+        onlyAvailable && onlyAvailable.setAttribute('aria-pressed', 'false');
+        onlyDiscount && onlyDiscount.setAttribute('aria-pressed', 'false');
+        applyFilters();
     });
 
-    // Note textarea
-    const noteText = document.getElementById("noteText");
-    noteText.addEventListener("input", debounce(()=>{
-    state.note = noteText.value || "";
-    saveState();
+    function formatPrice(n) {
+        n = Number(n) || 0;
+        return n.toLocaleString('fa-IR') + ' تومان';
+    }
+    function loadState() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return { items: [], note: '' };
+            var s = JSON.parse(raw);
+            if (!Array.isArray(s.items)) s.items = [];
+            if (typeof s.note !== 'string') s.note = '';
+            return s;
+        } catch (e) { return { items: [], note: '' }; }
+    }
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderNote();
+    }
+    function upsertItem(key, name, price, delta) {
+        if (!key) return;
+        var idx = state.items.findIndex(function (x) { return x.key === key; });
+        if (idx === -1 && delta > 0) {
+            state.items.push({ key: key, name: name, price: Number(price) || 0, qty: delta });
+        } else if (idx > -1) {
+            state.items[idx].qty += delta;
+            if (state.items[idx].qty <= 0) state.items.splice(idx, 1);
+        }
+        saveState();
+        pingCart();
+        if (delta > 0) showPmToast('به دفترچه اضافه شد');
+    }
+    function removeItem(key) {
+        var idx = state.items.findIndex(function (x) { return x.key === key; });
+        if (idx > -1) { state.items.splice(idx, 1); saveState(); pingCart(); }
+    }
+    function calcTotals() {
+        var count = state.items.reduce(function (s, it) { return s + it.qty; }, 0);
+        var total = state.items.reduce(function (s, it) { return s + (it.qty * (Number(it.price) || 0)); }, 0);
+        return { count: count, total: total };
+    }
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+        });
+    }
+    function pingCart() {
+        cartBar && cartBar.classList.add('is-pulse');
+        setTimeout(function () { cartBar && cartBar.classList.remove('is-pulse'); }, 320);
+    }
+    function showPmToast(msg) {
+        var el = document.getElementById('pmToast');
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add('is-show');
+        clearTimeout(el._t);
+        el._t = setTimeout(function () { el.classList.remove('is-show'); }, 1600);
+    }
+
+    function renderNote() {
+        var list = document.getElementById('noteList');
+        var totals = calcTotals();
+        var countEl = document.getElementById('noteCount');
+        var totalEl = document.getElementById('noteTotal');
+        var itemsCount = document.getElementById('noteItemsCount');
+        var totalBottom = document.getElementById('noteTotalBottom');
+
+        if (countEl) countEl.textContent = String(totals.count);
+        if (totalEl) totalEl.textContent = formatPrice(totals.total);
+        if (itemsCount) itemsCount.textContent = String(totals.count);
+        if (totalBottom) totalBottom.textContent = formatPrice(totals.total);
+        if (noteText) noteText.value = state.note || '';
+
+        if (cartBar) {
+            cartBar.classList.toggle('is-hidden', totals.count === 0);
+            document.body.classList.toggle('pm-has-cart', totals.count > 0);
+        }
+
+        if (!list) return;
+        if (!state.items.length) {
+            list.innerHTML = '<div class="pm-note-empty"><i class="bi bi-bag"></i><p>هنوز چیزی اضافه نکرده‌اید</p><span>با دکمه + روی کارت‌ها شروع کنید</span></div>';
+            return;
+        }
+        list.innerHTML = state.items.map(function (it) {
+            return '<div class="pm-note-item" data-key="' + escapeHtml(it.key) + '">' +
+                '<div class="pm-note-item__info"><div class="pm-note-item__name">' + escapeHtml(it.name) + '</div>' +
+                '<div class="pm-note-item__price">' + formatPrice(it.price) + '</div></div>' +
+                '<div class="pm-qty">' +
+                '<button type="button" class="pm-qty__btn" data-action="dec" aria-label="کاهش"><i class="bi bi-dash"></i></button>' +
+                '<span class="pm-qty__val">' + it.qty + '</span>' +
+                '<button type="button" class="pm-qty__btn" data-action="inc" aria-label="افزایش"><i class="bi bi-plus"></i></button>' +
+                '</div>' +
+                '<button type="button" class="pm-note-item__remove" data-action="remove" aria-label="حذف"><i class="bi bi-x-lg"></i></button>' +
+                '</div>';
+        }).join('');
+    }
+
+    if (qv) {
+        qv.addEventListener('show.bs.modal', function (ev) {
+            var btn = ev.relatedTarget; if (!btn) return;
+            var card = btn.closest('.food-card');
+            var title = btn.getAttribute('data-title') || (card && card.dataset.itemName) || '';
+            var desc = btn.getAttribute('data-desc') || (card && card.dataset.itemDesc) || '';
+            var img = btn.getAttribute('data-img') || (card && card.dataset.itemImg) || '';
+            var priceNum = +(card && (card.dataset.itemPrice || card.dataset.price) || 0);
+            qv.querySelector('#qvTitle').textContent = title;
+            qv.querySelector('#qvDesc').textContent = desc;
+            qv.querySelector('#qvImg').src = img;
+            qv.querySelector('#qvPrice').textContent = formatPrice(priceNum);
+            qvAddBtn.dataset.key = (card && card.dataset.itemKey) || title;
+            qvAddBtn.dataset.name = title;
+            qvAddBtn.dataset.price = String(priceNum || 0);
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        var addBtn = e.target.closest('.btn-add');
+        if (addBtn) {
+            var card = addBtn.closest('.food-card');
+            if (!card) return;
+            upsertItem(
+                card.dataset.itemKey || card.dataset.itemName || '',
+                card.dataset.itemName || 'بدون‌نام',
+                +(card.dataset.itemPrice || card.dataset.price || 0),
+                1
+            );
+            addBtn.classList.add('is-added');
+            setTimeout(function () { addBtn.classList.remove('is-added'); }, 400);
+        }
+        var actionBtn = e.target.closest('[data-action]');
+        if (actionBtn && actionBtn.closest('#noteList')) {
+            var wrap = actionBtn.closest('.pm-note-item'); if (!wrap) return;
+            var key = wrap.dataset.key;
+            var act = actionBtn.dataset.action;
+            if (act === 'inc') upsertItem(key, '', 0, 1);
+            else if (act === 'dec') upsertItem(key, '', 0, -1);
+            else if (act === 'remove') removeItem(key);
+        }
+    });
+
+    qvAddBtn && qvAddBtn.addEventListener('click', function () {
+        upsertItem(qvAddBtn.dataset.key || '', qvAddBtn.dataset.name || '', +(qvAddBtn.dataset.price || 0), 1);
+    });
+
+    noteText && noteText.addEventListener('input', debounce(function () {
+        state.note = noteText.value || '';
+        saveState();
     }, 250));
 
-    // Copy / Share / Clear
-    const btnCopy = document.getElementById("btnCopy");
-    const btnShare = document.getElementById("btnShare");
-    const btnClear = document.getElementById("btnClear");
-
-    function buildPlainText(){
-    const {count,total} = calcTotals();
-    let lines = ["سفارش من:"];
-    state.items.forEach((it,i)=>{
-    lines.push(`${i+1}. ${it.name} × ${it.qty} — ${formatPrice(it.price)}`);
-    });
-    lines.push(`جمع کل: ${formatPrice(total)}`);
-    if (state.note) { lines.push("یادداشت:", state.note); }
-    return lines.join("\n");
+    function buildPlainText() {
+        var totals = calcTotals();
+        var lines = ['سفارش من:'];
+        state.items.forEach(function (it, i) {
+            lines.push((i + 1) + '. ' + it.name + ' × ' + it.qty + ' — ' + formatPrice(it.price));
+        });
+        lines.push('جمع کل: ' + formatPrice(totals.total));
+        if (state.note) { lines.push('یادداشت:', state.note); }
+        return lines.join('\n');
     }
-    btnCopy.addEventListener("click", async ()=>{
-    try{
-    await navigator.clipboard.writeText(buildPlainText());
-    showToast("متن سفارش کپی شد.", "info");
-    }catch{ showToast("کپی ناموفق بود.", "error");}
+
+    document.getElementById('btnCopy') && document.getElementById('btnCopy').addEventListener('click', async function () {
+        try {
+            await navigator.clipboard.writeText(buildPlainText());
+            if (typeof showToast === 'function') showToast('متن سفارش کپی شد.', 'info');
+            else showPmToast('کپی شد');
+        } catch (e) {
+            if (typeof showToast === 'function') showToast('کپی ناموفق بود.', 'error');
+        }
     });
-    btnShare.addEventListener("click", async ()=>{
-    const text = buildPlainText();
-    if (navigator.share){
-    try{ await navigator.share({ text, title:"سفارش من" }); }
-    catch(e){}
-    }else{
-    try{ await navigator.clipboard.writeText(text); showToast("متن برای اشتراک\u200cگذاری کپی شد.", "info"); }
-    catch{ showToast("اشتراک\u200cگذاری پشتیبانی نمی\u200cشود.", "error"); }
-    }
+    document.getElementById('btnShare') && document.getElementById('btnShare').addEventListener('click', async function () {
+        var text = buildPlainText();
+        if (navigator.share) {
+            try { await navigator.share({ text: text, title: 'سفارش من' }); } catch (e) { }
+        } else {
+            try {
+                await navigator.clipboard.writeText(text);
+                if (typeof showToast === 'function') showToast('متن برای اشتراک‌گذاری کپی شد.', 'info');
+            } catch (e) { }
+        }
     });
-    btnClear.addEventListener("click", async ()=>{
-    if (!state.items.length && !state.note) return;
-    if (await showConfirm({ message: "همه موارد دفترچه پاک شود؟" })){
-    state = { items: [], note: "" };
-    saveState();
-    }
+    document.getElementById('btnClear') && document.getElementById('btnClear').addEventListener('click', async function () {
+        if (!state.items.length && !state.note) return;
+        var ok = typeof showConfirm === 'function'
+            ? await showConfirm({ message: 'همه موارد دفترچه پاک شود؟' })
+            : window.confirm('همه موارد دفترچه پاک شود؟');
+        if (ok) { state = { items: [], note: '' }; saveState(); }
     });
 
-    // Back to top
-    const onScroll = ()=>{ if (window.scrollY > 400) backTop.classList.add("show"); else backTop.classList.remove("show"); };
-    backTop.addEventListener("click", ()=> window.scrollTo({ top:0, behavior:"smooth" }));
-    document.addEventListener("scroll", onScroll, { passive:true });
+    function onScroll() {
+        if (!backTop) return;
+        backTop.classList.toggle('is-show', window.scrollY > 480);
+    }
+    backTop && backTop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.addEventListener('scroll', onScroll, { passive: true });
 
-    // Initial render
+    if (cartBar) {
+        cartBar.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cartBar.click(); }
+        });
+    }
+
     renderNote();
-    })();
+    setStickyOffset();
+})();
 </script>
-<script src="~/js/bootstrap.bundle.min.js"></script>
+@if (!embeddedMenu)
+{
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+}

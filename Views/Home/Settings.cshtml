@@ -30,7 +30,7 @@
 
                 <h2>تنظیمات ظاهری رستوران</h2>
 
-                <p class="text-muted mb-0">رنگ‌ها، لوگو و تصویر پس‌زمینه را برای داشبورد و منوی عمومی تنظیم کنید.</p>
+                <p class="text-muted mb-0">لوگو برای داشبورد و منوی عمومی. رنگ‌ها فقط داشبورد را تغییر می‌دهند. نوع رستوران، قالب منوی QR، متن بالای نام و شعار منو، و پس‌زمینه داشبورد را تعیین می‌کند.</p>
 
             </div>
 
@@ -114,11 +114,39 @@
 
                 <div class="settings-field settings-field--full">
 
-                    <label>تصویر پس‌زمینه</label>
+                    <label>نوع رستوران و قالب منو</label>
 
                     <input type="hidden" id="backgroundImageUrl" name="backgroundImageUrl" value="">
 
+                    <p class="field-hint mb-2">هر گزینه یک قالب اختصاصی برای منوی عمومی (QR) و پس‌زمینه داشبورد دارد.</p>
+
                     <div id="backgroundPicker" class="background-picker" role="listbox" aria-label="انتخاب پس‌زمینه"></div>
+
+                </div>
+
+
+
+                <div class="settings-field settings-field--full">
+
+                    <label for="menuHeroBadge">متن بالای نام رستوران (نشان)</label>
+
+                    <input type="text" id="menuHeroBadge" name="menuHeroBadge" maxlength="80"
+                           placeholder="مثلاً: منوی دیجیتال" autocomplete="off">
+
+                    <small class="field-hint">خالی بگذارید تا متن پیش‌فرض قالب استفاده شود. پیش‌فرض فعلی: <strong id="menuHeroBadgeDefaultHint">—</strong></small>
+
+                </div>
+
+
+
+                <div class="settings-field settings-field--full">
+
+                    <label for="menuTagline">شعار زیر نام رستوران</label>
+
+                    <input type="text" id="menuTagline" name="menuTagline" maxlength="160"
+                           placeholder="مثلاً: طعم‌های خاص، لحظه‌های به‌یادماندنی" autocomplete="off">
+
+                    <small class="field-hint">خالی بگذارید تا شعار پیش‌فرض قالب استفاده شود. پیش‌فرض فعلی: <strong id="menuTaglineDefaultHint">—</strong></small>
 
                 </div>
 
@@ -138,7 +166,9 @@
 
                         <img id="previewLogo" src="~/images/logo.png" alt="لوگو">
 
-                        <div class="preview-badge">منوی نمونه</div>
+                        <div class="preview-badge" id="previewMenuBadge">منوی دیجیتال</div>
+
+                        <p class="preview-tagline" id="previewMenuTagline">طعم‌های خاص، لحظه‌های به‌یادماندنی</p>
 
                         <div class="preview-swatches">
 

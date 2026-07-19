@@ -847,6 +847,14 @@ namespace resturanyar.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("MenuHeroBadge")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("MenuTagline")
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
                     b.Property<string>("PrimaryColor")
                         .IsRequired()
                         .ValueGeneratedOnAdd()

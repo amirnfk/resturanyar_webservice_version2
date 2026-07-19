@@ -2053,6 +2053,8 @@ namespace resturanyar.Controllers.Api.V2
                 request.PrimaryColor,
                 request.SecondaryColor,
                 request.BackgroundImageUrl,
+                request.MenuHeroBadge,
+                request.MenuTagline,
                 request.Logo);
 
             if (!result.Success)

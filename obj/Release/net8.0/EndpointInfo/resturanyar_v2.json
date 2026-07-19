@@ -1661,6 +1661,12 @@
                   "BackgroundImageUrl": {
                     "type": "string"
                   },
+                  "MenuHeroBadge": {
+                    "type": "string"
+                  },
+                  "MenuTagline": {
+                    "type": "string"
+                  },
                   "Logo": {
                     "type": "string",
                     "format": "binary"
@@ -1678,6 +1684,12 @@
                   "style": "form"
                 },
                 "BackgroundImageUrl": {
+                  "style": "form"
+                },
+                "MenuHeroBadge": {
+                  "style": "form"
+                },
+                "MenuTagline": {
                   "style": "form"
                 },
                 "Logo": {

@@ -8,7 +8,7 @@
 
     var DEFAULT_LOGO = '/images/logo.png';
 
-    var DEFAULT_BACKGROUND = '/images/backgrounds/preset-warm.jpg';
+    var DEFAULT_BACKGROUND = '/images/backgrounds/default.jpg';
 
 
 
@@ -62,6 +62,100 @@
 
 
 
+    function getBackgroundOptionForUrl(url) {
+
+        var effectiveUrl = url || getSelectedBackgroundUrl();
+
+        return backgroundOptions.find(function (option) {
+
+            return option.url === effectiveUrl;
+
+        }) || null;
+
+    }
+
+
+
+    function getDefaultMenuTexts(url) {
+
+        var option = getBackgroundOptionForUrl(url);
+
+        if (option) {
+
+            return {
+
+                badge: option.heroBadge || 'منوی دیجیتال',
+
+                tagline: option.tagline || 'طعم‌های خاص، لحظه‌های به‌یادماندنی'
+
+            };
+
+        }
+
+
+
+        return {
+
+            badge: 'منوی دیجیتال',
+
+            tagline: 'طعم‌های خاص، لحظه‌های به‌یادماندنی'
+
+        };
+
+    }
+
+
+
+    function getEffectiveMenuTexts() {
+
+        var defaults = getDefaultMenuTexts();
+
+        var badgeInput = document.getElementById('menuHeroBadge');
+
+        var taglineInput = document.getElementById('menuTagline');
+
+        var customBadge = badgeInput && badgeInput.value.trim();
+
+        var customTagline = taglineInput && taglineInput.value.trim();
+
+        return {
+
+            badge: customBadge || defaults.badge,
+
+            tagline: customTagline || defaults.tagline
+
+        };
+
+    }
+
+
+
+    function updateMenuTextHints(url, data) {
+
+        var defaults = getDefaultMenuTexts(url);
+
+        if (data) {
+
+            if (data.menuHeroBadgeDefault) defaults.badge = data.menuHeroBadgeDefault;
+
+            if (data.menuTaglineDefault) defaults.tagline = data.menuTaglineDefault;
+
+        }
+
+
+
+        var badgeHint = document.getElementById('menuHeroBadgeDefaultHint');
+
+        var taglineHint = document.getElementById('menuTaglineDefaultHint');
+
+        if (badgeHint) badgeHint.textContent = defaults.badge;
+
+        if (taglineHint) taglineHint.textContent = defaults.tagline;
+
+    }
+
+
+
     function getPreviewLogoUrl() {
 
         if (pendingLogoFile) {
@@ -102,13 +196,21 @@
 
 
 
-        var badge = document.getElementById('settingsPreview')?.querySelector('.preview-badge');
+        var badge = document.getElementById('previewMenuBadge');
 
         if (badge) {
 
             badge.style.background = 'linear-gradient(135deg, ' + primary + ', ' + secondary + ')';
 
+            badge.textContent = getEffectiveMenuTexts().badge;
+
         }
+
+
+
+        var tagline = document.getElementById('previewMenuTagline');
+
+        if (tagline) tagline.textContent = getEffectiveMenuTexts().tagline;
 
 
 
@@ -183,6 +285,8 @@
                 document.getElementById('backgroundImageUrl').value = option.url;
 
                 renderBackgroundPicker(option.url);
+
+                updateMenuTextHints(option.url);
 
                 updatePreview();
 
@@ -296,6 +400,16 @@
 
 
 
+        ['menuHeroBadge', 'menuTagline'].forEach(function (id) {
+
+            var el = document.getElementById(id);
+
+            if (el) el.addEventListener('input', updatePreview);
+
+        });
+
+
+
         document.getElementById('logoFile').addEventListener('change', function (e) {
 
             var file = e.target.files && e.target.files[0];
@@ -344,6 +458,30 @@
 
 
 
+    function resolveBackgroundUrl(url) {
+        if (!url) return DEFAULT_BACKGROUND;
+
+        var legacyMap = {
+            '/images/backgrounds/back1.jpg': DEFAULT_BACKGROUND,
+            '/images/backgrounds/preset-warm.jpg': DEFAULT_BACKGROUND,
+            '/images/backgrounds/preset-dark.jpg': '/images/backgrounds/fastfoodbackground.jpg',
+            '/images/backgrounds/preset-fresh.jpg': '/images/backgrounds/caferestaurantbackground.jpg',
+            '/images/backgrounds/preset-elegant.jpg': '/images/backgrounds/kababibackground.jpg',
+            '/images/backgrounds/preset-cozy.jpg': '/images/backgrounds/sonatibackground.jpg',
+            '/images/backgrounds/preset-minimal.jpg': '/images/backgrounds/modernbackground.jpg',
+            '/images/modernbackground.jpg': '/images/backgrounds/modernbackground.jpg'
+        };
+
+        var normalized = url.trim();
+        if (legacyMap[normalized]) normalized = legacyMap[normalized];
+
+        return backgroundOptions.some(function (option) { return option.url === normalized; })
+            ? normalized
+            : DEFAULT_BACKGROUND;
+    }
+
+
+
     function fillForm(data, options) {
 
         backgroundOptions = options && options.length ? options : backgroundOptions;
@@ -362,9 +500,23 @@
 
 
 
-        var backgroundUrl = data.backgroundImageUrl || DEFAULT_BACKGROUND;
+        var backgroundUrl = resolveBackgroundUrl(data.backgroundImageUrl);
 
         document.getElementById('backgroundImageUrl').value = backgroundUrl;
+
+
+
+        var badgeInput = document.getElementById('menuHeroBadge');
+
+        var taglineInput = document.getElementById('menuTagline');
+
+        if (badgeInput) badgeInput.value = data.menuHeroBadgeCustom || '';
+
+        if (taglineInput) taglineInput.value = data.menuTaglineCustom || '';
+
+
+
+        updateMenuTextHints(backgroundUrl, data);
 
 
 
@@ -454,6 +606,16 @@
 
 
 
+        var badgeInput = document.getElementById('menuHeroBadge');
+
+        var taglineInput = document.getElementById('menuTagline');
+
+        formData.append('menuHeroBadge', badgeInput ? badgeInput.value.trim() : '');
+
+        formData.append('menuTagline', taglineInput ? taglineInput.value.trim() : '');
+
+
+
         if (pendingLogoFile) {
 
             formData.append('logo', pendingLogoFile);
@@ -532,7 +694,7 @@
 
                 title: 'بازگشت به پیش‌فرض',
 
-                message: 'رنگ‌ها، لوگو و پس‌زمینه به حالت پیش‌فرض بازمی‌گردند. ادامه می‌دهید؟',
+                message: 'رنگ‌ها، لوگو، متن‌های منو و پس‌زمینه به حالت پیش‌فرض بازمی‌گردند. ادامه می‌دهید؟',
 
                 confirmText: 'بله، بازگردانی',
 

@@ -3,6 +3,10 @@
 } *@
 
 @model resturanyar.Models.OwnerLoginRequest
+@using resturanyar.Utility
+@{
+    var backgroundImageUrl = ViewBag.BackgroundImageUrl as string ?? RestaurantBackgroundOptions.DefaultUrl;
+}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -15,6 +19,10 @@
 
     <script src="~/js/sweetalert2@11.js"></script>
     <link href="~/css/managerlogin.css" rel="stylesheet" asp-append-version="true" />
+    <style>
+        :root { --page-background-image: url('@backgroundImageUrl'); }
+        .login-bg-wrapper { background-image: var(--page-background-image) !important; }
+    </style>
 </head>
 <body class="bg-light">
 

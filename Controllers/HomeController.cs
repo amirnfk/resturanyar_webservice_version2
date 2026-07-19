@@ -117,6 +117,7 @@ namespace resturanyar.Controllers
                 }
             }
 
+            ViewBag.BackgroundImageUrl = RestaurantSettingsHelper.DefaultBackgroundPath;
             return View();
         }
 
@@ -325,7 +326,7 @@ namespace resturanyar.Controllers
                 PrimaryColor = settingsDto.PrimaryColor,
                 SecondaryColor = settingsDto.SecondaryColor,
                 LogoUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.LogoUrl, RestaurantSettingsHelper.DefaultLogoPath),
-                BackgroundImageUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.BackgroundImageUrl, RestaurantSettingsHelper.DefaultBackgroundPath)
+                BackgroundImageUrl = settingsDto.BackgroundImageUrl,
             };
 
             ViewBag.RestaurantId = restaurantId;
@@ -462,7 +463,7 @@ namespace resturanyar.Controllers
                 .ToList();
 
             ViewBag.Restaurants = restaurants;
-
+            ViewBag.BackgroundImageUrl = RestaurantSettingsHelper.DefaultBackgroundPath;
 
             return View();
         }
@@ -1982,6 +1983,8 @@ namespace resturanyar.Controllers
                 request.PrimaryColor,
                 request.SecondaryColor,
                 request.BackgroundImageUrl,
+                request.MenuHeroBadge,
+                request.MenuTagline,
                 request.Logo);
 
             if (!result.Success)

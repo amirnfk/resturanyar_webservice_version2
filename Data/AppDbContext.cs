@@ -271,6 +271,12 @@ namespace Resturanyar.Data
                 entity.Property(s => s.LogoUrl)
                     .HasMaxLength(500);
 
+                entity.Property(s => s.MenuHeroBadge)
+                    .HasMaxLength(80);
+
+                entity.Property(s => s.MenuTagline)
+                    .HasMaxLength(160);
+
                 entity.HasCheckConstraint("CK_RestaurantSettings_PrimaryColor",
                     "[PrimaryColor] LIKE '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'");
 
