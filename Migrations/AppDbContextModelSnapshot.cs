@@ -111,69 +111,6 @@ namespace resturanyar.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("resturanyar.Models.Article", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasDefaultValue("رستورانیار");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FeaturedImageUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsPublished")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Keywords")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("MetaDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("PublishedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
-
-                    b.ToTable("Articles");
-                });
-
             modelBuilder.Entity("resturanyar.Models.AdminMessage.AdminMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -267,6 +204,69 @@ namespace resturanyar.Migrations
                         .IsUnique();
 
                     b.ToTable("AdminMessageRecipients");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasDefaultValue("رستورانیار");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FeaturedImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsPublished")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Keywords")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("MetaDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("PublishedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("resturanyar.Models.AuthorizationModels.RefreshToken", b =>
@@ -678,8 +678,6 @@ namespace resturanyar.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("RestaurantId");
-
                     b.HasIndex("StatusId");
 
                     b.HasIndex("RestaurantId", "CreatedAt")
@@ -834,6 +832,43 @@ namespace resturanyar.Migrations
                     b.HasKey("restaurant_id");
 
                     b.ToTable("Restaurants");
+                });
+
+            modelBuilder.Entity("resturanyar.Models.RestaurantSetting", b =>
+                {
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BackgroundImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PrimaryColor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)")
+                        .HasDefaultValue("#f97316");
+
+                    b.Property<string>("SecondaryColor")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)")
+                        .HasDefaultValue("#fff7ed");
+
+                    b.HasKey("RestaurantId");
+
+                    b.ToTable("RestaurantSettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_RestaurantSettings_PrimaryColor", "[PrimaryColor] LIKE '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'");
+
+                            t.HasCheckConstraint("CK_RestaurantSettings_SecondaryColor", "[SecondaryColor] LIKE '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'");
+                        });
                 });
 
             modelBuilder.Entity("resturanyar.Models.RestaurantTable", b =>
@@ -1319,6 +1354,17 @@ namespace resturanyar.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("resturanyar.Models.RestaurantSetting", b =>
+                {
+                    b.HasOne("resturanyar.Models.Restaurant", "Restaurant")
+                        .WithOne("Setting")
+                        .HasForeignKey("resturanyar.Models.RestaurantSetting", "RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
+                });
+
             modelBuilder.Entity("resturanyar.Models.RestaurantTable", b =>
                 {
                     b.HasOne("resturanyar.Models.Restaurant", "Restaurant")
@@ -1406,6 +1452,8 @@ namespace resturanyar.Migrations
             modelBuilder.Entity("resturanyar.Models.Restaurant", b =>
                 {
                     b.Navigation("Categories");
+
+                    b.Navigation("Setting");
 
                     b.Navigation("Subscriptions");
                 });

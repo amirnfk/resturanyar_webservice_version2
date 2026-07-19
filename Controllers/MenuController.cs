@@ -4,6 +4,7 @@ using Resturanyar.Data;
 using Microsoft.EntityFrameworkCore;
 using QRCoder;
 using resturanyar.Controllers;
+using resturanyar.Utility;
 
 using System.Reflection;
 
@@ -214,6 +215,12 @@ public class MenuController : Controller
 
             ViewBag.RestaurantId = restaurant.restaurant_id;
             ViewBag.RestaurantName = restaurant.name;
+
+            var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurant.restaurant_id);
+            ViewBag.PrimaryColor = settingsDto.PrimaryColor;
+            ViewBag.SecondaryColor = settingsDto.SecondaryColor;
+            ViewBag.LogoUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.LogoUrl, RestaurantSettingsHelper.DefaultLogoPath);
+            ViewBag.BackgroundImageUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.BackgroundImageUrl, RestaurantSettingsHelper.DefaultBackgroundPath);
 
             return View(items);
         }

@@ -14,7 +14,22 @@
     var revenueChangeClass = Model.RevenueChangePercent > 0 ? "up" : (Model.RevenueChangePercent < 0 ? "down" : "zero");
     var orderArrow = Model.OrdersChangePercent > 0 ? "up" : (Model.OrdersChangePercent < 0 ? "down" : "right");
     var revenueArrow = Model.RevenueChangePercent > 0 ? "up" : (Model.RevenueChangePercent < 0 ? "down" : "right");
+    var primaryColor = Model?.PrimaryColor ?? "#f97316";
+    var secondaryColor = Model?.SecondaryColor ?? "#fff7ed";
+    var logoUrl = Model?.LogoUrl ?? "/images/logo.png";
+    var backgroundImageUrl = Model?.BackgroundImageUrl ?? "/images/backgrounds/preset-warm.jpg";
 }
+<style>
+    :root {
+        --primary: @primaryColor;
+        --primary-2: @secondaryColor;
+        --gradient-primary: linear-gradient(135deg, @primaryColor, @secondaryColor);
+    }
+
+    body::before {
+        background-image: url('@backgroundImageUrl') !important;
+    }
+</style>
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <link rel="stylesheet" href="~/css/all.min.css">
@@ -29,7 +44,7 @@
         <div class="dash-hero__card">
             <div class="dash-hero__row">
                 <div class="dash-hero__brand">
-                    <img src="~/images/logo.png" alt="لوگوی رستوران" class="dash-hero__logo">
+                    <img src="@logoUrl" alt="لوگوی رستوران" class="dash-hero__logo">
                     <div class="dash-hero__info">
                         <h1 class="dash-hero__title">رستورانیار</h1>
                         <p class="dash-hero__subtitle">
@@ -304,6 +319,15 @@
                 <div class="tile__body">
                     <h3 class="tile__title">گزارش‌گیری</h3>
                     <p class="tile__desc">گزارش سفارشات، فروش و عملکرد</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("Settings", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-cog"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">تنظیمات رستوران</h3>
+                    <p class="tile__desc">رنگ‌ها، لوگو و تصویر پس‌زمینه</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>

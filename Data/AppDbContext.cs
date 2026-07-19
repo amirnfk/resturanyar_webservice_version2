@@ -17,6 +17,7 @@ namespace Resturanyar.Data
 
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<RestaurantSetting> RestaurantSettings { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
@@ -245,6 +246,37 @@ namespace Resturanyar.Data
                       .HasDefaultValue("Success");
             });
 
+
+            modelBuilder.Entity<RestaurantSetting>(entity =>
+            {
+                entity.HasKey(s => s.RestaurantId);
+
+                entity.HasOne(s => s.Restaurant)
+                    .WithOne(r => r.Setting)
+                    .HasForeignKey<RestaurantSetting>(s => s.RestaurantId)
+                    .HasPrincipalKey<Restaurant>(r => r.restaurant_id)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(s => s.PrimaryColor)
+                    .HasMaxLength(9)
+                    .HasDefaultValue("#f97316");
+
+                entity.Property(s => s.SecondaryColor)
+                    .HasMaxLength(9)
+                    .HasDefaultValue("#fff7ed");
+
+                entity.Property(s => s.BackgroundImageUrl)
+                    .HasMaxLength(500);
+
+                entity.Property(s => s.LogoUrl)
+                    .HasMaxLength(500);
+
+                entity.HasCheckConstraint("CK_RestaurantSettings_PrimaryColor",
+                    "[PrimaryColor] LIKE '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'");
+
+                entity.HasCheckConstraint("CK_RestaurantSettings_SecondaryColor",
+                    "[SecondaryColor] LIKE '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'");
+            });
 
             ConfigureSubscriptionEntities(modelBuilder);
             ConfigureAdminMessageEntities(modelBuilder);

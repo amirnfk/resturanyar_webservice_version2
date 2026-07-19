@@ -237,7 +237,8 @@
         ['/menu/publicmenuqrcode', 'initPublicMenuQRCodePage'],
         ['/home/customerslist', 'initCustomersListPage'],
         ['/home/managestaff', 'initManageStaffPage'],
-        ['/home/messages', 'initMessagesPage']
+        ['/home/messages', 'initMessagesPage'],
+        ['/home/settings', 'initRestaurantSettingsPage']
     ];
 
     function resolvePageInitName(url) {

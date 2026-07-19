@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,6 +54,10 @@ builder.Services.AddCors(options =>
 // ✳️ افزودن کنترلرهای API و MVC
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = RestaurantLogoUploadHelper.MaxFileSizeBytes + 4096;
+});
 builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 builder.Services.AddAntiforgery(options =>
 {
@@ -259,17 +264,17 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
-        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2"); 
-        c.RoutePrefix = "swagger";
-    });
+    //app.UseSwagger();
+    //app.UseSwaggerUI(c =>
+    //{
+    //    // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
+    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
+    //    c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2"); 
+    //    c.RoutePrefix = "swagger";
+    //});
 
     // ✅ Add this to see detailed errors in the browser
-    app.UseDeveloperExceptionPage();
+    //app.UseDeveloperExceptionPage();
 }
 
 // ✅ Middleware برای هندل‌کردن تمام exceptionها (اصلاح شده برای امنیت بیشتر)

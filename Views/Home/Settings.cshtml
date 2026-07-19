@@ -1,5 +1,188 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+
+    ViewData["Title"] = "تنظیمات رستوران";
+
 }
+
+
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/restaurant-settings.css" asp-append-version="true" />
+
+}
+
+
+
+<div class="settings-page" data-restaurant-id="@(ViewBag.RestaurantId?.ToString() ?? "")">
+
+    <div class="settings-card">
+
+        <div class="settings-header">
+
+            <div class="icon-circle">
+
+                <i class="fas fa-cog"></i>
+
+            </div>
+
+            <div>
+
+                <h2>تنظیمات ظاهری رستوران</h2>
+
+                <p class="text-muted mb-0">رنگ‌ها، لوگو و تصویر پس‌زمینه را برای داشبورد و منوی عمومی تنظیم کنید.</p>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="settingsLoading" class="settings-loading">
+
+            <i class="fas fa-spinner fa-spin"></i>
+
+            <span>در حال بارگذاری...</span>
+
+        </div>
+
+
+
+        <form id="settingsForm" class="settings-form" hidden enctype="multipart/form-data">
+
+            <div class="settings-grid">
+
+                <div class="settings-field">
+
+                    <label for="primaryColor">رنگ اصلی</label>
+
+                    <div class="color-input-row">
+
+                        <input type="color" id="primaryColorPicker" aria-label="انتخاب رنگ اصلی">
+
+                        <input type="text" id="primaryColor" name="primaryColor" maxlength="7" placeholder="#f97316" dir="ltr">
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="settings-field">
+
+                    <label for="secondaryColor">رنگ ثانویه</label>
+
+                    <div class="color-input-row">
+
+                        <input type="color" id="secondaryColorPicker" aria-label="انتخاب رنگ ثانویه">
+
+                        <input type="text" id="secondaryColor" name="secondaryColor" maxlength="7" placeholder="#fff7ed" dir="ltr">
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="settings-field settings-field--full">
+
+                    <label for="logoFile">لوگوی رستوران</label>
+
+                    <div class="logo-upload-row">
+
+                        <input type="file" id="logoFile" name="logo" accept="image/png,image/jpeg,image/webp" class="logo-file-input">
+
+                        <label for="logoFile" class="logo-file-label">
+
+                            <i class="fas fa-upload ms-1"></i>
+
+                            انتخاب فایل
+
+                        </label>
+
+                        <img id="logoPreviewThumb" class="logo-preview-thumb" src="~/images/logo.png" alt="پیش‌نمایش لوگو">
+
+                    </div>
+
+                    <small class="field-hint">حداکثر ۵۰۰ کیلوبایت — PNG، JPG یا WebP. بدون انتخاب فایل، لوگوی فعلی حفظ می‌شود.</small>
+
+                    <p id="logoFileError" class="field-error" hidden></p>
+
+                </div>
+
+
+
+                <div class="settings-field settings-field--full">
+
+                    <label>تصویر پس‌زمینه</label>
+
+                    <input type="hidden" id="backgroundImageUrl" name="backgroundImageUrl" value="">
+
+                    <div id="backgroundPicker" class="background-picker" role="listbox" aria-label="انتخاب پس‌زمینه"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="settings-preview">
+
+                <h3>پیش‌نمایش</h3>
+
+                <div id="settingsPreview" class="preview-card">
+
+                    <div class="preview-bg"></div>
+
+                    <div class="preview-content">
+
+                        <img id="previewLogo" src="~/images/logo.png" alt="لوگو">
+
+                        <div class="preview-badge">منوی نمونه</div>
+
+                        <div class="preview-swatches">
+
+                            <span id="previewPrimary" class="swatch"></span>
+
+                            <span id="previewSecondary" class="swatch"></span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="settings-actions">
+
+                <button type="button" class="btn-reset" id="resetSettingsBtn">
+
+                    <i class="fas fa-rotate-left ms-1"></i>
+
+                    بازگشت به پیش‌فرض
+
+                </button>
+
+                <button type="submit" class="btn-save" id="saveSettingsBtn">
+
+                    <i class="fas fa-save ms-1"></i>
+
+                    ذخیره تنظیمات
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script src="~/js/restaurant-settings.js" asp-append-version="true"></script>
+

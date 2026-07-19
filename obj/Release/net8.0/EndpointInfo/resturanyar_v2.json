@@ -1601,6 +1601,98 @@
           }
         }
       }
+    },
+    "/api/v2/UserApi/getrestaurantsettings/{restaurantId}": {
+      "get": {
+        "tags": [
+          "UserApi"
+        ],
+        "parameters": [
+          {
+            "name": "restaurantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/getrestaurantbackgroundoptions": {
+      "get": {
+        "tags": [
+          "UserApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/UserApi/saverestaurantsettings": {
+      "post": {
+        "tags": [
+          "UserApi"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "RestaurantId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "PrimaryColor": {
+                    "type": "string"
+                  },
+                  "SecondaryColor": {
+                    "type": "string"
+                  },
+                  "BackgroundImageUrl": {
+                    "type": "string"
+                  },
+                  "Logo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "RestaurantId": {
+                  "style": "form"
+                },
+                "PrimaryColor": {
+                  "style": "form"
+                },
+                "SecondaryColor": {
+                  "style": "form"
+                },
+                "BackgroundImageUrl": {
+                  "style": "form"
+                },
+                "Logo": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {

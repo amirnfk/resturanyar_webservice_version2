@@ -28,12 +28,14 @@ namespace resturanyar.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
-        public HomeController(AppDbContext context, ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(AppDbContext context, ILogger<HomeController> logger, IConfiguration configuration, IWebHostEnvironment env)
         {
             _context = context;
             _logger = logger;
             _configuration = configuration;
+            _env = env;
         }
         public IActionResult Manage(int restaurantId)
         {
@@ -296,6 +298,8 @@ namespace resturanyar.Controllers
                 revenueChangePercent = 100; // رشد ۱۰۰٪ نسبت به روز قبل
             else if (todayRevenue == 0 && yesterdayRevenue == 0)
                 revenueChangePercent = 0;
+            var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurantId.Value);
+
             // ========== ساخت ViewModel ==========
             var vm = new DashboardStatsViewModel
             {
@@ -317,7 +321,11 @@ namespace resturanyar.Controllers
                 UsersCount = 0, // یا حذف کنید
                 MenuItemsCount = 0,
                 OrdersTodayCount = totalOrdersToday, // این همان است
-                PublicMenuToken = ViewBag.PublicMenuToken
+                PublicMenuToken = ViewBag.PublicMenuToken,
+                PrimaryColor = settingsDto.PrimaryColor,
+                SecondaryColor = settingsDto.SecondaryColor,
+                LogoUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.LogoUrl, RestaurantSettingsHelper.DefaultLogoPath),
+                BackgroundImageUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.BackgroundImageUrl, RestaurantSettingsHelper.DefaultBackgroundPath)
             };
 
             ViewBag.RestaurantId = restaurantId;
@@ -1928,6 +1936,82 @@ namespace resturanyar.Controllers
 
 
 
+        }
+
+        public async Task<IActionResult> Settings()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRestaurantSettings()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurantId.Value);
+            return Json(new
+            {
+                success = true,
+                data = settingsDto,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(RestaurantLogoUploadHelper.MaxFileSizeBytes + 4096)]
+        public async Task<IActionResult> SaveRestaurantSettings([FromForm] SaveRestaurantSettingFormRequest request)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            if (request == null)
+                return BadRequest(new { success = false, message = "داده‌ای ارسال نشده است." });
+
+            var result = await RestaurantSettingsHelper.SaveSettingsAsync(
+                _context,
+                _env,
+                restaurantId.Value,
+                request.PrimaryColor,
+                request.SecondaryColor,
+                request.BackgroundImageUrl,
+                request.Logo);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.ErrorMessage });
+
+            return Json(new
+            {
+                success = true,
+                message = "تنظیمات با موفقیت ذخیره شد.",
+                data = result.Data,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetRestaurantSettings()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var data = await RestaurantSettingsHelper.ResetToDefaultsAsync(_context, _env, restaurantId.Value);
+
+            return Json(new
+            {
+                success = true,
+                message = "تنظیمات به حالت پیش‌فرض بازگردانده شد.",
+                data,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
         }
 
         [HttpGet]

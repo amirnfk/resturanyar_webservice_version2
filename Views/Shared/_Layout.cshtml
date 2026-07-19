@@ -123,10 +123,10 @@
                     <i class="fas fa-headset"></i>
                     <span>پشتیبانی</span>
                 </a>
-                @* <a href="/Settings" class="nav-item">
+                <a href="@Url.Action("Settings", "Home")" class="nav-item @(currentAction == "Settings" ? "active" : "")">
                     <i class="fas fa-cog"></i>
-                    <span>تنظیمات</span>
-                </a> *@
+                    <span>تنظیمات رستوران</span>
+                </a>
                 <div class="sidebar-footer">
                     <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm">
                         <button type="submit" class="logout-btn">

@@ -2796,8 +2796,34 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetRestaurantBackgroundOptions",
+    "RelativePath": "api/v2/UserApi/getrestaurantbackgroundoptions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GetRestaurantCode",
     "RelativePath": "api/v2/UserApi/getrestaurantcode/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetRestaurantSettings",
+    "RelativePath": "api/v2/UserApi/getrestaurantsettings/{restaurantId}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -2982,6 +3008,42 @@
         "Name": "request",
         "Type": "resturanyar.Models.AuthorizationModels.RegisterRequest",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "SaveRestaurantSettings",
+    "RelativePath": "api/v2/UserApi/saverestaurantsettings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RestaurantId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PrimaryColor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SecondaryColor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "BackgroundImageUrl",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Logo",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

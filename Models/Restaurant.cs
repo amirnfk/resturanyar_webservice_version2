@@ -22,6 +22,7 @@ namespace resturanyar.Models
         public string PublicMenuToken { get; set; }
         public ICollection<Category> Categories { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
+        public virtual RestaurantSetting? Setting { get; set; }
 
     }
 }

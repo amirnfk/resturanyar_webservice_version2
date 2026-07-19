@@ -6,6 +6,10 @@
 @{
     ViewData["Title"] = "منوی رستوران";
     var placeholder = Url.Content("~/images/food_placeholder.jpg");
+    var primaryColor = ViewBag.PrimaryColor as string ?? "#f97316";
+    var secondaryColor = ViewBag.SecondaryColor as string ?? "#fff7ed";
+    var backgroundImageUrl = ViewBag.BackgroundImageUrl as string ?? "/images/backgrounds/preset-warm.jpg";
+    var logoUrl = ViewBag.LogoUrl as string ?? "/images/logo.png";
     var groups = Model
       .GroupBy(f => new { f.CategoryId, f.CategoryName, f.CategoryDisplayOrder })
       .Select(g => new { g.Key.CategoryId, g.Key.CategoryName, g.Key.CategoryDisplayOrder, Items = g.ToList() })
@@ -21,11 +25,24 @@
     <link href="~/css/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/restaurant-menu.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/public-menu.css" asp-append-version="true" />
+    <style>
+        :root {
+            --menu-primary: @primaryColor;
+            --menu-primary-2: @secondaryColor;
+        }
+
+        .public-menu-page {
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
+                url('@backgroundImageUrl') center / cover no-repeat fixed;
+        }
+    </style>
 }
 
 <div class="public-menu-page">
 <section class="menu-hero">
     <div class="hero-content">
+        <img src="@logoUrl" alt="لوگوی @ViewBag.RestaurantName" class="menu-hero-logo">
         <div class="restaurant-name-glow">
             <span class="glow-text">منوی @ViewBag.RestaurantName</span>
         </div>

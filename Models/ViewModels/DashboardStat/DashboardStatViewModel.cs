@@ -33,5 +33,10 @@
         public int MenuItemsCount { get; set; }
         public int OrdersTodayCount { get; set; }
         public string PublicMenuToken { get; set; }
+
+        public string PrimaryColor { get; set; } = "#f97316";
+        public string SecondaryColor { get; set; } = "#fff7ed";
+        public string LogoUrl { get; set; } = "/images/logo.png";
+        public string BackgroundImageUrl { get; set; } = "/images/backgrounds/preset-warm.jpg";
     }
 }

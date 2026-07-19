@@ -32,6 +32,7 @@ namespace resturanyar.Controllers.Api.V2
         private readonly MessageService _messageService;
 
         private readonly IHubContext<OrderHub> _hubContext;
+        private readonly IWebHostEnvironment _env;
 
         public UserApiController(
             AppDbContext context,
@@ -39,7 +40,8 @@ namespace resturanyar.Controllers.Api.V2
             AuthService authService,
             IConfiguration configuration,
             MessageService messageService,
-            IHubContext<OrderHub> hubContext)
+            IHubContext<OrderHub> hubContext,
+            IWebHostEnvironment env)
         {
             _context = context;
             _tokenService = tokenService;
@@ -47,6 +49,7 @@ namespace resturanyar.Controllers.Api.V2
             _configuration = configuration;
             _messageService = messageService;
             _hubContext = hubContext;
+            _env = env;
         }
 
         [AllowAnonymous]
@@ -1986,6 +1989,82 @@ namespace resturanyar.Controllers.Api.V2
                 return NotFound(new { success = false, message = "پیام یافت نشد." });
 
             return Ok(new { success = true, message = "پیام به عنوان خوانده‌شده علامت‌گذاری شد." });
+        }
+
+        [HttpGet("getrestaurantsettings/{restaurantId:int}")]
+        public async Task<IActionResult> GetRestaurantSettings(int restaurantId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (restaurantId <= 0)
+                return BadRequest(new { success = false, message = "شناسه رستوران نامعتبر است." });
+
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerId);
+            if (restaurant == null)
+                return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+            var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurantId);
+            return Ok(new
+            {
+                success = true,
+                data = settingsDto,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
+        }
+
+        [HttpGet("getrestaurantbackgroundoptions")]
+        public IActionResult GetRestaurantBackgroundOptions()
+        {
+            if (!TryGetOwnerId(out _))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            return Ok(new
+            {
+                success = true,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
+        }
+
+        [HttpPost("saverestaurantsettings")]
+        [RequestSizeLimit(RestaurantLogoUploadHelper.MaxFileSizeBytes + 4096)]
+        public async Task<IActionResult> SaveRestaurantSettings([FromForm] SaveRestaurantSettingFormRequest request)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
+
+            if (request == null)
+                return BadRequest(new { success = false, message = "داده‌ای ارسال نشده است." });
+
+            if (request.RestaurantId <= 0)
+                return BadRequest(new { success = false, message = "شناسه رستوران نامعتبر است." });
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerId);
+            if (restaurant == null)
+                return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
+
+            var result = await RestaurantSettingsHelper.SaveSettingsAsync(
+                _context,
+                _env,
+                request.RestaurantId,
+                request.PrimaryColor,
+                request.SecondaryColor,
+                request.BackgroundImageUrl,
+                request.Logo);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.ErrorMessage });
+
+            return Ok(new
+            {
+                success = true,
+                message = "تنظیمات با موفقیت ذخیره شد.",
+                data = result.Data,
+                backgroundOptions = RestaurantBackgroundOptions.ToApiList()
+            });
         }
 
         private bool TryGetOwnerId(out int ownerId)
