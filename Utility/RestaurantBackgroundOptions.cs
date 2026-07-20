@@ -80,7 +80,9 @@ namespace resturanyar.Utility
                     label = o.Label,
                     url = o.Url,
                     heroBadge = template.HeroBadge,
-                    tagline = template.Tagline
+                    tagline = template.Tagline,
+                    primaryColor = template.PrimaryColor,
+                    secondaryColor = template.SecondaryColor
                 };
             }).ToList();
         }

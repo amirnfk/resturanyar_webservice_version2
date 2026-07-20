@@ -59,73 +59,69 @@
 
             <nav class="sidebar-nav">
                 <a href="/home/Dashboard" class="nav-item @(currentAction == "Dashboard" ? "active" : "")">
-                    <i class="fas fa-home"></i>
+                    <i class="fas fa-gauge-high"></i>
                     <span>داشبورد</span>
                 </a>
-                <a href="@Url.Action("ManageStaff", "Home")" class="nav-item @(currentAction == "ManageStaff" ? "active" : "")">
-                    <i class="fas fa-users"></i>
-                    <span>مدیریت کارکنان</span>
-                </a>
-                <a href="@Url.Action("FoodList", "Home")" class="nav-item @(currentAction == "FoodList" ? "active" : "")">
-                    <i class="fas fa-utensils"></i>
-                    <span>لیست غذاها</span>
-                </a>
+
                 <a href="@Url.Action("AddOrder", "Home")" class="nav-item @(currentAction == "AddOrder" ? "active" : "")">
                     <i class="fas fa-cart-plus"></i>
                     <span>ثبت سفارش جدید</span>
                 </a>
                 <a href="@Url.Action("ManagerOrderList", "Home")" class="nav-item @(currentAction == "ManagerOrderList" ? "active" : "")">
-                    <i class="fas fa-clipboard-check"></i>
+                    <i class="fas fa-receipt"></i>
                     <span>لیست سفارشات</span>
-                </a>
-                <a href="@Url.Action("CategoryList", "Home")" class="nav-item @(currentAction == "CategoryList" ? "active" : "")">
-                    <i class="fas fa-layer-group"></i>
-                    <span>مدیریت دسته بندی ها</span>
                 </a>
                 <a href="@Url.Action("TableList", "Home")" class="nav-item @(currentAction == "TableList" ? "active" : "")">
                     <i class="fas fa-chair"></i>
                     <span>مدیریت میزها</span>
                 </a>
+
+                <a href="@Url.Action("CategoryList", "Home")" class="nav-item @(currentAction == "CategoryList" ? "active" : "")">
+                    <i class="fas fa-layer-group"></i>
+                    <span>مدیریت دسته بندی ها</span>
+                </a>
+                <a href="@Url.Action("FoodList", "Home")" class="nav-item @(currentAction == "FoodList" ? "active" : "")">
+                    <i class="fas fa-utensils"></i>
+                    <span>لیست غذاها</span>
+                </a>
+
                 <a href="@Url.Action("CustomersList", "Home")" class="nav-item @(currentAction == "CustomersList" ? "active" : "")">
-                    <i class="fas fa-address-book"></i>
+                    <i class="fas fa-user-group"></i>
                     <span>مدیریت و آنالیز مشتریان</span>
                 </a>
-               
-                <a href="@Url.Action("RestaurantMenu", "Menu")" class="nav-item @(currentController == "Menu" && currentAction == "RestaurantMenu" ? "active" : "")">
-                    <i class="fas fa-book-open"></i>
-                    <span>منو</span>
+                <a href="@Url.Action("ManageStaff", "Home")" class="nav-item @(currentAction == "ManageStaff" ? "active" : "")">
+                    <i class="fas fa-user-gear"></i>
+                    <span>مدیریت کارکنان</span>
                 </a>
-                <a href="@Url.Action("PublicMenuQRCode", "Menu")" class="nav-item @(currentController == "Menu" && currentAction == "PublicMenuQRCode" ? "active" : "")">
+
+                <a href="@Url.Action("RestaurantSetting", "Home")" class="nav-item @(currentAction == "RestaurantSetting" ? "active" : "")">
+                    <i class="fas fa-store"></i>
+                    <span>تنظیمات رستوران</span>
+                </a>
+                <a href="@Url.Action("MenuSettings", "Home")" class="nav-item @(currentAction == "MenuSettings" ? "active" : "")">
                     <i class="fas fa-qrcode"></i>
-                    <span>منوی عمومی</span>
+                    <span>تنظیمات منو</span>
                 </a>
+
                 <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-chart-pie"></i>
                     <span>گزارش گیری</span>
                 </a>
-                <!-- آیتم اشتراک رستوران -->
                 <a href="@Url.Action("RestaurantSubscription", "Home")" class="nav-item @(currentAction == "RestaurantSubscription" ? "active" : "")">
                     <i class="fas fa-crown"></i>
                     <span>اشتراک رستوران</span>
                 </a>
 
-                <!-- آیتم پیام‌ها -->
                 <a href="@Url.Action("Messages", "Home")"
                    class="nav-item @(currentAction == "Messages" ? "active" : "")"
                    id="navMessages">
-                    <i class="fas fa-envelope"></i>
+                    <i class="fas fa-comments"></i>
                     <span>پیام‌ها</span>
                     <span id="navMessagesBadge" class="nav-item-badge" hidden></span>
                 </a>
-
-                <!-- آیتم پشتیبانی -->
                 <a href="@Url.Action("Support", "Home")" class="nav-item @(currentAction == "Support" ? "active" : "")">
                     <i class="fas fa-headset"></i>
                     <span>پشتیبانی</span>
-                </a>
-                <a href="@Url.Action("Settings", "Home")" class="nav-item @(currentAction == "Settings" ? "active" : "")">
-                    <i class="fas fa-cog"></i>
-                    <span>تنظیمات رستوران</span>
                 </a>
                 <div class="sidebar-footer">
                     <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm">

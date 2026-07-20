@@ -3026,16 +3026,6 @@
         "IsRequired": false
       },
       {
-        "Name": "PrimaryColor",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "SecondaryColor",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
         "Name": "BackgroundImageUrl",
         "Type": "System.String",
         "IsRequired": false

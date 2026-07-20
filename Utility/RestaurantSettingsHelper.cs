@@ -145,16 +145,11 @@ namespace resturanyar.Utility
             AppDbContext context,
             IWebHostEnvironment env,
             int restaurantId,
-            string primaryColor,
-            string secondaryColor,
             string? backgroundImageUrl,
             string? menuHeroBadge,
             string? menuTagline,
             IFormFile? logo)
         {
-            if (!IsValidHexColor(primaryColor) || !IsValidHexColor(secondaryColor))
-                return (false, "فرمت رنگ معتبر نیست. از #RRGGBB استفاده کنید.", null);
-
             var normalizedBackground = string.IsNullOrWhiteSpace(backgroundImageUrl)
                 ? null
                 : backgroundImageUrl.Trim();
@@ -170,8 +165,6 @@ namespace resturanyar.Utility
             var normalizedTagline = NormalizeOptionalText(menuTagline, MaxMenuTaglineLength);
 
             var settings = await GetOrCreateSettingsAsync(context, restaurantId);
-            settings.PrimaryColor = primaryColor.Trim();
-            settings.SecondaryColor = secondaryColor.Trim();
             settings.BackgroundImageUrl = normalizedBackground;
             settings.MenuHeroBadge = normalizedBadge;
             settings.MenuTagline = normalizedTagline;
@@ -195,8 +188,6 @@ namespace resturanyar.Utility
             int restaurantId)
         {
             var settings = await GetOrCreateSettingsAsync(context, restaurantId);
-            settings.PrimaryColor = DefaultPrimaryColor;
-            settings.SecondaryColor = DefaultSecondaryColor;
             settings.BackgroundImageUrl = null;
             settings.LogoUrl = null;
             settings.MenuHeroBadge = null;

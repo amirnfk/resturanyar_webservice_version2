@@ -144,6 +144,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VTdGFmZi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/MenuSettings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNZW51U2V0dGluZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Messages.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNZXNzYWdlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -160,16 +164,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/RestaurantSetting.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXN0YXVyYW50U2V0dGluZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/RestaurantSubscription.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXN0YXVyYW50U3Vic2NyaXB0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/SelectRestaurantDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZWxlY3RSZXN0YXVyYW50RGVuaWVkLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Settings.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZXR0aW5ncy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/StaffLogin.cshtml]
@@ -202,10 +206,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Menu/PublicMenu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxQdWJsaWNNZW51LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Menu/PublicMenuQRCode.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxQdWJsaWNNZW51UVJDb2RlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/AboutUs.cshtml]

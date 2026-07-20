@@ -107,7 +107,8 @@
 
     function cleanupCurrentPage() {
         var destroyFns = [
-            'destroyCustomersListPage'
+            'destroyCustomersListPage',
+            'destroyRestaurantSettingsPage'
         ];
         destroyFns.forEach(function (name) {
             if (typeof window[name] === 'function') {
@@ -234,10 +235,12 @@
         ['/home/managerorderlist', 'initManagerOrderListPage'],
         ['/home/managerreports', 'initManagerReportsPage'],
         ['/home/restaurantsubscription', 'initRestaurantSubscriptionPage'],
-        ['/menu/publicmenuqrcode', 'initPublicMenuQRCodePage'],
+        ['/menu/publicmenuqrcode', 'initRestaurantSettingsPage'],
+        ['/menu/restaurantmenu', 'initRestaurantSettingsPage'],
         ['/home/customerslist', 'initCustomersListPage'],
         ['/home/managestaff', 'initManageStaffPage'],
         ['/home/messages', 'initMessagesPage'],
+        ['/home/menusettings', 'initRestaurantSettingsPage'],
         ['/home/settings', 'initRestaurantSettingsPage']
     ];
 

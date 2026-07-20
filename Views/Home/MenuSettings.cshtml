@@ -1,0 +1,242 @@
+@{
+    ViewData["Title"] = "تنظیمات منو";
+    var restaurantName = ViewBag.RestaurantName as string ?? "";
+    var hasQr = ViewBag.HasPublicMenuToken == true;
+    var menuUrl = ViewBag.MenuUrl as string;
+    var qrImage = ViewBag.QRCodeImage as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/restaurant-settings.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/menu-settings-preview.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true" />
+}
+
+<div class="settings-page menu-settings-page"
+     data-restaurant-id="@(ViewBag.RestaurantId?.ToString() ?? "")"
+     data-restaurant-name="@restaurantName">
+
+    <header class="menu-settings-top">
+        <div class="menu-settings-top__intro">
+            <div class="icon-circle">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div>
+                <span class="menu-settings-eyebrow">شخصی‌سازی منوی دیجیتال</span>
+                <h2>تنظیمات منوی رستوران</h2>
+                <p class="text-muted mb-0">قالب منو، متن‌ها و لوگو را تنظیم کنید — QR منوی عمومی را با مشتریان به اشتراک بگذارید.</p>
+            </div>
+        </div>
+
+        <section class="menu-qr-section menu-qr-section--hero" id="menuQrSection" aria-label="QR منوی عمومی">
+            @if (hasQr && !string.IsNullOrEmpty(qrImage))
+            {
+                <div class="menu-qr-hero">
+                    <div class="menu-qr-wrapper">
+                        <img id="qrImage"
+                             src="data:image/png;base64,@qrImage"
+                             alt="QR Code منوی عمومی"
+                             width="140"
+                             height="140" />
+                    </div>
+                    <div class="menu-qr-hero__body">
+                        <span class="menu-qr-hero__label">منوی عمومی</span>
+                        <h3 class="menu-qr-hero__title">@restaurantName</h3>
+                        <p class="menu-qr-hero__desc">مشتریان با اسکن این کد مستقیماً به منوی دیجیتال شما دسترسی پیدا می‌کنند.</p>
+                        <div class="menu-qr-actions">
+                            <button type="button" class="btn btn-primary btn-print-qr" onclick="window.print()">
+                                <i class="fa-solid fa-print ms-1"></i> چاپ
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="downloadQrBtn">
+                                <i class="fa-solid fa-download ms-1"></i> دانلود
+                            </button>
+                            @if (!string.IsNullOrEmpty(menuUrl))
+                            {
+                                <a href="@menuUrl" target="_blank" rel="noopener" class="btn btn-success">
+                                    <i class="fa-solid fa-globe ms-1"></i> مشاهده منو
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="menu-qr-empty menu-qr-empty--hero">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>توکن منوی عمومی برای این رستوران تنظیم نشده است.</span>
+                </div>
+            }
+        </section>
+    </header>
+
+    <div class="menu-settings-layout">
+        <div class="menu-settings-form-col">
+            <div class="settings-card">
+                <div class="settings-card__title">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>تنظیمات ظاهری</span>
+                </div>
+
+                <div id="settingsLoading" class="settings-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+
+                <form id="settingsForm" class="settings-form" hidden enctype="multipart/form-data">
+                    <div class="settings-grid">
+                        <div class="settings-field settings-field--full">
+                            <label for="logoFile">لوگوی رستوران</label>
+                            <div class="logo-upload-row">
+                                <input type="file" id="logoFile" name="logo" accept="image/png,image/jpeg,image/webp" class="logo-file-input">
+                                <label for="logoFile" class="logo-file-label">
+                                    <i class="fas fa-upload ms-1"></i>
+                                    انتخاب فایل
+                                </label>
+                                <img id="logoPreviewThumb" class="logo-preview-thumb" src="~/images/logo.png" alt="پیش‌نمایش لوگو">
+                            </div>
+                            <small class="field-hint">حداکثر ۵۰۰ کیلوبایت — PNG، JPG یا WebP</small>
+                            <p id="logoFileError" class="field-error" hidden></p>
+                        </div>
+
+                        <div class="settings-field settings-field--full">
+                            <label>نوع رستوران و قالب منو</label>
+                            <input type="hidden" id="backgroundImageUrl" name="backgroundImageUrl" value="">
+                            <div id="backgroundPicker" class="background-picker" role="listbox" aria-label="انتخاب قالب منو"></div>
+                        </div>
+
+                        <div class="settings-field settings-field--full">
+                            <label for="menuHeroBadge">متن بالای نام رستوران (نشان)</label>
+                            <input type="text" id="menuHeroBadge" name="menuHeroBadge" maxlength="80"
+                                   placeholder="مثلاً: منوی دیجیتال" autocomplete="off">
+                            <small class="field-hint">پیش‌فرض قالب: <strong id="menuHeroBadgeDefaultHint">—</strong></small>
+                        </div>
+
+                        <div class="settings-field settings-field--full">
+                            <label for="menuTagline">شعار زیر نام رستوران</label>
+                            <input type="text" id="menuTagline" name="menuTagline" maxlength="160"
+                                   placeholder="مثلاً: طعم‌های خاص، لحظه‌های به‌یادماندنی" autocomplete="off">
+                            <small class="field-hint">پیش‌فرض قالب: <strong id="menuTaglineDefaultHint">—</strong></small>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button type="button" class="btn-reset" id="resetSettingsBtn">
+                            <i class="fas fa-rotate-left ms-1"></i>
+                            بازگشت به پیش‌فرض
+                        </button>
+                        <button type="submit" class="btn-save" id="saveSettingsBtn">
+                            <i class="fas fa-save ms-1"></i>
+                            ذخیره تنظیمات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <aside class="menu-settings-aside">
+            <section class="menu-phone-preview-section" aria-label="پیش‌نمایش موبایل">
+                <div class="menu-phone-preview-section__head">
+                    <div>
+                        <span class="live-indicator"><i></i> زنده</span>
+                        <h3>پیش‌نمایش موبایل</h3>
+                    </div>
+                    <span class="menu-phone-preview-section__hint">تغییرات هم‌زمان نمایش داده می‌شوند</span>
+                </div>
+                <div class="phone-frame">
+                    <span class="phone-button phone-button--silent" aria-hidden="true"></span>
+                    <span class="phone-button phone-button--volume-up" aria-hidden="true"></span>
+                    <span class="phone-button phone-button--volume-down" aria-hidden="true"></span>
+                    <span class="phone-button phone-button--power" aria-hidden="true"></span>
+                    <div class="phone-screen">
+                        <div class="phone-statusbar" aria-hidden="true">
+                            <span class="phone-statusbar__time">۹:۴۱</span>
+                            <div class="phone-dynamic-island">
+                                <span class="phone-camera"></span>
+                            </div>
+                            <span class="phone-statusbar__icons">
+                                <i class="fas fa-signal"></i>
+                                <i class="fas fa-wifi"></i>
+                                <i class="fas fa-battery-full"></i>
+                            </span>
+                        </div>
+                        <div class="menu-phone-preview">
+                            <div id="menuPhonePreview" class="pm-app menu-template--default">
+                                <header class="pm-topbar">
+                                    <div class="pm-topbar__inner">
+                                        <img id="previewLogo" src="~/images/logo.png" alt="" class="pm-brand__logo" width="40" height="40">
+                                        <div class="pm-brand__text">
+                                            <span class="pm-brand__badge" id="previewMenuBadge">منوی دیجیتال</span>
+                                            <h1 class="pm-brand__name" id="previewRestaurantName">@restaurantName</h1>
+                                            <p class="pm-brand__tagline" id="previewMenuTagline">طعم‌های خاص، لحظه‌های به‌یادماندنی</p>
+                                        </div>
+                                    </div>
+                                    <div class="pm-topbar__glow" id="previewTopbarGlow" aria-hidden="true"></div>
+                                </header>
+
+                                <div class="pm-sticky">
+                                    <div class="pm-search">
+                                        <i class="bi bi-search pm-search__icon" aria-hidden="true"></i>
+                                        <input type="search" value="جستجوی غذا..." readonly tabindex="-1" aria-hidden="true">
+                                    </div>
+                                    <nav class="pm-cats" aria-hidden="true">
+                                        <button type="button" class="pm-cat is-active" tabindex="-1"><span>همه</span></button>
+                                        <button type="button" class="pm-cat" tabindex="-1"><span>پیش‌غذا</span></button>
+                                        <button type="button" class="pm-cat" tabindex="-1"><span>اصلی</span></button>
+                                    </nav>
+                                </div>
+
+                                <main class="pm-main">
+                                    <section class="pm-section">
+                                        <header class="pm-section__head">
+                                            <h2 class="pm-section__title">نمونه منو</h2>
+                                            <span class="pm-section__count">۲ آیتم</span>
+                                        </header>
+                                        <div class="pm-grid">
+                                            <article class="pm-card">
+                                                <div class="pm-card__media">
+                                                    <img src="~/images/food_placeholder.jpg" alt="" loading="lazy">
+                                                </div>
+                                                <div class="pm-card__body">
+                                                    <h3 class="pm-card__title">غذای ویژه</h3>
+                                                    <div class="pm-card__foot">
+                                                        <span class="pm-price__now">۸۵,۰۰۰ <small>تومان</small></span>
+                                                        <button type="button" class="pm-add" tabindex="-1" aria-hidden="true"><i class="bi bi-plus-lg"></i></button>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                            <article class="pm-card">
+                                                <div class="pm-card__media">
+                                                    <img src="~/images/food_placeholder.jpg" alt="" loading="lazy">
+                                                </div>
+                                                <div class="pm-card__body">
+                                                    <h3 class="pm-card__title">نوشیدنی</h3>
+                                                    <div class="pm-card__foot">
+                                                        <span class="pm-price__now">۳۵,۰۰۰ <small>تومان</small></span>
+                                                        <button type="button" class="pm-add" tabindex="-1" aria-hidden="true"><i class="bi bi-plus-lg"></i></button>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </section>
+                                </main>
+                                <nav class="phone-menu-nav" aria-hidden="true">
+                                    <span class="is-active"><i class="bi bi-house-door-fill"></i><small>خانه</small></span>
+                                    <span><i class="bi bi-grid"></i><small>دسته‌ها</small></span>
+                                    <span><i class="bi bi-bag"></i><small>سفارش</small></span>
+                                    <span><i class="bi bi-person"></i><small>پروفایل</small></span>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="phone-home-indicator" aria-hidden="true"></div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/restaurant-background-cache.js" asp-append-version="true"></script>
+    <script src="~/js/restaurant-settings.js" asp-append-version="true"></script>
+}

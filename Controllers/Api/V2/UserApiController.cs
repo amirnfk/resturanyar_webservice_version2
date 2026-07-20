@@ -2050,8 +2050,6 @@ namespace resturanyar.Controllers.Api.V2
                 _context,
                 _env,
                 request.RestaurantId,
-                request.PrimaryColor,
-                request.SecondaryColor,
                 request.BackgroundImageUrl,
                 request.MenuHeroBadge,
                 request.MenuTagline,

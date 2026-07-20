@@ -60,7 +60,7 @@
                     <button id="themeToggle" class="btn-chip" aria-label="تغییر تم">
                         <i class="fa-solid fa-moon"></i>
                     </button>
-                    <a href="@Url.Action("PublicMenuQRCode", "Menu", new { token = publicToken })" class="btn-chip" title="منوی عمومی (QR)">
+                    <a href="@Url.Action("MenuSettings", "Home")" class="btn-chip" title="تنظیمات منو و QR">
                         <i class="fa-solid fa-qrcode"></i>
                     </a>
 
@@ -221,15 +221,6 @@
     <!-- ===== شبکه منوها (Grid Tiles) ===== -->
     <main class="dash-main">
         <div class="tiles">
-            <a class="tile fade-up tilt" href="@Url.Action("ManageStaff", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-users"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">مدیریت کارکنان</h3>
-                    <p class="tile__desc">تعریف نقش‌ها، اضافه/حذف و کنترل دسترسی‌ها</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
             <a class="tile fade-up tilt" href="@Url.Action("AddOrder", "Home")" role="button" tabindex="0">
                 <div class="tile__icon"><i class="fa-solid fa-cart-plus"></i></div>
                 <div class="tile__body">
@@ -239,47 +230,11 @@
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("FoodList", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">لیست غذاها</h3>
-                    <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
             <a class="tile fade-up tilt" href="@Url.Action("ManagerOrderList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="tile__icon"><i class="fa-solid fa-receipt"></i></div>
                 <div class="tile__body">
                     <h3 class="tile__title">لیست سفارشات</h3>
                     <p class="tile__desc">پیگیری لحظه‌ای ثبت تا تسویه سفارش‌ها</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
-            <a class="tile fade-up tilt" href="@Url.Action("RestaurantMenu", "Menu")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-book-open"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">منو دیجیتال</h3>
-                    <p class="tile__desc">ویرایش ساختار منو و نمایش برای مشتری</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
-            <a class="tile fade-up tilt" href="@Url.Action("CategoryList", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">مدیریت دسته‌بندی‌ها</h3>
-                    <p class="tile__desc">مدیریت دسته‌بندی‌های غذا</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
-            <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-address-book"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">مدیریت مشتریان</h3>
-                    <p class="tile__desc">مدیریت و آنالیز مشتریان</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
@@ -293,20 +248,56 @@
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("Support", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-headset"></i></div>
+            <a class="tile fade-up tilt" href="@Url.Action("CategoryList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-layer-group"></i></div>
                 <div class="tile__body">
-                    <h3 class="tile__title">پشتیبانی</h3>
-                    <p class="tile__desc">تماس با پشتیبان، گزارش مشکل و راهنما</p>
+                    <h3 class="tile__title">مدیریت دسته‌بندی‌ها</h3>
+                    <p class="tile__desc">مدیریت دسته‌بندی‌های غذا</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("RestaurantSubscription", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
+            <a class="tile fade-up tilt" href="@Url.Action("FoodList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
                 <div class="tile__body">
-                    <h3 class="tile__title">اشتراک رستوران</h3>
-                    <p class="tile__desc">مدیریت پلن‌ها، تمدید و وضعیت اشتراک</p>
+                    <h3 class="tile__title">لیست غذاها</h3>
+                    <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-user-group"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت مشتریان</h3>
+                    <p class="tile__desc">مدیریت و آنالیز مشتریان</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("ManageStaff", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت کارکنان</h3>
+                    <p class="tile__desc">تعریف نقش‌ها، اضافه/حذف و کنترل دسترسی‌ها</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("RestaurantSetting", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-store"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">تنظیمات رستوران</h3>
+                    <p class="tile__desc">تنظیمات عمومی رستوران</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("MenuSettings", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">تنظیمات منو</h3>
+                    <p class="tile__desc">لوگو، قالب منو، پیش‌نمایش و QR</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
@@ -320,20 +311,20 @@
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("Settings", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-cog"></i></div>
+            <a class="tile fade-up tilt" href="@Url.Action("RestaurantSubscription", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
                 <div class="tile__body">
-                    <h3 class="tile__title">تنظیمات رستوران</h3>
-                    <p class="tile__desc">رنگ‌ها، لوگو و تصویر پس‌زمینه</p>
+                    <h3 class="tile__title">اشتراک رستوران</h3>
+                    <p class="tile__desc">مدیریت پلن‌ها، تمدید و وضعیت اشتراک</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("PublicMenuQRCode", "Menu", new { token = publicToken })" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-qrcode"></i></div>
+            <a class="tile fade-up tilt" href="@Url.Action("Support", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-headset"></i></div>
                 <div class="tile__body">
-                    <h3 class="tile__title">منوی عمومی (QR)</h3>
-                    <p class="tile__desc">اشتراک QR منو برای مشتریان</p>
+                    <h3 class="tile__title">پشتیبانی</h3>
+                    <p class="tile__desc">تماس با پشتیبان، گزارش مشکل و راهنما</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>

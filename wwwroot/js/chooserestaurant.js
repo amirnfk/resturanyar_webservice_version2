@@ -3,6 +3,54 @@
 
 
 $(document).ready(function () {
+    var backgroundCache = window.RestaurantBackgroundCache;
+    var restaurantSelect = document.getElementById('restaurantSelect');
+    var selectRestaurantForm = document.getElementById('selectRestaurantForm');
+
+    function getSelectedRestaurantTheme() {
+        if (!restaurantSelect || restaurantSelect.selectedIndex < 0) return null;
+
+        var option = restaurantSelect.options[restaurantSelect.selectedIndex];
+        return {
+            restaurantId: option.value,
+            backgroundUrl: option.dataset.backgroundUrl
+        };
+    }
+
+    function applySelectedRestaurantBackground() {
+        var selectedTheme = getSelectedRestaurantTheme();
+        if (selectedTheme && backgroundCache) {
+            backgroundCache.apply(selectedTheme.backgroundUrl);
+        }
+    }
+
+    if (restaurantSelect && backgroundCache) {
+        var lastTheme = backgroundCache.get();
+        if (lastTheme && lastTheme.restaurantId) {
+            var rememberedOption = Array.from(restaurantSelect.options).find(function (option) {
+                return Number.parseInt(option.value, 10) === lastTheme.restaurantId;
+            });
+            if (rememberedOption) {
+                restaurantSelect.value = rememberedOption.value;
+            }
+        }
+
+        applySelectedRestaurantBackground();
+        restaurantSelect.addEventListener('change', applySelectedRestaurantBackground);
+    }
+
+    if (selectRestaurantForm && backgroundCache) {
+        selectRestaurantForm.addEventListener('submit', function () {
+            var selectedTheme = getSelectedRestaurantTheme();
+            if (selectedTheme) {
+                backgroundCache.remember(
+                    selectedTheme.restaurantId,
+                    selectedTheme.backgroundUrl
+                );
+            }
+        });
+    }
+
     // Show/hide add restaurant form
     $("#btnShowAdd").click(function () {
         $("#addRestaurantForm").slideToggle();

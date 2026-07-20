@@ -23,6 +23,10 @@
         :root { --page-background-image: url('@backgroundImageUrl'); }
         .login-bg-wrapper { background-image: var(--page-background-image) !important; }
     </style>
+    <script src="~/js/restaurant-background-cache.js" asp-append-version="true"></script>
+    <script>
+        window.RestaurantBackgroundCache?.applyLastUsed();
+    </script>
 </head>
 <body class="bg-light">
 

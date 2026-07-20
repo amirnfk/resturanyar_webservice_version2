@@ -457,13 +457,28 @@ namespace resturanyar.Controllers
             if (string.IsNullOrEmpty(ownerId))
                 return RedirectToAction("ManagerLogin", "Home");
 
-            var restaurants = _context.Restaurants
+            var restaurantRows = _context.Restaurants
                 .Where(r => r.owner_id == int.Parse(ownerId))
                 .AsNoTracking()
+                .Select(r => new
+                {
+                    Restaurant = r,
+                    BackgroundImageUrl = r.Setting != null
+                        ? r.Setting.BackgroundImageUrl
+                        : null
+                })
                 .ToList();
 
+            var restaurants = restaurantRows.Select(row => row.Restaurant).ToList();
+            var restaurantBackgrounds = restaurantRows.ToDictionary(
+                row => row.Restaurant.restaurant_id,
+                row => RestaurantBackgroundOptions.ResolveUrl(row.BackgroundImageUrl));
+
             ViewBag.Restaurants = restaurants;
-            ViewBag.BackgroundImageUrl = RestaurantSettingsHelper.DefaultBackgroundPath;
+            ViewBag.RestaurantBackgrounds = restaurantBackgrounds;
+            ViewBag.BackgroundImageUrl = restaurants.Count > 0
+                ? restaurantBackgrounds[restaurants[0].restaurant_id]
+                : RestaurantSettingsHelper.DefaultBackgroundPath;
 
             return View();
         }
@@ -1939,13 +1954,38 @@ namespace resturanyar.Controllers
 
         }
 
-        public async Task<IActionResult> Settings()
+        public IActionResult Settings()
+        {
+            return RedirectToAction(nameof(MenuSettings));
+        }
+
+        public IActionResult RestaurantSetting()
         {
             int? restaurantId = User.GetRestaurantId();
             if (restaurantId == null)
                 return RedirectToAction("ChooseRestaurant");
 
+            return View();
+        }
+
+        public async Task<IActionResult> MenuSettings()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
             ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.RestaurantName = restaurant?.name ?? string.Empty;
+
+            var qrResult = PublicMenuQrHelper.Build(Url, Request, restaurant?.PublicMenuToken);
+            ViewBag.MenuUrl = qrResult?.MenuUrl;
+            ViewBag.QRCodeImage = qrResult?.QrCodeImageBase64;
+            ViewBag.HasPublicMenuToken = qrResult != null;
+
             return View();
         }
 
@@ -1980,8 +2020,6 @@ namespace resturanyar.Controllers
                 _context,
                 _env,
                 restaurantId.Value,
-                request.PrimaryColor,
-                request.SecondaryColor,
                 request.BackgroundImageUrl,
                 request.MenuHeroBadge,
                 request.MenuTagline,

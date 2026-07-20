@@ -7,6 +7,8 @@
 @{
     ViewData["Title"] = "انتخاب یا افزودن کافه یا رستوران";
     var restaurants = ViewBag.Restaurants as List<Restaurant>;
+    var restaurantBackgrounds = ViewBag.RestaurantBackgrounds as IReadOnlyDictionary<int, string>
+        ?? new Dictionary<int, string>();
     var backgroundImageUrl = ViewBag.BackgroundImageUrl as string ?? RestaurantBackgroundOptions.DefaultUrl;
 }
 
@@ -24,6 +26,7 @@
         :root { --page-background-image: url('@backgroundImageUrl'); }
         .login-bg-wrapper { background-image: var(--page-background-image) !important; }
     </style>
+    <script src="~/js/restaurant-background-cache.js" asp-append-version="true"></script>
 </head>
 <body class="bg-light">
 
@@ -41,16 +44,19 @@
 
             @if (restaurants != null && restaurants.Count > 0)
             {
-                <form asp-action="SelectRestaurant" method="post">
+                <form asp-action="SelectRestaurant" method="post" id="selectRestaurantForm">
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <button type="button" id="btnShowAdd" class="btn btn-orange rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px; padding: 0;" title="افزودن رستوران جدید">
                             <i class="fa-solid fa-plus"></i>
                         </button>
 
-                        <select name="restaurantId" class="form-select custom-input flex-grow-1" style="height: 48px;">
+                        <select name="restaurantId" id="restaurantSelect" class="form-select custom-input flex-grow-1" style="height: 48px;">
                             @foreach (var r in restaurants)
                             {
-                                <option value="@r.restaurant_id">@r.name</option>
+                                var optionBackground = restaurantBackgrounds.TryGetValue(r.restaurant_id, out var savedBackground)
+                                    ? savedBackground
+                                    : RestaurantBackgroundOptions.DefaultUrl;
+                                <option value="@r.restaurant_id" data-background-url="@optionBackground">@r.name</option>
                             }
                         </select>
                     </div>
@@ -121,7 +127,9 @@
             }
 
             if (!token) {
-                localStorage.clear();
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('phone');
                 window.location.href = '/Home/Logout';
                 return false;
             }
