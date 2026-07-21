@@ -923,12 +923,21 @@ namespace resturanyar.Controllers
 
             var activeStatuses = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 12 };
 
-            if (string.IsNullOrEmpty(period) && !from.HasValue && !to.HasValue)
-                period = "month";
+            bool hasCustomRange = from.HasValue || to.HasValue;
 
-            // Period calculation
-            if (!string.IsNullOrEmpty(period))
+            if (hasCustomRange)
             {
+                period = null;
+                if (from.HasValue) from = from.Value.Date;
+                if (to.HasValue) to = to.Value.Date.AddDays(1).AddTicks(-1);
+                if (from.HasValue && !to.HasValue) to = from.Value.Date.AddDays(1).AddTicks(-1);
+                if (to.HasValue && !from.HasValue) from = to.Value.Date;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(period))
+                    period = "month";
+
                 var today = DateTime.Today;
                 if (period.Equals("today", StringComparison.OrdinalIgnoreCase))
                 {
@@ -956,9 +965,6 @@ namespace resturanyar.Controllers
                     to = DateTime.Now;
                 }
             }
-
-            if (to.HasValue && to.Value.TimeOfDay == TimeSpan.Zero)
-                to = to.Value.Date.AddDays(1).AddTicks(-1);
 
             var ordersQuery = _context.Orders.AsNoTracking().Where(o => o.RestaurantId == restaurantId);
 
@@ -1065,6 +1071,7 @@ namespace resturanyar.Controllers
                 FromDate = from,
                 ToDate = to,
                 Period = period,
+                IsCustomRange = hasCustomRange,
                 TotalOrders = totalOrders,
                 PaidOrders = paidOrders,
                 CancelledOrders = cancelledOrders,
@@ -1086,6 +1093,12 @@ namespace resturanyar.Controllers
 
             foreach (var sg in statusGroups)
                 vm.StatusCounts[sg.StatusId] = sg.Count;
+
+            if (hasCustomRange)
+            {
+                if (from.HasValue) ViewData["FromFaDate"] = from.Value.ToPersianDate();
+                if (to.HasValue) ViewData["ToFaDate"] = to.Value.Date.ToPersianDate();
+            }
 
             if (Request.Headers["X-Reports-Partial"] == "true")
                 return PartialView("_ManagerReportsPartial", vm);

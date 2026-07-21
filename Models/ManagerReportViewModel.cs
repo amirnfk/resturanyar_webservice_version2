@@ -8,6 +8,7 @@ public class ManagerReportViewModel
 public DateTime? FromDate { get; set; }
 public DateTime? ToDate { get; set; }
 public string? Period { get; set; }
+public bool IsCustomRange { get; set; }
 
 // KPI ها
 public int TotalOrders { get; set; }

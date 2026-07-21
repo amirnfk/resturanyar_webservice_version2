@@ -351,6 +351,35 @@
         .scrollable-list::-webkit-scrollbar {
             display: none;
         }
+
+    .stats-hint {
+        background: var(--primary-light);
+        border: 1px solid rgba(255, 122, 0, 0.15);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+        .stats-hint i {
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+    .no-closed-orders-hint {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        background: #f8fafc;
+        border-radius: var(--radius-sm);
+        padding: 8px 10px;
+        margin-top: 4px;
+        text-align: center;
+        border: 1px dashed #e2e8f0;
+    }
 </style>
 
 <div class="container customers-page py-4">
@@ -522,6 +551,11 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <div class="stats-hint">
+        <i class="fas fa-info-circle"></i>
+        <span>آمار خرید فقط بر اساس سفارش‌های بسته‌شده محاسبه می‌شود.</span>
     </div>
 
     <!-- بارگذاری و نشانگر لودینگ -->
@@ -860,6 +894,9 @@
     function renderCustomersWithStats(customers) {
         let html = '<div class="row g-4">';
         customers.forEach(c => {
+            const noOrdersHint = c.totalOrders === 0
+                ? '<div class="no-closed-orders-hint"><i class="fas fa-exclamation-circle me-1"></i>سفارش بسته‌شده‌ای ثبت نشده</div>'
+                : '';
             html += `
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="customer-card">
@@ -877,6 +914,7 @@
                                 <span class="info-label">سفارش‌ها:</span>
                                 <span class="info-value text-primary font-bold">${c.totalOrders} بار</span>
                             </div>
+                            ${noOrdersHint}
                             <div class="info-row">
                                 <span class="info-label">تعداد روز حضور:</span>
                                 <span class="info-value">${c.totalDistinctDays} روز</span>

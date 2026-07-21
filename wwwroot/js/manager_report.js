@@ -65,6 +65,53 @@ function jalali_to_gregorian(jy, jm, jd) {
     return [gy, gm + 1, g_day_no + 1];
 }
 
+function jalaliFaToIso(faDate) {
+    if (!faDate) return '';
+    const parts = faDate.split('/');
+    if (parts.length !== 3) return '';
+    const [jy, jm, jd] = parts.map(Number);
+    if (isNaN(jy) || isNaN(jm) || isNaN(jd)) return '';
+    const [gy, gm, gd] = jalali_to_gregorian(jy, jm, jd);
+    return `${gy}-${String(gm).padStart(2, '0')}-${String(gd).padStart(2, '0')}`;
+}
+
+function clearQuickFilterActiveState() {
+    document.querySelectorAll('.quick-filter-btn').forEach(btn => btn.classList.remove('active'));
+}
+
+function setActiveQuickFilter(period) {
+    clearQuickFilterActiveState();
+    if (!period) return;
+    const btn = document.querySelector(`.quick-filter-btn[data-period="${period}"]`);
+    if (btn) btn.classList.add('active');
+}
+
+function clearCustomDateFields() {
+    ['fromIso', 'toIso', 'fromFa', 'toFa'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+}
+
+function syncCustomDateFields() {
+    const fromFa = document.getElementById('fromFa');
+    const toFa = document.getElementById('toFa');
+    const fromIso = document.getElementById('fromIso');
+    const toIso = document.getElementById('toIso');
+    const periodInput = document.getElementById('periodInput');
+
+    if (fromFa && fromIso && fromFa.value.trim()) {
+        fromIso.value = jalaliFaToIso(fromFa.value.trim());
+    }
+    if (toFa && toIso && toFa.value.trim()) {
+        toIso.value = jalaliFaToIso(toFa.value.trim());
+    }
+
+    if (periodInput && ((fromIso && fromIso.value) || (toIso && toIso.value))) {
+        periodInput.value = '';
+    }
+}
+
 function initializeDatepickers() {
     if (!window.datepickerInitialized) {
         jalaliDatepicker.startWatch({ time: false });
@@ -76,15 +123,14 @@ function initializeDatepickers() {
         newInput.addEventListener("change", () => {
             const faDate = newInput.value;
             if (!faDate) return;
-            const parts = faDate.split('/');
-            if (parts.length !== 3) return;
-            const [jy, jm, jd] = parts.map(Number);
-            if (isNaN(jy) || isNaN(jm) || isNaN(jd)) return;
-            const [gy, gm, gd] = jalali_to_gregorian(jy, jm, jd);
-            const iso = `${gy}-${String(gm).padStart(2, '0')}-${String(gd).padStart(2, '0')}`;
+            const iso = jalaliFaToIso(faDate);
+            if (!iso) return;
             if (newInput.id === "fromFa") document.getElementById("fromIso").value = iso;
             if (newInput.id === "toFa") document.getElementById("toIso").value = iso;
-            // با تغییر تاریخ‌ها لینک خروجی را آپدیت کن
+
+            const periodInput = document.getElementById('periodInput');
+            if (periodInput) periodInput.value = '';
+            clearQuickFilterActiveState();
             wireExportLink();
         });
     });
@@ -118,6 +164,13 @@ function setupEventListeners() {
     // ارسال فرم به صورت AJAX
     registerListener(form, 'submit', function (e) {
         e.preventDefault();
+        syncCustomDateFields();
+        const fromIso = document.getElementById('fromIso');
+        const toIso = document.getElementById('toIso');
+        const hasCustomDates = (fromIso && fromIso.value) || (toIso && toIso.value);
+        if (hasCustomDates) {
+            setActiveQuickFilter('custom');
+        }
         const url = `${form.action}?${getFormQuery(form)}`;
         loadReports(url);
     });
@@ -131,12 +184,16 @@ function setupEventListeners() {
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
         registerListener(btn, 'click', function (e) {
             e.preventDefault();
+            if (btn.id === 'customRangeBtn') return;
+            clearCustomDateFields();
+            let period = btn.dataset.period || '';
             try {
                 const u = new URL(btn.href, window.location.origin);
-                const p = u.searchParams.get('period') || '';
+                period = u.searchParams.get('period') || period;
                 const periodInput = document.getElementById('periodInput');
-                if (periodInput) periodInput.value = p;
+                if (periodInput) periodInput.value = period;
             } catch { }
+            setActiveQuickFilter(period);
             loadReports(btn.href);
         });
     });

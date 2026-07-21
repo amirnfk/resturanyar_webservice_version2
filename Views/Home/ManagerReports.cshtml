@@ -44,14 +44,14 @@
 
         <div class="col-md-2 col-sm-6">
             <label class="form-label">از تاریخ</label>
-            <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@fromFaDate" readonly />
-            <input type="hidden" name="from" id="fromIso" value="@(Model?.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+            <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@(Model?.IsCustomRange == true ? fromFaDate : "")" readonly />
+            <input type="hidden" name="from" id="fromIso" value="@(Model?.IsCustomRange == true ? Model?.FromDate?.ToString("yyyy-MM-dd") ?? "" : "")" />
         </div>
 
         <div class="col-md-2 col-sm-6">
             <label class="form-label">تا تاریخ</label>
-            <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@toFaDate" readonly />
-            <input type="hidden" name="to" id="toIso" value="@(Model?.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+            <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" value="@(Model?.IsCustomRange == true ? toFaDate : "")" readonly />
+            <input type="hidden" name="to" id="toIso" value="@(Model?.IsCustomRange == true ? Model?.ToDate?.Date.ToString("yyyy-MM-dd") ?? "" : "")" />
         </div>
 
         <div class="col-md-2 col-sm-6">
@@ -78,11 +78,12 @@
         <input type="hidden" name="period" id="periodInput" value="@(Model?.Period ?? "")" />
 
         <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-            <a href="@Url.Action("ManagerReports", "Home", new { period = "today" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
-            <a href="@Url.Action("ManagerReports", "Home", new { period = "week" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
-            <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
-            <a href="@Url.Action("ManagerReports", "Home", new { period = "quarter" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
-            <a href="@Url.Action("ManagerReports", "Home", new { period = "year" })" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "today" })" data-period="today" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "week" })" data-period="week" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" data-period="month" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "quarter" })" data-period="quarter" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
+            <a href="@Url.Action("ManagerReports", "Home", new { period = "year" })" data-period="year" class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
+            <button type="button" id="customRangeBtn" data-period="custom" class="btn btn-outline-secondary quick-filter-btn @(Model?.IsCustomRange == true ? "active" : "")">بازه دلخواه</button>
         </div>
     </form>
 </div>

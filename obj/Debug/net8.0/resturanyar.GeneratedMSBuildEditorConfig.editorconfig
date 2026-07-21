@@ -17,277 +17,277 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = resturanyar
 build_property.RootNamespace = resturanyar
-build_property.ProjectDir = e:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\
+build_property.ProjectDir = d:\aspnet projects\resturanyar\resturanyar_webservice_version2\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = e:\myAspProjects\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2
+build_property.MSBuildProjectDirectory = d:\aspnet projects\resturanyar\resturanyar_webservice_version2
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/AdminLogin.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/AdminLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/AdminPanel.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/AdminPanel.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRtaW5QYW5lbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/ArticleList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/ArticleList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXJ0aWNsZUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/CouponList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/CouponList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ291cG9uTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/CreateArticle.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/CreateArticle.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlQXJ0aWNsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/CreateCoupon.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/CreateCoupon.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlQ291cG9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/EditArticle.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/EditArticle.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdEFydGljbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/EditCoupon.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/EditCoupon.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdENvdXBvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/MessageList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/MessageList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWVzc2FnZUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/SendMessage.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/SendMessage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2VuZE1lc3NhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Admin/_ArticleForm.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Admin/_ArticleForm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX0FydGljbGVGb3JtLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/AppDownload/AppDownload.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/AppDownload/AppDownload.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBwRG93bmxvYWRcQXBwRG93bmxvYWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Articles/Detail.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/Detail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcRGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Articles/Index.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Articles/_ArticleStyles.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Articles/_ArticleStyles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJ0aWNsZXNcX0FydGljbGVTdHlsZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/AddOrder.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/AddOrder.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRPcmRlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/AddUser.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/AddUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRVc2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/CashierDashboard.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/CashierDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDYXNoaWVyRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/CategoryList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/CategoryList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDYXRlZ29yeUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/ChooseRestaurant.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ChooseRestaurant.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDaG9vc2VSZXN0YXVyYW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/CustomersList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/CustomersList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDdXN0b21lcnNMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Dashboard.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Error.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxFcnJvci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/FoodList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/FoodList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGb29kTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Index.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/ManagerLogin.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManagerLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VyTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/ManagerOrderList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManagerOrderList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VyT3JkZXJMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/ManagerReports.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManagerReports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VyUmVwb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/ManageStaff.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/ManageStaff.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW5hZ2VTdGFmZi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/MenuSettings.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/MenuSettings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNZW51U2V0dGluZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Messages.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Messages.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNZXNzYWdlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/PaymentResult.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/PaymentResult.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQYXltZW50UmVzdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Privacy.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Register.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/RestaurantSetting.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/RestaurantSetting.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXN0YXVyYW50U2V0dGluZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/RestaurantSubscription.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/RestaurantSubscription.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZXN0YXVyYW50U3Vic2NyaXB0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/SelectRestaurantDenied.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/SelectRestaurantDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZWxlY3RSZXN0YXVyYW50RGVuaWVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/StaffLogin.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/StaffLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTdGFmZkxvZ2luLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Support.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Support.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTdXBwb3J0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/TableList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/TableList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxUYWJsZUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/Upgrade.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/Upgrade.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxVcGdyYWRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/_CashierOrdersPartial.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/_CashierOrdersPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfQ2FzaGllck9yZGVyc1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/_ManagerOrdersPartial.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/_ManagerOrdersPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfTWFuYWdlck9yZGVyc1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Home/_ManagerReportsPartial.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Home/_ManagerReportsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxfTWFuYWdlclJlcG9ydHNQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Menu/PublicMenu.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Menu/PublicMenu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxQdWJsaWNNZW51LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/AboutUs.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/AboutUs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXEFib3V0VXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/CafeShopManagement.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/CafeShopManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXENhZmVTaG9wTWFuYWdlbWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/CustomerClub.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/CustomerClub.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXEN1c3RvbWVyQ2x1Yi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/DigitalMenu.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/DigitalMenu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXERpZ2l0YWxNZW51LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/PublicSupport.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/PublicSupport.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXFB1YmxpY1N1cHBvcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/RestaurantManagement.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/RestaurantManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXFJlc3RhdXJhbnRNYW5hZ2VtZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Public/ResturanyarPriceList.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Public/ResturanyarPriceList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXFJlc3R1cmFueWFyUHJpY2VMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/Error.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_AjaxLayout.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_AjaxLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BamF4TGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_ConfirmModal.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_ConfirmModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db25maXJtTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_IndexLayout.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_IndexLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JbmRleExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_Layout.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_LayoutAdmin.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_LayoutAdmin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_Layout_dashboard.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_Layout_dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfZGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_Layout_public.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_Layout_public.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRfcHVibGljLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_SeoHead.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_SeoHead.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZW9IZWFkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_SimpleLayout.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_SimpleLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TaW1wbGVMYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Shared/_ValidationScriptsPartial.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/Users/Delete.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/Users/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/_ViewImports.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[e:/myAspProjects/Work at home/resturanyar_webservice_version2/resturanyar_webservice_version2/Views/_ViewStart.cshtml]
+[d:/aspnet projects/resturanyar/resturanyar_webservice_version2/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
