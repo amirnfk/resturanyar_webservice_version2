@@ -2,12 +2,22 @@
     'use strict';
 
     var FULL_RELOAD_PATHS = ['/home/dashboard', '/home/Dashboard'];
+    var FULL_PAGE_LEAVE_PATHS = ['/home/upgrade', '/home/prepareupgrade'];
     var currentAbortController = null;
 
     function isFullReloadUrl(url) {
         try {
             var path = new URL(url, window.location.origin).pathname.toLowerCase();
             return FULL_RELOAD_PATHS.some(function (p) { return path === p.toLowerCase(); });
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function isFullPageLeaveUrl(url) {
+        try {
+            var path = new URL(url, window.location.origin).pathname.toLowerCase();
+            return FULL_PAGE_LEAVE_PATHS.some(function (p) { return path === p || path.endsWith(p); });
         } catch (e) {
             return false;
         }
@@ -241,7 +251,9 @@
         ['/home/managestaff', 'initManageStaffPage'],
         ['/home/messages', 'initMessagesPage'],
         ['/home/menusettings', 'initRestaurantSettingsPage'],
-        ['/home/settings', 'initRestaurantSettingsPage']
+        ['/home/settings', 'initRestaurantSettingsPage'],
+        ['/home/restaurantsetting', 'initRestaurantGeneralSettingsPage'],
+        ['/home/support', 'initSupportPage']
     ];
 
     function resolvePageInitName(url) {
@@ -353,16 +365,36 @@
         navigateTo(link.href, true);
     }
 
-    function onPopState(event) {
+    async function onPopState(event) {
         if (event.state && event.state.sidebarNav && event.state.url) {
-            navigateTo(event.state.url, false);
+            try {
+                await navigateTo(event.state.url, false);
+            } catch (e) {
+                window.location.href = event.state.url;
+            }
         } else {
             window.location.reload();
         }
     }
 
+    function onLeaveSpaClick(event) {
+        var link = event.target.closest('a[href]');
+        if (!link || !getContentCard()) return;
+        if (!isFullPageLeaveUrl(link.href)) return;
+
+        try {
+            history.replaceState(null, document.title, window.location.href);
+        } catch (e) { /* ignore */ }
+    }
+
     document.addEventListener('click', onDocumentClick);
+    document.addEventListener('click', onLeaveSpaClick, true);
     window.addEventListener('popstate', onPopState);
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted && typeof window.runSidebarPageInit === 'function') {
+            window.runSidebarPageInit();
+        }
+    });
 
     history.replaceState({ sidebarNav: true, url: window.location.href }, document.title, window.location.href);
 })();

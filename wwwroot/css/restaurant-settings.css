@@ -10,6 +10,18 @@
 
 
 
+.restaurant-general-settings-page {
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 0 0 2.5rem;
+
+}
+
+
+
 .settings-card {
 
     background: #fff;
@@ -654,6 +666,336 @@
 
 
 
+.restaurant-settings-layout {
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+
+    gap: 1.25rem;
+
+    align-items: start;
+
+}
+
+
+
+.restaurant-settings-main,
+
+.restaurant-settings-aside {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1.25rem;
+
+}
+
+
+
+.settings-card__title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.65rem;
+
+    font-weight: 700;
+
+    font-size: 1.05rem;
+
+    margin-bottom: 1.25rem;
+
+    color: #0f172a;
+
+}
+
+
+
+.settings-card__title i {
+
+    color: #f97316;
+
+}
+
+
+
+.restaurant-info-list {
+
+    margin: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1rem;
+
+}
+
+
+
+.restaurant-info-item {
+
+    display: grid;
+
+    grid-template-columns: minmax(120px, 0.9fr) minmax(0, 1.6fr);
+
+    gap: 0.75rem;
+
+    align-items: center;
+
+    padding-bottom: 1rem;
+
+    border-bottom: 1px solid #f1f5f9;
+
+}
+
+
+
+.restaurant-info-item:last-child {
+
+    padding-bottom: 0;
+
+    border-bottom: none;
+
+}
+
+
+
+.restaurant-info-item dt {
+
+    margin: 0;
+
+    font-size: 0.88rem;
+
+    color: #64748b;
+
+    font-weight: 600;
+
+}
+
+
+
+.restaurant-info-item dd {
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+
+    flex-wrap: wrap;
+
+}
+
+
+
+.restaurant-info-item code {
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    padding: 0.35rem 0.55rem;
+
+    font-size: 0.88rem;
+
+    color: #0f172a;
+
+    word-break: break-all;
+
+}
+
+
+
+.restaurant-info-link {
+
+    color: #ea580c;
+
+    text-decoration: none;
+
+    word-break: break-all;
+
+    font-size: 0.9rem;
+
+}
+
+
+
+.restaurant-info-link:hover {
+
+    text-decoration: underline;
+
+}
+
+
+
+.btn-copy-value {
+
+    width: 36px;
+
+    height: 36px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    background: #fff;
+
+    color: #64748b;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+}
+
+
+
+.btn-copy-value:hover {
+
+    background: #fff7ed;
+
+    border-color: #fdba74;
+
+    color: #ea580c;
+
+}
+
+
+
+.restaurant-quick-links {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.75rem;
+
+}
+
+
+
+.restaurant-quick-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.85rem;
+
+    padding: 0.9rem 1rem;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    background: #fff;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+}
+
+
+
+.restaurant-quick-link:hover {
+
+    border-color: #fdba74;
+
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.08);
+
+    transform: translateY(-1px);
+
+    color: inherit;
+
+}
+
+
+
+.restaurant-quick-link__icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: #fff7ed;
+
+    color: #f97316;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+}
+
+
+
+.restaurant-quick-link__body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.15rem;
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+
+.restaurant-quick-link__body strong {
+
+    font-size: 0.95rem;
+
+}
+
+
+
+.restaurant-quick-link__body small {
+
+    color: #64748b;
+
+    font-size: 0.82rem;
+
+}
+
+
+
+.restaurant-quick-link__arrow {
+
+    color: #94a3b8;
+
+    flex-shrink: 0;
+
+}
+
+
+
 @media (max-width: 768px) {
 
     .settings-grid {
@@ -667,6 +1009,24 @@
     .background-picker {
 
         grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    }
+
+
+
+    .restaurant-settings-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+
+    .restaurant-info-item {
+
+        grid-template-columns: 1fr;
+
+        gap: 0.35rem;
 
     }
 

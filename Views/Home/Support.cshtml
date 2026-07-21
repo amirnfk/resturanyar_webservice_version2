@@ -542,48 +542,96 @@
 </script>
 
 <script>
-     var restaurantId = @(ViewBag.RestaurantId ?? 0);
-    var restaurantName = @Html.Raw(Json.Serialize(ViewBag.RestaurantName ?? "رستوران"));
+    (function () {
+        var goftinoReadyListenerRegistered = false;
 
-    // اتصال دکمه‌ها به گوفتینو
-    window.addEventListener('goftino_ready', function () {
-        // تنظیم کاربر
-        Goftino.setUser({
-            email: 'restaurant ID: ' + restaurantId,
-            name: 'restaurant Name: '+restaurantName+"",
-            about: 'Resturanyar...',
-            phone: '...',
-            avatar: '...',
-            forceUpdate: true
-        });
+        function getSupportContext() {
+            return {
+                restaurantId: parseInt(document.body.dataset.restaurantId || '0', 10) || 0,
+                restaurantName: document.body.dataset.restaurantName || 'رستوران'
+            };
+        }
 
-        // دکمه‌ها
-        document.getElementById("open_chat").addEventListener("click", function () {
-            Goftino.open();
-        });
-        document.getElementById("close_chat").addEventListener("click", function () {
-            Goftino.close();
-        });
-        document.getElementById("toggle_chat").addEventListener("click", function () {
-            Goftino.toggle();
-        });
-    });
-
-    // آکاردئون سوالات متداول (با jQuery)
-    $(document).ready(function () {
-        $('.faq-question').on('click', function () {
-            var $answer = $(this).next('.faq-answer');
-            var isOpen = $answer.hasClass('open');
-
-            // بستن بقیه
-            $('.faq-answer').removeClass('open');
-            $('.faq-question').attr('aria-expanded', 'false');
-
-            // اگر بسته بود، باز کن
-            if (!isOpen) {
-                $answer.addClass('open');
-                $(this).attr('aria-expanded', 'true');
+        function setupGoftinoUser() {
+            if (typeof Goftino === 'undefined' || typeof Goftino.setUser !== 'function') {
+                return false;
             }
-        });
-    });
+
+            var ctx = getSupportContext();
+            Goftino.setUser({
+                email: 'restaurant ID: ' + ctx.restaurantId,
+                name: 'restaurant Name: ' + ctx.restaurantName,
+                about: 'Resturanyar...',
+                phone: '...',
+                avatar: '...',
+                forceUpdate: true
+            });
+            return true;
+        }
+
+        function bindOpenChatButton() {
+            var btn = document.getElementById('open_chat');
+            if (!btn || btn.dataset.chatBound === 'true') {
+                return;
+            }
+
+            btn.dataset.chatBound = 'true';
+            btn.addEventListener('click', function () {
+                if (typeof Goftino !== 'undefined' && typeof Goftino.open === 'function') {
+                    Goftino.open();
+                }
+            });
+        }
+
+        function initGoftinoChat() {
+            if (setupGoftinoUser()) {
+                bindOpenChatButton();
+                return;
+            }
+
+            if (!goftinoReadyListenerRegistered) {
+                goftinoReadyListenerRegistered = true;
+                window.addEventListener('goftino_ready', function () {
+                    setupGoftinoUser();
+                    bindOpenChatButton();
+                });
+            }
+        }
+
+        function initFaqAccordion() {
+            document.querySelectorAll('.support-page .faq-question:not([data-faq-bound])').forEach(function (question) {
+                question.setAttribute('data-faq-bound', 'true');
+                question.addEventListener('click', function () {
+                    var answer = question.nextElementSibling;
+                    if (!answer || !answer.classList.contains('faq-answer')) {
+                        return;
+                    }
+
+                    var isOpen = answer.classList.contains('open');
+                    document.querySelectorAll('.support-page .faq-answer').forEach(function (el) {
+                        el.classList.remove('open');
+                    });
+                    document.querySelectorAll('.support-page .faq-question').forEach(function (el) {
+                        el.setAttribute('aria-expanded', 'false');
+                    });
+
+                    if (!isOpen) {
+                        answer.classList.add('open');
+                        question.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        }
+
+        function initSupportPage() {
+            if (!document.querySelector('.support-page')) {
+                return;
+            }
+
+            initFaqAccordion();
+            initGoftinoChat();
+        }
+
+        window.initSupportPage = initSupportPage;
+    })();
 </script>

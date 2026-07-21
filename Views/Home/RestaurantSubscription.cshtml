@@ -488,7 +488,7 @@
             <div class="icon-big"><i class="fa-solid fa-inbox"></i></div>
             <h5>هیچ اشتراک فعالی یافت نشد</h5>
             <p>برای استفاده کامل از امکانات، اشتراک تهیه کنید.</p>
-            <a href="/home/Upgrade?restaurantId=@ViewBag.RestaurantId" class="btn-primary-custom">
+            <a href="@Url.Action("PrepareUpgrade", "home", new { restaurantId = ViewBag.RestaurantId })" class="btn-primary-custom">
                 مشاهده پلن‌ها
             </a>
         </div>

@@ -438,13 +438,18 @@
         if (isSubmittingCustomer) return;
 
         var fullName = $('#newCustomerFullName').val().trim();
-        var mobile;
+        var mobile = toEnglishDigits($('#newCustomerMobile').val().trim());
         var description = $('#newCustomerDesc').val().trim();
 
         if (fullName !== "") {
-            mobile = generateAutoMobile();
+            if (mobile === "") {
+                mobile = generateAutoMobile();
+            }
         } else {
-            mobile = $('#newCustomerMobile').val().trim();
+            if (!mobile) {
+                showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
+                return;
+            }
             if (!/^09[0-9]{9}$/.test(mobile)) {
                 showToast('شماره موبایل معتبر (11 رقم، شروع با 09) وارد کنید', 'error');
                 return;
@@ -490,6 +495,16 @@
             $btn.html(originalHtml).prop('disabled', false);
             isSubmittingCustomer = false;
         }
+    }
+
+    function toEnglishDigits(str) {
+        if (!str) return "";
+        var arabicMap = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9' };
+        var persianMap = { '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9' };
+        var result = str;
+        for (var key in persianMap) result = result.split(key).join(persianMap[key]);
+        for (var key in arabicMap) result = result.split(key).join(arabicMap[key]);
+        return result;
     }
 
     function generateAutoMobile() {

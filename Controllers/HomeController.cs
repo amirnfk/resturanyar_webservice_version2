@@ -65,15 +65,15 @@ namespace resturanyar.Controllers
         [Authorize]
         public IActionResult PrepareUpgrade(int restaurantId)
         {
-
             HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId);
 
             var restaurant = _context.Restaurants.Find(restaurantId);
             if (restaurant != null)
                 HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
 
-
-            return RedirectToAction("Upgrade");
+            ViewBag.RestaurantId = restaurantId;
+            ViewBag.RestaurantName = restaurant?.name ?? "";
+            return View("Upgrade");
         }
 
         [Authorize]
@@ -1959,13 +1959,61 @@ namespace resturanyar.Controllers
             return RedirectToAction(nameof(MenuSettings));
         }
 
-        public IActionResult RestaurantSetting()
+        public async Task<IActionResult> RestaurantSetting()
         {
             int? restaurantId = User.GetRestaurantId();
             if (restaurantId == null)
                 return RedirectToAction("ChooseRestaurant");
 
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+            if (restaurant == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.RestaurantName = restaurant.name ?? string.Empty;
+            ViewBag.RestaurantCode = restaurant.restaurant_code ?? string.Empty;
+
+            var menuUrl = !string.IsNullOrWhiteSpace(restaurant.PublicMenuToken)
+                ? PublicMenuQrHelper.BuildMenuUrl(Url, Request, restaurant.PublicMenuToken)
+                : null;
+            ViewBag.MenuUrl = menuUrl;
+            ViewBag.HasPublicMenuToken = menuUrl != null;
+
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateRestaurantName([FromBody] UpdateRestaurantNameRequest request)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Unauthorized(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            if (request == null || string.IsNullOrWhiteSpace(request.Name))
+                return BadRequest(new { success = false, message = "نام رستوران الزامی است." });
+
+            var name = request.Name.Trim();
+            if (name.Length > 100)
+                return BadRequest(new { success = false, message = "نام رستوران نباید بیش از ۱۰۰ کاراکتر باشد." });
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+            if (restaurant == null)
+                return NotFound(new { success = false, message = "رستوران یافت نشد." });
+
+            restaurant.name = name;
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                message = "نام رستوران با موفقیت ذخیره شد.",
+                name
+            });
         }
 
         public async Task<IActionResult> MenuSettings()

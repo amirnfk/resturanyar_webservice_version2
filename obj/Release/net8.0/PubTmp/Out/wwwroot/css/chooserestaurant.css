@@ -28,7 +28,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100vh;
-    background-image: url('../images/back8.jpg') !important;
+    background-image: var(--page-background-image, url('../images/backgrounds/default.jpg')) !important;
     background-size: cover;
     background-position: center;
     z-index: -2;

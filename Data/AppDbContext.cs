@@ -52,6 +52,21 @@ namespace Resturanyar.Data
                 .HasIndex(o => o.Phone)
                 .IsUnique();
 
+            modelBuilder.Entity<Restaurant>(entity =>
+            {
+                entity.ToTable("Restaurants", tb => tb.UseSqlOutputClause(false));
+
+                entity.Property(r => r.CreatedAt)
+                    .HasColumnName("created_at")
+                    .HasDefaultValueSql("GETDATE()")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(r => r.UpdatedAt)
+                    .HasColumnName("updated_at")
+                    .HasDefaultValueSql("GETDATE()")
+                    .ValueGeneratedOnAddOrUpdate();
+            });
+
             
             modelBuilder.Entity<Category>()
         .HasOne<Restaurant>()

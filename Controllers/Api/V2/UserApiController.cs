@@ -1,19 +1,24 @@
 ﻿using Asp.Versioning;
+using ClosedXML.Excel;
 using global::Resturanyar.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using resturanyar.Models;
 using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.Settings;
 using resturanyar.Models.ViewModels;
 using resturanyar.Utility;
 using Resturanyar.Hubs;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 
@@ -23,7 +28,7 @@ namespace resturanyar.Controllers.Api.V2
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class UserApiController : ControllerBase
+    public partial class UserApiController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly TokenService _tokenService;
@@ -33,6 +38,7 @@ namespace resturanyar.Controllers.Api.V2
 
         private readonly IHubContext<OrderHub> _hubContext;
         private readonly IWebHostEnvironment _env;
+        private readonly PayamakSettings _payamakSettings;
 
         public UserApiController(
             AppDbContext context,
@@ -41,7 +47,8 @@ namespace resturanyar.Controllers.Api.V2
             IConfiguration configuration,
             MessageService messageService,
             IHubContext<OrderHub> hubContext,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IOptions<PayamakSettings> payamakOptions)
         {
             _context = context;
             _tokenService = tokenService;
@@ -50,6 +57,7 @@ namespace resturanyar.Controllers.Api.V2
             _messageService = messageService;
             _hubContext = hubContext;
             _env = env;
+            _payamakSettings = payamakOptions.Value;
         }
 
         [AllowAnonymous]
@@ -2073,5 +2081,28 @@ namespace resturanyar.Controllers.Api.V2
             var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return !string.IsNullOrEmpty(claim) && int.TryParse(claim, out ownerId);
         }
+
+
+
+
+
+
+
+        ////////////////////// new actions for V2 goes here///////////////////
+        // Android port endpoints live in UserApiController.AndroidPort*.cs partials.
+
+
+
+
+
+
+
+
+
+
+        ///////////////////////////////////////////////////////////////////////
+
+
+
     }
 }

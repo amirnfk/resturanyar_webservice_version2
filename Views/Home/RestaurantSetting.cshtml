@@ -1,7 +1,135 @@
 @{
     ViewData["Title"] = "تنظیمات رستوران";
+    var restaurantName = ViewBag.RestaurantName as string ?? "";
+    var restaurantCode = ViewBag.RestaurantCode as string ?? "";
+    var restaurantId = ViewBag.RestaurantId?.ToString() ?? "";
+    var menuUrl = ViewBag.MenuUrl as string;
+    var hasMenuUrl = ViewBag.HasPublicMenuToken == true && !string.IsNullOrEmpty(menuUrl);
 }
 
-<div class="container py-4" dir="rtl">
-    <h2 class="mb-0">تنظیمات رستوران</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/restaurant-settings.css" asp-append-version="true" />
+}
+
+<div class="settings-page restaurant-general-settings-page"
+     data-restaurant-id="@restaurantId">
+
+    <header class="settings-header">
+        <div class="icon-circle">
+            <i class="fas fa-store"></i>
+        </div>
+        <div>
+            <h2>تنظیمات رستوران</h2>
+            <p class="text-muted mb-0">اطلاعات عمومی رستوران و دسترسی سریع به بخش‌های مرتبط</p>
+        </div>
+    </header>
+
+    <div class="restaurant-settings-layout">
+        <div class="restaurant-settings-main">
+            <div class="settings-card">
+                <div class="settings-card__title">
+                    <i class="fas fa-pen"></i>
+                    <span>نام رستوران</span>
+                </div>
+
+                <form id="restaurantNameForm" class="settings-form" autocomplete="off">
+                    <div class="settings-field settings-field--full">
+                        <label for="restaurantNameInput">نام نمایشی</label>
+                        <input type="text"
+                               id="restaurantNameInput"
+                               maxlength="100"
+                               value="@restaurantName"
+                               placeholder="مثلاً: رستوران سنتی گیلان"
+                               required>
+                        <small class="field-hint">این نام در داشبورد، منوی دیجیتال و گزارش‌ها نمایش داده می‌شود.</small>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button type="submit" class="btn-save" id="saveRestaurantNameBtn">
+                            <i class="fas fa-save ms-1"></i>
+                            ذخیره نام
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="settings-card">
+                <div class="settings-card__title">
+                    <i class="fas fa-id-card"></i>
+                    <span>کد و دسترسی</span>
+                </div>
+
+                <dl class="restaurant-info-list">
+                    <div class="restaurant-info-item">
+                        <dt>کد ورود کارکنان</dt>
+                        <dd>
+                            <code id="identityRestaurantCode">@restaurantCode</code>
+                            <button type="button" class="btn-copy-value" data-copy-target="identityRestaurantCode" aria-label="کپی کد رستوران">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </dd>
+                    </div>
+
+                    <div class="restaurant-info-item">
+                        <dt>لینک منوی عمومی</dt>
+                        <dd>
+                            @if (hasMenuUrl)
+                            {
+                                <a id="identityMenuUrl" href="@menuUrl" target="_blank" rel="noopener" class="restaurant-info-link">@menuUrl</a>
+                                <button type="button" class="btn-copy-value" data-copy-target="identityMenuUrl" data-copy-text="true" aria-label="کپی لینک منو">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="text-muted">توکن منوی عمومی تنظیم نشده است.</span>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <aside class="restaurant-settings-aside">
+            <div class="settings-card">
+                <div class="settings-card__title">
+                    <i class="fas fa-link"></i>
+                    <span>دسترسی سریع</span>
+                </div>
+
+                <nav class="restaurant-quick-links" aria-label="دسترسی سریع">
+                    <a href="@Url.Action("MenuSettings", "Home")" class="restaurant-quick-link">
+                        <span class="restaurant-quick-link__icon"><i class="fas fa-qrcode"></i></span>
+                        <span class="restaurant-quick-link__body">
+                            <strong>تنظیمات منو</strong>
+                            <small>لوگو، قالب، متن‌ها و QR</small>
+                        </span>
+                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
+                    </a>
+
+                    <a href="@Url.Action("ManageStaff", "Home")" class="restaurant-quick-link">
+                        <span class="restaurant-quick-link__icon"><i class="fas fa-user-gear"></i></span>
+                        <span class="restaurant-quick-link__body">
+                            <strong>مدیریت کارکنان</strong>
+                            <small>افزودن گارسون، آشپز و صندوقدار</small>
+                        </span>
+                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
+                    </a>
+
+                    <a href="@Url.Action("RestaurantSubscription", "Home")" class="restaurant-quick-link">
+                        <span class="restaurant-quick-link__icon"><i class="fas fa-crown"></i></span>
+                        <span class="restaurant-quick-link__body">
+                            <strong>اشتراک</strong>
+                            <small>وضعیت پلن و تمدید</small>
+                        </span>
+                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/restaurant-general-settings.js" asp-append-version="true"></script>
+}
