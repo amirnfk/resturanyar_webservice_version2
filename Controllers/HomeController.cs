@@ -63,31 +63,56 @@ namespace resturanyar.Controllers
         }
 
         [Authorize]
-        public IActionResult PrepareUpgrade(int restaurantId)
+        public async Task<IActionResult> PrepareUpgrade()
         {
-            HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId);
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction(nameof(ChooseRestaurant));
 
-            var restaurant = _context.Restaurants.Find(restaurantId);
-            if (restaurant != null)
-                HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
+            var ownerId = User.GetOwnerId();
+            if (ownerId == null)
+                return RedirectToAction(nameof(ManagerLogin));
 
-            ViewBag.RestaurantId = restaurantId;
-            ViewBag.RestaurantName = restaurant?.name ?? "";
-            return View("Upgrade");
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value && r.owner_id == ownerId.Value);
+
+            if (restaurant == null)
+                return Forbid();
+
+            HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurant.restaurant_id);
+            HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name ?? string.Empty);
+
+            return RedirectToAction(nameof(Upgrade));
         }
 
         [Authorize]
-        public IActionResult Upgrade()
+        public async Task<IActionResult> Upgrade()
         {
-            var restaurantId = HttpContext.Session.GetInt32("UpgradeRestaurantId");
+            var ownerId = User.GetOwnerId();
+            if (ownerId == null)
+                return RedirectToAction(nameof(ManagerLogin));
+
+            var restaurantId = HttpContext.Session.GetInt32("UpgradeRestaurantId") ?? User.GetRestaurantId();
             if (restaurantId == null)
+                return RedirectToAction(nameof(ChooseRestaurant));
+
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value && r.owner_id == ownerId.Value);
+
+            if (restaurant == null)
             {
-                return RedirectToAction("ChooseRestaurant", "Home");
+                HttpContext.Session.Remove("UpgradeRestaurantId");
+                HttpContext.Session.Remove("UpgradeRestaurantName");
+                return RedirectToAction(nameof(ChooseRestaurant));
             }
 
-            var restaurant = _context.Restaurants.Find(restaurantId.Value);
-            ViewBag.RestaurantId = restaurantId.Value;
-            ViewBag.RestaurantName = restaurant?.name ?? "";
+            HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurant.restaurant_id);
+            HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name ?? string.Empty);
+
+            ViewBag.RestaurantId = restaurant.restaurant_id;
+            ViewBag.RestaurantName = restaurant.name ?? string.Empty;
 
             return View();
         }
@@ -705,10 +730,13 @@ namespace resturanyar.Controllers
         {
             var subscription = await _context.Subscriptions
                 .Include(s => s.SubscriptionPlan)
-                .FirstOrDefaultAsync(s =>
+                .Where(s =>
                     s.RestaurantId == restaurantId &&
                     s.Status == "Active" &&
-                    s.EndDate >= DateTime.Now);
+                    s.EndDate >= DateTime.Now)
+                .OrderByDescending(s => s.EndDate)
+                .ThenByDescending(s => s.Id)
+                .FirstOrDefaultAsync();
 
             if (subscription == null || subscription.SubscriptionPlan == null || !subscription.SubscriptionPlan.CanUseWeb)
             {
@@ -2611,7 +2639,7 @@ namespace resturanyar.Controllers
                     return RedirectToAction("PaymentResult", new { success = false, message = "پرداخت یافت نشد." });
 
                 // اگر قبلاً فعال شده
-                if (payment.Status == "Active" && payment.IsPaid)
+                if (payment.IsPaid && (payment.Status == "Active" || payment.Status == "Renewed"))
                     return RedirectToAction("PaymentResult", new { success = true, message = "اشتراک قبلاً فعال شده است." });
 
                 // 2) اگر کاربر درگاه را cancel کرده باشد
@@ -2659,15 +2687,41 @@ namespace resturanyar.Controllers
                     {
                         var now = DateTime.Now;
 
-                        // فعال‌سازی اشتراک
-                        payment.Status = "Active";
-                        payment.IsPaid = true;
-                        payment.PurchaseDate = now;
-                        payment.StartDate = now;
-                        payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
-                        payment.UpdatedAt = now;
+                        var existingActive = await _context.Subscriptions
+                            .Where(s => s.RestaurantId == payment.RestaurantId
+                                     && s.Status == "Active"
+                                     && s.EndDate > now
+                                     && s.Id != payment.Id)
+                            .OrderByDescending(s => s.EndDate)
+                            .FirstOrDefaultAsync();
 
-                        _logger.LogInformation($"✅ اشتراک {payment.Id} در حال فعال‌سازی. CouponId: {payment.CouponId}");
+                        if (existingActive != null)
+                        {
+                            existingActive.EndDate = CalculateEndDate(existingActive.EndDate, payment.SubscriptionPeriod);
+                            existingActive.SubscriptionPlanId = payment.SubscriptionPlanId;
+                            existingActive.SubscriptionPeriod = payment.SubscriptionPeriod;
+                            existingActive.UpdatedAt = now;
+
+                            payment.Status = "Renewed";
+                            payment.IsPaid = true;
+                            payment.PurchaseDate = now;
+                            payment.StartDate = existingActive.StartDate;
+                            payment.EndDate = existingActive.EndDate;
+                            payment.UpdatedAt = now;
+
+                            _logger.LogInformation($"✅ اشتراک {existingActive.Id} تمدید شد. SubscriptionId پرداخت: {payment.Id}");
+                        }
+                        else
+                        {
+                            payment.Status = "Active";
+                            payment.IsPaid = true;
+                            payment.PurchaseDate = now;
+                            payment.StartDate = now;
+                            payment.EndDate = CalculateEndDate(now, payment.SubscriptionPeriod);
+                            payment.UpdatedAt = now;
+
+                            _logger.LogInformation($"✅ اشتراک {payment.Id} در حال فعال‌سازی. CouponId: {payment.CouponId}");
+                        }
 
                         // ========== مصرف کوپن ==========
                         if (payment.CouponId.HasValue)

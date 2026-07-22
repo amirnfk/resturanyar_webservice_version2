@@ -929,21 +929,10 @@
         }
       }
     },
-    "/api/Subscription/getactivesubscription/{restaurantId}": {
+    "/api/Subscription/getactivesubscription": {
       "get": {
         "tags": [
           "Subscription"
-        ],
-        "parameters": [
-          {
-            "name": "restaurantId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "responses": {
           "200": {

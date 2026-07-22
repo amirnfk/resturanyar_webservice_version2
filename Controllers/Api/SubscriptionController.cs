@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Resturanyar.Data;
 using resturanyar.Models;
+using resturanyar.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
@@ -501,14 +503,52 @@ namespace resturanyar.Controllers.Api
             }
         }
 
-        // دریافت اشتراک فعال رستوران
-        [HttpGet("getactivesubscription/{restaurantId}")]
-        public async Task<IActionResult> GetActiveSubscription(int restaurantId)
+        // دریافت اشتراک فعال رستوران جاری (بدون نیاز به restaurantId در URL)
+        [Authorize]
+        [HttpGet("getactivesubscription")]
+        public async Task<IActionResult> GetActiveSubscription()
+        {
+            var restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+            {
+                return Unauthorized(new SubscriptionResponse
+                {
+                    Success = false,
+                    Message = "شناسه رستوران مشخص نیست."
+                });
+            }
+
+            var ownerId = User.GetOwnerId();
+            if (ownerId == null)
+            {
+                return Unauthorized(new SubscriptionResponse
+                {
+                    Success = false,
+                    Message = "کاربر احراز هویت نشده است."
+                });
+            }
+
+            var ownsRestaurant = await _context.Restaurants
+                .AnyAsync(r => r.restaurant_id == restaurantId.Value && r.owner_id == ownerId.Value);
+
+            if (!ownsRestaurant)
+            {
+                return Forbid();
+            }
+
+            return await GetActiveSubscriptionForRestaurant(restaurantId.Value);
+        }
+
+        private async Task<IActionResult> GetActiveSubscriptionForRestaurant(int restaurantId)
         {
             try
             {
+                await ExpireDuplicateActiveSubscriptionsAsync(restaurantId);
+
                 var activeSubscription = await _context.Subscriptions
                     .Where(s => s.RestaurantId == restaurantId && s.Status == "Active" && s.EndDate > DateTime.Now)
+                    .OrderByDescending(s => s.EndDate)
+                    .ThenByDescending(s => s.Id)
                     .Include(s => s.SubscriptionPlan)
                     .Select(s => new SubscriptionData
                     {
@@ -643,6 +683,27 @@ namespace resturanyar.Controllers.Api
 
  
 
+
+        private async Task ExpireDuplicateActiveSubscriptionsAsync(int restaurantId)
+        {
+            var now = DateTime.Now;
+            var activeSubscriptions = await _context.Subscriptions
+                .Where(s => s.RestaurantId == restaurantId && s.Status == "Active" && s.EndDate > now)
+                .OrderByDescending(s => s.EndDate)
+                .ThenByDescending(s => s.Id)
+                .ToListAsync();
+
+            if (activeSubscriptions.Count <= 1)
+                return;
+
+            foreach (var sub in activeSubscriptions.Skip(1))
+            {
+                sub.Status = "Expired";
+                sub.UpdatedAt = now;
+            }
+
+            await _context.SaveChangesAsync();
+        }
 
         // متد کمکی برای محاسبه تاریخ پایان
         private DateTime CalculateEndDate(DateTime startDate, string period)

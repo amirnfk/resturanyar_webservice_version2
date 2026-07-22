@@ -365,16 +365,13 @@
         navigateTo(link.href, true);
     }
 
-    async function onPopState(event) {
+    function onPopState(event) {
         if (event.state && event.state.sidebarNav && event.state.url) {
-            try {
-                await navigateTo(event.state.url, false);
-            } catch (e) {
-                window.location.href = event.state.url;
-            }
-        } else {
-            window.location.reload();
+            window.location.assign(event.state.url);
+            return;
         }
+
+        window.location.reload();
     }
 
     function onLeaveSpaClick(event) {
@@ -383,15 +380,18 @@
         if (!isFullPageLeaveUrl(link.href)) return;
 
         try {
-            history.replaceState(null, document.title, window.location.href);
+            history.replaceState({
+                sidebarNav: true,
+                url: window.location.href
+            }, document.title, window.location.href);
         } catch (e) { /* ignore */ }
     }
 
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('click', onLeaveSpaClick, true);
     window.addEventListener('popstate', onPopState);
-    window.addEventListener('pageshow', function (event) {
-        if (event.persisted && typeof window.runSidebarPageInit === 'function') {
+    window.addEventListener('pageshow', function () {
+        if (typeof window.runSidebarPageInit === 'function') {
             window.runSidebarPageInit();
         }
     });

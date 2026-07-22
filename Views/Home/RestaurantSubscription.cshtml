@@ -468,7 +468,7 @@
                 @if (ViewBag.RestaurantId != null && (int)ViewBag.RestaurantId > 0)
                 {
                     <div class="text-center mt-4">
-                        <a href="@Url.Action("PrepareUpgrade", "home", new { restaurantId = ViewBag.RestaurantId })" class="btn-primary-custom">
+                        <a href="@Url.Action("PrepareUpgrade", "Home")" class="btn-primary-custom">
                             <i class="fas fa-credit-card ms-2"></i>
                             تمدید اشتراک
                         </a>
@@ -488,7 +488,7 @@
             <div class="icon-big"><i class="fa-solid fa-inbox"></i></div>
             <h5>هیچ اشتراک فعالی یافت نشد</h5>
             <p>برای استفاده کامل از امکانات، اشتراک تهیه کنید.</p>
-            <a href="@Url.Action("PrepareUpgrade", "home", new { restaurantId = ViewBag.RestaurantId })" class="btn-primary-custom">
+            <a href="@Url.Action("PrepareUpgrade", "Home")" class="btn-primary-custom">
                 مشاهده پلن‌ها
             </a>
         </div>
@@ -496,7 +496,7 @@
 </div>
 <script>
     var API_BASE = '/api/Subscription';
-    var restaurantId = @(ViewBag.RestaurantId ?? 0);
+    var subscriptionRequest = null;
 
     function toPersianDate(gregorianDate) {
         if (!gregorianDate) return '--';
@@ -556,12 +556,16 @@
     }
 
     function loadSubscription() {
+        if (subscriptionRequest && subscriptionRequest.readyState !== 4) {
+            return;
+        }
+
         $('#loadingState').show();
         $('#subscriptionContent').hide();
         $('#noSubscriptionContent').hide();
 
-        $.ajax({
-            url: API_BASE + '/getactivesubscription/' + restaurantId,
+        subscriptionRequest = $.ajax({
+            url: API_BASE + '/getactivesubscription',
             type: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -575,6 +579,9 @@
             error: function () {
                 $('#loadingState').hide();
                 $('#noSubscriptionContent').show();
+            },
+            complete: function () {
+                subscriptionRequest = null;
             }
         });
     }
@@ -614,13 +621,9 @@
     function initRestaurantSubscriptionPage() {
         if (!document.querySelector('.subscription-page')) return;
 
-        if (restaurantId) {
-            loadSubscription();
-        } else {
-            $('#noSubscriptionContent').show();
-            $('#loadingState').hide();
-        }
+        loadSubscription();
     }
 
     window.initRestaurantSubscriptionPage = initRestaurantSubscriptionPage;
+    window.addEventListener('pageshow', initRestaurantSubscriptionPage);
 </script>

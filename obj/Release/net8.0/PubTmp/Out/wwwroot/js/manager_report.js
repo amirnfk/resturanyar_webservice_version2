@@ -65,6 +65,53 @@ function jalali_to_gregorian(jy, jm, jd) {
     return [gy, gm + 1, g_day_no + 1];
 }
 
+function jalaliFaToIso(faDate) {
+    if (!faDate) return '';
+    const parts = faDate.split('/');
+    if (parts.length !== 3) return '';
+    const [jy, jm, jd] = parts.map(Number);
+    if (isNaN(jy) || isNaN(jm) || isNaN(jd)) return '';
+    const [gy, gm, gd] = jalali_to_gregorian(jy, jm, jd);
+    return `${gy}-${String(gm).padStart(2, '0')}-${String(gd).padStart(2, '0')}`;
+}
+
+function clearQuickFilterActiveState() {
+    document.querySelectorAll('.quick-filter-btn').forEach(btn => btn.classList.remove('active'));
+}
+
+function setActiveQuickFilter(period) {
+    clearQuickFilterActiveState();
+    if (!period) return;
+    const btn = document.querySelector(`.quick-filter-btn[data-period="${period}"]`);
+    if (btn) btn.classList.add('active');
+}
+
+function clearCustomDateFields() {
+    ['fromIso', 'toIso', 'fromFa', 'toFa'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+}
+
+function syncCustomDateFields() {
+    const fromFa = document.getElementById('fromFa');
+    const toFa = document.getElementById('toFa');
+    const fromIso = document.getElementById('fromIso');
+    const toIso = document.getElementById('toIso');
+    const periodInput = document.getElementById('periodInput');
+
+    if (fromFa && fromIso && fromFa.value.trim()) {
+        fromIso.value = jalaliFaToIso(fromFa.value.trim());
+    }
+    if (toFa && toIso && toFa.value.trim()) {
+        toIso.value = jalaliFaToIso(toFa.value.trim());
+    }
+
+    if (periodInput && ((fromIso && fromIso.value) || (toIso && toIso.value))) {
+        periodInput.value = '';
+    }
+}
+
 function initializeDatepickers() {
     if (!window.datepickerInitialized) {
         jalaliDatepicker.startWatch({ time: false });
@@ -76,15 +123,14 @@ function initializeDatepickers() {
         newInput.addEventListener("change", () => {
             const faDate = newInput.value;
             if (!faDate) return;
-            const parts = faDate.split('/');
-            if (parts.length !== 3) return;
-            const [jy, jm, jd] = parts.map(Number);
-            if (isNaN(jy) || isNaN(jm) || isNaN(jd)) return;
-            const [gy, gm, gd] = jalali_to_gregorian(jy, jm, jd);
-            const iso = `${gy}-${String(gm).padStart(2, '0')}-${String(gd).padStart(2, '0')}`;
+            const iso = jalaliFaToIso(faDate);
+            if (!iso) return;
             if (newInput.id === "fromFa") document.getElementById("fromIso").value = iso;
             if (newInput.id === "toFa") document.getElementById("toIso").value = iso;
-            // با تغییر تاریخ‌ها لینک خروجی را آپدیت کن
+
+            const periodInput = document.getElementById('periodInput');
+            if (periodInput) periodInput.value = '';
+            clearQuickFilterActiveState();
             wireExportLink();
         });
     });
@@ -109,6 +155,20 @@ function hideLoading() {
     if (overlay) overlay.style.display = 'none';
 }
 
+function showExportLoading() {
+    const overlay = document.getElementById('exportLoadingOverlay');
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
+}
+
+function hideExportLoading() {
+    const overlay = document.getElementById('exportLoadingOverlay');
+    if (!overlay) return;
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+}
+
 function setupEventListeners() {
     const form = document.getElementById('reportFilterForm');
     if (!form) return;
@@ -118,6 +178,13 @@ function setupEventListeners() {
     // ارسال فرم به صورت AJAX
     registerListener(form, 'submit', function (e) {
         e.preventDefault();
+        syncCustomDateFields();
+        const fromIso = document.getElementById('fromIso');
+        const toIso = document.getElementById('toIso');
+        const hasCustomDates = (fromIso && fromIso.value) || (toIso && toIso.value);
+        if (hasCustomDates) {
+            setActiveQuickFilter('custom');
+        }
         const url = `${form.action}?${getFormQuery(form)}`;
         loadReports(url);
     });
@@ -127,16 +194,25 @@ function setupEventListeners() {
         wireExportLink();
     });
 
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        registerListener(exportBtn, 'click', handleExportClick);
+    }
+
     // فیلترهای سریع
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
         registerListener(btn, 'click', function (e) {
             e.preventDefault();
+            if (btn.id === 'customRangeBtn') return;
+            clearCustomDateFields();
+            let period = btn.dataset.period || '';
             try {
                 const u = new URL(btn.href, window.location.origin);
-                const p = u.searchParams.get('period') || '';
+                period = u.searchParams.get('period') || period;
                 const periodInput = document.getElementById('periodInput');
-                if (periodInput) periodInput.value = p;
+                if (periodInput) periodInput.value = period;
             } catch { }
+            setActiveQuickFilter(period);
             loadReports(btn.href);
         });
     });
@@ -188,6 +264,83 @@ function wireExportLink() {
     const exp = document.getElementById('exportBtn');
     if (exp && window.__exportExcelUrl) {
         exp.href = `${window.__exportExcelUrl}?${params.toString()}`;
+    }
+}
+
+function showExportNoOrdersModal(message) {
+    const modalEl = document.getElementById('exportNoOrdersModal');
+    if (!modalEl || typeof bootstrap === 'undefined') {
+        if (typeof window.showToast === 'function') {
+            window.showToast(message || 'هیچ سفارشی در این بازه زمانی یافت نشد.', 'error');
+        }
+        return;
+    }
+
+    const msgEl = document.getElementById('exportNoOrdersMessage');
+    if (msgEl) {
+        msgEl.textContent = message || 'هیچ سفارشی در این بازه زمانی یافت نشد.';
+    }
+
+    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+}
+
+function getExportFileName(contentDisposition, fallbackName) {
+    if (!contentDisposition) return fallbackName;
+
+    const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8Match && utf8Match[1]) {
+        try {
+            return decodeURIComponent(utf8Match[1].trim());
+        } catch {
+            return utf8Match[1].trim();
+        }
+    }
+
+    const match = contentDisposition.match(/filename="?([^";]+)"?/i);
+    return match && match[1] ? match[1].trim() : fallbackName;
+}
+
+async function handleExportClick(e) {
+    e.preventDefault();
+
+    syncCustomDateFields();
+    wireExportLink();
+
+    const exportBtn = document.getElementById('exportBtn');
+    if (!exportBtn || !exportBtn.href) return;
+
+    exportBtn.classList.add('disabled');
+    exportBtn.setAttribute('aria-disabled', 'true');
+    showExportLoading();
+
+    try {
+        const res = await fetch(exportBtn.href, { credentials: 'same-origin' });
+        if (!res.ok) {
+            const message = (await res.text()).trim() || 'هیچ سفارشی در این بازه زمانی یافت نشد.';
+            showExportNoOrdersModal(message);
+            return;
+        }
+
+        const blob = await res.blob();
+        const fileName = getExportFileName(
+            res.headers.get('Content-Disposition'),
+            'OrdersReport.xlsx'
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Export error:', error);
+        showExportNoOrdersModal('خطا در دانلود فایل اکسل. لطفا دوباره تلاش کنید.');
+    } finally {
+        hideExportLoading();
+        exportBtn.classList.remove('disabled');
+        exportBtn.removeAttribute('aria-disabled');
     }
 }
 

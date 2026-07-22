@@ -155,6 +155,20 @@ function hideLoading() {
     if (overlay) overlay.style.display = 'none';
 }
 
+function showExportLoading() {
+    const overlay = document.getElementById('exportLoadingOverlay');
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
+}
+
+function hideExportLoading() {
+    const overlay = document.getElementById('exportLoadingOverlay');
+    if (!overlay) return;
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+}
+
 function setupEventListeners() {
     const form = document.getElementById('reportFilterForm');
     if (!form) return;
@@ -179,6 +193,11 @@ function setupEventListeners() {
     registerListener(form, 'change', function () {
         wireExportLink();
     });
+
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        registerListener(exportBtn, 'click', handleExportClick);
+    }
 
     // فیلترهای سریع
     document.querySelectorAll('.quick-filter-btn').forEach(btn => {
@@ -245,6 +264,83 @@ function wireExportLink() {
     const exp = document.getElementById('exportBtn');
     if (exp && window.__exportExcelUrl) {
         exp.href = `${window.__exportExcelUrl}?${params.toString()}`;
+    }
+}
+
+function showExportNoOrdersModal(message) {
+    const modalEl = document.getElementById('exportNoOrdersModal');
+    if (!modalEl || typeof bootstrap === 'undefined') {
+        if (typeof window.showToast === 'function') {
+            window.showToast(message || 'هیچ سفارشی در این بازه زمانی یافت نشد.', 'error');
+        }
+        return;
+    }
+
+    const msgEl = document.getElementById('exportNoOrdersMessage');
+    if (msgEl) {
+        msgEl.textContent = message || 'هیچ سفارشی در این بازه زمانی یافت نشد.';
+    }
+
+    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+}
+
+function getExportFileName(contentDisposition, fallbackName) {
+    if (!contentDisposition) return fallbackName;
+
+    const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8Match && utf8Match[1]) {
+        try {
+            return decodeURIComponent(utf8Match[1].trim());
+        } catch {
+            return utf8Match[1].trim();
+        }
+    }
+
+    const match = contentDisposition.match(/filename="?([^";]+)"?/i);
+    return match && match[1] ? match[1].trim() : fallbackName;
+}
+
+async function handleExportClick(e) {
+    e.preventDefault();
+
+    syncCustomDateFields();
+    wireExportLink();
+
+    const exportBtn = document.getElementById('exportBtn');
+    if (!exportBtn || !exportBtn.href) return;
+
+    exportBtn.classList.add('disabled');
+    exportBtn.setAttribute('aria-disabled', 'true');
+    showExportLoading();
+
+    try {
+        const res = await fetch(exportBtn.href, { credentials: 'same-origin' });
+        if (!res.ok) {
+            const message = (await res.text()).trim() || 'هیچ سفارشی در این بازه زمانی یافت نشد.';
+            showExportNoOrdersModal(message);
+            return;
+        }
+
+        const blob = await res.blob();
+        const fileName = getExportFileName(
+            res.headers.get('Content-Disposition'),
+            'OrdersReport.xlsx'
+        );
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Export error:', error);
+        showExportNoOrdersModal('خطا در دانلود فایل اکسل. لطفا دوباره تلاش کنید.');
+    } finally {
+        hideExportLoading();
+        exportBtn.classList.remove('disabled');
+        exportBtn.removeAttribute('aria-disabled');
     }
 }
 
