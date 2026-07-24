@@ -19,6 +19,7 @@ using resturanyar.Models;
 using resturanyar.Models;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.Settings;
+using resturanyar.Helpers;
 using resturanyar.Utility;
 using Resturanyar.Data;
 using Resturanyar.Data;
@@ -1133,8 +1134,8 @@ namespace Resturanyar.Controllers.Api
                     ImageUrl = imageUrl,
                     CategoryId = request.CategoryId,
                     Price = request.Price,
-                    DiscountPrice = request.DiscountPrice,
-                    CostPrice = request.CostPrice,
+                    DiscountPrice = FoodItemPricing.NormalizeDiscountPrice(request.Price, request.DiscountPrice),
+                    CostPrice = FoodItemPricing.NormalizeCostPrice(request.CostPrice),
                     RestaurantId = request.RestaurantId,
                     IsAvailable = request.isAvailable ?? true,
                     IsActive = true,
@@ -1270,7 +1271,7 @@ namespace Resturanyar.Controllers.Api
                               CategoryId = c.CategoryId ,
                               Price = f.Price,
                               DiscountPrice = f.DiscountPrice ?? 0,
-                              CostPrice = f.CostPrice ?? 0,
+                              CostPrice = f.CostPrice,
                               IsAvailable = f.IsAvailable,
                               CreatedAt = f.CreatedAt.HasValue ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm") : ""
                           })
@@ -1360,8 +1361,8 @@ namespace Resturanyar.Controllers.Api
                 food.Description = request.Description?.Trim();
                 food.CategoryId = request.CategoryId;
                 food.Price = request.Price;
-                food.DiscountPrice = request.DiscountPrice;
-                food.CostPrice = request.CostPrice;
+                food.DiscountPrice = FoodItemPricing.NormalizeDiscountPrice(request.Price, request.DiscountPrice);
+                food.CostPrice = FoodItemPricing.NormalizeCostPrice(request.CostPrice);
                 food.IsAvailable = request.isAvailable ?? true;
                 // معمولا RestaurantId تغییر داده نمی‌شود، مگر سیاست اپلیکیشن اجازه دهد
 
@@ -1448,7 +1449,7 @@ namespace Resturanyar.Controllers.Api
                             CategoryId = c.CategoryId,
                             Price = f.Price,
                             DiscountPrice = f.DiscountPrice ?? 0,
-                            CostPrice = f.CostPrice ?? 0,
+                            CostPrice = f.CostPrice,
                             IsAvailable = f.IsAvailable,
                             IsActive = f.IsActive,
                             CreatedAt = f.CreatedAt.HasValue ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm") : ""
@@ -1537,7 +1538,7 @@ namespace Resturanyar.Controllers.Api
                         FoodItemId = item.FoodItemId,
                         Quantity = item.Quantity,
                         UnitPrice = food.Price,
-                        UnitPriceWithDiscount = food.DiscountPrice ?? food.Price,
+                        UnitPriceWithDiscount = FoodItemPricing.GetEffectiveSellingPrice(food.Price, food.DiscountPrice),
                         FoodName = food.Name,
                         FoodImageUrl = food.ImageUrl
                     });
@@ -1715,7 +1716,7 @@ namespace Resturanyar.Controllers.Api
                         FoodItemId = item.FoodItemId,
                         Quantity = item.Quantity,
                         UnitPrice = food.Price,
-                        UnitPriceWithDiscount = (decimal)food.DiscountPrice,
+                        UnitPriceWithDiscount = FoodItemPricing.GetEffectiveSellingPrice(food.Price, food.DiscountPrice),
                         FoodName = food.Name,
                         FoodImageUrl = food.ImageUrl
                     });

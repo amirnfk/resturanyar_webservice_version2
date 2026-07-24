@@ -13,7 +13,7 @@
          
         public decimal Price { get; set; }
         public decimal? DiscountPrice { get; set; }
-        public decimal? CostPrice { get; set; }
+        public decimal CostPrice { get; set; } = 0;
         public bool IsAvailable { get; set; } = true;
         public bool IsActive { get; set; } = true;
         public Category Category { get; set; }

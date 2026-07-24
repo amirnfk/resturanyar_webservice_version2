@@ -16,6 +16,7 @@ using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.Settings;
 using resturanyar.Models.ViewModels;
+using resturanyar.Helpers;
 using resturanyar.Utility;
 using Resturanyar.Hubs;
 using System.Net.Http;
@@ -717,8 +718,8 @@ namespace resturanyar.Controllers.Api.V2
                     ImageUrl = imageUrl,
                     CategoryId = request.CategoryId,
                     Price = request.Price,
-                    DiscountPrice = request.DiscountPrice,
-                    CostPrice = request.CostPrice,
+                    DiscountPrice = FoodItemPricing.NormalizeDiscountPrice(request.Price, request.DiscountPrice),
+                    CostPrice = FoodItemPricing.NormalizeCostPrice(request.CostPrice),
                     RestaurantId = request.RestaurantId,
                     IsAvailable = request.isAvailable ?? true,
                     IsActive = true,
@@ -820,8 +821,8 @@ namespace resturanyar.Controllers.Api.V2
                 food.Description = request.Description?.Trim();
                 food.CategoryId = request.CategoryId;
                 food.Price = request.Price;
-                food.DiscountPrice = request.DiscountPrice;
-                food.CostPrice = request.CostPrice;
+                food.DiscountPrice = FoodItemPricing.NormalizeDiscountPrice(request.Price, request.DiscountPrice);
+                food.CostPrice = FoodItemPricing.NormalizeCostPrice(request.CostPrice);
                 food.IsAvailable = request.isAvailable ?? true;
 
                 await _context.SaveChangesAsync();
@@ -1118,7 +1119,7 @@ namespace resturanyar.Controllers.Api.V2
                         FoodItemId = item.FoodItemId,
                         Quantity = item.Quantity,
                         UnitPrice = food.Price,
-                        UnitPriceWithDiscount = food.DiscountPrice ?? food.Price,
+                        UnitPriceWithDiscount = FoodItemPricing.GetEffectiveSellingPrice(food.Price, food.DiscountPrice),
                         FoodName = food.Name,
                         FoodImageUrl = food.ImageUrl
                     });
@@ -2261,7 +2262,7 @@ namespace resturanyar.Controllers.Api.V2
                             CategoryId = c.CategoryId,
                             Price = f.Price,
                             DiscountPrice = f.DiscountPrice ?? 0,
-                            CostPrice = f.CostPrice ?? 0,
+                            CostPrice = f.CostPrice,
                             IsAvailable = f.IsAvailable,
                             CreatedAt = f.CreatedAt.HasValue ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm") : ""
                         })
@@ -2324,7 +2325,7 @@ namespace resturanyar.Controllers.Api.V2
                     CategoryId = food.c.CategoryId,
                     Price = food.f.Price,
                     DiscountPrice = food.f.DiscountPrice ?? 0,
-                    CostPrice = food.f.CostPrice ?? 0,
+                    CostPrice = food.f.CostPrice,
                     IsAvailable = food.f.IsAvailable,
                     IsActive = food.f.IsActive,
                     CreatedAt = food.f.CreatedAt.HasValue ? food.f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm") : ""
@@ -2443,7 +2444,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
 
-
+      
 
         ///////////////////////////////////////////////////////////////////////
 

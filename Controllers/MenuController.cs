@@ -129,7 +129,7 @@ public class MenuController : Controller
                      CategoryDisplayOrder = c.DisplayOrder,
                      Price = f.Price,
                      DiscountPrice = f.DiscountPrice ?? 0,
-                     CostPrice = f.CostPrice ?? 0,
+                     CostPrice = f.CostPrice,
                      IsAvailable = f.IsAvailable,
                      CreatedAt = f.CreatedAt.HasValue
                          ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")

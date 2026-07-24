@@ -50,7 +50,7 @@ wwwroot\css\index-page.css
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\css\manager-order-list.css
 wwwroot\css\managerlogin.css
-wwwroot\js\manager_report.js
+wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
 wwwroot\css\menu-settings-preview.css
 wwwroot\css\messages.css
@@ -152,7 +152,7 @@ wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
 wwwroot\js\managerlogin.js
-wwwroot\css\manager_report.css
+wwwroot\js\manager_report.js
 wwwroot\js\manager_report_partial.js
 wwwroot\js\messages.js
 wwwroot\js\owner-messages.js

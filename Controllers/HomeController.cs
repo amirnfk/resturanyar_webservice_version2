@@ -1353,7 +1353,7 @@ namespace resturanyar.Controllers
                     CategoryName = f.Category != null ? f.Category.CategoryName : "",
                     Price = f.Price,
                     DiscountPrice = f.DiscountPrice ?? 0,
-                    CostPrice = f.CostPrice ?? 0,
+                    CostPrice = f.CostPrice,
                     IsAvailable = f.IsAvailable,
                     CreatedAt = f.CreatedAt.HasValue
                         ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")
@@ -1391,7 +1391,7 @@ namespace resturanyar.Controllers
                     CategoryName = f.Category != null ? f.Category.CategoryName : "", // ✅ مقداردهی نام دسته‌بندی
                     Price = f.Price,
                     DiscountPrice = f.DiscountPrice ?? 0,
-                    CostPrice = f.CostPrice ?? 0,
+                    CostPrice = f.CostPrice,
                     IsAvailable = f.IsAvailable,
                     CreatedAt = f.CreatedAt.HasValue
                         ? f.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")
