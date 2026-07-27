@@ -68,6 +68,26 @@ namespace resturanyar.Controllers.Api.V2
             return StatusCode(result.StatusCode, new { success = result.Success, message = result.Message, data = result.Receipt });
         }
 
+        [HttpPost("orders/{orderId}/receipt/reissue")]
+        public async Task<IActionResult> ReissueReceipt(int orderId, [FromBody] ReceiptPreviewRequest? request)
+        {
+            var ownerId = GetOwnerIdFromToken();
+            if (ownerId == null)
+                return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            if (!await OwnsRestaurant(ownerId.Value, order.RestaurantId))
+                return Forbid();
+
+            request ??= new ReceiptPreviewRequest();
+            var result = await GetReceiptService().ReissueAsync(orderId, order.RestaurantId, request, ownerId, "Api", recordPrintHistory: false);
+            return StatusCode(result.StatusCode, new { success = result.Success, message = result.Message, data = result.Receipt });
+        }
+
         [HttpGet("orders/{orderId}/receipt-data")]
         public async Task<IActionResult> GetReceiptData(int orderId)
         {

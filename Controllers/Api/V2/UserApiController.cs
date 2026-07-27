@@ -22,6 +22,7 @@ using Resturanyar.Hubs;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace resturanyar.Controllers.Api.V2
 {
@@ -1127,6 +1128,21 @@ namespace resturanyar.Controllers.Api.V2
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
+
+                try
+                {
+                    var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                    await receiptService.TryAutoIssueOnSettlementAsync(
+                        order.OrderId,
+                        order.RestaurantId,
+                        ownerIdFromToken,
+                        previousStatusId: 0,
+                        newStatusId: order.StatusId);
+                }
+                catch
+                {
+                    // Best-effort auto-issue on create-as-settled
+                }
 
                 // 6. Add initial OrderUpdate for the next role (e.g., Chef = 3)
                 int? nextRoleId = GetNextRoleId(request.StatusId);

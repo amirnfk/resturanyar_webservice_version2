@@ -36,6 +36,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 namespace Resturanyar.Controllers.Api
 {
     [ApiController]
@@ -1625,7 +1626,7 @@ namespace Resturanyar.Controllers.Api
                 });
             }
 
-            
+            var previousStatusId = order.StatusId;
             order.StatusId = dto.NewStatusId;
             order.UpdatedAt = DateTime.Now;
 
@@ -1654,6 +1655,21 @@ namespace Resturanyar.Controllers.Api
             }
 
             _context.SaveChanges();
+
+            try
+            {
+                var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                await receiptService.TryAutoIssueOnSettlementAsync(
+                    order.OrderId,
+                    order.RestaurantId,
+                    null,
+                    previousStatusId,
+                    dto.NewStatusId);
+            }
+            catch
+            {
+                // Best-effort: status update must not fail if auto-issue fails.
+            }
 
             // 🔥 اضافه کردن await برای ارسال SignalR
             await _hubContext.Clients.Group(order.RestaurantId.ToString())
@@ -1749,6 +1765,21 @@ namespace Resturanyar.Controllers.Api
                 }
 
                 _context.SaveChanges();
+
+                try
+                {
+                    var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                    await receiptService.TryAutoIssueOnSettlementAsync(
+                        order.OrderId,
+                        order.RestaurantId,
+                        null,
+                        oldStatusId,
+                        order.StatusId);
+                }
+                catch
+                {
+                    // Best-effort auto-issue
+                }
 
                 // 🔥 اضافه کردن SignalR برای ارسال نوتیفیکیشن
                 await _hubContext.Clients.Group(order.RestaurantId.ToString())

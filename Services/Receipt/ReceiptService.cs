@@ -19,12 +19,15 @@ namespace resturanyar.Services.Receipt
     {
         Task<ReceiptServiceResult> GetStatusAsync(int orderId, int restaurantId);
         Task<ReceiptServiceResult> PreviewAsync(int orderId, int restaurantId, ReceiptPreviewRequest request);
-        Task<ReceiptServiceResult> IssueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel);
-        Task<ReceiptServiceResult> GetReceiptDataAsync(int orderId, int restaurantId, string channel, int? userId);
+        Task<ReceiptServiceResult> IssueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel, bool recordPrintHistory = true);
+        Task<ReceiptServiceResult> ReissueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel, bool recordPrintHistory = false);
+        Task<ReceiptServiceResult> TryAutoIssueOnSettlementAsync(int orderId, int restaurantId, int? userId, int previousStatusId, int newStatusId);
+        Task<ReceiptServiceResult> GetReceiptDataAsync(int orderId, int restaurantId, string channel, int? userId, bool recordPrintHistory = true);
         Task<List<ChargeDefinitionDto>> GetChargeDefinitionsAsync(int restaurantId);
         Task<List<ChargeDefinitionDto>> EnsureChargeDefinitionsAsync(int restaurantId);
         Task<bool> SaveChargeDefinitionsAsync(int restaurantId, List<ChargeDefinitionDto> definitions);
         string RenderHtml(ReceiptDto receipt);
+        bool IsSettlementStatus(int statusId);
     }
 
     public class ReceiptService : IReceiptService
@@ -90,17 +93,7 @@ namespace resturanyar.Services.Receipt
             if (!load.Restaurant!.ReceiptChargesEnabled)
                 return Success(BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!));
 
-            var snapshot = await _context.OrderReceiptSnapshots
-                .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.OrderId == orderId);
-
-            if (snapshot != null)
-            {
-                var issued = DeserializeReceipt(snapshot.ReceiptPayloadJson);
-                if (issued != null)
-                    return Success(issued);
-            }
-
+            // Always calculate live so staff can preview/edit charges even after a snapshot exists.
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
             return Success(receipt);
         }
@@ -110,7 +103,114 @@ namespace resturanyar.Services.Receipt
             int restaurantId,
             ReceiptPreviewRequest request,
             int? userId,
-            string channel)
+            string channel,
+            bool recordPrintHistory = true)
+        {
+            return await PersistIssuedReceiptAsync(
+                orderId,
+                restaurantId,
+                request,
+                userId,
+                channel,
+                replaceExisting: false,
+                recordPrintHistory);
+        }
+
+        public async Task<ReceiptServiceResult> ReissueAsync(
+            int orderId,
+            int restaurantId,
+            ReceiptPreviewRequest request,
+            int? userId,
+            string channel,
+            bool recordPrintHistory = false)
+        {
+            return await PersistIssuedReceiptAsync(
+                orderId,
+                restaurantId,
+                request,
+                userId,
+                channel,
+                replaceExisting: true,
+                recordPrintHistory);
+        }
+
+        public bool IsSettlementStatus(int statusId) => statusId is 8 or 11;
+
+        public async Task<ReceiptServiceResult> TryAutoIssueOnSettlementAsync(
+            int orderId,
+            int restaurantId,
+            int? userId,
+            int previousStatusId,
+            int newStatusId)
+        {
+            if (!IsSettlementStatus(newStatusId))
+                return Success(new ReceiptDto { OrderId = orderId, IsIssued = false });
+
+            if (previousStatusId == newStatusId)
+                return Success(new ReceiptDto { OrderId = orderId, IsIssued = false });
+
+            var status = await GetStatusAsync(orderId, restaurantId);
+            if (!status.Success)
+                return status;
+
+            if (status.Receipt?.UsesCharges != true)
+                return Success(status.Receipt!);
+
+            if (status.Receipt.IsIssued)
+            {
+                var snapshot = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.OrderId == orderId);
+
+                status.Receipt.GrandTotal = snapshot?.GrandTotal ?? 0;
+                status.Receipt.IssuedAt = snapshot?.IssuedAt ?? status.Receipt.IssuedAt;
+                status.Receipt.IsIssued = true;
+                return Success(status.Receipt);
+            }
+
+            var load = await LoadOrderContext(orderId, restaurantId);
+            if (!load.Success)
+                return ToFailResult(load);
+
+            var request = await BuildDefaultPreviewRequestAsync(load.Order!.OrderType, restaurantId);
+            return await IssueAsync(orderId, restaurantId, request, userId, "AutoSettle", recordPrintHistory: false);
+        }
+
+        private async Task<ReceiptPreviewRequest> BuildDefaultPreviewRequestAsync(OrderTypeKind orderType, int restaurantId)
+        {
+            var definitions = await _context.RestaurantChargeDefinitions
+                .AsNoTracking()
+                .Where(d => d.RestaurantId == restaurantId)
+                .OrderBy(d => d.DisplayOrder)
+                .ToListAsync();
+
+            var flag = OrderTypeToFlag(orderType);
+            var charges = definitions
+                .Where(d => (d.AppliesToOrderTypes & flag) != 0)
+                .Select(d => new ReceiptChargeSelectionDto
+                {
+                    DefinitionId = d.Id,
+                    Code = d.Code,
+                    IsEnabled = d.IsEnabled,
+                    Value = NormalizeChargeValue(d.CalculationType, d.Value)
+                })
+                .ToList();
+
+            return new ReceiptPreviewRequest
+            {
+                OrderType = orderType,
+                Charges = charges
+            };
+        }
+
+        private async Task<ReceiptServiceResult> PersistIssuedReceiptAsync(
+            int orderId,
+            int restaurantId,
+            ReceiptPreviewRequest request,
+            int? userId,
+            string channel,
+            bool replaceExisting,
+            bool recordPrintHistory)
         {
             var load = await LoadOrderContext(orderId, restaurantId);
             if (!load.Success)
@@ -122,36 +222,51 @@ namespace resturanyar.Services.Receipt
             var existing = await _context.OrderReceiptSnapshots
                 .FirstOrDefaultAsync(s => s.OrderId == orderId);
 
-            if (existing != null)
+            if (existing != null && !replaceExisting)
                 return Fail("فاکتور این سفارش قبلاً صادر شده است. برای چاپ مجدد از همان فاکتور استفاده کنید.", 409);
 
+            if (existing == null && replaceExisting)
+                return Fail("فاکتور این سفارش هنوز صادر نشده است.", 404);
+
+            request ??= new ReceiptPreviewRequest();
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
             receipt.IsIssued = true;
             receipt.IssuedAt = DateTime.UtcNow;
 
-            var snapshot = new OrderReceiptSnapshot
+            if (existing == null)
             {
-                OrderId = orderId,
-                RestaurantId = restaurantId,
-                OrderType = receipt.OrderType,
-                ItemsSubtotal = receipt.ItemsSubtotal,
-                GrandTotal = receipt.GrandTotal,
-                ChargeLinesJson = JsonSerializer.Serialize(receipt.ChargeLines, JsonOptions),
-                ReceiptPayloadJson = JsonSerializer.Serialize(receipt, JsonOptions),
-                OrderItemsVersion = load.Order!.UpdatedAt,
-                IssuedAt = DateTime.UtcNow,
-                IssuedByUserId = userId
-            };
+                existing = new OrderReceiptSnapshot
+                {
+                    OrderId = orderId,
+                    RestaurantId = restaurantId
+                };
+                _context.OrderReceiptSnapshots.Add(existing);
+            }
 
-            _context.OrderReceiptSnapshots.Add(snapshot);
+            existing.OrderType = receipt.OrderType;
+            existing.ItemsSubtotal = receipt.ItemsSubtotal;
+            existing.GrandTotal = receipt.GrandTotal;
+            existing.ChargeLinesJson = JsonSerializer.Serialize(receipt.ChargeLines, JsonOptions);
+            existing.ReceiptPayloadJson = JsonSerializer.Serialize(receipt, JsonOptions);
+            existing.OrderItemsVersion = load.Order!.UpdatedAt;
+            existing.IssuedAt = DateTime.UtcNow;
+            existing.IssuedByUserId = userId;
+
             load.Order!.OrderType = receipt.OrderType;
             await _context.SaveChangesAsync();
 
-            await AddPrintHistory(orderId, snapshot.Id, userId, channel);
+            if (recordPrintHistory)
+                await AddPrintHistory(orderId, existing.Id, userId, channel);
+
             return Success(receipt);
         }
 
-        public async Task<ReceiptServiceResult> GetReceiptDataAsync(int orderId, int restaurantId, string channel, int? userId)
+        public async Task<ReceiptServiceResult> GetReceiptDataAsync(
+            int orderId,
+            int restaurantId,
+            string channel,
+            int? userId,
+            bool recordPrintHistory = true)
         {
             var load = await LoadOrderContext(orderId, restaurantId);
             if (!load.Success)
@@ -175,7 +290,8 @@ namespace resturanyar.Services.Receipt
                 receipt = DeserializeReceipt(snapshot.ReceiptPayloadJson)
                     ?? BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!);
 
-                await AddPrintHistory(orderId, snapshot.Id, userId, channel);
+                if (recordPrintHistory)
+                    await AddPrintHistory(orderId, snapshot.Id, userId, channel);
             }
 
             return Success(receipt);
@@ -310,7 +426,7 @@ namespace resturanyar.Services.Receipt
                 entity.Title = dto.Title.Trim();
                 entity.ChargeCategory = dto.ChargeCategory;
                 entity.CalculationType = dto.CalculationType;
-                entity.Value = dto.Value;
+                entity.Value = NormalizeChargeValue(dto.CalculationType, dto.Value);
                 entity.IsEnabled = dto.IsEnabled;
                 entity.IsTaxable = dto.IsTaxable;
                 entity.PercentageBase = dto.PercentageBase;
@@ -444,7 +560,7 @@ namespace resturanyar.Services.Receipt
                     (s.Code != null && s.Code.Equals(def.Code, StringComparison.OrdinalIgnoreCase)));
 
                 var isEnabled = selection != null ? selection.IsEnabled : def.IsEnabled;
-                var value = selection?.Value ?? def.Value;
+                var value = NormalizeChargeValue(def.CalculationType, selection?.Value ?? def.Value);
 
                 result.Add(new ChargeCalculationInput
                 {
@@ -514,6 +630,15 @@ namespace resturanyar.Services.Receipt
             {
                 return null;
             }
+        }
+
+        private static decimal NormalizeChargeValue(ChargeCalculationType calculationType, decimal? value)
+        {
+            var amount = value ?? 0m;
+            if (amount < 0) amount = 0;
+            if (calculationType == ChargeCalculationType.Percentage && amount > 100m)
+                amount = 100m;
+            return Math.Round(amount, 2, MidpointRounding.AwayFromZero);
         }
 
         private static OrderTypeFlags OrderTypeToFlag(OrderTypeKind orderType)

@@ -1,7 +1,7 @@
 @model resturanyar.Models.ViewModels.ReceiptChargeSettingsViewModel
 @using resturanyar.Models.Receipt
 @{
-    ViewData["Title"] = "تنظیمات کارمزد فاکتور";
+    ViewData["Title"] = "تنظیمات فاکتور";
 }
 
 @section Styles {
@@ -10,92 +10,187 @@
 }
 
 <div class="settings-page receipt-charge-settings-page" data-restaurant-id="@Model.RestaurantId">
-    <header class="settings-header">
+    <header class="settings-header rcs-hero">
         <div class="icon-circle">
             <i class="fas fa-file-invoice-dollar"></i>
         </div>
-        <div>
-            <h2>تنظیمات کارمزد فاکتور</h2>
-            <p class="text-muted mb-0">الگوی پیش‌فرض کارمزدها برای @Model.RestaurantName — مبلغ نهایی هنگام صدور فاکتور ثبت و قفل می‌شود.</p>
+        <div class="rcs-hero__text">
+            <p class="rcs-hero__subtitle">
+                الگوی پیش‌فرض هزینه‌ها برای
+                <span class="rcs-hero__restaurant">@Model.RestaurantName</span>
+            </p>
+            <p class="rcs-hero__hint">مالیات، حق سرویس، بسته‌بندی و ارسال را از اینجا تنظیم کنید.</p>
+        </div>
+        <div class="rcs-hero__stats" id="chargeSettingsStats" aria-live="polite">
+            <div class="rcs-stat">
+                <span class="rcs-stat__value" id="statTotalCount">@Model.Definitions.Count.ToString().ToPersianDigits()</span>
+                <span class="rcs-stat__label">کل موارد</span>
+            </div>
+            <div class="rcs-stat is-on">
+                <span class="rcs-stat__value" id="statEnabledCount">@Model.Definitions.Count(d => d.IsEnabled).ToString().ToPersianDigits()</span>
+                <span class="rcs-stat__label">فعال به‌صورت پیش‌فرض</span>
+            </div>
         </div>
     </header>
 
-    <div class="receipt-charge-notice">
-        <i class="fas fa-circle-info"></i>
-        <div>
-            <strong>نحوه کار:</strong>
-            این تنظیمات فقط الگوی اولیه چاپ فاکتور است. هنگام «چاپ فاکتور» در لیست سفارش‌ها می‌توانید هر مورد را فعال/غیرفعال کنید.
-            پس از اولین صدور، همان مبالغ برای چاپ‌های بعدی ثابت می‌ماند.
+    <div class="rcs-steps">
+        <div class="rcs-step">
+            <span class="rcs-step__num">۱</span>
+            <div>
+                <strong>تعیین مقادیر پیش‌فرض</strong>
+                <p>عنوان، مبلغ یا درصد، و نوع سفارش‌های مشمول هر مورد را مشخص کنید.</p>
+            </div>
+        </div>
+        <div class="rcs-step">
+            <span class="rcs-step__num">۲</span>
+            <div>
+                <strong>ویرایش هنگام چاپ</strong>
+                <p>در صفحه سفارش‌ها، پیش از چاپ هر فاکتور می‌توانید موارد را برای همان سفارش تغییر دهید.</p>
+            </div>
+        </div>
+        <div class="rcs-step">
+            <span class="rcs-step__num">۳</span>
+            <div>
+                <strong>ثبت نهایی پس از چاپ</strong>
+                <p>پس از اولین صدور فاکتور، مبالغ همان سفارش ثابت می‌ماند و در چاپ‌های بعدی تغییر نمی‌کند.</p>
+            </div>
         </div>
     </div>
 
-    <div class="settings-card">
-        <div class="settings-card__title">
-            <i class="fas fa-sliders"></i>
-            <span>کارمزدها و مالیات</span>
+    <div class="settings-card rcs-card">
+        <div class="settings-card__title rcs-card__title">
+            <div>
+                <i class="fas fa-sliders"></i>
+                <span>هزینه‌ها، تخفیف‌ها و مالیات</span>
+            </div>
+            <span class="rcs-dirty-pill" id="chargeDirtyPill" hidden>تغییرات ذخیره‌نشده</span>
         </div>
 
         <div id="chargeDefinitionsList" class="charge-definitions-list">
             @for (var i = 0; i < Model.Definitions.Count; i++)
             {
                 var def = Model.Definitions[i];
-                <article class="charge-definition-card" data-id="@def.Id" data-index="@i">
+                var isPercent = def.CalculationType == ChargeCalculationType.Percentage;
+                var flags = (int)def.AppliesToOrderTypes;
+                <article class="charge-definition-card @(def.IsEnabled ? "is-enabled" : "is-disabled")"
+                         data-id="@def.Id"
+                         data-index="@i"
+                         data-category="@((int)def.ChargeCategory)">
                     <div class="charge-definition-card__head">
-                        <div class="charge-definition-card__title-wrap">
-                            <span class="charge-definition-card__badge @GetCategoryClass(def.ChargeCategory)">@GetCategoryLabel(def.ChargeCategory)</span>
-                            <strong class="charge-definition-card__code">@def.Code</strong>
+                        <div class="charge-definition-card__identity">
+                            <span class="charge-definition-card__icon @GetCategoryClass(def.ChargeCategory)">
+                                <i class="@GetCategoryIcon(def.ChargeCategory)"></i>
+                            </span>
+                            <div>
+                                <div class="charge-definition-card__badges">
+                                    <span class="charge-definition-card__badge @GetCategoryClass(def.ChargeCategory)">@GetCategoryLabel(def.ChargeCategory)</span>
+                                    <span class="charge-definition-card__live-title" data-live-title>@def.Title</span>
+                                </div>
+                                <p class="charge-definition-card__hint mb-0">@GetCategoryHint(def.ChargeCategory)</p>
+                            </div>
                         </div>
                         <label class="charge-toggle">
                             <input type="checkbox" class="enabled-input" @(def.IsEnabled ? "checked" : null) />
-                            <span>فعال در فاکتور</span>
+                            <span class="charge-toggle__track" aria-hidden="true"></span>
+                            <span class="charge-toggle__text">پیش‌فرض فعال</span>
                         </label>
                     </div>
 
                     <div class="charge-definition-grid">
-                        <div class="charge-field">
-                            <label>عنوان نمایشی</label>
-                            <input type="text" class="form-control title-input" value="@def.Title" maxlength="100" />
+                        <div class="charge-field charge-field--wide">
+                            <label>عنوان نمایشی در فاکتور</label>
+                            <input type="text" class="form-control title-input" value="@def.Title" maxlength="100" placeholder="مثلاً حق سرویس" />
                         </div>
+
                         <div class="charge-field">
                             <label>نوع محاسبه</label>
-                            <select class="form-select calc-type-input">
-                                <option value="0" selected="@(def.CalculationType == ChargeCalculationType.Percentage ? "selected" : null)">درصد</option>
-                                <option value="1" selected="@(def.CalculationType == ChargeCalculationType.Fixed ? "selected" : null)">مبلغ ثابت (تومان)</option>
-                            </select>
+                            <div class="rcs-segmented" data-calc-group>
+                                <label class="rcs-segmented__option">
+                                    <input type="radio" class="calc-type-radio" name="calc-@def.Id" value="0" @(isPercent ? "checked" : null) />
+                                    <span>درصدی</span>
+                                </label>
+                                <label class="rcs-segmented__option">
+                                    <input type="radio" class="calc-type-radio" name="calc-@def.Id" value="1" @(!isPercent ? "checked" : null) />
+                                    <span>مبلغ ثابت</span>
+                                </label>
+                            </div>
+                            <input type="hidden" class="calc-type-input" value="@((int)def.CalculationType)" />
                         </div>
+
                         <div class="charge-field">
                             <label>مقدار</label>
-                            <input type="number" class="form-control value-input" value="@def.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)" min="0" step="0.01" />
+                            <div class="rcs-value-wrap">
+                                <input type="text"
+                                       class="form-control value-input"
+                                       inputmode="decimal"
+                                       autocomplete="off"
+                                       data-raw-value="@def.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                                       value="@def.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)" />
+                                <span class="rcs-value-unit" data-value-unit>@(isPercent ? "درصد" : "تومان")</span>
+                            </div>
                         </div>
-                        <div class="charge-field">
-                            <label>ترتیب نمایش</label>
-                            <input type="number" class="form-control order-input" value="@def.DisplayOrder" min="0" step="1" />
+
+                        <div class="charge-field charge-field--wide">
+                            <label>اعمال روی نوع سفارش</label>
+                            <div class="rcs-order-types" data-order-types>
+                                <label class="rcs-order-type-chip">
+                                    <input type="checkbox" class="order-type-flag" value="1" @((flags & 1) != 0 ? "checked" : null) />
+                                    <span><i class="fa-solid fa-utensils"></i> سالن</span>
+                                </label>
+                                <label class="rcs-order-type-chip">
+                                    <input type="checkbox" class="order-type-flag" value="2" @((flags & 2) != 0 ? "checked" : null) />
+                                    <span><i class="fa-solid fa-bag-shopping"></i> بیرون‌بر</span>
+                                </label>
+                                <label class="rcs-order-type-chip">
+                                    <input type="checkbox" class="order-type-flag" value="4" @((flags & 4) != 0 ? "checked" : null) />
+                                    <span><i class="fa-solid fa-motorcycle"></i> ارسال</span>
+                                </label>
+                            </div>
+                            <input type="hidden" class="order-types-input" value="@flags" />
+                            <small class="rcs-field-help">اگر برای سالن تیک نزنید، این هزینه در فاکتور سالن دیده نمی‌شود.</small>
                         </div>
-                        <div class="charge-field">
-                            <label>نوع سفارش</label>
-                            <select class="form-select order-types-input">
-                                <option value="7" selected="@(def.AppliesToOrderTypes == OrderTypeFlags.All ? "selected" : null)">همه</option>
-                                <option value="1" selected="@(def.AppliesToOrderTypes == OrderTypeFlags.DineIn ? "selected" : null)">سالن</option>
-                                <option value="2" selected="@(def.AppliesToOrderTypes == OrderTypeFlags.Takeaway ? "selected" : null)">بیرون‌بر</option>
-                                <option value="4" selected="@(def.AppliesToOrderTypes == OrderTypeFlags.Delivery ? "selected" : null)">ارسال</option>
-                                <option value="6" selected="@(def.AppliesToOrderTypes == (OrderTypeFlags.Takeaway | OrderTypeFlags.Delivery) ? "selected" : null)">بیرون‌بر + ارسال</option>
-                            </select>
-                        </div>
-                        <div class="charge-field charge-field--checkbox">
+
+                        <div class="charge-field charge-field--checkbox @(def.ChargeCategory == ChargeCategory.Tax ? "is-hidden" : "")" data-taxable-wrap>
                             <label class="charge-checkbox">
                                 <input type="checkbox" class="taxable-input" @(def.IsTaxable ? "checked" : null) />
-                                <span>شامل در مبنای مالیات</span>
+                                <span>مالیات روی این هزینه هم حساب شود</span>
                             </label>
+                        </div>
+                    </div>
+
+                    <div class="charge-preview" data-preview>
+                        <i class="fas fa-calculator"></i>
+                        <span data-preview-text>در حال آماده‌سازی نمونه...</span>
+                    </div>
+
+                    <div class="charge-definition-card__footer">
+                        <div class="rcs-order-controls">
+                            <button type="button" class="rcs-icon-btn" data-move="up" title="بالاتر" aria-label="بالاتر">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="rcs-icon-btn" data-move="down" title="پایین‌تر" aria-label="پایین‌تر">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <span class="rcs-order-label">ترتیب در فاکتور: <strong data-order-label>@((i + 1).ToString().ToPersianDigits())</strong></span>
                         </div>
                     </div>
 
                     <input type="hidden" class="code-input" value="@def.Code" />
                     <input type="hidden" class="category-input" value="@((int)def.ChargeCategory)" />
+                    <input type="hidden" class="order-input" value="@def.DisplayOrder" />
                 </article>
             }
         </div>
 
-        <div class="settings-actions">
+        @if (!Model.Definitions.Any())
+        {
+            <div class="rcs-empty">
+                <i class="fas fa-inbox"></i>
+                <p>هنوز هیچ هزینه‌ای تعریف نشده است.</p>
+            </div>
+        }
+
+        <div class="settings-actions rcs-actions">
             <button type="button" class="btn-save" id="saveChargeDefinitionsBtn">
                 <i class="fas fa-save ms-1"></i>
                 ذخیره تنظیمات
@@ -111,7 +206,8 @@
 @section Scripts {
     <script>
         window.receiptChargeSettings = {
-            saveUrl: '@Url.Action("SaveChargeSettings", "Receipt")'
+            saveUrl: '@Url.Action("SaveChargeSettings", "Receipt")',
+            sampleBase: 100000
         };
     </script>
     <script src="~/js/receipt-charge-settings.js" asp-append-version="true"></script>
@@ -122,7 +218,7 @@
     {
         ChargeCategory.Discount => "تخفیف",
         ChargeCategory.Tax => "مالیات",
-        _ => "کارمزد"
+        _ => "هزینه"
     };
 
     private static string GetCategoryClass(ChargeCategory category) => category switch
@@ -130,5 +226,19 @@
         ChargeCategory.Discount => "is-discount",
         ChargeCategory.Tax => "is-tax",
         _ => "is-fee"
+    };
+
+    private static string GetCategoryIcon(ChargeCategory category) => category switch
+    {
+        ChargeCategory.Discount => "fa-solid fa-percent",
+        ChargeCategory.Tax => "fa-solid fa-landmark",
+        _ => "fa-solid fa-coins"
+    };
+
+    private static string GetCategoryHint(ChargeCategory category) => category switch
+    {
+        ChargeCategory.Discount => "از جمع اقلام کم می‌شود",
+        ChargeCategory.Tax => "به عنوان مالیات به فاکتور اضافه می‌شود",
+        _ => "به عنوان کارمزد یا هزینه به فاکتور اضافه می‌شود"
     };
 }

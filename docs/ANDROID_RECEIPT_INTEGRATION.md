@@ -10,9 +10,11 @@ This feature adds **configurable charges** (service fee, VAT, packaging, deliver
 |------|--------|
 | Feature flag | Per restaurant, set by admin (`ReceiptChargesEnabled`). Off by default. |
 | Order creation | **No changes** to `createOrder` or existing order flows. |
-| When active | Print flow changes only when user taps **Print receipt**. |
-| First print | User picks order type + charges → **Issue** → immutable snapshot saved. |
-| Reprint | Uses saved snapshot only; **do not call Issue again**. |
+| Auto-issue on settlement | When status becomes **8 (پرداخت شده)** or **11 (بسته شده)**, server auto-issues with restaurant default charges for the order’s `OrderType` (no print required). Skip if snapshot already exists or feature is off. |
+| When active | Print is optional after lock. Early manual Issue+print still works. |
+| First lock | Defaults via settlement auto-issue, **or** user picks charges → **Issue**. |
+| Edit after lock | `POST .../receipt/reissue` replaces the snapshot (optional print). |
+| Reprint | Uses saved snapshot; **do not call Issue again** (use Reissue only when editing). |
 | Legacy restaurants | If feature is off, keep the current print behavior. |
 
 ## 2. Auth & Base URL
@@ -182,7 +184,19 @@ Same request body as Preview.
 
 **On 409:** do not show an error. Treat as reprint and call `receipt-data` or `receipt` HTML.
 
-### 5.4 Get receipt JSON (for native printing)
+### 5.4 Reissue (edit after lock — replaces snapshot)
+
+```
+POST /api/v2.0/UserApi/orders/{orderId}/receipt/reissue
+```
+
+Same request body as Preview. Use when staff need to change charges after auto-issue or a prior Issue. Does **not** require print. Returns `404` if no snapshot exists yet.
+
+**Success (200):** same shape as Issue, with updated `grandTotal` / `issuedAt`.
+
+Print remains optional: after Reissue, call `receipt-data` / HTML only if the user wants to print.
+
+### 5.5 Get receipt JSON (for native printing)
 
 ```
 GET /api/v2.0/UserApi/orders/{orderId}/receipt-data
@@ -194,7 +208,7 @@ GET /api/v2.0/UserApi/orders/{orderId}/receipt-data
 
 Use this for **native thermal printer** layouts.
 
-### 5.5 Get receipt HTML (for WebView print)
+### 5.6 Get receipt HTML (for WebView print)
 
 ```
 GET /api/v2.0/UserApi/orders/{orderId}/receipt
@@ -383,7 +397,8 @@ Use these fields for summary:
 - Order list / status APIs — unchanged
 - Do not send charges at order creation time
 - Do not call `Issue` on reprint
-- Do not modify issued snapshot amounts client-side
+- To change locked amounts, call `Reissue` (not client-side math)
+- Settlement to status 8/11 auto-issues with defaults when feature is on
 
 ## 11. Suggested Retrofit Interface
 
@@ -405,6 +420,12 @@ interface ReceiptApi {
 
     @POST("orders/{orderId}/receipt/issue")
     suspend fun issue(
+        @Path("orderId") orderId: Int,
+        @Body body: ReceiptPreviewRequest
+    ): Response<ApiResponse<ReceiptDto>>
+
+    @POST("orders/{orderId}/receipt/reissue")
+    suspend fun reissue(
         @Path("orderId") orderId: Int,
         @Body body: ReceiptPreviewRequest
     ): Response<ApiResponse<ReceiptDto>>

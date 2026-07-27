@@ -3156,6 +3156,27 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "ReissueReceipt",
+    "RelativePath": "api/v2/UserApi/orders/{orderId}/receipt/reissue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GetReceiptStatus",
     "RelativePath": "api/v2/UserApi/orders/{orderId}/receipt/status",
     "HttpMethod": "GET",

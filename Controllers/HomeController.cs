@@ -29,13 +29,20 @@ namespace resturanyar.Controllers
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly resturanyar.Services.Receipt.IReceiptService _receiptService;
 
-        public HomeController(AppDbContext context, ILogger<HomeController> logger, IConfiguration configuration, IWebHostEnvironment env)
+        public HomeController(
+            AppDbContext context,
+            ILogger<HomeController> logger,
+            IConfiguration configuration,
+            IWebHostEnvironment env,
+            resturanyar.Services.Receipt.IReceiptService receiptService)
         {
             _context = context;
             _logger = logger;
             _configuration = configuration;
             _env = env;
+            _receiptService = receiptService;
         }
         public IActionResult Manage(int restaurantId)
         {
@@ -1676,11 +1683,37 @@ namespace resturanyar.Controllers
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
             if (order == null) return Json(new { success = false, message = "سفارش پیدا نشد." });
 
+            var previousStatusId = order.StatusId;
             order.StatusId = newStatusId;
             order.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "وضعیت با موفقیت به‌روز شد.", newStatusId });
+            object? receiptData = null;
+            try
+            {
+                var issueResult = await _receiptService.TryAutoIssueOnSettlementAsync(
+                    orderId,
+                    restaurantId.Value,
+                    User.GetOwnerId(),
+                    previousStatusId,
+                    newStatusId);
+
+                if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                {
+                    receiptData = new
+                    {
+                        isIssued = true,
+                        grandTotal = issueResult.Receipt.GrandTotal,
+                        issuedAt = issueResult.Receipt.IssuedAt
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Auto-issue receipt failed for order {OrderId}", orderId);
+            }
+
+            return Json(new { success = true, message = "وضعیت با موفقیت به‌روز شد.", newStatusId, receipt = receiptData });
         }
 
         [HttpGet]

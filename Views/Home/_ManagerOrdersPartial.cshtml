@@ -5,344 +5,6 @@
     var defaultImgUrl = Url.Content("~/images/food_default.jpg");
 }
 
-<style>
-    /* ---------- کارت کلی هر سفارش ---------- */
-    .order-card {
-        border-radius: 16px;
-        background: #fff;
-        box-shadow: 0 3px 18px rgba(0,0,0,.05);
-        transition: transform .2s, box-shadow .2s;
-    }
-
-        .order-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(0,0,0,.1);
-        }
-
-    .order-header {
-        font-weight: 700;
-        color: #212529;
-        font-size: 1rem;
-        flex: 1;
-        min-width: 180px;
-    }
-
-    .status-badge {
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: .8rem;
-        font-weight: 600;
-        white-space: nowrap;
-        display: inline-block;
-        flex-shrink: 0;
-    }
-
-    .d-flex.flex-wrap {
-        gap: 10px;
-    }
-
-    .order-meta {
-        color: #6c757d;
-        font-size: .85rem;
-    }
-
-    /* ---------- جدول اقلام هر سفارش ---------- */
-    .food-header {
-        display: grid;
-        grid-template-columns: 60px 1fr 90px 120px 120px;
-        align-items: center;
-        font-weight: 700;
-        background: #f8f9fa;
-        padding: 8px 12px;
-        border-radius: 8px;
-        margin-bottom: 6px;
-        font-size: 0.9rem;
-        color: #495057;
-    }
-
-    .food-row {
-        display: grid;
-        grid-template-columns: 60px 1fr 90px 120px 120px;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-bottom: 1px solid #f1f1f1;
-        min-height: 60px;
-    }
-
-    .food-img {
-        width: 50px;
-        height: 50px;
-        border-radius: 8px;
-        object-fit: cover;
-    }
-
-    .food-name {
-        font-weight: 600;
-        font-size: .9rem;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .food-qty, .food-price, .food-sum {
-        text-align: center;
-        font-size: .9rem;
-        font-weight: 500;
-        color: #444;
-    }
-
-    .total-box {
-        background: #f9fafb;
-        border-radius: 10px;
-        padding: 10px 0;
-        text-align: center;
-        font-weight: 700;
-        color: #198754;
-        margin-top: 10px;
-    }
-
-    /* ---------- برای موبایل ---------- */
-    @@media (max-width: 768px) {
-        .food-header, .food-row {
-            grid-template-columns: 50px 1fr 60px 80px 80px;
-        }
-
-        .food-name {
-            font-size: 0.85rem;
-        }
-
-        .food-qty, .food-price, .food-sum {
-            font-size: 0.8rem;
-        }
-    }
-
-    /* ---------- استایل بخش اطلاعات مشتری ---------- */
-    .customer-info {
-        background: linear-gradient(135deg, rgba(255, 122, 0, 0.08) 0%, rgba(255, 122, 0, 0.14) 100%);
-        border-radius: 12px;
-        padding: 8px 16px;
-        margin-bottom: 12px;
-        margin-top: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.85rem;
-        border-right: 4px solid #ff7a00;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        direction: rtl;
-    }
-
-        .customer-info i {
-            font-size: 1.2rem;
-            color: #ff7a00;
-        }
-
-        .customer-info .customer-name {
-            font-weight: 700;
-            color: #e66900;
-        }
-
-        .customer-info .customer-mobile {
-            font-family: 'IRANYekan', system-ui, -apple-system, sans-serif;
-            font-size: 0.9rem;
-            background: #fff;
-            padding: 2px 8px;
-            border-radius: 20px;
-            color: #2c3e50;
-        }
-
-        .customer-info.unknown {
-            background: #f8f9fa;
-            border-right-color: #adb5bd;
-        }
-
-            .customer-info.unknown i {
-                color: #6c757d;
-            }
-
-    @@media (max-width: 768px) {
-        .customer-info {
-            flex-wrap: wrap;
-            gap: 5px;
-            font-size: 0.75rem;
-        }
-    }
-
-    @@media (max-width: 768px) {
-        .page-wrapper {
-            padding: 3px;
-        }
-
-        .content-card {
-            padding: 3px;
-            border-radius: 18px;
-        }
-    }
-    /* ===== بهبودهای اختصاصی برای موبایل (تا عرض ۵۷۶px) ===== */
-    @@media (max-width: 576px) {
-        /* کارت سفارش */
-        .order-card
-
-    {
-        padding: 12px !important;
-        margin-bottom: 16px !important;
-        border-radius: 12px;
-    }
-
-    /* هدر سفارش */
-    .order-header {
-        font-size: 0.9rem;
-        min-width: unset;
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 6px;
-    }
-
-        .order-header .status-badge {
-            font-size: 0.7rem;
-            padding: 2px 10px;
-            margin-right: auto;
-        }
-
-    /* دکمه چاپ و سلکت وضعیت */
-    .order-card .d-flex.justify-content-between {
-        flex-direction: column;
-        align-items: stretch !important;
-        gap: 8px;
-    }
-
-    .order-card .btn-dark {
-        width: 100%;
-        padding: 8px;
-        font-size: 0.85rem;
-    }
-
-    .order-card select.form-select {
-        width: 100% !important;
-        min-width: unset !important;
-        padding: 8px 10px;
-        font-size: 0.85rem;
-    }
-
-    /* اطلاعات مشتری */
-    .customer-info {
-        flex-wrap: wrap;
-        padding: 6px 12px;
-        font-size: 0.75rem;
-        gap: 4px;
-        margin: 6px 0;
-    }
-
-        .customer-info .customer-mobile {
-            font-size: 0.8rem;
-            padding: 0 6px;
-        }
-
-    /* توضیحات سفارش */
-    .alert-light {
-        font-size: 0.8rem;
-        padding: 6px 10px !important;
-    }
-
-    /* ===== جدول آیتم‌ها (غذاها) - فقط تغییر چیدمان، بدون دستکاری قیمت ===== */
-    .food-header {
-        display: none; /* مخفی کردن هدر در موبایل */
-    }
-
-    .food-row {
-        display: block; /* هر آیتم به صورت بلوک مستقل */
-        padding: 10px 8px;
-        border-bottom: 1px solid #eee;
-        min-height: auto;
-        background: #fafafa;
-        border-radius: 8px;
-        margin-bottom: 6px;
-        /* قیمت‌ها به حالت عادی خود باقی می‌مانند */
-    }
-
-        .food-row .food-img {
-            width: 40px;
-            height: 40px;
-            float: right;
-            margin-left: 10px;
-            border-radius: 6px;
-        }
-
-        .food-row .food-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: normal;
-            overflow: visible;
-            text-overflow: unset;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        /* ===== قیمت‌ها و تعداد بدون هیچ استایل اضافی ===== */
-        /* فقط برای اینکه از هم نریزند، display:inline-block می‌دهیم تا در یک خط کنار هم قرار گیرند، ولی اندازه، رنگ، پس‌زمینه و ... دست نمی‌خورند */
-        .food-row .food-qty,
-        .food-row .food-price,
-        .food-row .food-sum {
-            display: inline-block;
-            margin-left: 8px;
-            /* هیچ استایل دیگری (رنگ، فونت، border، پس‌زمینه) اضافه نمی‌شود */
-        }
-
-    /* جمع کل */
-    .total-box {
-        font-size: 0.9rem;
-        padding: 8px 0;
-        margin-top: 8px !important;
-        background: #f1f8f4;
-        border-radius: 8px;
-    }
-
-    /* ===== صفحه‌بندی ===== */
-    .pagination {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 4px;
-    }
-
-        .pagination .page-link {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            min-width: 36px;
-            text-align: center;
-        }
-
-    /* ===== پیام خالی ===== */
-    .alert-warning {
-        font-size: 0.9rem;
-        padding: 12px;
-    }
-
-    }
-
-    /* ===== بهبودهای اضافی برای صفحه‌های با عرض بین ۵۷۷ تا ۷۶۸px ===== */
-    @@media (min-width: 577px) and (max-width: 768px) {
-        .food-header, .food-row
-
-    {
-        grid-template-columns: 50px 1fr 60px 80px 80px;
-    }
-
-    .food-name {
-        font-size: 0.8rem;
-        white-space: nowrap;
-    }
-
-    .order-card {
-        padding: 16px !important;
-    }
-
-    }
-</style>
-
 @if (Model != null && Model.Orders.Any())
 {
     foreach (var order in Model.Orders)
@@ -376,10 +38,19 @@
                     }
                 </div>
 
-                <button class="btn btn-sm btn-dark"
-                        onclick="handleReceiptPrint(@order.OrderId, @order.OrderType)">
-                     چاپ فاکتور
+                <button class="btn btn-sm btn-dark receipt-print-btn"
+                        type="button"
+                        onclick="handleReceiptPrint(@order.OrderId, @order.OrderType, this)">
+                     @(order.ReceiptGrandTotal.HasValue ? "چاپ مجدد" : "چاپ فاکتور")
                 </button>
+                @if (order.ReceiptGrandTotal.HasValue)
+                {
+                    <button class="btn btn-sm btn-outline-primary receipt-edit-btn"
+                            type="button"
+                            onclick="handleReceiptEdit(@order.OrderId, @order.OrderType, this)">
+                        ویرایش فاکتور
+                    </button>
+                }
 
                 <div>
                     <select class="form-select form-select-sm"
@@ -457,7 +128,7 @@
                 </div>
                 @if (order.ReceiptGrandTotal.HasValue)
                 {
-                    <div class="alert alert-success py-2 px-3 mt-2 mb-0">
+                    <div class="alert alert-success py-2 px-3 mt-2 mb-0 receipt-issued-badge">
                         <i class="fa-solid fa-receipt ms-1"></i>
                         مبلغ فاکتور: @order.ReceiptGrandTotal.Value.ToString("N0") تومان
                         @if (order.ReceiptIssuedAt.HasValue)
@@ -571,29 +242,61 @@ else
     <div class="alert alert-warning text-center fs-5"><i class="fa-solid fa-inbox ms-2"></i> هیچ سفارشی یافت نشد.</div>
 }
 
-<div id="receiptChargeModal" class="modal" tabindex="-1" aria-hidden="true" style="display:none;background:rgba(0,0,0,.45);position:fixed;inset:0;z-index:2000;">
-    <div class="receipt-modal-backdrop" style="position:absolute;inset:0;"></div>
-    <div class="modal-dialog modal-lg" style="margin:40px auto;position:relative;z-index:1;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">صدور فاکتور</h5>
-                <button type="button" class="btn-close" id="receiptModalClose"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">نوع سفارش</label>
-                    <select id="receiptOrderType" class="form-select">
-                        <option value="0">سالن</option>
-                        <option value="1">بیرون‌بر</option>
-                        <option value="2">ارسال</option>
-                    </select>
+<div id="receiptChargeModal" class="modal receipt-issue-modal" tabindex="-1" aria-hidden="true" style="display:none;">
+    <div class="receipt-modal-backdrop"></div>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content receipt-issue-modal__content position-relative">
+            <div class="modal-header receipt-issue-modal__header">
+                <div>
+                    <h5 class="modal-title mb-0" id="receiptModalTitle">چاپ فاکتور</h5>
+                    <p class="receipt-issue-modal__subtitle mb-0" id="receiptModalSubtitle">نوع سفارش را انتخاب کنید و هزینه‌های مربوط را بررسی کنید</p>
                 </div>
-                <div id="receiptChargeList"></div>
-                <div id="receiptPreviewBox" class="alert alert-light mt-3"></div>
+                <button type="button" class="btn-close" id="receiptModalClose" aria-label="بستن"></button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" id="receiptPreviewBtn">پیش‌نمایش</button>
-                <button type="button" class="btn btn-primary" id="receiptIssueBtn">صدور و چاپ</button>
+            <div class="modal-body receipt-issue-modal__body">
+                <section class="receipt-section">
+                    <div class="receipt-section__label">نوع سفارش</div>
+                    <div class="receipt-order-type" role="radiogroup" aria-label="نوع سفارش">
+                        <button type="button" class="receipt-order-type__btn" data-order-type="0" aria-pressed="false">
+                            <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                            <span class="receipt-order-type__title">سالن</span>
+                            <span class="receipt-order-type__hint">صرف در رستوران</span>
+                        </button>
+                        <button type="button" class="receipt-order-type__btn" data-order-type="1" aria-pressed="false">
+                            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                            <span class="receipt-order-type__title">بیرون‌بر</span>
+                            <span class="receipt-order-type__hint">تحویل حضوری</span>
+                        </button>
+                        <button type="button" class="receipt-order-type__btn" data-order-type="2" aria-pressed="false">
+                            <i class="fa-solid fa-motorcycle" aria-hidden="true"></i>
+                            <span class="receipt-order-type__title">ارسال</span>
+                            <span class="receipt-order-type__hint">پیک / ارسال</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="receiptOrderType" value="0" />
+                </section>
+
+                <section class="receipt-section">
+                    <div class="receipt-section__label">هزینه‌ها و تخفیف‌ها</div>
+                    <p class="receipt-section__hint mb-2">فقط موارد مرتبط با نوع سفارش انتخاب‌شده نمایش داده می‌شود</p>
+                    <div id="receiptChargeList" class="receipt-charge-list"></div>
+                    <div id="receiptChargeEmpty" class="receipt-charge-empty" hidden>
+                        برای این نوع سفارش هزینه‌ای تعریف نشده است.
+                    </div>
+                </section>
+
+                <section id="receiptPreviewBox" class="receipt-summary" aria-live="polite"></section>
+            </div>
+            <div class="modal-footer receipt-issue-modal__footer">
+                <button type="button" class="btn btn-outline-secondary" id="receiptPreviewBtn" data-default-label="محاسبه مجدد">محاسبه مجدد</button>
+                <button type="button" class="btn btn-outline-primary" id="receiptSaveBtn" data-default-label="ذخیره" hidden>ذخیره</button>
+                <button type="button" class="btn btn-primary" id="receiptIssueBtn" data-default-label="صدور و چاپ">صدور و چاپ</button>
+            </div>
+            <div id="receiptModalLoading" class="receipt-modal-loading" hidden aria-live="polite">
+                <div class="receipt-modal-loading__panel">
+                    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+                    <div class="receipt-modal-loading__text" id="receiptModalLoadingText">در حال پردازش...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -624,13 +327,9 @@ else
         }
     }
 
-  
+    window.managerOrderColorMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusColors));
 
-    const restaurantName = "@ViewBag.RestaurantName";
-
-    const colorMap = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.StatusColors));
-
-    async function onChangeStatus(sel, orderId) {
+    window.onChangeStatus = async function (sel, orderId) {
         const newStatus = parseInt(sel.value);
         if (!newStatus) return;
 
@@ -656,6 +355,7 @@ else
                     // remove old bg-* color classes
                     badge.className = badge.className.replace(/\bbg-\S+/g, '').trim();
 
+                    const colorMap = window.managerOrderColorMap || {};
                     const newColor = colorMap[newStatus] ?? 'secondary';
                     badge.classList.add(`bg-${newColor}`, 'text-white');
 
@@ -671,19 +371,23 @@ else
                     meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
                 }
 
-                showToast('وضعیت سفارش بروز شد', 'success');
+                if (data.receipt && data.receipt.isIssued && typeof window.applyIssuedReceipt === 'function') {
+                    window.applyIssuedReceipt(orderId, data.receipt);
+                }
+
+                window.showToast('وضعیت سفارش بروز شد', 'success');
             } else {
-                showToast(data.message || 'خطا در تغییر وضعیت', 'error');
+                window.showToast(data.message || 'خطا در تغییر وضعیت', 'error');
             }
         } catch (err) {
             console.error('onChangeStatus error:', err);
-            showToast('خطا در ارتباط با سرور', 'error');
+            window.showToast('خطا در ارتباط با سرور', 'error');
         }
-    }
+    };
 
-      function printInvoice(orderId) {
+    window.printInvoice = function (orderId) {
         const orderCard = document.getElementById(`order-${orderId}`);
-        if (!orderCard) { showToast('سفارش یافت نشد', 'error'); return; }
+        if (!orderCard) { window.showToast('سفارش یافت نشد', 'error'); return; }
 
         const orderHeader   = orderCard.querySelector('.order-header')?.innerText || '';
         const orderNumber   = orderHeader.match(/سفارش #(\S+)/)?.[1] || orderId;
@@ -715,19 +419,19 @@ else
         const totalText = orderCard.querySelector('.total-box')?.innerText.trim() || '';
         const now       = new Date().toLocaleString('fa-IR');
 
-      const html = buildInvoiceHtml({
-    restaurant: "@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.RestaurantName?.ToString() ?? "رستوران"))",
+        const html = buildInvoiceHtml({
+            restaurant: "@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.RestaurantName?.ToString() ?? "رستوران"))",
             orderNumber, tableNumber, orderStatus,
             createdAt, updatedAt, description,
             items, totalText, customerName, customerMobile, now
         });
 
         if (!openPrintWindow(html)) {
-            showToast('لطفا مسدودکننده پنجره را غیرفعال کنید', 'error');
+            window.showToast('لطفا مسدودکننده پنجره را غیرفعال کنید', 'error');
         }
-    }
+    };
 
-    function escapeHtml(str) {
+    window.escapeHtml = function (str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -735,9 +439,9 @@ else
             if (m === '>') return '&gt;';
             return m;
         });
-    }
+    };
 
-    function showToast(message, type = 'success') {
+    window.showToast = function (message, type = 'success') {
         // remove any existing toast first
         document.querySelector('.custom-toast')?.remove();
 
@@ -774,5 +478,5 @@ else
         document.body.appendChild(toast);
 
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
-    }
+    };
 </script>

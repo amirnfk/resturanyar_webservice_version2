@@ -77,15 +77,38 @@ namespace resturanyar.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Reissue(int orderId, [FromBody] ReceiptPreviewRequest request)
+        {
+            var restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "شناسه رستوران مشخص نیست." });
+
+            request ??= new ReceiptPreviewRequest();
+            var userId = User.GetOwnerId();
+            var result = await _receiptService.ReissueAsync(orderId, restaurantId.Value, request, userId, "Web", recordPrintHistory: false);
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt
+            });
+        }
+
         [HttpGet]
-        public async Task<IActionResult> Data(int orderId)
+        public async Task<IActionResult> Data(int orderId, bool recordPrintHistory = true)
         {
             var restaurantId = User.GetRestaurantId();
             if (restaurantId == null)
                 return Json(new { success = false, message = "شناسه رستوران مشخص نیست." });
 
             var userId = User.GetOwnerId();
-            var result = await _receiptService.GetReceiptDataAsync(orderId, restaurantId.Value, "Web", userId);
+            var result = await _receiptService.GetReceiptDataAsync(
+                orderId,
+                restaurantId.Value,
+                "Web",
+                userId,
+                recordPrintHistory);
             return StatusCode(result.StatusCode, new
             {
                 success = result.Success,

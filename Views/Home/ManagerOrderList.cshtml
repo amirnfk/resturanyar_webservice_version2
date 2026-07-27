@@ -22,15 +22,6 @@
 
 <div class="container orders-page py-4 mt-2">
 
-    @if (ViewBag.ReceiptChargesEnabled == true)
-    {
-        <div class="mb-3">
-            <a href="@Url.Action("ChargeSettings", "Receipt")" class="btn btn-outline-primary btn-sm">
-                <i class="fa-solid fa-receipt ms-1"></i> تنظیمات کارمزد فاکتور
-            </a>
-        </div>
-    }
-
     <div class="filter-card p-4 mb-4">
 
         <form id="filterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerOrderList","Home")">
