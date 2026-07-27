@@ -38,5 +38,6 @@
         public string SecondaryColor { get; set; } = "#fff7ed";
         public string LogoUrl { get; set; } = "/images/logo.png";
         public string BackgroundImageUrl { get; set; } = "/images/backgrounds/default.jpg";
+        public bool ReceiptChargesEnabled { get; set; }
     }
 }

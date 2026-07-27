@@ -4,6 +4,7 @@ using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.Receipt;
 
 
 namespace Resturanyar.Data
@@ -41,6 +42,9 @@ namespace Resturanyar.Data
         public DbSet<AdminMessageRecipient> AdminMessageRecipients { get; set; }
         public DbSet<AdminMessageRead> AdminMessageReads { get; set; }
         public DbSet<Article> Articles { get; set; }
+        public DbSet<RestaurantChargeDefinition> RestaurantChargeDefinitions { get; set; }
+        public DbSet<OrderReceiptSnapshot> OrderReceiptSnapshots { get; set; }
+        public DbSet<ReceiptPrintHistory> ReceiptPrintHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -65,6 +69,9 @@ namespace Resturanyar.Data
                     .HasColumnName("updated_at")
                     .HasDefaultValueSql("GETDATE()")
                     .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(r => r.ReceiptChargesEnabled)
+                    .HasDefaultValue(false);
             });
 
             
@@ -96,6 +103,46 @@ namespace Resturanyar.Data
             modelBuilder.Entity<Order>()
                 .HasIndex(o => new { o.RestaurantId, o.CreatedAt })
                 .HasDatabaseName("IX_Orders_RestaurantId_CreatedAt");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.OrderType)
+                .HasDefaultValue(OrderTypeKind.DineIn);
+
+            modelBuilder.Entity<RestaurantChargeDefinition>(entity =>
+            {
+                entity.HasKey(d => d.Id);
+                entity.HasIndex(d => d.RestaurantId);
+                entity.HasIndex(d => new { d.RestaurantId, d.Code }).IsUnique();
+                entity.Property(d => d.Code).HasMaxLength(50);
+                entity.Property(d => d.Title).HasMaxLength(100);
+                entity.Property(d => d.Value).HasColumnType("decimal(18,4)");
+                entity.Property(d => d.IsEnabled).HasDefaultValue(false);
+                entity.Property(d => d.IsTaxable).HasDefaultValue(false);
+                entity.Property(d => d.PercentageBase).HasDefaultValue(PercentageBaseKind.ItemsNet);
+                entity.Property(d => d.DisplayOrder).HasDefaultValue(0);
+                entity.Property(d => d.AppliesToOrderTypes).HasDefaultValue(OrderTypeFlags.All);
+                entity.Property(d => d.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(d => d.UpdatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+            });
+
+            modelBuilder.Entity<OrderReceiptSnapshot>(entity =>
+            {
+                entity.HasKey(s => s.Id);
+                entity.HasIndex(s => s.OrderId).IsUnique();
+                entity.HasIndex(s => s.RestaurantId);
+                entity.Property(s => s.ItemsSubtotal).HasColumnType("decimal(18,2)");
+                entity.Property(s => s.GrandTotal).HasColumnType("decimal(18,2)");
+                entity.Property(s => s.IssuedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+            });
+
+            modelBuilder.Entity<ReceiptPrintHistory>(entity =>
+            {
+                entity.ToTable("ReceiptPrintHistory");
+                entity.HasKey(h => h.Id);
+                entity.HasIndex(h => new { h.OrderId, h.PrintedAt });
+                entity.Property(h => h.Channel).HasMaxLength(20).HasDefaultValue("Web");
+                entity.Property(h => h.PrintedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+            });
 
             // 📌 Relationship: User -> Role
             modelBuilder.Entity<User>()

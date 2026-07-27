@@ -14,7 +14,11 @@
         public string CustomerFullName { get; set; }
         public string CustomerMobile { get; set; }
         public string? Description { get; set; }
-         
+
+        public byte OrderType { get; set; }
+        public decimal? ReceiptGrandTotal { get; set; }
+        public DateTime? ReceiptIssuedAt { get; set; }
+
         public List<OrderItemDto> OrderItems { get; set; }
 
         

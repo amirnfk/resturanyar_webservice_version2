@@ -157,6 +157,7 @@ wwwroot\js\manager_report_partial.js
 wwwroot\js\messages.js
 wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
+wwwroot\js\receipt-print.js
 wwwroot\js\restaurant-background-cache.js
 wwwroot\js\restaurant-general-settings.js
 wwwroot\js\restaurant-settings.js
@@ -242,3 +243,5 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
+wwwroot\css\receipt-charge-settings.css
+wwwroot\js\receipt-charge-settings.js

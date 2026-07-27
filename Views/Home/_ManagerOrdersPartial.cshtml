@@ -377,7 +377,7 @@
                 </div>
 
                 <button class="btn btn-sm btn-dark"
-                        onclick="printInvoice(@order.OrderId)">
+                        onclick="handleReceiptPrint(@order.OrderId, @order.OrderType)">
                      چاپ فاکتور
                 </button>
 
@@ -455,6 +455,17 @@
                 <div class="total-box mt-3">
                     مبلغ کل: @totalPrice.ToString("N0") تومان
                 </div>
+                @if (order.ReceiptGrandTotal.HasValue)
+                {
+                    <div class="alert alert-success py-2 px-3 mt-2 mb-0">
+                        <i class="fa-solid fa-receipt ms-1"></i>
+                        مبلغ فاکتور: @order.ReceiptGrandTotal.Value.ToString("N0") تومان
+                        @if (order.ReceiptIssuedAt.HasValue)
+                        {
+                            <span class="text-muted small ms-2">(صدور: @order.ReceiptIssuedAt.Value.ToLocalTime().ToPersianDateTime())</span>
+                        }
+                    </div>
+                }
 
 
 
@@ -559,7 +570,40 @@ else
 {
     <div class="alert alert-warning text-center fs-5"><i class="fa-solid fa-inbox ms-2"></i> هیچ سفارشی یافت نشد.</div>
 }
+
+<div id="receiptChargeModal" class="modal" tabindex="-1" aria-hidden="true" style="display:none;background:rgba(0,0,0,.45);position:fixed;inset:0;z-index:2000;">
+    <div class="receipt-modal-backdrop" style="position:absolute;inset:0;"></div>
+    <div class="modal-dialog modal-lg" style="margin:40px auto;position:relative;z-index:1;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">صدور فاکتور</h5>
+                <button type="button" class="btn-close" id="receiptModalClose"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">نوع سفارش</label>
+                    <select id="receiptOrderType" class="form-select">
+                        <option value="0">سالن</option>
+                        <option value="1">بیرون‌بر</option>
+                        <option value="2">ارسال</option>
+                    </select>
+                </div>
+                <div id="receiptChargeList"></div>
+                <div id="receiptPreviewBox" class="alert alert-light mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" id="receiptPreviewBtn">پیش‌نمایش</button>
+                <button type="button" class="btn btn-primary" id="receiptIssueBtn">صدور و چاپ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.receiptChargesEnabled = @(ViewBag.ReceiptChargesEnabled == true ? "true" : "false");
+</script>
 <script src="~/js/invoice-print.js" asp-append-version="true"></script>
+<script src="~/js/receipt-print.js" asp-append-version="true"></script>
 
 <script>
     

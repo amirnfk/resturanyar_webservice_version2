@@ -330,6 +330,7 @@ namespace resturanyar.Controllers
             var vm = new DashboardStatsViewModel
             {
                 RestaurantName = restaurant.name,
+                ReceiptChargesEnabled = restaurant.ReceiptChargesEnabled,
 
                 TopFoods = topFoods,
 
@@ -1137,7 +1138,7 @@ namespace resturanyar.Controllers
 
 
         [HttpGet("ExportOrdersToExcel")]
-        public IActionResult ExportOrdersToExcel(
+        public async Task<IActionResult> ExportOrdersToExcel(
     int statusId = -1,
     string? period = null,
     DateTime? from = null,
@@ -1207,6 +1208,12 @@ namespace resturanyar.Controllers
                 if (!orders.Any())
                     return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
 
+                var snapshotMap = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == restaurantId)
+                    .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
                 using (var workbook = new XLWorkbook())
                 {
                     // === Sheet 1: Orders Summary ===
@@ -1221,11 +1228,14 @@ namespace resturanyar.Controllers
                     wsOrders.Cell(1, 7).Value = "توضیحات";
                     wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
                     wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
+                    wsOrders.Cell(1, 10).Value = "مبلغ فاکتور (تومان)";
+                    wsOrders.Cell(1, 11).Value = "تاریخ صدور فاکتور";
 
                     int row = 2;
                     foreach (var o in orders)
                     {
                         var totalPrice = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
+                        var snapshot = snapshotMap.GetValueOrDefault(o.OrderId);
                         wsOrders.Cell(row, 1).Value = o.OrderId;
                         wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
                         wsOrders.Cell(row, 3).Value = o.TableNumber;
@@ -1239,11 +1249,21 @@ namespace resturanyar.Controllers
                         wsOrders.Cell(row, 7).Value = o.Description ?? "-";
                         wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
                         wsOrders.Cell(row, 9).Value = totalPrice;
+                        if (snapshot != null)
+                        {
+                            wsOrders.Cell(row, 10).Value = snapshot.GrandTotal;
+                            wsOrders.Cell(row, 11).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
+                        }
+                        else
+                        {
+                            wsOrders.Cell(row, 10).Value = "-";
+                            wsOrders.Cell(row, 11).Value = "-";
+                        }
                         row++;
                     }
 
                     // تنظیم استایل هدر (با توجه به تعداد ستون‌های جدید)
-                    var headerRange1 = wsOrders.Range($"A1:I1");
+                    var headerRange1 = wsOrders.Range($"A1:K1");
                     headerRange1.Style.Font.Bold = true;
                     headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
                     wsOrders.Columns().AdjustToContents();
@@ -1467,7 +1487,7 @@ namespace resturanyar.Controllers
             }
 
             ViewBag.RestaurantName = restaurant.name;
-
+            ViewBag.ReceiptChargesEnabled = restaurant.ReceiptChargesEnabled;
 
             var statusMap = new Dictionary<int, string>
     {
@@ -1586,6 +1606,7 @@ namespace resturanyar.Controllers
                     CustomerId = o.CustomerId,
                     CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
+                    OrderType = (byte)o.OrderType,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -1598,6 +1619,24 @@ namespace resturanyar.Controllers
                     }).ToList()
                 })
                 .ToListAsync();
+
+            if (orders.Count > 0)
+            {
+                var orderIds = orders.Select(o => o.OrderId).ToList();
+                var snapshots = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => orderIds.Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
+                foreach (var order in orders)
+                {
+                    if (snapshots.TryGetValue(order.OrderId, out var snapshot))
+                    {
+                        order.ReceiptGrandTotal = snapshot.GrandTotal;
+                        order.ReceiptIssuedAt = snapshot.IssuedAt;
+                    }
+                }
+            }
 
             var vm = new OrderListViewModel
             {

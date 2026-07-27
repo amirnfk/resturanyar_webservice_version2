@@ -1,0 +1,141 @@
+@model resturanyar.Models.ViewModels.Admin.ReceiptChargeFeaturesViewModel
+@{
+    ViewData["Title"] = "مدیریت فاکتور با کارمزد";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="receipt-feature-page" dir="rtl">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h4 mb-1"><i class="fas fa-file-invoice-dollar ms-2"></i>مدیریت فاکتور با کارمزد</h1>
+            <p class="text-muted mb-0">فعال یا غیرفعال کردن قابلیت فاکتور با کارمزد برای هر رستوران</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small">کل رستوران‌ها</div>
+                    <div class="fs-3 fw-bold">@Model.TotalCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small">فعال شده</div>
+                    <div class="fs-3 fw-bold text-success">@Model.EnabledCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small">غیرفعال</div>
+                    <div class="fs-3 fw-bold text-secondary">@(Model.TotalCount - Model.EnabledCount)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        تا زمانی که این قابلیت برای یک رستوران فعال نشود، مالک آن رستوران هیچ تغییری در پنل خود نمی‌بیند.
+        پس از فعال‌سازی، مالک می‌تواند از منوی «تنظیمات کارمزد فاکتور» الگوهای کارمزد را تنظیم کند.
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="mb-3">
+                <input type="text" id="receiptFeatureSearch" class="form-control" placeholder="جستجو بر اساس نام رستوران، مالک یا شماره تماس..." />
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="receiptFeatureTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>رستوران</th>
+                            <th>مالک</th>
+                            <th>تماس</th>
+                            <th>تعداد تعریف کارمزد</th>
+                            <th>فاکتور صادر شده</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Restaurants)
+                        {
+                            <tr data-search="@($"{item.RestaurantName} {item.OwnerName} {item.OwnerPhone}")">
+                                <td><strong>@item.RestaurantName</strong></td>
+                                <td>@item.OwnerName</td>
+                                <td>@item.OwnerPhone</td>
+                                <td>@item.ChargeDefinitionCount</td>
+                                <td>@item.IssuedReceiptCount</td>
+                                <td>
+                                    @if (item.ReceiptChargesEnabled)
+                                    {
+                                        <span class="badge bg-success">فعال</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">غیرفعال</span>
+                                    }
+                                </td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm @(item.ReceiptChargesEnabled ? "btn-outline-danger" : "btn-success") receipt-feature-toggle-btn"
+                                            data-restaurant-id="@item.RestaurantId"
+                                            data-enabled="@item.ReceiptChargesEnabled.ToString().ToLower()">
+                                        @(item.ReceiptChargesEnabled ? "غیرفعال کردن" : "فعال کردن")
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('receiptFeatureSearch')?.addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            document.querySelectorAll('#receiptFeatureTable tbody tr').forEach(function (row) {
+                const text = (row.getAttribute('data-search') || '').toLowerCase();
+                row.style.display = !q || text.includes(q) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('.receipt-feature-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', async function () {
+                const restaurantId = this.getAttribute('data-restaurant-id');
+                const currentlyEnabled = this.getAttribute('data-enabled') === 'true';
+                const newEnabled = !currentlyEnabled;
+                const actionText = newEnabled ? 'فعال' : 'غیرفعال';
+
+                if (!confirm(`آیا مطمئن هستید که می‌خواهید این قابلیت را ${actionText} کنید؟`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/Admin/SetReceiptChargesEnabled', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'restaurantId=' + encodeURIComponent(restaurantId) + '&enabled=' + newEnabled
+                    });
+                    const data = await response.json();
+                    if (!data.success) {
+                        alert(data.message || 'خطا در تغییر وضعیت');
+                        return;
+                    }
+                    location.reload();
+                } catch (e) {
+                    alert('خطا در ارتباط با سرور');
+                }
+            });
+        });
+    </script>
+}

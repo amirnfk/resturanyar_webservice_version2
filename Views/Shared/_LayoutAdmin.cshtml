@@ -34,7 +34,7 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="/Admin/Adminpanel" class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                <a href="@Url.Action("AdminPanel", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "AdminPanel" ? "active" : "")">
                     <i class="fas fa-home"></i>
                     <span>داشبورد</span>
                 </a>
@@ -42,9 +42,13 @@
                     <i class="fas fa-newspaper"></i>
                     <span>مدیریت مقالات</span>
                 </a>
-            <a href="@Url.Action("CouponList", "Admin")" class="nav-item">
+            <a href="@Url.Action("CouponList", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "CouponList" ? "active" : "")">
                     <i class="fas fa-users"></i>
                     <span>ساخت کد تخفیف</span>
+                </a>
+            <a href="@Url.Action("ReceiptChargeFeatures", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "ReceiptChargeFeatures" ? "active" : "")">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>فاکتور با کارمزد</span>
                 </a>
             <a href="@Url.Action("SendMessage", "Admin")" class="nav-item">
                     <i class="fas fa-paper-plane"></i>

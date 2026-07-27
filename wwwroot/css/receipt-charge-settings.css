@@ -1,0 +1,163 @@
+.receipt-charge-settings-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 0 2.5rem;
+}
+
+.receipt-charge-notice {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+    border: 1px solid rgba(249, 115, 22, 0.18);
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.25rem;
+    color: #7c2d12;
+    line-height: 1.8;
+}
+
+.receipt-charge-notice i {
+    color: #f97316;
+    margin-top: 0.2rem;
+}
+
+.charge-definitions-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.charge-definition-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 1.1rem 1.2rem;
+    background: #fafafa;
+}
+
+.charge-definition-card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.charge-definition-card__title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.charge-definition-card__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.charge-definition-card__badge.is-fee {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.charge-definition-card__badge.is-tax {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.charge-definition-card__badge.is-discount {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.charge-definition-card__code {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.charge-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.charge-definition-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.charge-field label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.charge-field .form-control,
+.charge-field .form-select {
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    min-height: 42px;
+}
+
+.charge-field--checkbox {
+    display: flex;
+    align-items: flex-end;
+}
+
+.charge-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 42px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+.settings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.btn-outline-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 1rem;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    text-decoration: none;
+    font-weight: 600;
+    background: #fff;
+}
+
+.btn-outline-link:hover {
+    color: #f97316;
+    border-color: #fdba74;
+}
+
+@media (max-width: 992px) {
+    .charge-definition-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .charge-definition-grid {
+        grid-template-columns: 1fr;
+    }
+}

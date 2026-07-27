@@ -36,7 +36,7 @@ namespace resturanyar.Controllers
             // لیست کامل OwnerIdهایی که باید از همه گزارش‌ها حذف شوند
             return new List<int>
             {
-                134, 135, 137, 139, 140, 142, 143, 144, 145, 146,
+                 135, 137, 139, 140, 142, 143, 144, 145, 146,
                 172, 173, 174, 175, 183, 184, 185
             };
 
@@ -150,6 +150,19 @@ namespace resturanyar.Controllers
                 viewModel.MonthlyStats = monthlyStats;
 
                 viewModel.Restaurants = await restaurantsQuery.ToListAsync();
+
+                if (viewModel.Restaurants.Count > 0)
+                {
+                    var restaurantIds = viewModel.Restaurants.Select(r => r.RestaurantId).ToList();
+                    var orderCounts = await _context.Orders
+                        .Where(o => restaurantIds.Contains(o.RestaurantId))
+                        .GroupBy(o => o.RestaurantId)
+                        .Select(g => new { RestaurantId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.RestaurantId, x => x.Count);
+
+                    foreach (var restaurant in viewModel.Restaurants)
+                        restaurant.TotalOrders = orderCounts.GetValueOrDefault(restaurant.RestaurantId);
+                }
 
                 // ===== لیست مالک‌ها (با فیلتر) =====
                 var ownersQuery = from o in _context.Owners
@@ -1526,6 +1539,84 @@ namespace resturanyar.Controllers
             }
 
             return $"/uploads/articles/{uniqueFileName}";
+        }
+
+        public async Task<IActionResult> ReceiptChargeFeatures()
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            var excludedIds = GetExcludedOwnerIds();
+
+            var restaurants = await (
+                from r in _context.Restaurants
+                join o in _context.Owners on r.owner_id equals o.Id
+                where !excludedIds.Contains(o.Id)
+                orderby r.name
+                select new ReceiptChargeFeatureItemViewModel
+                {
+                    RestaurantId = r.restaurant_id,
+                    RestaurantName = r.name,
+                    OwnerName = o.Name,
+                    OwnerPhone = o.Phone,
+                    ReceiptChargesEnabled = r.ReceiptChargesEnabled
+                }).ToListAsync();
+
+            if (restaurants.Count > 0)
+            {
+                var restaurantIds = restaurants.Select(r => r.RestaurantId).ToList();
+
+                var definitionCounts = await _context.RestaurantChargeDefinitions
+                    .Where(d => restaurantIds.Contains(d.RestaurantId))
+                    .GroupBy(d => d.RestaurantId)
+                    .Select(g => new { RestaurantId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.RestaurantId, x => x.Count);
+
+                var snapshotCounts = await _context.OrderReceiptSnapshots
+                    .Where(s => restaurantIds.Contains(s.RestaurantId))
+                    .GroupBy(s => s.RestaurantId)
+                    .Select(g => new { RestaurantId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.RestaurantId, x => x.Count);
+
+                foreach (var restaurant in restaurants)
+                {
+                    restaurant.ChargeDefinitionCount = definitionCounts.GetValueOrDefault(restaurant.RestaurantId);
+                    restaurant.IssuedReceiptCount = snapshotCounts.GetValueOrDefault(restaurant.RestaurantId);
+                }
+            }
+
+            var viewModel = new ReceiptChargeFeaturesViewModel
+            {
+                Restaurants = restaurants,
+                TotalCount = restaurants.Count,
+                EnabledCount = restaurants.Count(r => r.ReceiptChargesEnabled)
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetReceiptChargesEnabled(int restaurantId, bool enabled)
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return Json(new { success = false, message = "دسترسی غیرمجاز" });
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
+
+            if (restaurant == null)
+                return Json(new { success = false, message = "رستوران یافت نشد." });
+
+            restaurant.ReceiptChargesEnabled = enabled;
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                message = enabled
+                    ? "قابلیت فاکتور با کارمزد برای این رستوران فعال شد."
+                    : "قابلیت فاکتور با کارمزد برای این رستوران غیرفعال شد."
+            });
         }
     }
 }

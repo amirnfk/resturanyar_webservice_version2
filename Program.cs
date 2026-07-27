@@ -52,8 +52,18 @@ builder.Services.AddCors(options =>
 
 
 // ✳️ افزودن کنترلرهای API و MVC
-builder.Services.AddControllers();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = RestaurantLogoUploadHelper.MaxFileSizeBytes + 4096;
@@ -85,6 +95,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<resturanyar.Utility.TokenService>();
 builder.Services.AddScoped<resturanyar.Utility.AuthService>();
 builder.Services.AddScoped<resturanyar.Utility.MessageService>();
+builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptCalculationEngine, resturanyar.Services.Receipt.ReceiptCalculationEngine>();
+builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptRenderer, resturanyar.Services.Receipt.HtmlReceiptRenderer>();
+builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptService, resturanyar.Services.Receipt.ReceiptService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

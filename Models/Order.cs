@@ -1,4 +1,5 @@
 ﻿using resturanyar.Models.CustomerModels;
+using resturanyar.Models.Receipt;
 using Resturanyar.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +20,9 @@ namespace resturanyar.Models
         public string CreatedAtShamsi { get; set; }
         public string UpdatedAtShamsi { get; set; }
 
-        public string? Description { get; set; }  
+        public string? Description { get; set; }
+
+        public OrderTypeKind OrderType { get; set; } = OrderTypeKind.DineIn;
 
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }

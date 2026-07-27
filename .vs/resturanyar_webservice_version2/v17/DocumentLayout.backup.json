@@ -62,8 +62,7 @@
               "RelativeToolTip": "Controllers\\Api\\V2\\UserApiController.cs",
               "ViewState": "AgIAAIwJAAAAAAAAAAAgwMcJAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-23T10:21:44.1Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-23T10:21:44.1Z"
             },
             {
               "$type": "Document",
@@ -112,16 +111,11 @@
               "RelativeToolTip": "Controllers\\Api\\UserApiController.cs",
               "ViewState": "AgIAAPQBAAAAAAAAAAAAAPUBAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-02T10:57:06.279Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T10:57:06.279Z"
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
             }
           ]
         }

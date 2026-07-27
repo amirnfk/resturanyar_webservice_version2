@@ -1,8 +1,19 @@
 @inject Resturanyar.Data.AppDbContext AppDbContext
 @using Microsoft.EntityFrameworkCore
+@using resturanyar.Utility
 @{
     var layoutRestaurantName = RestaurantViewHelper.ResolveRestaurantName(User, AppDbContext, ViewBag.RestaurantName);
     var layoutPageTitle = PageTitleHelper.WithRestaurant(ViewData["Title"]?.ToString(), layoutRestaurantName);
+    var layoutReceiptChargesEnabled = false;
+    var layoutRestaurantId = User.GetRestaurantId();
+    if (layoutRestaurantId != null)
+    {
+        layoutReceiptChargesEnabled = AppDbContext.Restaurants
+            .AsNoTracking()
+            .Where(r => r.restaurant_id == layoutRestaurantId.Value)
+            .Select(r => r.ReceiptChargesEnabled)
+            .FirstOrDefault();
+    }
 }
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -102,6 +113,14 @@
                     <i class="fas fa-qrcode"></i>
                     <span>تنظیمات منو</span>
                 </a>
+
+                @if (layoutReceiptChargesEnabled)
+                {
+                    <a href="@Url.Action("ChargeSettings", "Receipt")" class="nav-item @(currentController == "Receipt" ? "active" : "")">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>تنظیمات کارمزد فاکتور</span>
+                    </a>
+                }
 
                 <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
                     <i class="fas fa-chart-pie"></i>
