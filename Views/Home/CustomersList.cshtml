@@ -2,6 +2,11 @@
     ViewData["Title"] = "مدیریت و آنالیز مشتریان";
     var placeholder = Url.Content("~/images/customer_placeholder.png");
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/brand-scrollbar.css" asp-append-version="true" />
+}
+
 <style>
     :root {
         --primary: #ff7a00;
@@ -99,19 +104,6 @@
         overflow-y: auto;
         padding: 8px 16px 16px 16px;
     }
-
-        .scrollable-list::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .scrollable-list::-webkit-scrollbar-track {
-            background: #f8fafc;
-        }
-
-        .scrollable-list::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: var(--radius-pill);
-        }
 
     .list-item-row {
         display: flex;
@@ -338,18 +330,6 @@
             padding: 8px 0;
             border-radius: var(--radius-sm);
             font-weight: 600;
-        }
-
-    /* مخفی کردن نوار اسکرول در لیست‌های کشویی (رشد جدید و بهترین مشتریان) */
-    .scrollable-list {
-        overflow-y: auto; /* قابلیت اسکرول حفظ می‌شود */
-        scrollbar-width: none; /* برای فایرفاکس: نوار اسکرول مخفی */
-        -ms-overflow-style: none; /* برای اینترنت اکسپلورر و اج قدیم */
-    }
-
-        /* برای مرورگرهای وب‌کیت (کروم، اج جدید، سافاری) */
-        .scrollable-list::-webkit-scrollbar {
-            display: none;
         }
 
     .stats-hint {

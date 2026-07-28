@@ -1,0 +1,137 @@
+/* Shared modern orange scrollbar — ManagerOrderList + CustomersList
+   Page keeps natural height; styles the window / main scroll. */
+
+.orders-page,
+.customers-page {
+    --brand-scroll-track: rgba(15, 23, 42, 0.045);
+    --brand-scroll-thumb: rgba(255, 122, 0, 0.55);
+    --brand-scroll-width: 9px;
+}
+
+.orders-page .orders-scroll {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.main-content:has(.orders-page),
+.content-card:has(.orders-page),
+.main-content:has(.customers-page),
+.content-card:has(.customers-page) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--brand-scroll-thumb) var(--brand-scroll-track);
+}
+
+.main-content:has(.orders-page)::-webkit-scrollbar,
+.content-card:has(.orders-page)::-webkit-scrollbar,
+.main-content:has(.customers-page)::-webkit-scrollbar,
+.content-card:has(.customers-page)::-webkit-scrollbar {
+    width: var(--brand-scroll-width);
+}
+
+.main-content:has(.orders-page)::-webkit-scrollbar-track,
+.content-card:has(.orders-page)::-webkit-scrollbar-track,
+.main-content:has(.customers-page)::-webkit-scrollbar-track,
+.content-card:has(.customers-page)::-webkit-scrollbar-track {
+    background: var(--brand-scroll-track);
+    border-radius: 999px;
+    margin-block: 10px;
+}
+
+.main-content:has(.orders-page)::-webkit-scrollbar-thumb,
+.content-card:has(.orders-page)::-webkit-scrollbar-thumb,
+.main-content:has(.customers-page)::-webkit-scrollbar-thumb,
+.content-card:has(.customers-page)::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffb067 0%, #ff7a00 55%, #f06700 100%);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 0 2px 8px rgba(255, 122, 0, 0.22);
+    min-height: 48px;
+}
+
+.main-content:has(.orders-page)::-webkit-scrollbar-thumb:hover,
+.content-card:has(.orders-page)::-webkit-scrollbar-thumb:hover,
+.main-content:has(.customers-page)::-webkit-scrollbar-thumb:hover,
+.content-card:has(.customers-page)::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff9a3d 0%, #ff7a00 40%, #e66900 100%);
+    background-clip: padding-box;
+    box-shadow: 0 3px 12px rgba(255, 122, 0, 0.32);
+}
+
+.main-content:has(.orders-page)::-webkit-scrollbar-corner,
+.content-card:has(.orders-page)::-webkit-scrollbar-corner,
+.main-content:has(.customers-page)::-webkit-scrollbar-corner,
+.content-card:has(.customers-page)::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+[data-theme="dark"] .main-content:has(.orders-page)::-webkit-scrollbar-track,
+[data-theme="dark"] .content-card:has(.orders-page)::-webkit-scrollbar-track,
+[data-theme="dark"] .main-content:has(.customers-page)::-webkit-scrollbar-track,
+[data-theme="dark"] .content-card:has(.customers-page)::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+html:has(.orders-page),
+html:has(.customers-page) {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 122, 0, 0.55) rgba(15, 23, 42, 0.045);
+}
+
+html:has(.orders-page)::-webkit-scrollbar,
+html:has(.customers-page)::-webkit-scrollbar {
+    width: 9px;
+}
+
+html:has(.orders-page)::-webkit-scrollbar-track,
+html:has(.customers-page)::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.045);
+    border-radius: 999px;
+}
+
+html:has(.orders-page)::-webkit-scrollbar-thumb,
+html:has(.customers-page)::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffb067 0%, #ff7a00 55%, #f06700 100%);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+html:has(.orders-page)::-webkit-scrollbar-thumb:hover,
+html:has(.customers-page)::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff9a3d 0%, #ff7a00 40%, #e66900 100%);
+    background-clip: padding-box;
+}
+
+/* Nested insight lists on CustomersList */
+.customers-page .scrollable-list {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 122, 0, 0.55) rgba(15, 23, 42, 0.045);
+    -ms-overflow-style: auto;
+}
+
+.customers-page .scrollable-list::-webkit-scrollbar {
+    width: 7px;
+    display: block;
+}
+
+.customers-page .scrollable-list::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.045);
+    border-radius: 999px;
+    margin-block: 6px;
+}
+
+.customers-page .scrollable-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffb067 0%, #ff7a00 55%, #f06700 100%);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.customers-page .scrollable-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff9a3d 0%, #ff7a00 40%, #e66900 100%);
+    background-clip: padding-box;
+}

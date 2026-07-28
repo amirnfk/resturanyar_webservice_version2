@@ -988,7 +988,7 @@ namespace resturanyar.Controllers
                 }
                 else if (period.Equals("month", StringComparison.OrdinalIgnoreCase))
                 {
-                    from = new DateTime(today.Year, today.Month, 1);
+                    from = today.AddMonths(-1);
                     to = DateTime.Now;
                 }
                 else if (period.Equals("quarter", StringComparison.OrdinalIgnoreCase))
@@ -1018,12 +1018,14 @@ namespace resturanyar.Controllers
                 .ToListAsync();
 
             var orderIdsInRange = ordersInRange.Select(o => o.OrderId).ToList();
+
+            // Issued receipt snapshots: food / fees / tax / grand come from here when present.
             var snapshotMap = orderIdsInRange.Count == 0
-                ? new Dictionary<int, decimal>()
+                ? new Dictionary<int, OrderReceiptSnapshot>()
                 : await _context.OrderReceiptSnapshots
                     .AsNoTracking()
                     .Where(s => s.RestaurantId == restaurantId && orderIdsInRange.Contains(s.OrderId))
-                    .ToDictionaryAsync(s => s.OrderId, s => s.GrandTotal);
+                    .ToDictionaryAsync(s => s.OrderId);
 
             var statusGroups = await ordersQuery
                 .GroupBy(o => o.StatusId)
@@ -1063,44 +1065,66 @@ namespace resturanyar.Controllers
                     })
                     .ToDictionaryAsync(x => x.OrderId, x => x.Subtotal);
 
-            decimal GetFinancialTotal(int orderId)
+            decimal itemsRevenue = 0;
+            decimal feesTotal = 0;
+            decimal taxTotal = 0;
+            decimal discountTotal = 0;
+            decimal totalRevenue = 0;
+            decimal paidRevenue = 0;
+            var breakdownMap = new Dictionary<string, ChargeBreakdownItemDto>(StringComparer.OrdinalIgnoreCase);
+            int ordersWithChargesCount = 0;
+
+            foreach (var order in ordersInRange)
             {
-                if (snapshotMap.TryGetValue(orderId, out var grandTotal))
-                    return grandTotal;
-                return orderSubtotals.GetValueOrDefault(orderId, 0m);
+                var finance = ResolveOrderFinance(
+                    order.OrderId,
+                    snapshotMap,
+                    orderSubtotals);
+
+                itemsRevenue += finance.ItemsSubtotal;
+                feesTotal += finance.FeesTotal;
+                taxTotal += finance.TaxTotal;
+                discountTotal += finance.DiscountTotal;
+                totalRevenue += finance.GrandTotal;
+
+                if (order.StatusId == 11)
+                    paidRevenue += finance.GrandTotal;
+
+                if (finance.HasCharges)
+                    ordersWithChargesCount++;
+
+                foreach (var line in finance.ChargeLines)
+                {
+                    if (line.CalculatedAmount == 0)
+                        continue;
+
+                    var key = !string.IsNullOrWhiteSpace(line.Code)
+                        ? line.Code.Trim()
+                        : (line.Title ?? string.Empty).Trim();
+                    if (string.IsNullOrEmpty(key))
+                        key = $"cat-{(int)line.Category}";
+
+                    if (!breakdownMap.TryGetValue(key, out var item))
+                    {
+                        item = new ChargeBreakdownItemDto
+                        {
+                            Code = line.Code ?? string.Empty,
+                            Title = string.IsNullOrWhiteSpace(line.Title) ? key : line.Title.Trim(),
+                            Amount = 0
+                        };
+                        breakdownMap[key] = item;
+                    }
+
+                    item.Amount += line.CalculatedAmount;
+                    if (string.IsNullOrWhiteSpace(item.Title) && !string.IsNullOrWhiteSpace(line.Title))
+                        item.Title = line.Title.Trim();
+                }
             }
 
-            var itemAggregates = await orderItemsQuery
-                .GroupBy(_ => 1)
-                .Select(g => new
-                {
-                    TotalRevenue = g.Sum(oi =>
-                        (decimal)oi.Quantity *
-                        (
-                            oi.UnitPriceWithDiscount.HasValue &&
-                            oi.UnitPriceWithDiscount.Value > 0
-                                ? oi.UnitPriceWithDiscount.Value
-                                : oi.UnitPrice
-                        )),
-                    PaidRevenue = g.Sum(oi =>
-                        oi.Order.StatusId == 11
-                            ? (decimal)oi.Quantity *
-                              (
-                                  oi.UnitPriceWithDiscount.HasValue &&
-                                  oi.UnitPriceWithDiscount.Value > 0
-                                      ? oi.UnitPriceWithDiscount.Value
-                                      : oi.UnitPrice
-                              )
-                            : 0m),
-                    TotalItemsCount = g.Sum(oi => (int?)oi.Quantity) ?? 0
-                })
-                .FirstOrDefaultAsync();
+            var totalItemsCount = await orderItemsQuery.SumAsync(oi => (int?)oi.Quantity) ?? 0;
 
-            var totalRevenue = ordersInRange.Sum(o => GetFinancialTotal(o.OrderId));
-            var paidRevenue = ordersInRange
-                .Where(o => o.StatusId == 11)
-                .Sum(o => GetFinancialTotal(o.OrderId));
-            var totalItemsCount = itemAggregates?.TotalItemsCount ?? 0;
+            decimal GetFinancialTotal(int orderId) =>
+                ResolveOrderFinance(orderId, snapshotMap, orderSubtotals).GrandTotal;
 
             var salesByDay = ordersInRange
                 .GroupBy(o => o.CreatedAt.Date)
@@ -1112,6 +1136,101 @@ namespace resturanyar.Controllers
                 })
                 .OrderBy(x => x.Day)
                 .ToList();
+
+            var salesByHour = Enumerable.Range(0, 24)
+                .Select(hour =>
+                {
+                    var hourOrders = ordersInRange.Where(o => o.CreatedAt.Hour == hour).ToList();
+                    return new HourlySalesPointDto
+                    {
+                        Hour = hour,
+                        Orders = hourOrders.Count,
+                        Revenue = hourOrders.Sum(o => GetFinancialTotal(o.OrderId))
+                    };
+                })
+                .ToList();
+
+            // Previous equal-length window for owner comparison
+            int prevTotalOrders = 0;
+            decimal prevTotalRevenue = 0;
+            decimal prevPaidRevenue = 0;
+            decimal prevAvgOrderValue = 0;
+            bool hasPrevComparison = false;
+            double? ordersChangePercent = null;
+            double? revenueChangePercent = null;
+            double? aovChangePercent = null;
+
+            if (from.HasValue && to.HasValue)
+            {
+                var span = to.Value - from.Value;
+                if (span >= TimeSpan.Zero)
+                {
+                    var prevTo = from.Value.AddTicks(-1);
+                    var prevFrom = prevTo - span;
+
+                    var prevOrdersQuery = _context.Orders.AsNoTracking()
+                        .Where(o => o.RestaurantId == restaurantId);
+
+                    if (statusId > 0)
+                        prevOrdersQuery = prevOrdersQuery.Where(o => o.StatusId == statusId);
+                    else if (statusId == 0)
+                        prevOrdersQuery = prevOrdersQuery.Where(o => activeStatuses.Contains(o.StatusId));
+
+                    prevOrdersQuery = prevOrdersQuery
+                        .Where(o => o.CreatedAt >= prevFrom && o.CreatedAt <= prevTo);
+
+                    var prevOrdersInRange = await prevOrdersQuery
+                        .Select(o => new { o.OrderId, o.StatusId })
+                        .ToListAsync();
+
+                    if (prevOrdersInRange.Count > 0)
+                    {
+                        hasPrevComparison = true;
+                        prevTotalOrders = prevOrdersInRange.Count;
+                        var prevOrderIds = prevOrdersInRange.Select(o => o.OrderId).ToList();
+
+                        var prevSnapshotMap = await _context.OrderReceiptSnapshots
+                            .AsNoTracking()
+                            .Where(s => s.RestaurantId == restaurantId && prevOrderIds.Contains(s.OrderId))
+                            .ToDictionaryAsync(s => s.OrderId);
+
+                        var prevSubtotals = await _context.OrderItems.AsNoTracking()
+                            .Where(oi => prevOrderIds.Contains(oi.OrderId))
+                            .GroupBy(oi => oi.OrderId)
+                            .Select(g => new
+                            {
+                                OrderId = g.Key,
+                                Subtotal = g.Sum(oi =>
+                                    (decimal)oi.Quantity *
+                                    (
+                                        oi.UnitPriceWithDiscount.HasValue &&
+                                        oi.UnitPriceWithDiscount.Value > 0
+                                            ? oi.UnitPriceWithDiscount.Value
+                                            : oi.UnitPrice
+                                    ))
+                            })
+                            .ToDictionaryAsync(x => x.OrderId, x => x.Subtotal);
+
+                        foreach (var order in prevOrdersInRange)
+                        {
+                            var finance = ResolveOrderFinance(order.OrderId, prevSnapshotMap, prevSubtotals);
+                            prevTotalRevenue += finance.GrandTotal;
+                            if (order.StatusId == 11)
+                                prevPaidRevenue += finance.GrandTotal;
+                        }
+
+                        var prevPaidOrders = prevOrdersInRange.Count(o => o.StatusId == 11);
+                        prevAvgOrderValue = prevPaidOrders > 0
+                            ? Math.Round(prevPaidRevenue / prevPaidOrders, 0)
+                            : 0;
+
+                        var avgOrderValue = paidOrders > 0 ? Math.Round(paidRevenue / paidOrders, 0) : 0m;
+                        ordersChangePercent = CalcChangePercent(totalOrders, prevTotalOrders);
+                        revenueChangePercent = CalcChangePercent(totalRevenue, prevTotalRevenue);
+                        aovChangePercent = CalcChangePercent(avgOrderValue, prevAvgOrderValue);
+                    }
+                }
+            }
 
             var allTopItems = await orderItemsQuery
                 .GroupBy(oi => oi.FoodItemId)
@@ -1141,11 +1260,28 @@ namespace resturanyar.Controllers
                 ToDate = to,
                 Period = period,
                 IsCustomRange = hasCustomRange,
+                FilterStatusId = statusId,
                 TotalOrders = totalOrders,
                 PaidOrders = paidOrders,
                 CancelledOrders = cancelledOrders,
                 TotalRevenue = totalRevenue,
                 PaidRevenue = paidRevenue,
+                ItemsRevenue = itemsRevenue,
+                FeesTotal = feesTotal,
+                TaxTotal = taxTotal,
+                DiscountTotal = discountTotal,
+                IssuedReceiptCount = snapshotMap.Count,
+                OrdersWithChargesCount = ordersWithChargesCount,
+                ChargeBreakdown = breakdownMap.Values
+                    .OrderByDescending(x => x.Amount)
+                    .ToList(),
+                HasPreviousPeriodComparison = hasPrevComparison,
+                PrevTotalOrders = prevTotalOrders,
+                PrevTotalRevenue = prevTotalRevenue,
+                PrevAvgOrderValue = prevAvgOrderValue,
+                OrdersChangePercent = ordersChangePercent,
+                RevenueChangePercent = revenueChangePercent,
+                AovChangePercent = aovChangePercent,
                 AvgOrderValue = paidOrders > 0 ? Math.Round(paidRevenue / paidOrders, 0) : 0,
                 AvgItemsPerOrder = totalOrders > 0 ? Math.Round((double)totalItemsCount / totalOrders, 2) : 0,
                 CancelRate = totalOrders > 0 ? Math.Round((double)cancelledOrders * 100 / totalOrders, 2) : 0,
@@ -1153,19 +1289,27 @@ namespace resturanyar.Controllers
                 StatusMap = statusMap,
                 StatusColors = statusColors,
                 SalesByDay = salesByDay,
+                SalesByHour = salesByHour,
                 TopItemsByQuantity = topByQty,
                 TopItemsByRevenue = topByRev,
                 TopN = topN
             };
 
-
-
             foreach (var sg in statusGroups)
                 vm.StatusCounts[sg.StatusId] = sg.Count;
+
+            ViewData["FilterStatusId"] = statusId;
+            ViewData["TopN"] = topN;
+            ViewData["CurrentPeriod"] = period?.ToLower();
 
             if (hasCustomRange)
             {
                 if (from.HasValue) ViewData["FromFaDate"] = from.Value.ToPersianDate();
+                if (to.HasValue) ViewData["ToFaDate"] = to.Value.Date.ToPersianDate();
+            }
+            else if (from.HasValue)
+            {
+                ViewData["FromFaDate"] = from.Value.ToPersianDate();
                 if (to.HasValue) ViewData["ToFaDate"] = to.Value.Date.ToPersianDate();
             }
 
@@ -1206,7 +1350,7 @@ namespace resturanyar.Controllers
                     }
                     else if (period.Equals("month", StringComparison.OrdinalIgnoreCase))
                     {
-                        from = new DateTime(today.Year, today.Month, 1);
+                        from = today.AddMonths(-1);
                         to = DateTime.Now;
                     }
                     else if (period.Equals("quarter", StringComparison.OrdinalIgnoreCase))
@@ -1266,16 +1410,29 @@ namespace resturanyar.Controllers
                     wsOrders.Cell(1, 5).Value = "نام مشتری";
                     wsOrders.Cell(1, 6).Value = "شماره موبایل";
                     wsOrders.Cell(1, 7).Value = "توضیحات";
-                    wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
-                    wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
-                    wsOrders.Cell(1, 10).Value = "مبلغ فاکتور (تومان)";
-                    wsOrders.Cell(1, 11).Value = "تاریخ صدور فاکتور";
+                    wsOrders.Cell(1, 8).Value = "تعداد غذا";
+                    wsOrders.Cell(1, 9).Value = "جمع اقلام (تومان)";
+                    wsOrders.Cell(1, 10).Value = "جمع هزینه‌ها (تومان)";
+                    wsOrders.Cell(1, 11).Value = "مالیات (تومان)";
+                    wsOrders.Cell(1, 12).Value = "تخفیف (تومان)";
+                    wsOrders.Cell(1, 13).Value = "حق سرویس (تومان)";
+                    wsOrders.Cell(1, 14).Value = "مالیات ارزش افزوده (تومان)";
+                    wsOrders.Cell(1, 15).Value = "بسته‌بندی (تومان)";
+                    wsOrders.Cell(1, 16).Value = "ارسال (تومان)";
+                    wsOrders.Cell(1, 17).Value = "مبلغ فاکتور (تومان)";
+                    wsOrders.Cell(1, 18).Value = "تاریخ صدور فاکتور";
 
                     int row = 2;
                     foreach (var o in orders)
                     {
-                        var totalPrice = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
+                        var itemsTotal = o.OrderItems.Sum(i => GetFinalPrice(i) * i.Quantity);
+                        var foodQty = o.OrderItems.Sum(i => i.Quantity);
                         var snapshot = snapshotMap.GetValueOrDefault(o.OrderId);
+                        var chargeLines = ParseChargeLines(snapshot?.ChargeLinesJson);
+                        var fees = chargeLines.Where(c => c.Category == ChargeCategory.Fee).Sum(c => c.CalculatedAmount);
+                        var tax = chargeLines.Where(c => c.Category == ChargeCategory.Tax).Sum(c => c.CalculatedAmount);
+                        var discount = chargeLines.Where(c => c.Category == ChargeCategory.Discount).Sum(c => c.CalculatedAmount);
+
                         wsOrders.Cell(row, 1).Value = o.OrderId;
                         wsOrders.Cell(row, 2).Value = DateHelper.ToShamsi(o.CreatedAt);
                         wsOrders.Cell(row, 3).Value = o.TableNumber;
@@ -1287,36 +1444,51 @@ namespace resturanyar.Controllers
                             mobile = "-";
                         wsOrders.Cell(row, 6).Value = mobile;
                         wsOrders.Cell(row, 7).Value = o.Description ?? "-";
-                        wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
-                        wsOrders.Cell(row, 9).Value = totalPrice;
+                        wsOrders.Cell(row, 8).Value = foodQty;
+
                         if (snapshot != null)
                         {
-                            wsOrders.Cell(row, 10).Value = snapshot.GrandTotal;
-                            wsOrders.Cell(row, 11).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
+                            wsOrders.Cell(row, 9).Value = snapshot.ItemsSubtotal;
+                            wsOrders.Cell(row, 10).Value = fees;
+                            wsOrders.Cell(row, 11).Value = tax;
+                            wsOrders.Cell(row, 12).Value = discount;
+                            SetChargeCodeCell(wsOrders.Cell(row, 13), chargeLines, "service");
+                            SetChargeCodeCell(wsOrders.Cell(row, 14), chargeLines, "vat");
+                            SetChargeCodeCell(wsOrders.Cell(row, 15), chargeLines, "packaging");
+                            SetChargeCodeCell(wsOrders.Cell(row, 16), chargeLines, "delivery");
+                            wsOrders.Cell(row, 17).Value = snapshot.GrandTotal;
+                            wsOrders.Cell(row, 18).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
                         }
                         else
                         {
+                            wsOrders.Cell(row, 9).Value = itemsTotal;
                             wsOrders.Cell(row, 10).Value = "-";
                             wsOrders.Cell(row, 11).Value = "-";
+                            wsOrders.Cell(row, 12).Value = "-";
+                            wsOrders.Cell(row, 13).Value = "-";
+                            wsOrders.Cell(row, 14).Value = "-";
+                            wsOrders.Cell(row, 15).Value = "-";
+                            wsOrders.Cell(row, 16).Value = "-";
+                            wsOrders.Cell(row, 17).Value = itemsTotal;
+                            wsOrders.Cell(row, 18).Value = "-";
                         }
                         row++;
                     }
 
-                    // تنظیم استایل هدر (با توجه به تعداد ستون‌های جدید)
-                    var headerRange1 = wsOrders.Range($"A1:K1");
+                    var headerRange1 = wsOrders.Range("A1:R1");
                     headerRange1.Style.Font.Bold = true;
                     headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
                     wsOrders.Columns().AdjustToContents();
 
-                    // === Sheet 2: Items Details (بدون تغییر) ===
+                    // === Sheet 2: Items Details ===
                     var wsItems = workbook.Worksheets.Add("جزئیات سفارش‌ها");
                     wsItems.Cell(1, 1).Value = "شناسه سفارش";
                     wsItems.Cell(1, 2).Value = "شناسه آیتم";
                     wsItems.Cell(1, 3).Value = "نام غذا";
                     wsItems.Cell(1, 4).Value = "تعداد";
-                    wsItems.Cell(1, 5).Value = "قیمت واحد";
-                    wsItems.Cell(1, 6).Value = "قیمت با تخفیف";
-                    wsItems.Cell(1, 7).Value = "مبلغ کل";
+                    wsItems.Cell(1, 5).Value = "قیمت واحد (تومان)";
+                    wsItems.Cell(1, 6).Value = "قیمت نهایی واحد (تومان)";
+                    wsItems.Cell(1, 7).Value = "مبلغ کل (تومان)";
                     int itemRow = 2;
 
                     foreach (var o in orders)
@@ -1355,6 +1527,105 @@ namespace resturanyar.Controllers
             }
         }
 
+        private static double? CalcChangePercent(decimal current, decimal previous)
+        {
+            if (previous == 0)
+                return current == 0 ? 0 : null;
+            return Math.Round((double)((current - previous) / previous * 100m), 1);
+        }
+
+        private static double? CalcChangePercent(int current, int previous) =>
+            CalcChangePercent((decimal)current, (decimal)previous);
+
+        private static readonly System.Text.Json.JsonSerializerOptions ReceiptReportJsonOptions = new()
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+
+        private sealed class OrderFinanceTotals
+        {
+            public decimal ItemsSubtotal { get; init; }
+            public decimal FeesTotal { get; init; }
+            public decimal TaxTotal { get; init; }
+            public decimal DiscountTotal { get; init; }
+            public decimal GrandTotal { get; init; }
+            public bool HasSnapshot { get; init; }
+            public bool HasCharges { get; init; }
+            public List<ReceiptChargeLineDto> ChargeLines { get; init; } = new();
+        }
+
+        /// <summary>
+        /// Food/top-items: order items. Fees/tax/discount/breakdown: issued snapshots only.
+        /// Grand/sales/AOV: snapshot GrandTotal else items subtotal.
+        /// </summary>
+        private static OrderFinanceTotals ResolveOrderFinance(
+            int orderId,
+            IReadOnlyDictionary<int, OrderReceiptSnapshot> snapshotMap,
+            IReadOnlyDictionary<int, decimal> orderSubtotals)
+        {
+            if (snapshotMap.TryGetValue(orderId, out var snapshot))
+            {
+                var lines = ParseChargeLines(snapshot.ChargeLinesJson);
+                var fees = lines.Where(c => c.Category == ChargeCategory.Fee).Sum(c => c.CalculatedAmount);
+                var tax = lines.Where(c => c.Category == ChargeCategory.Tax).Sum(c => c.CalculatedAmount);
+                var discount = lines.Where(c => c.Category == ChargeCategory.Discount).Sum(c => c.CalculatedAmount);
+
+                return new OrderFinanceTotals
+                {
+                    ItemsSubtotal = snapshot.ItemsSubtotal,
+                    FeesTotal = fees,
+                    TaxTotal = tax,
+                    DiscountTotal = discount,
+                    GrandTotal = snapshot.GrandTotal,
+                    HasSnapshot = true,
+                    HasCharges = lines.Any(c => c.CalculatedAmount != 0),
+                    ChargeLines = lines
+                };
+            }
+
+            var items = orderSubtotals.GetValueOrDefault(orderId, 0m);
+            return new OrderFinanceTotals
+            {
+                ItemsSubtotal = items,
+                GrandTotal = items,
+                HasSnapshot = false,
+                HasCharges = false
+            };
+        }
+
+        private static List<ReceiptChargeLineDto> ParseChargeLines(string? chargeLinesJson)
+        {
+            if (string.IsNullOrWhiteSpace(chargeLinesJson))
+                return new List<ReceiptChargeLineDto>();
+
+            try
+            {
+                return System.Text.Json.JsonSerializer.Deserialize<List<ReceiptChargeLineDto>>(
+                           chargeLinesJson,
+                           ReceiptReportJsonOptions)
+                       ?? new List<ReceiptChargeLineDto>();
+            }
+            catch
+            {
+                return new List<ReceiptChargeLineDto>();
+            }
+        }
+
+        private static void SetChargeCodeCell(
+            ClosedXML.Excel.IXLCell cell,
+            IEnumerable<ReceiptChargeLineDto> lines,
+            string code)
+        {
+            var amount = lines
+                .Where(c => string.Equals(c.Code, code, StringComparison.OrdinalIgnoreCase))
+                .Sum(c => c.CalculatedAmount);
+            if (amount == 0)
+                cell.Value = "-";
+            else
+                cell.Value = amount;
+        }
+
         private decimal GetFinalPrice(OrderItem item)
         {
             return (item.UnitPriceWithDiscount.HasValue &&
@@ -1362,9 +1633,6 @@ namespace resturanyar.Controllers
                 ? item.UnitPriceWithDiscount.Value
                 : item.UnitPrice;
         }
-
-
-
 
         private string GetStatusName(int statusId)
         {

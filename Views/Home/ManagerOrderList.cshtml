@@ -16,6 +16,8 @@
 
     <link rel="stylesheet" href="~/css/manager-order-list.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="~/css/brand-scrollbar.css" asp-append-version="true" />
+
 }
 
 
@@ -156,7 +158,7 @@
 
 
 
-    <div id="ordersContainer">
+    <div id="ordersContainer" class="orders-scroll">
 
         @await Html.PartialAsync("_ManagerOrdersPartial", Model)
 

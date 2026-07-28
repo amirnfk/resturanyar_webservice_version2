@@ -8,15 +8,53 @@
         return;
     }
 
-    string money(decimal v) => string.Format("{0:N0}", v);
-    string percent(double v) => v.ToString("0.##");
+    string money(decimal v) => string.Format("{0:N0}", v).ToPersianDigits();
+    string num(int v) => v.ToString().ToPersianDigits();
+    string percent(double v) => v.ToString("0.##").ToPersianDigits();
+    string deltaText(double? v)
+    {
+        if (!v.HasValue) return "";
+        var sign = v.Value > 0 ? "+" : "";
+        return $"{sign}{v.Value.ToString("0.#").ToPersianDigits()}٪";
+    }
+    string deltaClass(double? v)
+    {
+        if (!v.HasValue) return "is-flat";
+        if (v.Value > 0) return "is-up";
+        if (v.Value < 0) return "is-down";
+        return "is-flat";
+    }
+
+    string periodLabel = Model.IsCustomRange
+        ? "بازه دلخواه"
+        : (Model.Period?.ToLower()) switch
+        {
+            "today" => "امروز",
+            "week" => "هفته",
+            "month" => "ماه",
+            "quarter" => "سه‌ماهه",
+            "year" => "سال",
+            _ => "بازه انتخابی"
+        };
+
+    string rangeText = "";
+    if (Model.FromDate.HasValue && Model.ToDate.HasValue)
+        rangeText = $"{Model.FromDate.Value.ToPersianDate()} تا {Model.ToDate.Value.Date.ToPersianDate()}";
+    else if (Model.FromDate.HasValue)
+        rangeText = Model.FromDate.Value.ToPersianDate();
 
     var statusMap = Model.StatusMap ?? new Dictionary<int, string>();
     var statusColors = Model.StatusColors ?? new Dictionary<int, string>();
+    var chargeBreakdown = Model.ChargeBreakdown ?? new List<ChargeBreakdownItemDto>();
+    var salesByHour = Model.SalesByHour ?? new List<HourlySalesPointDto>();
 
-    var labels = Model.SalesByDay?.Select(x => ToPersianDate(x.Day)).ToArray() ?? Array.Empty<string>();
+    var labels = Model.SalesByDay?.Select(x => x.Day.ToPersianDate()).ToArray() ?? Array.Empty<string>();
     var revenues = Model.SalesByDay?.Select(x => x.Revenue).ToArray() ?? Array.Empty<decimal>();
     var orders = Model.SalesByDay?.Select(x => x.Orders).ToArray() ?? Array.Empty<int>();
+
+    var hourLabels = salesByHour.Select(x => $"{x.Hour:00}:00".ToPersianDigits()).ToArray();
+    var hourOrders = salesByHour.Select(x => x.Orders).ToArray();
+    var hourRevenues = salesByHour.Select(x => x.Revenue).ToArray();
 
     var topQtyLabels = Model.TopItemsByQuantity?.Select(x => x.Name ?? ("#" + x.FoodItemId)).ToArray() ?? Array.Empty<string>();
     var topQtyValues = Model.TopItemsByQuantity?.Select(x => x.Quantity).ToArray() ?? Array.Empty<int>();
@@ -48,49 +86,169 @@
             })
         .ToArray();
 
+    var chargeLabels = chargeBreakdown.Select(x => x.Title).ToArray();
+    var chargeValues = chargeBreakdown.Select(x => x.Amount).ToArray();
+
     bool hasSalesData = labels.Length > 0 && revenues.Length > 0;
     bool hasStatusData = statusLabels.Length > 0;
     bool hasQtyData = topQtyLabels.Length > 0;
     bool hasRevData = topRevLabels.Length > 0;
+    bool hasChargeData = chargeLabels.Length > 0 && chargeValues.Any(v => v != 0);
+    bool hasPeakData = hourOrders.Any(v => v > 0);
+    bool showDiscount = Model.DiscountTotal != 0;
+    bool showCoverage = Model.TotalOrders > 0 && Model.IssuedReceiptCount < Model.TotalOrders;
+    bool showPrev = Model.HasPreviousPeriodComparison;
 }
 
-<div class="row g-3">
+<div class="report-period-header mr-reveal">
+    <div class="report-period-header__text">
+        <span class="report-period-header__eyebrow">خلاصه عملکرد</span>
+        <h2 class="report-period-header__title">گزارش مدیریتی — @periodLabel</h2>
+        @if (!string.IsNullOrEmpty(rangeText))
+        {
+            <p class="report-period-header__range mb-0">
+                <i class="bi bi-calendar3"></i>
+                @rangeText
+            </p>
+        }
+    </div>
+    @if (showCoverage)
+    {
+        <span class="report-coverage-chip" title="هزینه و مالیات فقط برای سفارش‌هایی که فاکتور صادر شده‌اند.">
+            <i class="bi bi-receipt"></i>
+            فاکتور صادرشده: @num(Model.IssuedReceiptCount) از @num(Model.TotalOrders)
+        </span>
+    }
+</div>
+
+@if (showCoverage)
+{
+    <div class="report-coverage-hint mt-2 mr-reveal" role="note">
+        <i class="bi bi-info-circle"></i>
+        هزینه و مالیات فقط برای سفارش‌هایی که فاکتور صادر شده‌اند.
+    </div>
+}
+
+<div class="report-section-label mt-3 mb-2 mr-reveal">شاخص‌های اصلی</div>
+<div class="row g-3 report-kpi-row">
     <div class="col-md-3 col-6">
-        <div class="kpi-card">
-            <div class="kpi-title">سفارش‌ها</div>
-            <div class="kpi-value">@Model.TotalOrders</div>
-            <span class="badge text-bg-light kpi-badge"><i class="bi bi-cart-check"></i> پرداخت: @Model.PaidOrders</span>
+        <div class="kpi-card kpi-card--orders mr-reveal" style="--mr-delay: 40ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">سفارش‌ها</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-bag-check"></i></span>
+            </div>
+            <div class="kpi-value">@num(Model.TotalOrders)</div>
+            <span class="badge text-bg-light kpi-badge"><i class="bi bi-check2-circle"></i> بسته شده: @num(Model.PaidOrders)</span>
+            @if (showPrev && Model.OrdersChangePercent.HasValue)
+            {
+                <span class="kpi-delta @deltaClass(Model.OrdersChangePercent)"><i class="bi @(Model.OrdersChangePercent > 0 ? "bi-arrow-up-short" : Model.OrdersChangePercent < 0 ? "bi-arrow-down-short" : "bi-dash")"></i> @deltaText(Model.OrdersChangePercent) نسبت به دوره قبل</span>
+            }
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-card">
-            <div class="kpi-title">مبلغ کل</div>
+        <div class="kpi-card kpi-card--grand mr-reveal" style="--mr-delay: 80ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">جمع فاکتور</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-cash-stack"></i></span>
+            </div>
             <div class="kpi-value">@money(Model.TotalRevenue)</div>
-            <span class="badge text-bg-primary kpi-badge">پرداخت‌شده: @money(Model.PaidRevenue)</span>
+            <span class="badge text-bg-primary kpi-badge">بسته شده: @money(Model.PaidRevenue)</span>
+            @if (showPrev && Model.RevenueChangePercent.HasValue)
+            {
+                <span class="kpi-delta @deltaClass(Model.RevenueChangePercent)"><i class="bi @(Model.RevenueChangePercent > 0 ? "bi-arrow-up-short" : Model.RevenueChangePercent < 0 ? "bi-arrow-down-short" : "bi-dash")"></i> @deltaText(Model.RevenueChangePercent) نسبت به دوره قبل</span>
+            }
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-card">
-            <div class="kpi-title">میانگین سبد خرید</div>
+        <div class="kpi-card kpi-card--aov mr-reveal" style="--mr-delay: 120ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">میانگین سبد خرید</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></span>
+            </div>
             <div class="kpi-value">@money(Model.AvgOrderValue)</div>
-            <span class="badge text-bg-light kpi-badge">میانگین آیتم/سفارش: @Model.AvgItemsPerOrder.ToString("0.0")</span>
+            <span class="badge text-bg-light kpi-badge">میانگین آیتم/سفارش: @Model.AvgItemsPerOrder.ToString("0.0").ToPersianDigits()</span>
+            @if (showPrev && Model.AovChangePercent.HasValue)
+            {
+                <span class="kpi-delta @deltaClass(Model.AovChangePercent)"><i class="bi @(Model.AovChangePercent > 0 ? "bi-arrow-up-short" : Model.AovChangePercent < 0 ? "bi-arrow-down-short" : "bi-dash")"></i> @deltaText(Model.AovChangePercent) نسبت به دوره قبل</span>
+            }
         </div>
     </div>
 
     <div class="col-md-3 col-6">
-        <div class="kpi-card">
-            <div class="kpi-title">نرخ‌ها</div>
+        <div class="kpi-card kpi-card--rates mr-reveal" style="--mr-delay: 160ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">نرخ‌ها</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-percent"></i></span>
+            </div>
             <div class="kpi-value" style="font-size: 1.1rem;">
                 <span class="badge text-bg-success">تبدیل: @percent(Model.PaidConversionRate)%</span>
             </div>
-            <span class="badge text-bg-danger kpi-badge">لغو: @percent(Model.CancelRate)% (@Model.CancelledOrders)</span>
+            <span class="badge text-bg-danger kpi-badge">لغو: @percent(Model.CancelRate)% (@num(Model.CancelledOrders))</span>
         </div>
     </div>
 </div>
 
-<div class="row g-3 mt-3">
+<div class="report-section-label mt-4 mb-2 mr-reveal">تفکیک مالی فاکتور</div>
+<div class="row g-3 report-finance-row">
+    <div class="col-md-3 col-6">
+        <div class="kpi-card kpi-card--food mr-reveal" style="--mr-delay: 40ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">فروش غذا</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-cup-hot"></i></span>
+            </div>
+            <div class="kpi-value">@money(Model.ItemsRevenue)</div>
+            <span class="badge text-bg-light kpi-badge">جمع اقلام سفارش‌ها</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card kpi-card--fees mr-reveal" style="--mr-delay: 80ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">هزینه‌ها</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-coin"></i></span>
+            </div>
+            <div class="kpi-value">@money(Model.FeesTotal)</div>
+            <span class="badge text-bg-light kpi-badge">از فاکتورهای صادرشده</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card kpi-card--tax mr-reveal" style="--mr-delay: 120ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">مالیات</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-bank"></i></span>
+            </div>
+            <div class="kpi-value">@money(Model.TaxTotal)</div>
+            <span class="badge text-bg-light kpi-badge">از فاکتورهای صادرشده</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card kpi-card--coverage mr-reveal" style="--mr-delay: 160ms">
+            @if (showDiscount)
+            {
+                <div class="kpi-card__top">
+                    <div class="kpi-title">تخفیف فاکتور</div>
+                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-tags"></i></span>
+                </div>
+                <div class="kpi-value">@money(Model.DiscountTotal)</div>
+                <span class="badge text-bg-light kpi-badge">فاکتور: @num(Model.IssuedReceiptCount) از @num(Model.TotalOrders)</span>
+            }
+            else
+            {
+                <div class="kpi-card__top">
+                    <div class="kpi-title">پوشش فاکتور</div>
+                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-clipboard-check"></i></span>
+                </div>
+                <div class="kpi-value" style="font-size: 1.15rem;">@num(Model.IssuedReceiptCount) از @num(Model.TotalOrders)</div>
+                <span class="badge text-bg-light kpi-badge">با هزینه: @num(Model.OrdersWithChargesCount)</span>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="report-section-label mt-4 mb-2 mr-reveal">نمودارها و روندها</div>
+
+<div class="row g-3">
     <div class="col-lg-8">
-        <div class="chart-card">
+        <div class="chart-card mr-reveal">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="m-0">روند فروش و تعداد سفارش‌ها</h6>
             </div>
@@ -104,7 +262,38 @@
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="chart-card">
+        <div class="chart-card mr-reveal" style="--mr-delay: 60ms">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">تفکیک هزینه‌ها و مالیات</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="chargeBreakdownChart"></canvas>
+                @if (!hasChargeData)
+                {
+                    <div class="no-data-chart">در این بازه خط هزینه/مالیاتی در فاکتورها ثبت نشده</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-lg-8">
+        <div class="chart-card mr-reveal">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="m-0">ساعات شلوغ</h6>
+            </div>
+            <div class="chart-container">
+                <canvas id="peakHoursChart"></canvas>
+                @if (!hasPeakData)
+                {
+                    <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card mr-reveal" style="--mr-delay: 60ms">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="m-0">تفکیک وضعیت سفارش‌ها</h6>
             </div>
@@ -119,58 +308,82 @@
     </div>
 </div>
 
-<div class="row g-3 mt-1">
+<div class="report-section-label mt-4 mb-2 mr-reveal">پرفروش‌ترین‌ها</div>
+<div class="row g-3">
     <div class="col-lg-6">
-        <div class="chart-card">
+        <div class="chart-card mr-reveal">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (براساس تعداد)</h6>
+                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (تعداد)</h6>
             </div>
-            <div class="chart-container">
+            <div class="chart-container chart-container--sm">
                 <canvas id="topQtyChart"></canvas>
                 @if (!hasQtyData)
                 {
                     <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
                 }
             </div>
+            @if (hasQtyData)
+            {
+                <ol class="top-items-list mt-3 mb-0">
+                    @for (var i = 0; i < Model.TopItemsByQuantity.Count; i++)
+                    {
+                        var item = Model.TopItemsByQuantity[i];
+                        <li>
+                            <span class="top-items-list__rank">@((i + 1).ToString().ToPersianDigits())</span>
+                            <span class="top-items-list__name">@(item.Name ?? "بدون نام")</span>
+                            <span class="top-items-list__meta">@item.Quantity.ToString().ToPersianDigits() عدد</span>
+                        </li>
+                    }
+                </ol>
+            }
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="chart-card">
+        <div class="chart-card mr-reveal" style="--mr-delay: 60ms">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="m-0">پرفروش‌های آیتم‌ها (براساس مبلغ)</h6>
+                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (مبلغ غذا)</h6>
             </div>
-            <div class="chart-container">
+            <div class="chart-container chart-container--sm">
                 <canvas id="topRevChart"></canvas>
                 @if (!hasRevData)
                 {
                     <div class="no-data-chart">داده‌ای برای نمایش وجود ندارد</div>
                 }
             </div>
+            @if (hasRevData)
+            {
+                <ol class="top-items-list mt-3 mb-0">
+                    @for (var i = 0; i < Model.TopItemsByRevenue.Count; i++)
+                    {
+                        var item = Model.TopItemsByRevenue[i];
+                        <li>
+                            <span class="top-items-list__rank">@((i + 1).ToString().ToPersianDigits())</span>
+                            <span class="top-items-list__name">@(item.Name ?? "بدون نام")</span>
+                            <span class="top-items-list__meta">@money(item.Revenue)</span>
+                        </li>
+                    }
+                </ol>
+            }
         </div>
     </div>
 </div>
 
 <script>
-    // تابع تبدیل تاریخ میلادی به شمسی (برای استفاده در سمت سرور)
-    @{
-            string ToPersianDate(DateTime date)
-            {
-                    var pc = new System.Globalization.PersianCalendar();
-                    return $"{pc.GetYear(date):0000}/{pc.GetMonth(date):00}/{pc.GetDayOfMonth(date):00}";
-            }
-    }
-
-    // تمام داده‌های داینامیک را در یک آبجکت سراسری قرار می‌دهیم
     window.managerReportData = {
         labels: @Html.Raw(JsonSerializer.Serialize(labels)),
         revenues: @Html.Raw(JsonSerializer.Serialize(revenues)),
         orders: @Html.Raw(JsonSerializer.Serialize(orders)),
+        hourLabels: @Html.Raw(JsonSerializer.Serialize(hourLabels)),
+        hourOrders: @Html.Raw(JsonSerializer.Serialize(hourOrders)),
+        hourRevenues: @Html.Raw(JsonSerializer.Serialize(hourRevenues)),
         statusLabels: @Html.Raw(JsonSerializer.Serialize(statusLabels)),
         statusValues: @Html.Raw(JsonSerializer.Serialize(statusValues)),
         statusBg: @Html.Raw(JsonSerializer.Serialize(statusBg)),
         topQtyLabels: @Html.Raw(JsonSerializer.Serialize(topQtyLabels)),
         topQtyValues: @Html.Raw(JsonSerializer.Serialize(topQtyValues)),
         topRevLabels: @Html.Raw(JsonSerializer.Serialize(topRevLabels)),
-        topRevValues: @Html.Raw(JsonSerializer.Serialize(topRevValues))
+        topRevValues: @Html.Raw(JsonSerializer.Serialize(topRevValues)),
+        chargeLabels: @Html.Raw(JsonSerializer.Serialize(chargeLabels)),
+        chargeValues: @Html.Raw(JsonSerializer.Serialize(chargeValues))
     };
 </script>
