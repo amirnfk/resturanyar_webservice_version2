@@ -82,30 +82,84 @@
         document.title = displayTitle + ' - رستورانیار دلاویتا';
     }
 
-    function stylesheetExists(href) {
-        if (!href) return false;
+    var LAYOUT_STYLESHEET_MARKERS = [
+        '/lib/bootstrap/',
+        '/css/bootstrap_rtl',
+        '/css/fntawsom',
+        '/css/bootstrap-icons',
+        '/css/site.css',
+        '/css/share.css'
+    ];
+
+    function absoluteHref(href) {
+        if (!href) return '';
         try {
-            var absolute = new URL(href, window.location.origin).href;
-            return Array.from(document.querySelectorAll('link[rel="stylesheet"]')).some(function (link) {
-                try {
-                    return new URL(link.href, window.location.origin).href === absolute;
-                } catch (e) {
-                    return link.getAttribute('href') === href;
-                }
-            });
+            return new URL(href, window.location.origin).href;
         } catch (e) {
-            return false;
+            return href;
         }
     }
 
-    function injectStyles(doc) {
+    function isLayoutStylesheet(href) {
+        if (!href) return false;
+        var lower = href.toLowerCase();
+        return LAYOUT_STYLESHEET_MARKERS.some(function (marker) {
+            return lower.indexOf(marker.toLowerCase()) !== -1;
+        });
+    }
+
+    function findStylesheetByHref(href) {
+        var absolute = absoluteHref(href);
+        if (!absolute) return null;
+        return Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find(function (link) {
+            try {
+                return absoluteHref(link.href) === absolute;
+            } catch (e) {
+                return link.getAttribute('href') === href;
+            }
+        }) || null;
+    }
+
+    function collectPageStyleHrefs(doc) {
+        var needed = {};
         doc.querySelectorAll('link[rel="stylesheet"]').forEach(function (link) {
             var href = link.getAttribute('href');
-            if (!href || stylesheetExists(href)) return;
+            if (!href || isLayoutStylesheet(href)) return;
+            needed[absoluteHref(href)] = href;
+        });
+        return needed;
+    }
+
+    function markInitialPageStyles() {
+        document.querySelectorAll('link[rel="stylesheet"]').forEach(function (link) {
+            var href = link.getAttribute('href') || link.href;
+            if (!href || isLayoutStylesheet(href)) return;
+            link.setAttribute('data-sidebar-page-style', 'true');
+        });
+    }
+
+    function injectStyles(doc) {
+        var needed = collectPageStyleHrefs(doc);
+        var neededAbs = Object.keys(needed);
+
+        neededAbs.forEach(function (abs) {
+            var existing = findStylesheetByHref(abs);
+            if (existing) {
+                existing.setAttribute('data-sidebar-page-style', 'true');
+                return;
+            }
             var el = document.createElement('link');
             el.rel = 'stylesheet';
-            el.href = href;
+            el.href = needed[abs];
+            el.setAttribute('data-sidebar-page-style', 'true');
             document.head.appendChild(el);
+        });
+
+        document.querySelectorAll('link[data-sidebar-page-style]').forEach(function (link) {
+            var abs = absoluteHref(link.href);
+            if (neededAbs.indexOf(abs) === -1) {
+                link.remove();
+            }
         });
     }
 
@@ -396,5 +450,6 @@
         }
     });
 
+    markInitialPageStyles();
     history.replaceState({ sidebarNav: true, url: window.location.href }, document.title, window.location.href);
 })();

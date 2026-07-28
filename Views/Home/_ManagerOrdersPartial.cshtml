@@ -126,6 +126,13 @@
                 <div class="total-box mt-3">
                     مبلغ کل: @totalPrice.ToString("N0") تومان
                 </div>
+                @if (ViewBag.ReceiptChargesEnabled == true && !order.ReceiptGrandTotal.HasValue && order.EstimatedReceiptGrandTotal.HasValue)
+                {
+                    <div class="alert alert-info py-2 px-3 mt-2 mb-0 receipt-estimate-badge">
+                        <i class="fa-solid fa-calculator ms-1"></i>
+                        مبلغ قابل پرداخت (تقریبی): @order.EstimatedReceiptGrandTotal.Value.ToString("N0") تومان
+                    </div>
+                }
                 @if (order.ReceiptGrandTotal.HasValue)
                 {
                     <div class="alert alert-success py-2 px-3 mt-2 mb-0 receipt-issued-badge">

@@ -14,6 +14,10 @@ namespace resturanyar.Models.Receipt
         [MaxLength(20)]
         public string Channel { get; set; } = "Web";
 
+        public decimal? ItemsSubtotal { get; set; }
+        public decimal? GrandTotal { get; set; }
+        public string? ReceiptPayloadJson { get; set; }
+
         [ForeignKey(nameof(OrderReceiptSnapshotId))]
         public OrderReceiptSnapshot? Snapshot { get; set; }
     }

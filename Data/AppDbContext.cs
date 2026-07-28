@@ -72,6 +72,8 @@ namespace Resturanyar.Data
 
                 entity.Property(r => r.ReceiptChargesEnabled)
                     .HasDefaultValue(false);
+
+                entity.Property(r => r.ReceiptChargesEnabledAt);
             });
 
             
@@ -142,6 +144,8 @@ namespace Resturanyar.Data
                 entity.HasIndex(h => new { h.OrderId, h.PrintedAt });
                 entity.Property(h => h.Channel).HasMaxLength(20).HasDefaultValue("Web");
                 entity.Property(h => h.PrintedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(h => h.ItemsSubtotal).HasColumnType("decimal(18,2)");
+                entity.Property(h => h.GrandTotal).HasColumnType("decimal(18,2)");
             });
 
             // 📌 Relationship: User -> Role

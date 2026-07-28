@@ -1608,6 +1608,7 @@ namespace resturanyar.Controllers
                 return Json(new { success = false, message = "رستوران یافت نشد." });
 
             restaurant.ReceiptChargesEnabled = enabled;
+            restaurant.ReceiptChargesEnabledAt = enabled ? DateTime.Now : null;
             await _context.SaveChangesAsync();
 
             return Json(new

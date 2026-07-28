@@ -274,6 +274,10 @@
         const grandTotal = receipt.grandTotal ?? receipt.GrandTotal;
         if (grandTotal == null) return;
 
+        card.querySelectorAll('.receipt-estimate-badge').forEach(function (el) {
+            el.remove();
+        });
+
         const issuedAt = receipt.issuedAt ?? receipt.IssuedAt;
         let badge = card.querySelector('.receipt-issued-badge');
         if (!badge) {

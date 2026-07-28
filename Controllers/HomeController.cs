@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using resturanyar.Models;
 using resturanyar.Models.Copoun;
+using resturanyar.Models.Receipt;
 using resturanyar.Models.ViewModels;
 using resturanyar.Models.ViewModels.DashboardStat;
 using resturanyar.Utility;
@@ -1012,6 +1013,18 @@ namespace resturanyar.Controllers
             if (from.HasValue) ordersQuery = ordersQuery.Where(o => o.CreatedAt >= from.Value);
             if (to.HasValue) ordersQuery = ordersQuery.Where(o => o.CreatedAt <= to.Value);
 
+            var ordersInRange = await ordersQuery
+                .Select(o => new { o.OrderId, o.CreatedAt, o.StatusId })
+                .ToListAsync();
+
+            var orderIdsInRange = ordersInRange.Select(o => o.OrderId).ToList();
+            var snapshotMap = orderIdsInRange.Count == 0
+                ? new Dictionary<int, decimal>()
+                : await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == restaurantId && orderIdsInRange.Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId, s => s.GrandTotal);
+
             var statusGroups = await ordersQuery
                 .GroupBy(o => o.StatusId)
                 .Select(g => new { StatusId = g.Key, Count = g.Count() })
@@ -1031,6 +1044,31 @@ namespace resturanyar.Controllers
 
             if (from.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt >= from.Value);
             if (to.HasValue) orderItemsQuery = orderItemsQuery.Where(oi => oi.Order.CreatedAt <= to.Value);
+
+            var orderSubtotals = orderIdsInRange.Count == 0
+                ? new Dictionary<int, decimal>()
+                : await orderItemsQuery
+                    .GroupBy(oi => oi.OrderId)
+                    .Select(g => new
+                    {
+                        OrderId = g.Key,
+                        Subtotal = g.Sum(oi =>
+                            (decimal)oi.Quantity *
+                            (
+                                oi.UnitPriceWithDiscount.HasValue &&
+                                oi.UnitPriceWithDiscount.Value > 0
+                                    ? oi.UnitPriceWithDiscount.Value
+                                    : oi.UnitPrice
+                            ))
+                    })
+                    .ToDictionaryAsync(x => x.OrderId, x => x.Subtotal);
+
+            decimal GetFinancialTotal(int orderId)
+            {
+                if (snapshotMap.TryGetValue(orderId, out var grandTotal))
+                    return grandTotal;
+                return orderSubtotals.GetValueOrDefault(orderId, 0m);
+            }
 
             var itemAggregates = await orderItemsQuery
                 .GroupBy(_ => 1)
@@ -1058,27 +1096,22 @@ namespace resturanyar.Controllers
                 })
                 .FirstOrDefaultAsync();
 
-            var totalRevenue = itemAggregates?.TotalRevenue ?? 0m;
-            var paidRevenue = itemAggregates?.PaidRevenue ?? 0m;
+            var totalRevenue = ordersInRange.Sum(o => GetFinancialTotal(o.OrderId));
+            var paidRevenue = ordersInRange
+                .Where(o => o.StatusId == 11)
+                .Sum(o => GetFinancialTotal(o.OrderId));
             var totalItemsCount = itemAggregates?.TotalItemsCount ?? 0;
 
-            var salesByDay = await orderItemsQuery
-                .GroupBy(oi => oi.Order.CreatedAt.Date)
+            var salesByDay = ordersInRange
+                .GroupBy(o => o.CreatedAt.Date)
                 .Select(g => new SalesPointDto
                 {
                     Day = g.Key,
-                    Revenue = g.Sum(oi =>
-                        (decimal)oi.Quantity *
-                        (
-                            oi.UnitPriceWithDiscount.HasValue &&
-                            oi.UnitPriceWithDiscount.Value > 0
-                                ? oi.UnitPriceWithDiscount.Value
-                                : oi.UnitPrice
-                        )),
-                    Orders = g.Select(oi => oi.OrderId).Distinct().Count()
+                    Revenue = g.Sum(o => GetFinancialTotal(o.OrderId)),
+                    Orders = g.Count()
                 })
                 .OrderBy(x => x.Day)
-                .ToListAsync();
+                .ToList();
 
             var allTopItems = await orderItemsQuery
                 .GroupBy(oi => oi.FoodItemId)
@@ -1428,6 +1461,12 @@ namespace resturanyar.Controllers
 
             ViewBag.RestaurantId = restaurantId.Value;
 
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+            ViewBag.ReceiptChargesEnabled = restaurant?.ReceiptChargesEnabled == true;
+
             return View(items);
         }
 
@@ -1641,6 +1680,29 @@ namespace resturanyar.Controllers
                     {
                         order.ReceiptGrandTotal = snapshot.GrandTotal;
                         order.ReceiptIssuedAt = snapshot.IssuedAt;
+                    }
+                }
+
+                if (restaurant.ReceiptChargesEnabled)
+                {
+                    foreach (var order in orders.Where(o =>
+                        !o.ReceiptGrandTotal.HasValue &&
+                        _receiptService.IsOrderEligibleForChargeDefaults(restaurant, o.CreatedAt)))
+                    {
+                        var preview = await _receiptService.PreviewAsync(
+                            order.OrderId,
+                            restaurantId.Value,
+                            new ReceiptPreviewRequest
+                            {
+                                OrderType = (OrderTypeKind)order.OrderType
+                            });
+
+                        if (preview.Success && preview.Receipt != null)
+                        {
+                            var itemSubtotal = order.OrderItems?.Sum(i => i.TotalPrice) ?? 0;
+                            if (preview.Receipt.GrandTotal != itemSubtotal)
+                                order.EstimatedReceiptGrandTotal = preview.Receipt.GrandTotal;
+                        }
                     }
                 }
             }

@@ -160,6 +160,10 @@
                     <textarea id="orderDescription" class="form-control" rows="2" placeholder="..."></textarea>
                 </div>
                 <button id="submitOrderBtn" class="btn btn-primary w-100 py-2">نهایی کردن سفارش</button>
+                <div id="orderEstimateBox" class="alert alert-info py-2 px-3 mt-3 mb-0" style="display:none;" aria-live="polite">
+                    <i class="fa-solid fa-calculator ms-1"></i>
+                    <span id="orderEstimateText"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -256,6 +260,7 @@
     // ══════════════════════════════════════════════════════════
     var API_BASE      = "/api/v2/UserApi";
     var   restaurantId  = @(ViewBag.RestaurantId ?? 0);
+    var receiptChargesEnabled = @(ViewBag.ReceiptChargesEnabled == true ? "true" : "false");
 
     var cart               = [];
     var selectedCustomerId = null;
@@ -294,6 +299,46 @@
         const el = document.getElementById(id);
         new bootstrap.Toast(el, { autohide: true, delay: 4000 }).show();
         el.addEventListener('hidden.bs.toast', () => el.remove());
+    }
+
+    function formatMoney(value) {
+        var num = Number(value);
+        if (Number.isNaN(num)) return '0';
+        return num.toLocaleString('en-US');
+    }
+
+    function hideOrderEstimate() {
+        var box = document.getElementById('orderEstimateBox');
+        if (box) box.style.display = 'none';
+    }
+
+    function showOrderEstimate(orderId, grandTotal) {
+        var box = document.getElementById('orderEstimateBox');
+        var text = document.getElementById('orderEstimateText');
+        if (!box || !text) return;
+        text.textContent = 'مبلغ قابل پرداخت (تقریبی) برای سفارش #' + orderId + ': ' + formatMoney(grandTotal) + ' تومان';
+        box.style.display = 'block';
+    }
+
+    async function fetchEstimatedPayableTotal(orderId) {
+        if (!receiptChargesEnabled || !orderId) return;
+        try {
+            const response = await fetch('/Receipt/Preview?orderId=' + orderId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+            if (!data?.success || !data.data) return;
+            var total = data.data.grandTotal ?? data.data.GrandTotal;
+            var subtotal = data.data.itemsSubtotal ?? data.data.ItemsSubtotal;
+            if (total == null) return;
+            if (subtotal != null && Number(total) === Number(subtotal)) return;
+            showOrderEstimate(orderId, total);
+        } catch (err) {
+            console.warn('fetchEstimatedPayableTotal error:', err);
+        }
     }
 
     // ══════════════════════════════════════════════════════════
@@ -625,6 +670,9 @@
             const res = await response.json();
             if (res.success) {
                 showToast('سفارش با موفقیت ثبت شد!', 'success');
+                if (res.orderId) {
+                    await fetchEstimatedPayableTotal(res.orderId);
+                }
                 cart = [];
                 resetCustomer();
                 renderCart();
@@ -783,6 +831,7 @@
         selectedCustomerId = null;
         isSubmittingOrder = false;
         isSubmittingCustomer = false;
+        hideOrderEstimate();
 
         $('#filterCategory').find('option:not(:first)').remove();
         $('#searchBox, #filterCategory, #filterAvailability, #sortBy')

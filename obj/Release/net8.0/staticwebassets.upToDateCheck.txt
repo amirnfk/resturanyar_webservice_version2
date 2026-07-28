@@ -17,7 +17,7 @@ wwwroot\apple-icon-precomposed.png
 wwwroot\apple-icon.png
 wwwroot\apple-touch-icon.png
 wwwroot\browserconfig.xml
-wwwroot\css\add-order.css
+wwwroot\js\sidebar-nav.js
 wwwroot\css\all.min.css
 wwwroot\css\bootstrap-icons.css
 wwwroot\css\bootstrap.min.css
@@ -44,11 +44,11 @@ wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebmediumfanum.woff
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
-wwwroot\css\food-list.css
+wwwroot\css\manager-order-list.css
 wwwroot\css\home.css
 wwwroot\css\index-page.css
 wwwroot\css\jalalidatepicker.min.css
-wwwroot\css\manager-order-list.css
+wwwroot\css\food-list.css
 wwwroot\css\managerlogin.css
 wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
@@ -159,10 +159,11 @@ wwwroot\js\messages.js
 wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
 wwwroot\js\receipt-charge-settings.js
+wwwroot\js\receipt-print.js
 wwwroot\js\restaurant-background-cache.js
 wwwroot\js\restaurant-general-settings.js
 wwwroot\js\restaurant-settings.js
-wwwroot\js\sidebar-nav.js
+wwwroot\css\add-order.css
 wwwroot\js\site.js
 wwwroot\js\Sortable.min.js
 wwwroot\js\sweetalert2@11.js
@@ -244,4 +245,3 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\js\receipt-print.js

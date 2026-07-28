@@ -27,6 +27,12 @@ namespace resturanyar.Models
 
         public bool ReceiptChargesEnabled { get; set; }
 
+        /// <summary>
+        /// When charge defaults (estimates, auto-settle) apply to orders.
+        /// Only orders created at or after this time get passive charge defaults.
+        /// </summary>
+        public DateTime? ReceiptChargesEnabledAt { get; set; }
+
         public ICollection<Category> Categories { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual RestaurantSetting? Setting { get; set; }

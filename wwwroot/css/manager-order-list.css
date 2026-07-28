@@ -1,4 +1,4 @@
-:root {
+.orders-page {
     --primary: #ff7a00;
     --primary-hover: #e66900;
     --primary-light: rgba(255, 122, 0, 0.08);
@@ -6,9 +6,6 @@
     --radius-sm: 10px;
     --radius-md: 16px;
     --transition: 0.2s ease;
-}
-
-.orders-page {
     direction: rtl;
     font-family: "IRANYekan", "IRANSans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     color: #1e293b;
@@ -457,19 +454,19 @@
 }
 
 /* ---------- کارت کلی هر سفارش ---------- */
-.order-card {
+.orders-page .order-card {
     border-radius: 16px;
     background: #fff;
     box-shadow: 0 3px 18px rgba(0,0,0,.05);
     transition: transform .2s, box-shadow .2s;
 }
 
-    .order-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 25px rgba(0,0,0,.1);
-    }
+.orders-page .order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0,0,0,.1);
+}
 
-.order-header {
+.orders-page .order-header {
     font-weight: 700;
     color: #212529;
     font-size: 1rem;
@@ -477,7 +474,7 @@
     min-width: 180px;
 }
 
-.status-badge {
+.orders-page .status-badge {
     border-radius: 20px;
     padding: 4px 12px;
     font-size: .8rem;
@@ -487,17 +484,17 @@
     flex-shrink: 0;
 }
 
-.d-flex.flex-wrap {
+.orders-page .d-flex.flex-wrap {
     gap: 10px;
 }
 
-.order-meta {
+.orders-page .order-meta {
     color: #6c757d;
     font-size: .85rem;
 }
 
 /* ---------- جدول اقلام هر سفارش ---------- */
-.food-header {
+.orders-page .food-header {
     display: grid;
     grid-template-columns: 60px 1fr 90px 120px 120px;
     align-items: center;
@@ -510,7 +507,7 @@
     color: #495057;
 }
 
-.food-row {
+.orders-page .food-row {
     display: grid;
     grid-template-columns: 60px 1fr 90px 120px 120px;
     align-items: center;
@@ -520,14 +517,14 @@
     min-height: 60px;
 }
 
-.food-img {
+.orders-page .food-row .food-img {
     width: 50px;
     height: 50px;
     border-radius: 8px;
     object-fit: cover;
 }
 
-.food-name {
+.orders-page .food-name {
     font-weight: 600;
     font-size: .9rem;
     color: #333;
@@ -536,14 +533,16 @@
     text-overflow: ellipsis;
 }
 
-.food-qty, .food-price, .food-sum {
+.orders-page .food-qty,
+.orders-page .food-price,
+.orders-page .food-sum {
     text-align: center;
     font-size: .9rem;
     font-weight: 500;
     color: #444;
 }
 
-.total-box {
+.orders-page .total-box {
     background: #f9fafb;
     border-radius: 10px;
     padding: 10px 0;
@@ -555,21 +554,24 @@
 
 /* ---------- برای موبایل ---------- */
 @media (max-width: 768px) {
-    .food-header, .food-row {
+    .orders-page .food-header,
+    .orders-page .food-row {
         grid-template-columns: 50px 1fr 60px 80px 80px;
     }
 
-    .food-name {
+    .orders-page .food-name {
         font-size: 0.85rem;
     }
 
-    .food-qty, .food-price, .food-sum {
+    .orders-page .food-qty,
+    .orders-page .food-price,
+    .orders-page .food-sum {
         font-size: 0.8rem;
     }
 }
 
 /* ---------- استایل بخش اطلاعات مشتری ---------- */
-.customer-info {
+.orders-page .customer-info {
     background: linear-gradient(135deg, rgba(255, 122, 0, 0.08) 0%, rgba(255, 122, 0, 0.14) 100%);
     border-radius: 12px;
     padding: 8px 16px;
@@ -584,64 +586,53 @@
     direction: rtl;
 }
 
-    .customer-info i {
-        font-size: 1.2rem;
-        color: #ff7a00;
-    }
+.orders-page .customer-info i {
+    font-size: 1.2rem;
+    color: #ff7a00;
+}
 
-    .customer-info .customer-name {
-        font-weight: 700;
-        color: #e66900;
-    }
+.orders-page .customer-info .customer-name {
+    font-weight: 700;
+    color: #e66900;
+}
 
-    .customer-info .customer-mobile {
-        font-family: 'IRANYekan', system-ui, -apple-system, sans-serif;
-        font-size: 0.9rem;
-        background: #fff;
-        padding: 2px 8px;
-        border-radius: 20px;
-        color: #2c3e50;
-    }
+.orders-page .customer-info .customer-mobile {
+    font-family: 'IRANYekan', system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+    background: #fff;
+    padding: 2px 8px;
+    border-radius: 20px;
+    color: #2c3e50;
+}
 
-    .customer-info.unknown {
-        background: #f8f9fa;
-        border-right-color: #adb5bd;
-    }
+.orders-page .customer-info.unknown {
+    background: #f8f9fa;
+    border-right-color: #adb5bd;
+}
 
-        .customer-info.unknown i {
-            color: #6c757d;
-        }
+.orders-page .customer-info.unknown i {
+    color: #6c757d;
+}
 
 @media (max-width: 768px) {
-    .customer-info {
+    .orders-page .customer-info {
         flex-wrap: wrap;
         gap: 5px;
         font-size: 0.75rem;
     }
 }
 
-@media (max-width: 768px) {
-    .page-wrapper {
-        padding: 3px;
-    }
-
-    .content-card {
-        padding: 3px;
-        border-radius: 18px;
-    }
-}
-
 /* ===== بهبودهای اختصاصی برای موبایل (تا عرض ۵۷۶px) ===== */
 @media (max-width: 576px) {
     /* کارت سفارش */
-    .order-card {
+    .orders-page .order-card {
         padding: 12px !important;
         margin-bottom: 16px !important;
         border-radius: 12px;
     }
 
     /* هدر سفارش */
-    .order-header {
+    .orders-page .order-header {
         font-size: 0.9rem;
         min-width: unset;
         width: 100%;
@@ -651,26 +642,26 @@
         gap: 6px;
     }
 
-        .order-header .status-badge {
-            font-size: 0.7rem;
-            padding: 2px 10px;
-            margin-right: auto;
-        }
+    .orders-page .order-header .status-badge {
+        font-size: 0.7rem;
+        padding: 2px 10px;
+        margin-right: auto;
+    }
 
     /* دکمه چاپ و سلکت وضعیت */
-    .order-card .d-flex.justify-content-between {
+    .orders-page .order-card .d-flex.justify-content-between {
         flex-direction: column;
         align-items: stretch !important;
         gap: 8px;
     }
 
-    .order-card .btn-dark {
+    .orders-page .order-card .btn-dark {
         width: 100%;
         padding: 8px;
         font-size: 0.85rem;
     }
 
-    .order-card select.form-select {
+    .orders-page .order-card select.form-select {
         width: 100% !important;
         min-width: unset !important;
         padding: 8px 10px;
@@ -678,7 +669,7 @@
     }
 
     /* اطلاعات مشتری */
-    .customer-info {
+    .orders-page .customer-info {
         flex-wrap: wrap;
         padding: 6px 12px;
         font-size: 0.75rem;
@@ -686,23 +677,23 @@
         margin: 6px 0;
     }
 
-        .customer-info .customer-mobile {
-            font-size: 0.8rem;
-            padding: 0 6px;
-        }
+    .orders-page .customer-info .customer-mobile {
+        font-size: 0.8rem;
+        padding: 0 6px;
+    }
 
     /* توضیحات سفارش */
-    .alert-light {
+    .orders-page .alert-light {
         font-size: 0.8rem;
         padding: 6px 10px !important;
     }
 
     /* ===== جدول آیتم‌ها (غذاها) - فقط تغییر چیدمان، بدون دستکاری قیمت ===== */
-    .food-header {
+    .orders-page .food-header {
         display: none; /* مخفی کردن هدر در موبایل */
     }
 
-    .food-row {
+    .orders-page .food-row {
         display: block; /* هر آیتم به صورت بلوک مستقل */
         padding: 10px 8px;
         border-bottom: 1px solid #eee;
@@ -713,36 +704,36 @@
         /* قیمت‌ها به حالت عادی خود باقی می‌مانند */
     }
 
-        .food-row .food-img {
-            width: 40px;
-            height: 40px;
-            float: right;
-            margin-left: 10px;
-            border-radius: 6px;
-        }
+    .orders-page .food-row .food-img {
+        width: 40px;
+        height: 40px;
+        float: right;
+        margin-left: 10px;
+        border-radius: 6px;
+    }
 
-        .food-row .food-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: normal;
-            overflow: visible;
-            text-overflow: unset;
-            display: block;
-            margin-bottom: 4px;
-        }
+    .orders-page .food-row .food-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        display: block;
+        margin-bottom: 4px;
+    }
 
-        /* ===== قیمت‌ها و تعداد بدون هیچ استایل اضافی ===== */
-        /* فقط برای اینکه از هم نریزند، display:inline-block می‌دهیم تا در یک خط کنار هم قرار گیرند، ولی اندازه، رنگ، پس‌زمینه و ... دست نمی‌خورند */
-        .food-row .food-qty,
-        .food-row .food-price,
-        .food-row .food-sum {
-            display: inline-block;
-            margin-left: 8px;
-            /* هیچ استایل دیگری (رنگ، فونت، border، پس‌زمینه) اضافه نمی‌شود */
-        }
+    /* ===== قیمت‌ها و تعداد بدون هیچ استایل اضافی ===== */
+    /* فقط برای اینکه از هم نریزند، display:inline-block می‌دهیم تا در یک خط کنار هم قرار گیرند، ولی اندازه، رنگ، پس‌زمینه و ... دست نمی‌خورند */
+    .orders-page .food-row .food-qty,
+    .orders-page .food-row .food-price,
+    .orders-page .food-row .food-sum {
+        display: inline-block;
+        margin-left: 8px;
+        /* هیچ استایل دیگری (رنگ، فونت، border، پس‌زمینه) اضافه نمی‌شود */
+    }
 
     /* جمع کل */
-    .total-box {
+    .orders-page .total-box {
         font-size: 0.9rem;
         padding: 8px 0;
         margin-top: 8px !important;
@@ -751,21 +742,21 @@
     }
 
     /* ===== صفحه‌بندی ===== */
-    .pagination {
+    .orders-page .pagination {
         flex-wrap: wrap;
         justify-content: center;
         gap: 4px;
     }
 
-        .pagination .page-link {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            min-width: 36px;
-            text-align: center;
-        }
+    .orders-page .pagination .page-link {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        min-width: 36px;
+        text-align: center;
+    }
 
     /* ===== پیام خالی ===== */
-    .alert-warning {
+    .orders-page .alert-warning {
         font-size: 0.9rem;
         padding: 12px;
     }
@@ -773,16 +764,17 @@
 
 /* ===== بهبودهای اضافی برای صفحه‌های با عرض بین ۵۷۷ تا ۷۶۸px ===== */
 @media (min-width: 577px) and (max-width: 768px) {
-    .food-header, .food-row {
+    .orders-page .food-header,
+    .orders-page .food-row {
         grid-template-columns: 50px 1fr 60px 80px 80px;
     }
 
-    .food-name {
+    .orders-page .food-name {
         font-size: 0.8rem;
         white-space: nowrap;
     }
 
-    .order-card {
+    .orders-page .order-card {
         padding: 16px !important;
     }
 }

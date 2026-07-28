@@ -18,6 +18,7 @@
         public byte OrderType { get; set; }
         public decimal? ReceiptGrandTotal { get; set; }
         public DateTime? ReceiptIssuedAt { get; set; }
+        public decimal? EstimatedReceiptGrandTotal { get; set; }
 
         public List<OrderItemDto> OrderItems { get; set; }
 

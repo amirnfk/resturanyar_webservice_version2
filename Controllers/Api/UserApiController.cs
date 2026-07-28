@@ -1998,7 +1998,7 @@ namespace Resturanyar.Controllers.Api
 
 
         [HttpPost("ExportOrdersToExcel")]
-        public IActionResult ExportOrdersToExcel([FromBody] OrderDateFilterRequest request)
+        public async Task<IActionResult> ExportOrdersToExcel([FromBody] OrderDateFilterRequest request)
         {
             try
             {
@@ -2010,17 +2010,23 @@ namespace Resturanyar.Controllers.Api
 
                 var statusIds = new List<int> { 9, 10, 11 };
 
-                var orders = _context.Orders
+                var orders = await _context.Orders
                     .Include(o => o.OrderItems)
                     .Include(o => o.Customer)    
                     .Where(o => o.RestaurantId == request.RestaurantId)
                     .Where(o => statusIds.Contains(o.StatusId))
                     .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate)
                     .OrderByDescending(o => o.CreatedAt)
-                    .ToList();
+                    .ToListAsync();
 
                 if (!orders.Any())
                     return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
+
+                var snapshotMap = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == request.RestaurantId)
+                    .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
 
                 using (var workbook = new XLWorkbook())
                 {
@@ -2037,11 +2043,14 @@ namespace Resturanyar.Controllers.Api
                     wsOrders.Cell(1, 7).Value = "توضیحات";
                     wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
                     wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
+                    wsOrders.Cell(1, 10).Value = "مبلغ فاکتور (تومان)";
+                    wsOrders.Cell(1, 11).Value = "تاریخ صدور فاکتور";
 
                     int row = 2;
                     foreach (var o in orders)
                     {
-                        var totalPrice = o.OrderItems.Sum(i => (decimal)((i.UnitPriceWithDiscount.HasValue && i.UnitPriceWithDiscount > 0 ? i.UnitPriceWithDiscount : i.UnitPrice) * i.Quantity));
+                        var itemSubtotal = o.OrderItems.Sum(i => (decimal)((i.UnitPriceWithDiscount.HasValue && i.UnitPriceWithDiscount > 0 ? i.UnitPriceWithDiscount : i.UnitPrice) * i.Quantity));
+                        snapshotMap.TryGetValue(o.OrderId, out var snapshot);
 
                         wsOrders.Cell(row, 1).Value = o.OrderId;
                         wsOrders.Cell(row, 2).Value = o.CreatedAtShamsi ?? DateHelper.ToShamsi(o.CreatedAt);
@@ -2065,7 +2074,17 @@ namespace Resturanyar.Controllers.Api
 
                         wsOrders.Cell(row, 7).Value = o.Description ?? "-";
                         wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
-                        wsOrders.Cell(row, 9).Value = totalPrice;
+                        wsOrders.Cell(row, 9).Value = itemSubtotal;
+                        if (snapshot != null)
+                        {
+                            wsOrders.Cell(row, 10).Value = snapshot.GrandTotal;
+                            wsOrders.Cell(row, 11).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
+                        }
+                        else
+                        {
+                            wsOrders.Cell(row, 10).Value = "-";
+                            wsOrders.Cell(row, 11).Value = "-";
+                        }
                         row++;
                     }
 
@@ -2079,8 +2098,8 @@ namespace Resturanyar.Controllers.Api
                     wsOrders.Cell(row + 3, 8).Value = "میانگین مبلغ هر سفارش:";
                     wsOrders.Cell(row + 3, 9).FormulaA1 = $"=AVERAGE(I2:I{row - 1})";
 
-                    // 🎨 استایل هدر (محدوده جدید A1:I1)
-                    var headerRange1 = wsOrders.Range("A1:I1");
+                    // 🎨 استایل هدر (محدوده جدید A1:K1)
+                    var headerRange1 = wsOrders.Range("A1:K1");
                     headerRange1.Style.Font.Bold = true;
                     headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
                     headerRange1.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
