@@ -1,0 +1,1 @@
+{"sessionId":"8d8ab9","hypothesisId":"D","location":"HomeController.ManagerOrderList.estimate","message":"estimate decision","data":{"orderId":3184,"orderType":0,"dtoItemSubtotal":800000.00,"engineItemsSubtotal":800000,"subtotalMismatch":false,"grandTotal":872000,"feesTotal":0,"taxTotal":72000,"discountTotal":0,"willSetEstimate":true},"timestamp":1785305028910}

@@ -202,5 +202,28 @@ namespace resturanyar.Controllers
             var defs = await _receiptService.EnsureChargeDefinitionsAsync(restaurantId.Value);
             return Json(new { success = true, data = defs });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PreviewDefaults(int orderId)
+        {
+            var restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "شناسه رستوران مشخص نیست." });
+
+            var userId = User.GetOwnerId();
+            var result = await _receiptService.GetPreviewDefaultsAsync(orderId, restaurantId.Value, userId);
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt == null && !result.Success
+                    ? null
+                    : new
+                    {
+                        receipt = result.Receipt,
+                        appliedCharges = result.AppliedCharges
+                    }
+            });
+        }
     }
 }

@@ -15,9 +15,19 @@ namespace resturanyar.Services.Receipt
         public int StatusCode { get; set; } = 200;
     }
 
+    public class ReceiptPreviewDefaultsResult
+    {
+        public bool Success { get; set; }
+        public string? Message { get; set; }
+        public ReceiptDto? Receipt { get; set; }
+        public List<ReceiptChargeSelectionDto> AppliedCharges { get; set; } = new();
+        public int StatusCode { get; set; } = 200;
+    }
+
     public interface IReceiptService
     {
         Task<ReceiptServiceResult> GetStatusAsync(int orderId, int restaurantId);
+        Task<ReceiptPreviewDefaultsResult> GetPreviewDefaultsAsync(int orderId, int restaurantId, int? userId);
         Task<ReceiptServiceResult> PreviewAsync(int orderId, int restaurantId, ReceiptPreviewRequest request);
         Task<ReceiptServiceResult> IssueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel, bool recordPrintHistory = true);
         Task<ReceiptServiceResult> ReissueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel, bool recordPrintHistory = false);
@@ -82,6 +92,115 @@ namespace resturanyar.Services.Receipt
                     IssuedAt = snapshot?.IssuedAt,
                     UsesCharges = restaurant.ReceiptChargesEnabled
                 }
+            };
+        }
+
+        public async Task<ReceiptPreviewDefaultsResult> GetPreviewDefaultsAsync(int orderId, int restaurantId, int? userId)
+        {
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
+            if (order == null)
+            {
+                return new ReceiptPreviewDefaultsResult
+                {
+                    Success = false,
+                    Message = "سفارش یافت نشد.",
+                    StatusCode = 404
+                };
+            }
+
+            var restaurant = await _context.Restaurants.AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
+            if (restaurant == null)
+            {
+                return new ReceiptPreviewDefaultsResult
+                {
+                    Success = false,
+                    Message = "رستوران یافت نشد.",
+                    StatusCode = 404
+                };
+            }
+
+            if (!restaurant.ReceiptChargesEnabled)
+            {
+                var legacy = await PreviewAsync(orderId, restaurantId, new ReceiptPreviewRequest { OrderType = order.OrderType });
+                return new ReceiptPreviewDefaultsResult
+                {
+                    Success = legacy.Success,
+                    Message = legacy.Message,
+                    Receipt = legacy.Receipt,
+                    AppliedCharges = new List<ReceiptChargeSelectionDto>(),
+                    StatusCode = legacy.StatusCode
+                };
+            }
+
+            var snapshot = await _context.OrderReceiptSnapshots.AsNoTracking()
+                .FirstOrDefaultAsync(s => s.OrderId == orderId);
+
+            var receiptRes = snapshot != null
+                ? await GetReceiptDataAsync(orderId, restaurantId, "Api", userId, recordPrintHistory: false)
+                : await PreviewAsync(orderId, restaurantId, new ReceiptPreviewRequest { OrderType = order.OrderType });
+
+            if (!receiptRes.Success || receiptRes.Receipt == null)
+            {
+                return new ReceiptPreviewDefaultsResult
+                {
+                    Success = receiptRes.Success,
+                    Message = receiptRes.Message,
+                    StatusCode = receiptRes.StatusCode
+                };
+            }
+
+            var definitions = await _context.RestaurantChargeDefinitions.AsNoTracking()
+                .Where(d => d.RestaurantId == restaurantId)
+                .OrderBy(d => d.DisplayOrder)
+                .ToListAsync();
+
+            var flag = OrderTypeToFlag(order.OrderType);
+            var applicableDefs = definitions
+                .Where(d => (d.AppliesToOrderTypes & flag) != 0)
+                .ToList();
+
+            var eligibleForDefaults = IsOrderEligibleForChargeDefaults(restaurant, order.CreatedAt);
+            var appliedCharges = new List<ReceiptChargeSelectionDto>();
+
+            foreach (var def in applicableDefs)
+            {
+                bool isEnabled;
+                decimal value;
+
+                var line = receiptRes.Receipt.ChargeLines.FirstOrDefault(cl =>
+                    (cl.DefinitionId.HasValue && cl.DefinitionId.Value == def.Id) ||
+                    (!string.IsNullOrWhiteSpace(cl.Code) && cl.Code.Equals(def.Code, StringComparison.OrdinalIgnoreCase)));
+
+                if (snapshot != null && receiptRes.Receipt.UsesCharges)
+                {
+                    isEnabled = line != null;
+                    value = isEnabled
+                        ? (line?.Value ?? NormalizeChargeValue(def.CalculationType, def.Value))
+                        : NormalizeChargeValue(def.CalculationType, def.Value);
+                }
+                else
+                {
+                    isEnabled = eligibleForDefaults && def.IsEnabled;
+                    value = NormalizeChargeValue(def.CalculationType, def.Value);
+                }
+
+                appliedCharges.Add(new ReceiptChargeSelectionDto
+                {
+                    DefinitionId = def.Id,
+                    Code = def.Code,
+                    IsEnabled = isEnabled,
+                    Value = value
+                });
+            }
+
+            return new ReceiptPreviewDefaultsResult
+            {
+                Success = true,
+                Receipt = receiptRes.Receipt,
+                AppliedCharges = appliedCharges,
+                StatusCode = receiptRes.StatusCode
             };
         }
 

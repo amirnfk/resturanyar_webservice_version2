@@ -1656,15 +1656,26 @@ namespace Resturanyar.Controllers.Api
 
             _context.SaveChanges();
 
+            object? receiptData = null;
             try
             {
                 var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
-                await receiptService.TryAutoIssueOnSettlementAsync(
+                var issueResult = await receiptService.TryAutoIssueOnSettlementAsync(
                     order.OrderId,
                     order.RestaurantId,
                     null,
                     previousStatusId,
                     dto.NewStatusId);
+
+                if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                {
+                    receiptData = new
+                    {
+                        isIssued = true,
+                        grandTotal = issueResult.Receipt.GrandTotal,
+                        issuedAt = issueResult.Receipt.IssuedAt
+                    };
+                }
             }
             catch
             {
@@ -1680,7 +1691,7 @@ namespace Resturanyar.Controllers.Api
                     message = $"Order {order.OrderId} updated to status {order.StatusId}"
                 });
 
-            return Ok(new { success = true, message = "Order status updated and signal sent successfully." });
+            return Ok(new { success = true, message = "Order status updated and signal sent successfully.", receipt = receiptData });
         }
 
         [HttpPut("UpdateOrder/{orderId}")]

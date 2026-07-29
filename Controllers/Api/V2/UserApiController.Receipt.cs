@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using resturanyar.Models;
 using resturanyar.Models.Receipt;
 using resturanyar.Services.Receipt;
 using System.Security.Claims;
@@ -46,6 +47,36 @@ namespace resturanyar.Controllers.Api.V2
             request ??= new ReceiptPreviewRequest();
             var result = await GetReceiptService().PreviewAsync(orderId, order.RestaurantId, request);
             return StatusCode(result.StatusCode, new { success = result.Success, message = result.Message, data = result.Receipt });
+        }
+
+        [HttpGet("orders/{orderId}/receipt/preview-defaults")]
+        public async Task<IActionResult> PreviewReceiptDefaults(int orderId)
+        {
+            var ownerId = GetOwnerIdFromToken();
+            if (ownerId == null)
+                return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            if (!await OwnsRestaurant(ownerId.Value, order.RestaurantId))
+                return Forbid();
+
+            var result = await GetReceiptService().GetPreviewDefaultsAsync(orderId, order.RestaurantId, ownerId);
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt == null && !result.Success
+                    ? null
+                    : new
+                    {
+                        receipt = result.Receipt,
+                        appliedCharges = result.AppliedCharges
+                    }
+            });
         }
 
         [HttpPost("orders/{orderId}/receipt/issue")]

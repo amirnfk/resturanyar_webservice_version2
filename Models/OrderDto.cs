@@ -1,4 +1,6 @@
-﻿namespace resturanyar.Models
+﻿using resturanyar.Models.Receipt;
+
+namespace resturanyar.Models
 
 {
     public class OrderDto
@@ -19,6 +21,10 @@
         public decimal? ReceiptGrandTotal { get; set; }
         public DateTime? ReceiptIssuedAt { get; set; }
         public decimal? EstimatedReceiptGrandTotal { get; set; }
+
+        // Server-calculated totals summary for receipt preview/breakdown UI.
+        // If a receipt snapshot exists, this reflects the issued snapshot; otherwise it reflects the pre-receipt default preview.
+        public ReceiptTotalsDto? ReceiptTotals { get; set; }
 
         public List<OrderItemDto> OrderItems { get; set; }
 

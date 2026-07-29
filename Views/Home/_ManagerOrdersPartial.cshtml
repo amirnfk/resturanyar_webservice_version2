@@ -128,20 +128,31 @@
                 </div>
                 @if (ViewBag.ReceiptChargesEnabled == true && !order.ReceiptGrandTotal.HasValue && order.EstimatedReceiptGrandTotal.HasValue)
                 {
-                    <div class="alert alert-info py-2 px-3 mt-2 mb-0 receipt-estimate-badge">
-                        <i class="fa-solid fa-calculator ms-1"></i>
-                        مبلغ قابل پرداخت (تقریبی): @order.EstimatedReceiptGrandTotal.Value.ToString("N0") تومان
+                    <div class="order-receipt-card order-receipt-card--estimate receipt-estimate-badge">
+                        <div class="order-receipt-card__icon" aria-hidden="true">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="order-receipt-card__content">
+                            <span class="order-receipt-card__label">برآورد مبلغ نهایی</span>
+                            <strong class="order-receipt-card__amount">@order.EstimatedReceiptGrandTotal.Value.ToString("N0") تومان</strong>
+                            <span class="order-receipt-card__meta">با احتساب هزینه و مالیات · تا صدور فاکتور تقریبی است</span>
+                        </div>
                     </div>
                 }
                 @if (order.ReceiptGrandTotal.HasValue)
                 {
-                    <div class="alert alert-success py-2 px-3 mt-2 mb-0 receipt-issued-badge">
-                        <i class="fa-solid fa-receipt ms-1"></i>
-                        مبلغ فاکتور: @order.ReceiptGrandTotal.Value.ToString("N0") تومان
-                        @if (order.ReceiptIssuedAt.HasValue)
-                        {
-                            <span class="text-muted small ms-2">(صدور: @order.ReceiptIssuedAt.Value.ToLocalTime().ToPersianDateTime())</span>
-                        }
+                    <div class="order-receipt-card order-receipt-card--issued receipt-issued-badge">
+                        <div class="order-receipt-card__icon" aria-hidden="true">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="order-receipt-card__content">
+                            <span class="order-receipt-card__label">مبلغ فاکتور</span>
+                            <strong class="order-receipt-card__amount">@order.ReceiptGrandTotal.Value.ToString("N0") تومان</strong>
+                            @if (order.ReceiptIssuedAt.HasValue)
+                            {
+                                <span class="order-receipt-card__meta">صدور: @order.ReceiptIssuedAt.Value.ToLocalTime().ToPersianDateTime()</span>
+                            }
+                        </div>
                     </div>
                 }
 

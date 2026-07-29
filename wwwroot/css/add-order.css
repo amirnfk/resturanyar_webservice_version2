@@ -414,6 +414,61 @@
     box-shadow: var(--shadow-xl);
 }
 
+.order-page .order-estimate-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-top: 1rem;
+    padding: 1rem 1.05rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(15, 118, 110, 0.18);
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.06), rgba(15, 118, 110, 0.02)),
+        #f8fffe;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.order-page .order-estimate-card__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 118, 110, 0.12);
+    color: #0f766e;
+    font-size: 1rem;
+}
+
+.order-page .order-estimate-card__content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.order-page .order-estimate-card__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0f766e;
+    letter-spacing: -0.01em;
+}
+
+.order-page .order-estimate-card__amount {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.order-page .order-estimate-card__meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
 .order-page .cart-title {
     font-weight: 900;
     font-size: 1.35rem;

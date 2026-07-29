@@ -1,21 +1,31 @@
 # Android Integration Guide — Receipt Charge System
 
-This document describes how to integrate the **Receipt Charge System** into the Resturanyar Android app. All endpoints live on the existing **V2 API** and use the same JWT authentication the app already uses.
+**Audience:** Android developer  
+**API:** V2 UserApi (same JWT as existing app)  
+**Base path:** `/api/v2.0/UserApi`
 
-## 1. Overview
+This is the **final** integration contract. Match web behavior where noted; do not invent client-side totals.
 
-This feature adds **configurable charges** (service fee, VAT, packaging, delivery, etc.) to receipts.
+---
+
+## 1. Overview (read this first)
+
+Configurable charges (service, VAT, packaging, delivery, …) on receipts.
 
 | Rule | Detail |
 |------|--------|
-| Feature flag | Per restaurant, set by admin (`ReceiptChargesEnabled`). Off by default. |
-| Order creation | **No changes** to `createOrder` or existing order flows. |
-| Auto-issue on settlement | When status becomes **8 (پرداخت شده)** or **11 (بسته شده)**, server auto-issues with restaurant default charges for the order’s `OrderType` (no print required). Skip if snapshot already exists or feature is off. |
-| When active | Print is optional after lock. Early manual Issue+print still works. |
-| First lock | Defaults via settlement auto-issue, **or** user picks charges → **Issue**. |
-| Edit after lock | `POST .../receipt/reissue` replaces the snapshot (optional print). |
-| Reprint | Uses saved snapshot; **do not call Issue again** (use Reissue only when editing). |
-| Legacy restaurants | If feature is off, keep the current print behavior. |
+| Feature flag | Per restaurant (`ReceiptChargesEnabled`). Off by default. Admin enables it. |
+| Order creation | **No changes** to `createOrder` / order item payloads. Do **not** send charges when creating an order. |
+| Auto-issue on settlement | When order status becomes **8 (پرداخت شده)** or **11 (بسته شده)**, the **server** auto-issues a snapshot using restaurant default charges for that order’s `OrderType`. No print required. Skipped if a snapshot already exists or the feature is off. |
+| Print | Optional. Uses the saved snapshot when issued. |
+| First Issue (manual) | If not yet issued: user picks order type + charges → Preview → **Issue** → print. |
+| Edit after lock | `POST .../receipt/reissue` replaces the snapshot. Print optional after save. |
+| Reprint | Snapshot only. **Never call Issue again** for reprint. |
+| Legacy | Feature off → keep today’s print path unchanged. |
+
+**Important for Android:** After mark-as-paid / close, `isIssued` is often already `true` even if the user never opened the charge modal. Print must go straight to snapshot; editing must use **Reissue**, not Issue.
+
+---
 
 ## 2. Auth & Base URL
 
@@ -24,23 +34,19 @@ Authorization: Bearer <jwt>
 Content-Type: application/json
 ```
 
-Base path:
-
-```
-/api/v2.0/UserApi
-```
-
 Example:
 
 ```
 https://your-domain.com/api/v2.0/UserApi/orders/3120/receipt/status
 ```
 
-Use the same login/refresh flow as other V2 endpoints (`login/password`, `login/otp`, `refresh`). See [MOBILE_AUTH_MIGRATION.md](./MOBILE_AUTH_MIGRATION.md).
+Same login/refresh as other V2 endpoints. See [MOBILE_AUTH_MIGRATION.md](./MOBILE_AUTH_MIGRATION.md).
 
-## 3. Feature Detection
+---
 
-On print button tap, call **Status** first:
+## 3. Feature detection (`receipt/status`)
+
+Call this **before** print or edit:
 
 ```
 GET /api/v2.0/UserApi/orders/{orderId}/receipt/status
@@ -61,23 +67,29 @@ GET /api/v2.0/UserApi/orders/{orderId}/receipt/status
 }
 ```
 
-| Field | Meaning |
-|-------|---------|
-| `usesCharges: false` | Feature off → use **existing legacy print** (no charge modal). |
-| `usesCharges: true` + `isIssued: false` | Show charge modal → Preview → Issue → Print. |
-| `usesCharges: true` + `isIssued: true` | Reprint only → skip modal, go straight to print. |
+| Condition | Android action |
+|-----------|----------------|
+| `usesCharges == false` | **Legacy print** (existing code). No charge UI. |
+| `usesCharges == true` && `isIssued == false` | Show charge modal → Preview → **Issue** → print. |
+| `usesCharges == true` && `isIssued == true` | **Print:** skip modal → `receipt-data` or HTML. **Edit charges:** open modal in edit mode → Preview → **Reissue**. |
 
-## 4. Print Flow (Decision Tree)
+`usesCharges` mirrors the restaurant flag. It does **not** mean “this order was created after the feature was turned on.” Auto-issue still runs when the flag is on; older orders may get a snapshot with charges disabled by server defaults.
+
+---
+
+## 4. Flows
+
+### 4.1 Print
 
 ```mermaid
 flowchart TD
     A[User taps Print] --> B[GET receipt/status]
     B --> C{usesCharges?}
-    C -->|No| D[Legacy print - existing code]
+    C -->|No| D[Legacy print]
     C -->|Yes| E{isIssued?}
     E -->|Yes| F[GET receipt-data or receipt HTML]
     E -->|No| G[GET charge-definitions]
-    G --> H[Show modal: order type + charges]
+    G --> H[Modal: order type + charges]
     H --> I[POST receipt/preview]
     I --> J[POST receipt/issue]
     J --> K{HTTP 409?}
@@ -86,17 +98,36 @@ flowchart TD
     F --> L[Render and print]
 ```
 
+### 4.2 Edit charges (after issued)
+
+```mermaid
+flowchart TD
+    A[User taps Edit invoice] --> B[GET receipt/status]
+    B --> C{usesCharges and isIssued?}
+    C -->|No| D[Hide edit / show message]
+    C -->|Yes| E[GET charge-definitions]
+    E --> F[GET receipt-data recordPrintHistory=false if available]
+    F --> G[Modal prefilled from snapshot]
+    G --> H[POST receipt/preview]
+    H --> I[POST receipt/reissue]
+    I --> J{User wants print?}
+    J -->|Yes| K[GET receipt-data or HTML]
+    J -->|No| L[Done]
+```
+
+Note: V2 `receipt-data` always records print history today. For edit-prefill you can still call it, or rebuild the modal from definitions + last known totals. Prefer loading snapshot via `receipt-data` once, then only print when the user confirms.
+
+---
+
 ## 5. API Endpoints
 
-### 5.1 Get charge templates (for modal)
+### 5.1 Charge templates (modal)
 
 ```
 GET /api/v2.0/UserApi/restaurants/{restaurantId}/charge-definitions
 ```
 
-Only relevant when `usesCharges = true`. Returns `[]` if feature is off.
-
-**Response:**
+Returns `[]` if feature is off.
 
 ```json
 {
@@ -119,13 +150,26 @@ Only relevant when `usesCharges = true`. Returns `[]` if feature is off.
 }
 ```
 
-### 5.2 Preview (live calculation, no save)
+**Default templates (server may create these):** `service`, `vat`, `packaging`, `delivery`.
+
+Filter list with bitmask `appliesToOrderTypes` for selected order type:
+
+| Flag | Value |
+|------|-------|
+| DineIn | 1 |
+| Takeaway | 2 |
+| Delivery | 4 |
+| All | 7 |
+
+Rule: `((appliesToOrderTypes & flagFor(orderType)) != 0)`.
+
+### 5.2 Preview (live calc, no save)
 
 ```
 POST /api/v2.0/UserApi/orders/{orderId}/receipt/preview
 ```
 
-**Request body:**
+**Body:**
 
 ```json
 {
@@ -147,31 +191,20 @@ POST /api/v2.0/UserApi/orders/{orderId}/receipt/preview
 }
 ```
 
-**Response:** full `ReceiptDto` in `data` (items, charge lines, totals).
+**Response:** full `ReceiptDto` in `data`.
 
-Call again when the user toggles charges or changes order type.
+Call again whenever order type or any charge toggle/value changes.  
+Preview is allowed **even after** a snapshot exists (for edit UI).
 
-### 5.3 Issue (first print only — creates snapshot)
+### 5.3 Issue (first lock only)
 
 ```
 POST /api/v2.0/UserApi/orders/{orderId}/receipt/issue
 ```
 
-Same request body as Preview.
+Same body as Preview.
 
-**Success (200):**
-
-```json
-{
-  "success": true,
-  "message": null,
-  "data": {
-    "orderId": 3120,
-    "isIssued": true,
-    "grandTotal": 125000
-  }
-}
-```
+**Success (200):** `data` is a **full** `ReceiptDto` (`isIssued: true`, totals, `chargeLines`, items, …). You may print from this payload or call `receipt-data` / HTML.
 
 **Already issued (409):**
 
@@ -182,33 +215,36 @@ Same request body as Preview.
 }
 ```
 
-**On 409:** do not show an error. Treat as reprint and call `receipt-data` or `receipt` HTML.
+On **409:** do **not** show a hard error. Treat as reprint → `GET receipt-data` or HTML.
 
-### 5.4 Reissue (edit after lock — replaces snapshot)
+### 5.4 Reissue (replace snapshot after lock)
 
 ```
 POST /api/v2.0/UserApi/orders/{orderId}/receipt/reissue
 ```
 
-Same request body as Preview. Use when staff need to change charges after auto-issue or a prior Issue. Does **not** require print. Returns `404` if no snapshot exists yet.
+Same body as Preview.
 
-**Success (200):** same shape as Issue, with updated `grandTotal` / `issuedAt`.
+- Replaces the existing snapshot.
+- Does **not** require print.
+- **404** if no snapshot yet (call Issue instead).
+- **Success (200):** full `ReceiptDto`.
 
-Print remains optional: after Reissue, call `receipt-data` / HTML only if the user wants to print.
+Use for “ویرایش فاکتور” after auto-issue or a prior Issue.
 
-### 5.5 Get receipt JSON (for native printing)
+### 5.5 Receipt JSON (native thermal print)
 
 ```
 GET /api/v2.0/UserApi/orders/{orderId}/receipt-data
 ```
 
-- Feature **on** + issued → returns saved snapshot JSON.
-- Feature **on** + not issued → `404` with message: فاکتور هنوز صادر نشده.
-- Feature **off** → returns legacy receipt JSON.
+| Case | Result |
+|------|--------|
+| Feature on + issued | Saved snapshot JSON |
+| Feature on + not issued | `404` — فاکتور هنوز صادر نشده |
+| Feature off | Legacy receipt JSON |
 
-Use this for **native thermal printer** layouts.
-
-### 5.6 Get receipt HTML (for WebView print)
+### 5.6 Receipt HTML (WebView print)
 
 ```
 GET /api/v2.0/UserApi/orders/{orderId}/receipt
@@ -216,28 +252,29 @@ GET /api/v2.0/UserApi/orders/{orderId}/receipt
 
 Returns `text/html; charset=utf-8`.
 
-- Feature **on** + not issued → `400`.
-- Feature **off** → legacy HTML.
+| Case | Result |
+|------|--------|
+| Feature on + not issued | `400` |
+| Feature on + issued | HTML from snapshot |
+| Feature off | Legacy HTML |
 
-Load in WebView and call Android print, or open in Chrome Custom Tab.
-
-### 5.6 Save charge templates (optional)
+### 5.7 Save charge templates (optional)
 
 ```
 POST /api/v2.0/UserApi/restaurants/{restaurantId}/charge-definitions
 ```
 
 ```json
-{
-  "definitions": []
-}
+{ "definitions": [ /* ChargeDefinitionDto list */ ] }
 ```
 
-Optional on Android; owners can configure charges on the web panel. Include only if you add a settings screen.
+Optional on Android; web panel can configure templates. Add only if you build a settings screen.
 
-## 6. Data Models (Kotlin-friendly)
+---
 
-### Enums
+## 6. Kotlin models
+
+Enums are serialized as **integers** (not strings).
 
 ```kotlin
 enum class OrderType(val value: Int) {
@@ -252,13 +289,23 @@ enum class CalculationType(val value: Int) {
     PERCENTAGE(0), FIXED(1)
 }
 
-// appliesToOrderTypes bitmask
-// DineIn=1, Takeaway=2, Delivery=4, All=7
+// appliesToOrderTypes: DineIn=1, Takeaway=2, Delivery=4, All=7
 ```
 
-### ReceiptDto (main print payload)
-
 ```kotlin
+data class ApiResponse<T>(
+    val success: Boolean,
+    val message: String?,
+    val data: T?
+)
+
+data class ReceiptStatusDto(
+    val orderId: Int,
+    val isIssued: Boolean,
+    val issuedAt: String?,
+    val usesCharges: Boolean
+)
+
 data class ReceiptDto(
     val orderId: Int,
     val restaurantId: Int,
@@ -303,11 +350,7 @@ data class ReceiptChargeLineDto(
     val isTaxable: Boolean,
     val displayOrder: Int
 )
-```
 
-### Preview / Issue request
-
-```kotlin
 data class ReceiptPreviewRequest(
     val orderType: Int = 0,
     val charges: List<ChargeSelection>
@@ -335,40 +378,39 @@ data class ChargeDefinitionDto(
 )
 ```
 
-## 7. UI Requirements
+---
 
-### Print button behavior
+## 7. UI requirements
+
+### Print button
 
 1. `GET receipt/status`
-2. Branch on `usesCharges` / `isIssued` (see section 4)
+2. Branch per section 3 / flowchart 4.1
 
-### Charge modal (first issue only)
+### Charge modal — first Issue (`isIssued == false`)
 
-Show when `usesCharges=true` and `isIssued=false`:
+- Order type: حضوری / بیرون‌بر / ارسال → `0 / 1 / 2`
+- Charge rows from `charge-definitions`, filtered by `appliesToOrderTypes`
+- Checkbox = `isEnabled`
+- Value field: `%` if `calculationType == 0`, تومان if `calculationType == 1`
+- Live totals from `POST receipt/preview`
+- Primary CTA: **صدور و چاپ** → `POST receipt/issue` → print
 
-- **Order type** picker: حضوری / بیرون‌بر / ارسال (`0/1/2`)
-- **Charge list** from `charge-definitions`:
-  - Checkbox per charge (`isEnabled`)
-  - Value field (`value`) — `%` if `calculationType=0`, تومان if `calculationType=1`
-  - Filter by `appliesToOrderTypes` for selected order type
-- **Preview totals** from `POST receipt/preview`
-- **Issue & Print** → `POST receipt/issue` → print
+### Already issued
 
-### Reprint
+- **چاپ:** no modal; `receipt-data` or HTML
+- **ویرایش فاکتور** (recommended, matches web):
+  - Prefill order type + charges from snapshot `chargeLines` (enabled lines that appear on receipt; missing applicable defs → unchecked)
+  - Preview → **Reissue**
+  - Optional: “ذخیره” (reissue, no print) and “ذخیره و چاپ”
 
-No modal. Go directly to print using snapshot data.
+### Display only — never recalculate on device
 
-## 8. Calculation Order (display only — server calculates)
-
-Server applies:
+Server order:
 
 ```
 ItemsNet → Discounts → Fees → TaxableBase → Taxes → GrandTotal
 ```
-
-Android only displays `data` from Preview/Issue/receipt-data. **Do not recalculate on the client.**
-
-Use these fields for summary:
 
 | Field | Label |
 |-------|-------|
@@ -378,29 +420,37 @@ Use these fields for summary:
 | `taxTotal` | مالیات |
 | `grandTotal` | مبلغ قابل پرداخت |
 
-`chargeLines[]` has per-line detail (`title`, `calculatedAmount`, `category`).
+Use `chargeLines[]` for line detail (`title`, `calculatedAmount`, `category`).
 
-## 9. Error Handling
+---
+
+## 8. Error handling
 
 | HTTP | When | Android action |
 |------|------|----------------|
-| `200` | Success | Continue |
-| `400` | Feature off, or receipt not issued yet | Show `message` |
-| `401` | Invalid JWT | Refresh token / re-login |
-| `403` | Order not owned by this owner | Show access error |
-| `404` | Order not found, or receipt not issued | Show `message` |
-| `409` | Issue called but snapshot exists | **Fallback to reprint** (not an error) |
+| `200` | OK | Continue |
+| `400` | Feature off / not issued (HTML) / validation | Show `message` |
+| `401` | Bad/expired JWT | Refresh / re-login |
+| `403` | Order not owned by this owner | Access error |
+| `404` | Order missing, or Issue/Reissue/receipt-data when snapshot state wrong | Show `message` |
+| `409` | Issue but snapshot already exists | **Reprint fallback** (not a user-facing failure) |
 
-## 10. What NOT to Change
+---
 
-- `POST createOrder` — unchanged
-- Order list / status APIs — unchanged
-- Do not send charges at order creation time
-- Do not call `Issue` on reprint
-- To change locked amounts, call `Reissue` (not client-side math)
-- Settlement to status 8/11 auto-issues with defaults when feature is on
+## 9. What NOT to change
 
-## 11. Suggested Retrofit Interface
+- `createOrder` and order-list APIs
+- Do not attach charges to order creation
+- Do not call **Issue** on reprint
+- Do not call **Issue** when `isIssued == true` (use **Reissue** to change amounts)
+- Do not recompute money on the client
+- Status updates to 8/11 already trigger server auto-issue; Android does not need a separate “issue on settle” call
+
+---
+
+## 10. Suggested Retrofit API
+
+Assume Retrofit `baseUrl` already ends with `/api/v2.0/UserApi/`.
 
 ```kotlin
 interface ReceiptApi {
@@ -438,46 +488,55 @@ interface ReceiptApi {
 }
 ```
 
-**Issue with 409 handling:**
+**Issue + 409 fallback:**
 
 ```kotlin
-suspend fun issueOrReprint(orderId: Int, body: ReceiptPreviewRequest): ReceiptDto {
+suspend fun issueOrLoadSnapshot(orderId: Int, body: ReceiptPreviewRequest): ReceiptDto {
     val response = receiptApi.issue(orderId, body)
     if (response.code() == 409) {
         val reprint = receiptApi.getReceiptData(orderId)
-        if (!reprint.isSuccessful) throw ApiException(reprint.message())
+        if (!reprint.isSuccessful) error(reprint.message())
         return reprint.body()!!.data!!
     }
-    if (!response.isSuccessful) throw ApiException(response.message())
+    if (!response.isSuccessful) error(response.message())
     return response.body()!!.data!!
 }
 ```
 
-## 12. Testing Checklist
+---
 
-1. Restaurant with feature **off** → legacy print still works.
-2. Restaurant with feature **on** → charge modal appears on first print.
-3. Preview updates totals when toggling charges.
-4. First Issue succeeds → receipt prints with charges.
-5. Second print on same order → no modal, same totals as first issue.
-6. Issue returns 409 → app still prints (reprint fallback).
-7. Order owned by another restaurant → 403.
-8. Expired token → 401 → refresh works.
+## 11. Testing checklist
 
-## 13. Backend Reference Files
+1. Feature **off** → legacy print unchanged.
+2. Feature **on**, order **not** issued → modal on first print; Issue + print works.
+3. Preview totals change when toggling charges / order type.
+4. Settle order to status **8** or **11** without printing → `status.isIssued == true`.
+5. Print after settle → no modal; same totals as auto-issued snapshot.
+6. Second print → no Issue call; same totals.
+7. Issue while already issued → **409** → app still prints snapshot.
+8. Edit (Reissue) changes charges → new `grandTotal`; optional print.
+9. Reissue when not issued → **404**.
+10. Wrong restaurant owner → **403**.
+11. Expired token → **401** → refresh works.
 
-| File | Purpose |
-|------|---------|
-| `Controllers/Api/V2/UserApiController.Receipt.cs` | All receipt API endpoints |
-| `Models/Receipt/ReceiptDto.cs` | DTOs |
-| `Models/Receipt/ReceiptEnums.cs` | Enums |
-| `Services/Receipt/ReceiptService.cs` | Business logic |
-| `docs/MOBILE_AUTH_MIGRATION.md` | JWT auth |
+---
 
-## 14. Rollout Note for QA
+## 12. QA / rollout
 
-Admin must enable the feature per restaurant before Android shows the new flow:
+Admin must enable the restaurant:
 
 **Admin panel → فاکتور با کارمزد → enable for test restaurant**
 
-Until then, `usesCharges` stays `false` and the app should behave exactly as today.
+Until then, `usesCharges` stays `false` and the app behaves as today.
+
+---
+
+## 13. Backend reference (server team)
+
+| File | Purpose |
+|------|---------|
+| `Controllers/Api/V2/UserApiController.Receipt.cs` | Endpoints |
+| `Models/Receipt/ReceiptDto.cs` | DTOs |
+| `Models/Receipt/ReceiptEnums.cs` | Enums |
+| `Services/Receipt/ReceiptService.cs` | Issue / Reissue / Auto-issue / Status |
+| `docs/MOBILE_AUTH_MIGRATION.md` | JWT |

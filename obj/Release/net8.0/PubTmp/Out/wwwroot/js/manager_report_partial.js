@@ -7,19 +7,26 @@
         labels = [],
         revenues = [],
         orders = [],
+        hourLabels = [],
+        hourOrders = [],
+        hourRevenues = [],
         statusLabels = [],
         statusValues = [],
         statusBg = [],
         topQtyLabels = [],
         topQtyValues = [],
         topRevLabels = [],
-        topRevValues = []
+        topRevValues = [],
+        chargeLabels = [],
+        chargeValues = []
     } = data;
 
     const hasSalesData = labels.length > 0 && revenues.length > 0;
     const hasStatusData = statusLabels.length > 0;
     const hasQtyData = topQtyLabels.length > 0;
     const hasRevData = topRevLabels.length > 0;
+    const hasChargeData = chargeLabels.length > 0 && chargeValues.some(function (v) { return Number(v) !== 0; });
+    const hasPeakData = hourOrders.some(function (v) { return Number(v) > 0; });
 
     function mkCurrency(v) {
         try {
@@ -53,12 +60,14 @@
         return options;
     }
 
-    ['salesChart', 'statusChart', 'topQtyChart', 'topRevChart'].forEach(id => {
+    ['salesChart', 'statusChart', 'topQtyChart', 'topRevChart', 'chargeBreakdownChart', 'peakHoursChart'].forEach(id => {
         if (window.chartInstances[id]) {
             window.chartInstances[id].destroy();
             delete window.chartInstances[id];
         }
     });
+
+    const chargePalette = ['#ff7a00', '#0d6efd', '#20c997', '#6f42c1', '#fd7e14', '#dc3545', '#198754', '#6610f2'];
 
     if (hasSalesData) {
         const ctx = document.getElementById('salesChart');
@@ -120,6 +129,87 @@
         }
     }
 
+    if (hasChargeData) {
+        const ctx = document.getElementById('chargeBreakdownChart');
+        if (ctx) {
+            window.chartInstances.chargeBreakdownChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chargeLabels,
+                    datasets: [{
+                        data: chargeValues,
+                        backgroundColor: chargeLabels.map((_, i) => chargePalette[i % chargePalette.length]),
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: applyFontOptions({
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.label}: ${mkCurrency(ctx.parsed)} تومان`
+                            }
+                        }
+                    }
+                })
+            });
+        }
+    }
+
+    if (hasPeakData) {
+        const ctx = document.getElementById('peakHoursChart');
+        if (ctx) {
+            window.chartInstances.peakHoursChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: hourLabels,
+                    datasets: [{
+                        label: 'تعداد سفارش',
+                        data: hourOrders,
+                        backgroundColor: 'rgba(255, 122, 0, 0.75)',
+                        borderRadius: 4,
+                        borderWidth: 0
+                    }]
+                },
+                options: applyFontOptions({
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const idx = ctx.dataIndex;
+                                    const rev = hourRevenues[idx] ?? 0;
+                                    return [
+                                        `سفارش: ${ctx.parsed.y}`,
+                                        `مبلغ: ${mkCurrency(rev)} تومان`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 12
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                })
+            });
+        }
+    }
+
     if (hasStatusData) {
         const ctx = document.getElementById('statusChart');
         if (ctx) {
@@ -133,13 +223,13 @@
                         borderWidth: 1, borderColor: '#fff'
                     }]
                 },
-                options: {
+                options: applyFontOptions({
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
                     }
-                }
+                })
             });
         }
     }
@@ -153,7 +243,7 @@
                     labels: topQtyLabels,
                     datasets: [{ label: 'تعداد', data: topQtyValues, backgroundColor: '#6f42c1', borderWidth: 0 }]
                 },
-                options: {
+                options: applyFontOptions({
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
@@ -161,7 +251,7 @@
                     scales: {
                         x: { beginAtZero: true, ticks: { precision: 0 } }
                     }
-                }
+                })
             });
         }
     }
@@ -180,7 +270,7 @@
                         borderWidth: 0
                     }]
                 },
-                options: {
+                options: applyFontOptions({
                     indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
@@ -191,7 +281,7 @@
                     scales: {
                         x: { beginAtZero: true, ticks: { callback: (v) => mkCurrency(v) } }
                     }
-                }
+                })
             });
         }
     }

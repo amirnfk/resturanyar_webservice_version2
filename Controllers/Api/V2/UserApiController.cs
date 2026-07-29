@@ -16,6 +16,7 @@ using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.Settings;
 using resturanyar.Models.ViewModels;
+using resturanyar.Models.Receipt;
 using resturanyar.Helpers;
 using resturanyar.Utility;
 using Resturanyar.Hubs;
@@ -1100,6 +1101,9 @@ namespace resturanyar.Controllers.Api.V2
                     TableNumber = request.TableNumber,
                     StatusId = request.StatusId,
                     CustomerId = request.CustomerId,
+                    OrderType = request.OrderType.HasValue
+                        ? (OrderTypeKind)request.OrderType.Value
+                        : OrderTypeKind.DineIn,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     CreatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
@@ -2370,7 +2374,8 @@ namespace resturanyar.Controllers.Api.V2
             if (!TryGetOwnerId(out int ownerId))
                 return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
 
-            if (await GetOwnedRestaurantAsync(restaurantId, ownerId) == null)
+            var restaurant = await GetOwnedRestaurantAsync(restaurantId, ownerId);
+            if (restaurant == null)
                 return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
 
             var statusIds = new List<int> { 9, 10, 11 };
@@ -2392,6 +2397,7 @@ namespace resturanyar.Controllers.Api.V2
                     CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
+                    OrderType = (byte)o.OrderType,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -2403,6 +2409,81 @@ namespace resturanyar.Controllers.Api.V2
                         FoodImageUrl = oi.FoodImageUrl
                     }).ToList()
                 }).ToListAsync();
+
+            if (orders.Count > 0)
+            {
+                var orderIds = orders.Select(o => o.OrderId).ToList();
+                var snapshots = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => orderIds.Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
+                var receiptService = GetReceiptService();
+
+                foreach (var order in orders)
+                {
+                    if (snapshots.TryGetValue(order.OrderId, out var snapshot))
+                    {
+                        // Issued snapshot: show stored receipt totals (no re-calc).
+                        var receiptRes = await receiptService.GetReceiptDataAsync(
+                            order.OrderId,
+                            restaurantId,
+                            channel: "Api",
+                            userId: ownerId,
+                            recordPrintHistory: false);
+
+                        if (receiptRes.Success && receiptRes.Receipt != null)
+                        {
+                            order.ReceiptGrandTotal = receiptRes.Receipt.GrandTotal;
+                            order.ReceiptIssuedAt = receiptRes.Receipt.IssuedAt;
+                            order.ReceiptTotals = new ReceiptTotalsDto
+                            {
+                                ItemsSubtotal = receiptRes.Receipt.ItemsSubtotal,
+                                DiscountTotal = receiptRes.Receipt.DiscountTotal,
+                                FeesTotal = receiptRes.Receipt.FeesTotal,
+                                TaxTotal = receiptRes.Receipt.TaxTotal,
+                                GrandTotal = receiptRes.Receipt.GrandTotal,
+                                IsIssued = receiptRes.Receipt.IsIssued,
+                                UsesCharges = receiptRes.Receipt.UsesCharges,
+                                ChargeLines = receiptRes.Receipt.ChargeLines
+                            };
+                        }
+                        else
+                        {
+                            // Safe fallback (amount-less breakdown might be missing).
+                            order.ReceiptGrandTotal = snapshot.GrandTotal;
+                            order.ReceiptIssuedAt = snapshot.IssuedAt;
+                        }
+                    }
+                    else
+                    {
+                        // Pre-receipt preview: compute server-side using restaurant defaults for the order type.
+                        var previewRes = await receiptService.PreviewAsync(
+                            order.OrderId,
+                            restaurantId,
+                            new ReceiptPreviewRequest
+                            {
+                                OrderType = (OrderTypeKind)order.OrderType
+                            });
+
+                        if (previewRes.Success && previewRes.Receipt != null)
+                        {
+                            order.EstimatedReceiptGrandTotal = previewRes.Receipt.GrandTotal;
+                            order.ReceiptTotals = new ReceiptTotalsDto
+                            {
+                                ItemsSubtotal = previewRes.Receipt.ItemsSubtotal,
+                                DiscountTotal = previewRes.Receipt.DiscountTotal,
+                                FeesTotal = previewRes.Receipt.FeesTotal,
+                                TaxTotal = previewRes.Receipt.TaxTotal,
+                                GrandTotal = previewRes.Receipt.GrandTotal,
+                                IsIssued = false,
+                                UsesCharges = previewRes.Receipt.UsesCharges,
+                                ChargeLines = previewRes.Receipt.ChargeLines
+                            };
+                        }
+                    }
+                }
+            }
 
             var serverTime = DateTimeOffset.Now.ToUnixTimeSeconds();
             return Ok(new { success = true, data = orders, lastCheck = serverTime });

@@ -1956,6 +1956,29 @@
         }
       }
     },
+    "/api/v2/UserApi/orders/{orderId}/receipt/preview-defaults": {
+      "get": {
+        "tags": [
+          "UserApi"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v2/UserApi/orders/{orderId}/receipt/issue": {
       "post": {
         "tags": [
@@ -2382,6 +2405,11 @@
           },
           "tableNumber": {
             "type": "string",
+            "nullable": true
+          },
+          "orderType": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           },
           "items": {

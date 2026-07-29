@@ -4644,6 +4644,11 @@
             "type": "string",
             "nullable": true
           },
+          "orderType": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "items": {
             "type": "array",
             "items": {

@@ -264,7 +264,7 @@
         if (!issuedAt) return '';
         const dt = new Date(issuedAt);
         if (Number.isNaN(dt.getTime())) return '';
-        return `<span class="text-muted small ms-2">(صدور: ${toPersianDigits(dt.toLocaleString('fa-IR'))})</span>`;
+        return `<span class="order-receipt-card__meta">صدور: ${toPersianDigits(dt.toLocaleString('fa-IR'))}</span>`;
     }
 
     function updateOrderReceiptBadge(orderId, receipt) {
@@ -282,7 +282,6 @@
         let badge = card.querySelector('.receipt-issued-badge');
         if (!badge) {
             badge = document.createElement('div');
-            badge.className = 'alert alert-success py-2 px-3 mt-2 mb-0 receipt-issued-badge';
             const totalBox = card.querySelector('.total-box');
             if (totalBox) {
                 totalBox.insertAdjacentElement('afterend', badge);
@@ -291,10 +290,16 @@
             }
         }
 
+        badge.className = 'order-receipt-card order-receipt-card--issued receipt-issued-badge';
         badge.innerHTML = `
-            <i class="fa-solid fa-receipt ms-1"></i>
-            مبلغ فاکتور: ${formatMoney(grandTotal)} تومان
-            ${formatIssuedAt(issuedAt)}`;
+            <div class="order-receipt-card__icon" aria-hidden="true">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="order-receipt-card__content">
+                <span class="order-receipt-card__label">مبلغ فاکتور</span>
+                <strong class="order-receipt-card__amount">${formatMoney(grandTotal)} تومان</strong>
+                ${formatIssuedAt(issuedAt)}
+            </div>`;
 
         ensureReceiptActionButtons(card, orderId);
     }
@@ -543,6 +548,32 @@
         });
     }
 
+    function mergeDefinitionsWithAppliedCharges(definitions, appliedCharges, orderType) {
+        if (!appliedCharges || !appliedCharges.length) return definitions;
+
+        var byId = {};
+        appliedCharges.forEach(function (charge) {
+            var id = charge.definitionId ?? charge.DefinitionId;
+            if (id == null) return;
+            byId[id] = charge;
+        });
+
+        return definitions.map(function (def) {
+            var selection = byId[def.id];
+            if (!selection) {
+                if (definitionApplies(def, orderType)) {
+                    return Object.assign({}, def, { isEnabled: false });
+                }
+                return def;
+            }
+
+            return Object.assign({}, def, {
+                isEnabled: selection.isEnabled ?? selection.IsEnabled ?? false,
+                value: selection.value ?? selection.Value ?? def.value
+            });
+        });
+    }
+
     async function openChargeModal(orderId, defaultOrderType, triggerBtn, mode) {
         const btn = triggerBtn;
         setButtonLoading(btn, true, 'در حال آماده‌سازی...');
@@ -550,6 +581,7 @@
             const { data: defs } = await fetchJson('/Receipt/GetChargeDefinitions');
             var definitions = defs?.data || [];
             var orderType = defaultOrderType || 0;
+            var previewData = null;
 
             if (mode === 'edit') {
                 const { data: existing } = await fetchJson(
@@ -558,30 +590,48 @@
                     orderType = existing.data.orderType ?? existing.data.OrderType ?? orderType;
                     definitions = mergeDefinitionsWithIssuedReceipt(definitions, existing.data);
                 }
+            } else {
+                const { data: defaultsRes } = await fetchJson(`/Receipt/PreviewDefaults?orderId=${orderId}`);
+                if (!defaultsRes?.success || !defaultsRes.data) {
+                    if (typeof showToast === 'function') {
+                        showToast(defaultsRes?.message || 'خطا در آماده‌سازی فاکتور', 'error');
+                    }
+                    return;
+                }
+
+                const defaults = defaultsRes.data;
+                const receipt = defaults.receipt ?? defaults.Receipt;
+                const appliedCharges = defaults.appliedCharges ?? defaults.AppliedCharges ?? [];
+                orderType = receipt?.orderType ?? receipt?.OrderType ?? orderType;
+                definitions = mergeDefinitionsWithAppliedCharges(definitions, appliedCharges, orderType);
+                previewData = receipt;
             }
 
-            const body = {
-                orderType: orderType,
-                charges: definitions
-                    .filter(function (d) { return definitionApplies(d, orderType); })
-                    .map(function (d) {
-                        return {
-                            definitionId: d.id,
-                            code: d.code,
-                            isEnabled: d.isEnabled,
-                            value: d.value
-                        };
-                    })
-            };
+            if (mode === 'edit' || previewData == null) {
+                const body = {
+                    orderType: orderType,
+                    charges: definitions
+                        .filter(function (d) { return definitionApplies(d, orderType); })
+                        .map(function (d) {
+                            return {
+                                definitionId: d.id,
+                                code: d.code,
+                                isEnabled: d.isEnabled,
+                                value: d.value
+                            };
+                        })
+                };
 
-            setButtonLoading(btn, true, 'در حال محاسبه...');
-            const preview = await previewReceipt(orderId, body);
-            if (!preview?.success) {
-                if (typeof showToast === 'function') showToast(preview?.message || 'خطا در محاسبه', 'error');
-                return;
+                setButtonLoading(btn, true, 'در حال محاسبه...');
+                const preview = await previewReceipt(orderId, body);
+                if (!preview?.success) {
+                    if (typeof showToast === 'function') showToast(preview?.message || 'خطا در محاسبه', 'error');
+                    return;
+                }
+                previewData = preview.data;
             }
 
-            showReceiptModal(orderId, orderType, definitions, preview.data, mode);
+            showReceiptModal(orderId, orderType, definitions, previewData, mode);
         } catch (err) {
             console.error('openChargeModal error:', err);
             if (typeof showToast === 'function') showToast('خطا در آماده‌سازی فاکتور', 'error');

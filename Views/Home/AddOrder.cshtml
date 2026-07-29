@@ -160,9 +160,15 @@
                     <textarea id="orderDescription" class="form-control" rows="2" placeholder="..."></textarea>
                 </div>
                 <button id="submitOrderBtn" class="btn btn-primary w-100 py-2">نهایی کردن سفارش</button>
-                <div id="orderEstimateBox" class="alert alert-info py-2 px-3 mt-3 mb-0" style="display:none;" aria-live="polite">
-                    <i class="fa-solid fa-calculator ms-1"></i>
-                    <span id="orderEstimateText"></span>
+                <div id="orderEstimateBox" class="order-estimate-card" style="display:none;" aria-live="polite">
+                    <div class="order-estimate-card__icon" aria-hidden="true">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div class="order-estimate-card__content">
+                        <span class="order-estimate-card__label">برآورد مبلغ نهایی</span>
+                        <strong id="orderEstimateAmount" class="order-estimate-card__amount"></strong>
+                        <span id="orderEstimateMeta" class="order-estimate-card__meta"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -314,10 +320,12 @@
 
     function showOrderEstimate(orderId, grandTotal) {
         var box = document.getElementById('orderEstimateBox');
-        var text = document.getElementById('orderEstimateText');
-        if (!box || !text) return;
-        text.textContent = 'مبلغ قابل پرداخت (تقریبی) برای سفارش #' + orderId + ': ' + formatMoney(grandTotal) + ' تومان';
-        box.style.display = 'block';
+        var amountEl = document.getElementById('orderEstimateAmount');
+        var metaEl = document.getElementById('orderEstimateMeta');
+        if (!box || !amountEl || !metaEl) return;
+        amountEl.textContent = formatMoney(grandTotal) + ' تومان';
+        metaEl.textContent = 'سفارش #' + orderId + ' · با احتساب هزینه و مالیات · تا صدور فاکتور تقریبی است';
+        box.style.display = 'flex';
     }
 
     async function fetchEstimatedPayableTotal(orderId) {

@@ -2040,7 +2040,6 @@ E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.build.json.cache
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.development.json
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.build.endpoints.json
-E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\resturan.3E290ECC.Up2Date
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.dll
 E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\refint\resturanyar.dll
@@ -2287,3 +2286,4 @@ D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.pdb
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
 D:\aspnet projects\resturanyar\resturanyar_webservice_version2\obj\Release\net8.0\ref\resturanyar.dll
+E:\myAspProjects\ResturanyarWebApp\Work at home\resturanyar_webservice_version2\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.upToDateCheck.txt

@@ -75,11 +75,20 @@
     height: 56px;
     border-radius: 16px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background:
         linear-gradient(145deg, rgba(255, 122, 0, 0.2), rgba(255, 84, 0, 0.08)),
         radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.55), transparent 60%);
     border: 1px solid rgba(255, 122, 0, 0.18);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    color: var(--mr-primary);
+    font-size: 1.45rem;
+}
+
+.manager-reports-page .filter-card__ornament i {
+    line-height: 1;
 }
 
 .manager-reports-page .filter-card .form-label {
@@ -292,6 +301,7 @@
         width: 44px;
         height: 44px;
         border-radius: 12px;
+        font-size: 1.15rem;
     }
 
     .manager-reports-page .quick-filter-btn {

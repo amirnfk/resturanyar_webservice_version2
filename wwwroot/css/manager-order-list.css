@@ -552,6 +552,86 @@
     margin-top: 10px;
 }
 
+.orders-page .order-receipt-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-top: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.orders-page .order-receipt-card__icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.orders-page .order-receipt-card__content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.orders-page .order-receipt-card__label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.orders-page .order-receipt-card__amount {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.orders-page .order-receipt-card__meta {
+    font-size: 0.72rem;
+    color: #64748b;
+    line-height: 1.55;
+}
+
+.orders-page .order-receipt-card--estimate {
+    border: 1px solid rgba(15, 118, 110, 0.18);
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.06), rgba(15, 118, 110, 0.02)),
+        #f8fffe;
+}
+
+.orders-page .order-receipt-card--estimate .order-receipt-card__icon {
+    background: rgba(15, 118, 110, 0.12);
+    color: #0f766e;
+}
+
+.orders-page .order-receipt-card--estimate .order-receipt-card__label {
+    color: #0f766e;
+}
+
+.orders-page .order-receipt-card--issued {
+    border: 1px solid rgba(25, 135, 84, 0.2);
+    background:
+        linear-gradient(135deg, rgba(25, 135, 84, 0.08), rgba(25, 135, 84, 0.02)),
+        #f6fff9;
+}
+
+.orders-page .order-receipt-card--issued .order-receipt-card__icon {
+    background: rgba(25, 135, 84, 0.12);
+    color: #198754;
+}
+
+.orders-page .order-receipt-card--issued .order-receipt-card__label {
+    color: #198754;
+}
+
 /* ---------- برای موبایل ---------- */
 @media (max-width: 768px) {
     .orders-page .food-header,
