@@ -33,6 +33,7 @@ namespace resturanyar.Services.Receipt
         Task<ReceiptServiceResult> ReissueAsync(int orderId, int restaurantId, ReceiptPreviewRequest request, int? userId, string channel, bool recordPrintHistory = false);
         Task<ReceiptServiceResult> TryAutoIssueOnSettlementAsync(int orderId, int restaurantId, int? userId, int previousStatusId, int newStatusId);
         Task<ReceiptServiceResult> GetReceiptDataAsync(int orderId, int restaurantId, string channel, int? userId, bool recordPrintHistory = true);
+        Task AttachReceiptTotalsForOrderListAsync(IList<OrderDto> orders, int restaurantId, int? userId);
         Task<List<ChargeDefinitionDto>> GetChargeDefinitionsAsync(int restaurantId);
         Task<List<ChargeDefinitionDto>> EnsureChargeDefinitionsAsync(int restaurantId);
         Task<bool> SaveChargeDefinitionsAsync(int restaurantId, List<ChargeDefinitionDto> definitions);
@@ -891,6 +892,82 @@ namespace resturanyar.Services.Receipt
                 Message = message,
                 StatusCode = statusCode
             };
+        }
+
+        public async Task AttachReceiptTotalsForOrderListAsync(IList<OrderDto> orders, int restaurantId, int? userId)
+        {
+            if (orders == null || orders.Count == 0)
+                return;
+
+            var orderIds = orders.Select(o => o.OrderId).ToList();
+            var snapshots = await _context.OrderReceiptSnapshots
+                .AsNoTracking()
+                .Where(s => orderIds.Contains(s.OrderId))
+                .ToDictionaryAsync(s => s.OrderId);
+
+            foreach (var order in orders)
+            {
+                if (snapshots.TryGetValue(order.OrderId, out var snapshot))
+                {
+                    // Issued snapshot: show stored receipt totals (no re-calc).
+                    var receiptRes = await GetReceiptDataAsync(
+                        order.OrderId,
+                        restaurantId,
+                        channel: "Api",
+                        userId: userId,
+                        recordPrintHistory: false);
+
+                    if (receiptRes.Success && receiptRes.Receipt != null)
+                    {
+                        order.ReceiptGrandTotal = receiptRes.Receipt.GrandTotal;
+                        order.ReceiptIssuedAt = receiptRes.Receipt.IssuedAt;
+                        order.ReceiptTotals = new ReceiptTotalsDto
+                        {
+                            ItemsSubtotal = receiptRes.Receipt.ItemsSubtotal,
+                            DiscountTotal = receiptRes.Receipt.DiscountTotal,
+                            FeesTotal = receiptRes.Receipt.FeesTotal,
+                            TaxTotal = receiptRes.Receipt.TaxTotal,
+                            GrandTotal = receiptRes.Receipt.GrandTotal,
+                            IsIssued = receiptRes.Receipt.IsIssued,
+                            UsesCharges = receiptRes.Receipt.UsesCharges,
+                            ChargeLines = receiptRes.Receipt.ChargeLines
+                        };
+                    }
+                    else
+                    {
+                        // Safe fallback (amount-less breakdown might be missing).
+                        order.ReceiptGrandTotal = snapshot.GrandTotal;
+                        order.ReceiptIssuedAt = snapshot.IssuedAt;
+                    }
+                }
+                else
+                {
+                    // Pre-receipt preview: compute server-side using restaurant defaults for the order type.
+                    var previewRes = await PreviewAsync(
+                        order.OrderId,
+                        restaurantId,
+                        new ReceiptPreviewRequest
+                        {
+                            OrderType = (OrderTypeKind)order.OrderType
+                        });
+
+                    if (previewRes.Success && previewRes.Receipt != null)
+                    {
+                        order.EstimatedReceiptGrandTotal = previewRes.Receipt.GrandTotal;
+                        order.ReceiptTotals = new ReceiptTotalsDto
+                        {
+                            ItemsSubtotal = previewRes.Receipt.ItemsSubtotal,
+                            DiscountTotal = previewRes.Receipt.DiscountTotal,
+                            FeesTotal = previewRes.Receipt.FeesTotal,
+                            TaxTotal = previewRes.Receipt.TaxTotal,
+                            GrandTotal = previewRes.Receipt.GrandTotal,
+                            IsIssued = false,
+                            UsesCharges = previewRes.Receipt.UsesCharges,
+                            ChargeLines = previewRes.Receipt.ChargeLines
+                        };
+                    }
+                }
+            }
         }
     }
 }

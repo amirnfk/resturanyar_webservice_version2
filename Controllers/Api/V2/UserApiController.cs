@@ -341,6 +341,8 @@ namespace resturanyar.Controllers.Api.V2
                     owner_id = ownerIdFromToken, // استفاده از ownerId از توکن
                     restaurant_code = GenerateUniqueRestaurantCode(),
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
+                    ReceiptChargesEnabled = true,
+                    ReceiptChargesEnabledAt = DateTime.Now,
                 };
                 _context.Restaurants.Add(restaurant);
                 _context.SaveChanges();
@@ -1235,7 +1237,8 @@ namespace resturanyar.Controllers.Api.V2
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     query = query.Where(c => c.Mobile.Contains(search) ||
-                                             (c.FullName != null && c.FullName.Contains(search)));
+                                             (c.FullName != null && c.FullName.Contains(search)) ||
+                                             (c.Description != null && c.Description.Contains(search)));
                 }
 
                 var totalCount = query.Count();
@@ -1470,8 +1473,9 @@ namespace resturanyar.Controllers.Api.V2
                 {
                     var searchLower = search.Trim().ToLower();
                     customersQuery = customersQuery.Where(c =>
-                        c.FullName.ToLower().Contains(searchLower) ||
-                        c.Mobile.Contains(search));
+                        (c.FullName != null && c.FullName.ToLower().Contains(searchLower)) ||
+                        c.Mobile.Contains(search) ||
+                        (c.Description != null && c.Description.ToLower().Contains(searchLower)));
                 }
 
                 var customers = await customersQuery.ToListAsync();
@@ -2412,77 +2416,8 @@ namespace resturanyar.Controllers.Api.V2
 
             if (orders.Count > 0)
             {
-                var orderIds = orders.Select(o => o.OrderId).ToList();
-                var snapshots = await _context.OrderReceiptSnapshots
-                    .AsNoTracking()
-                    .Where(s => orderIds.Contains(s.OrderId))
-                    .ToDictionaryAsync(s => s.OrderId);
-
                 var receiptService = GetReceiptService();
-
-                foreach (var order in orders)
-                {
-                    if (snapshots.TryGetValue(order.OrderId, out var snapshot))
-                    {
-                        // Issued snapshot: show stored receipt totals (no re-calc).
-                        var receiptRes = await receiptService.GetReceiptDataAsync(
-                            order.OrderId,
-                            restaurantId,
-                            channel: "Api",
-                            userId: ownerId,
-                            recordPrintHistory: false);
-
-                        if (receiptRes.Success && receiptRes.Receipt != null)
-                        {
-                            order.ReceiptGrandTotal = receiptRes.Receipt.GrandTotal;
-                            order.ReceiptIssuedAt = receiptRes.Receipt.IssuedAt;
-                            order.ReceiptTotals = new ReceiptTotalsDto
-                            {
-                                ItemsSubtotal = receiptRes.Receipt.ItemsSubtotal,
-                                DiscountTotal = receiptRes.Receipt.DiscountTotal,
-                                FeesTotal = receiptRes.Receipt.FeesTotal,
-                                TaxTotal = receiptRes.Receipt.TaxTotal,
-                                GrandTotal = receiptRes.Receipt.GrandTotal,
-                                IsIssued = receiptRes.Receipt.IsIssued,
-                                UsesCharges = receiptRes.Receipt.UsesCharges,
-                                ChargeLines = receiptRes.Receipt.ChargeLines
-                            };
-                        }
-                        else
-                        {
-                            // Safe fallback (amount-less breakdown might be missing).
-                            order.ReceiptGrandTotal = snapshot.GrandTotal;
-                            order.ReceiptIssuedAt = snapshot.IssuedAt;
-                        }
-                    }
-                    else
-                    {
-                        // Pre-receipt preview: compute server-side using restaurant defaults for the order type.
-                        var previewRes = await receiptService.PreviewAsync(
-                            order.OrderId,
-                            restaurantId,
-                            new ReceiptPreviewRequest
-                            {
-                                OrderType = (OrderTypeKind)order.OrderType
-                            });
-
-                        if (previewRes.Success && previewRes.Receipt != null)
-                        {
-                            order.EstimatedReceiptGrandTotal = previewRes.Receipt.GrandTotal;
-                            order.ReceiptTotals = new ReceiptTotalsDto
-                            {
-                                ItemsSubtotal = previewRes.Receipt.ItemsSubtotal,
-                                DiscountTotal = previewRes.Receipt.DiscountTotal,
-                                FeesTotal = previewRes.Receipt.FeesTotal,
-                                TaxTotal = previewRes.Receipt.TaxTotal,
-                                GrandTotal = previewRes.Receipt.GrandTotal,
-                                IsIssued = false,
-                                UsesCharges = previewRes.Receipt.UsesCharges,
-                                ChargeLines = previewRes.Receipt.ChargeLines
-                            };
-                        }
-                    }
-                }
+                await receiptService.AttachReceiptTotalsForOrderListAsync(orders, restaurantId, userId: ownerId);
             }
 
             var serverTime = DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -2540,8 +2475,116 @@ namespace resturanyar.Controllers.Api.V2
             };
         }
 
+        [HttpPost("ExportOrdersToExcel")]
+        public async Task<IActionResult> ExportOrdersToExcel([FromBody] OrderDateFilterRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
 
-      
+                bool isOwnerValid = _context.Restaurants.Any(r =>
+                    r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (!isOwnerValid)
+                    return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+                if (string.IsNullOrEmpty(request.FromDate) || string.IsNullOrEmpty(request.ToDate))
+                    return BadRequest("بازه تاریخ معتبر نیست");
+
+                var fromDate = DateHelper.ShamsiToDateTime(request.FromDate);
+                var toDate = DateHelper.ShamsiToDateTime(request.ToDate).AddDays(1).AddSeconds(-1);
+
+                var statusIds = new List<int> { 9, 10, 11 };
+
+                var orders = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .Include(o => o.Customer)
+                    .Where(o => o.RestaurantId == request.RestaurantId)
+                    .Where(o => statusIds.Contains(o.StatusId))
+                    .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .ToListAsync();
+
+                if (!orders.Any())
+                    return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
+
+                var snapshotMap = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == request.RestaurantId)
+                    .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
+                var content = resturanyar.Services.OrdersExcelExportService.BuildWorkbook(
+                    orders,
+                    snapshotMap,
+                    request.FromDate,
+                    request.ToDate);
+
+                string fileName = $"OrdersReport_{request.RestaurantId}_{request.FromDate}_{request.ToDate}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"خطا در تولید گزارش: {ex.Message}");
+            }
+        }
+
+        [HttpPost("ExportOrdersToPdf")]
+        public async Task<IActionResult> ExportOrdersToPdf([FromBody] OrderDateFilterRequest request)
+        {
+            try
+            {
+                var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(nameIdentifierClaim) || !int.TryParse(nameIdentifierClaim, out int ownerIdFromToken))
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+
+                bool isOwnerValid = _context.Restaurants.Any(r =>
+                    r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                if (!isOwnerValid)
+                    return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی به این رستوران مجاز نیست." });
+
+                if (string.IsNullOrEmpty(request.FromDate) || string.IsNullOrEmpty(request.ToDate))
+                    return BadRequest("بازه تاریخ معتبر نیست");
+
+                var fromDate = DateHelper.ShamsiToDateTime(request.FromDate);
+                var toDate = DateHelper.ShamsiToDateTime(request.ToDate).AddDays(1).AddSeconds(-1);
+
+                var statusIds = new List<int> { 9, 10, 11 };
+
+                var orders = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .Include(o => o.Customer)
+                    .Where(o => o.RestaurantId == request.RestaurantId)
+                    .Where(o => statusIds.Contains(o.StatusId))
+                    .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .ToListAsync();
+
+                if (!orders.Any())
+                    return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
+
+                var snapshotMap = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == request.RestaurantId)
+                    .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
+                var content = resturanyar.Services.OrdersPdfExportService.BuildPdf(
+                    orders,
+                    snapshotMap,
+                    request.FromDate,
+                    request.ToDate,
+                    _env.WebRootPath);
+
+                string fileName = $"OrdersReport_{request.RestaurantId}_{request.FromDate}_{request.ToDate}.pdf";
+                return File(content, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"خطا در تولید گزارش PDF: {ex.Message}");
+            }
+        }
 
         ///////////////////////////////////////////////////////////////////////
 

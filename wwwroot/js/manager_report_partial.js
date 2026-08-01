@@ -78,7 +78,7 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'مبلغ فروش',
+                            label: 'مبلغ فروش (تومان)',
                             data: revenues,
                             yAxisID: 'y1',
                             borderColor: '#0d6efd',
@@ -102,7 +102,7 @@
                     scales: {
                         y1: {
                             type: 'linear', position: 'left',
-                            ticks: { callback: (v) => mkCurrency(v) },
+                            ticks: { callback: (v) => `${mkCurrency(v)} تومان` },
                             grid: { drawBorder: false }
                         },
                         y2: {
@@ -264,7 +264,7 @@
                 data: {
                     labels: topRevLabels,
                     datasets: [{
-                        label: 'مبلغ',
+                        label: 'مبلغ (تومان)',
                         data: topRevValues,
                         backgroundColor: '#fd7e14',
                         borderWidth: 0
@@ -279,7 +279,7 @@
                         tooltip: { callbacks: { label: (ctx) => `مبلغ: ${mkCurrency(ctx.parsed.x)} تومان` } }
                     },
                     scales: {
-                        x: { beginAtZero: true, ticks: { callback: (v) => mkCurrency(v) } }
+                        x: { beginAtZero: true, ticks: { callback: (v) => `${mkCurrency(v)} تومان` } }
                     }
                 })
             });

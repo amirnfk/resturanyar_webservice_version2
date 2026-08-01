@@ -260,11 +260,26 @@
             </div>`;
     }
 
+    function parseUtcIssuedAt(issuedAt) {
+        if (issuedAt == null || issuedAt === '') return null;
+        if (typeof issuedAt === 'number') {
+            const dt = new Date(issuedAt);
+            return Number.isNaN(dt.getTime()) ? null : dt;
+        }
+        let s = String(issuedAt).trim();
+        // DB/EF often returns UTC without "Z"; treat bare ISO as UTC so Tehran conversion is correct.
+        if (/^\d{4}-\d{2}-\d{2}T/.test(s) && !/(Z|[+-]\d{2}:?\d{2})$/i.test(s)) {
+            s += 'Z';
+        }
+        const dt = new Date(s);
+        return Number.isNaN(dt.getTime()) ? null : dt;
+    }
+
     function formatIssuedAt(issuedAt) {
-        if (!issuedAt) return '';
-        const dt = new Date(issuedAt);
-        if (Number.isNaN(dt.getTime())) return '';
-        return `<span class="order-receipt-card__meta">صدور: ${toPersianDigits(dt.toLocaleString('fa-IR'))}</span>`;
+        const dt = parseUtcIssuedAt(issuedAt);
+        if (!dt) return '';
+        const formatted = dt.toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' });
+        return `<span class="order-receipt-card__meta">صدور: ${toPersianDigits(formatted)}</span>`;
     }
 
     function updateOrderReceiptBadge(orderId, receipt) {

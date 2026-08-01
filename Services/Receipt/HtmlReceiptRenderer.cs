@@ -297,22 +297,17 @@ namespace resturanyar.Services.Receipt
                 """).ToList();
 
             var chargeRows = receipt.ChargeLines
-                .Where(c => c.CalculatedAmount != 0)
+                .Where(c => c.CalculatedAmount != 0 && c.Category != ChargeCategory.Discount)
                 .OrderBy(c => c.DisplayOrder)
-                .Select(c =>
-                {
-                    var isDiscount = c.Category == ChargeCategory.Discount;
-                    return $"""
+                .Select(c => $"""
                         <tr>
                             <td class="title">{Escape(c.Title)}</td>
-                            <td class="amount{(isDiscount ? " is-discount" : "")}">{FormatSignedMoney(c.Category, c.CalculatedAmount)}</td>
+                            <td class="amount">{FormatSignedMoney(c.Category, c.CalculatedAmount)}</td>
                         </tr>
-                        """;
-                })
+                        """)
                 .ToList();
 
             var hasChargeDetails = chargeRows.Count > 0
-                || receipt.DiscountTotal > 0
                 || receipt.FeesTotal > 0
                 || receipt.TaxTotal > 0;
 
@@ -326,7 +321,6 @@ namespace resturanyar.Services.Receipt
                                     ? string.Join("", chargeRows)
                                     : $"""
                                         <tr><td class="title">جمع اقلام</td><td class="amount">{FormatMoney(receipt.ItemsSubtotal)} تومان</td></tr>
-                                        {(receipt.DiscountTotal > 0 ? $"<tr><td class=\"title\">تخفیف</td><td class=\"amount is-discount\">-{FormatMoney(receipt.DiscountTotal)} تومان</td></tr>" : "")}
                                         {(receipt.FeesTotal > 0 ? $"<tr><td class=\"title\">کارمزدها</td><td class=\"amount\">{FormatMoney(receipt.FeesTotal)} تومان</td></tr>" : "")}
                                         {(receipt.TaxTotal > 0 ? $"<tr><td class=\"title\">مالیات</td><td class=\"amount\">{FormatMoney(receipt.TaxTotal)} تومان</td></tr>" : "")}
                                       """)}
@@ -365,7 +359,7 @@ namespace resturanyar.Services.Receipt
                 : "";
 
             var issuedAtText = receipt.IssuedAt.HasValue
-                ? $"<div class=\"info-item\"><span class=\"label\">زمان صدور</span><span class=\"value\">{Escape(receipt.IssuedAt.Value.ToLocalTime().ToPersianDateTime())}</span></div>"
+                ? $"<div class=\"info-item\"><span class=\"label\">زمان صدور</span><span class=\"value\">{Escape(receipt.IssuedAt.Value.ToPersianDateTimeTehran())}</span></div>"
                 : "";
 
             return $"""
@@ -428,7 +422,6 @@ namespace resturanyar.Services.Receipt
                                     <div class="card-head">خلاصه مبلغ</div>
                                     <div class="rows">
                                         <div class="summary-row"><span>جمع اقلام</span><strong>{FormatMoney(receipt.ItemsSubtotal)} تومان</strong></div>
-                                        {(receipt.DiscountTotal > 0 ? $"<div class=\"summary-row\"><span>تخفیف</span><strong>-{FormatMoney(receipt.DiscountTotal)} تومان</strong></div>" : "")}
                                         {(receipt.FeesTotal > 0 ? $"<div class=\"summary-row\"><span>کارمزدها</span><strong>{FormatMoney(receipt.FeesTotal)} تومان</strong></div>" : "")}
                                         {(receipt.TaxTotal > 0 ? $"<div class=\"summary-row\"><span>مالیات</span><strong>{FormatMoney(receipt.TaxTotal)} تومان</strong></div>" : "")}
                                     </div>

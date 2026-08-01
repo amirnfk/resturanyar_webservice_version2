@@ -488,7 +488,7 @@
                 <label class="form-label fw-bold text-dark small">جستجو عمومی</label>
                 <div class="input-group">
                     <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="نام، شماره موبایل  ..." />
+                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="نام، شماره موبایل، توضیحات..." />
                 </div>
             </div>
             <div class="col-md-3">
@@ -877,6 +877,12 @@
             const noOrdersHint = c.totalOrders === 0
                 ? '<div class="no-closed-orders-hint"><i class="fas fa-exclamation-circle me-1"></i>سفارش بسته‌شده‌ای ثبت نشده</div>'
                 : '';
+            const descriptionRow = c.description
+                ? `<div class="info-row">
+                        <span class="info-label">توضیحات:</span>
+                        <span class="info-value text-muted small text-truncate" title="${escapeHtml(c.description)}">${escapeHtml(c.description)}</span>
+                   </div>`
+                : '';
             html += `
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="customer-card">
@@ -911,6 +917,7 @@
                                 <span class="info-label">آخرین تراکنش:</span>
                                 <span class="info-value text-muted small">${c.lastOrderDateShamsi}</span>
                             </div>
+                            ${descriptionRow}
                         </div>
                         <div class="customer-footer">
                             <button class="btn btn-outline-primary edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">

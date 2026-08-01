@@ -866,6 +866,22 @@
   },
   {
     "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ExportOrdersToPdf",
+    "RelativePath": "api/UserApi/ExportOrdersToPdf",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
     "Method": "GetAddresses",
     "RelativePath": "api/UserApi/getaddresses/{customerId}",
     "HttpMethod": "GET",
@@ -1147,6 +1163,117 @@
   },
   {
     "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetReceiptData",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt-data",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "IssueReceipt",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt/issue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "PreviewReceipt",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt/preview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "PreviewReceiptDefaults",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt/preview-defaults",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ReissueReceipt",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt/reissue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetReceiptStatus",
+    "RelativePath": "api/UserApi/orders/{orderId}/receipt/status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
     "Method": "RequestOtp",
     "RelativePath": "api/UserApi/otprequest",
     "HttpMethod": "POST",
@@ -1220,6 +1347,22 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.RegisterWithOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetChargeDefinitions",
+    "RelativePath": "api/UserApi/restaurants/{restaurantId}/charge-definitions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -1837,6 +1980,22 @@
   },
   {
     "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ExportOrdersToPdf",
+    "RelativePath": "api/v1/UserApi/ExportOrdersToPdf",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
     "Method": "GetAddresses",
     "RelativePath": "api/v1/UserApi/getaddresses/{customerId}",
     "HttpMethod": "GET",
@@ -2118,6 +2277,117 @@
   },
   {
     "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetReceiptData",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt-data",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "IssueReceipt",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt/issue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "PreviewReceipt",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt/preview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "PreviewReceiptDefaults",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt/preview-defaults",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "ReissueReceipt",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt/reissue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Receipt.ReceiptPreviewRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetReceiptStatus",
+    "RelativePath": "api/v1/UserApi/orders/{orderId}/receipt/status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
     "Method": "RequestOtp",
     "RelativePath": "api/v1/UserApi/otprequest",
     "HttpMethod": "POST",
@@ -2191,6 +2461,22 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.RegisterWithOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Resturanyar.Controllers.Api.UserApiController",
+    "Method": "GetChargeDefinitions",
+    "RelativePath": "api/v1/UserApi/restaurants/{restaurantId}/charge-definitions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -2669,6 +2955,38 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.EditUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "ExportOrdersToExcel",
+    "RelativePath": "api/v2/UserApi/ExportOrdersToExcel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "ExportOrdersToPdf",
+    "RelativePath": "api/v2/UserApi/ExportOrdersToPdf",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.OrderDateFilterRequest",
         "IsRequired": true
       }
     ],
@@ -3492,6 +3810,37 @@
     "ContainingType": "resturanyar.Controllers.HomeController",
     "Method": "ExportOrdersToExcel",
     "RelativePath": "ExportOrdersToExcel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "statusId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ExportOrdersToPdf",
+    "RelativePath": "ExportOrdersToPdf",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -71,7 +71,7 @@ namespace Resturanyar.Data
                     .ValueGeneratedOnAddOrUpdate();
 
                 entity.Property(r => r.ReceiptChargesEnabled)
-                    .HasDefaultValue(false);
+                    .HasDefaultValue(true);
 
                 entity.Property(r => r.ReceiptChargesEnabledAt);
             });

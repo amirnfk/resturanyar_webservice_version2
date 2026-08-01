@@ -150,7 +150,7 @@
                             <strong class="order-receipt-card__amount">@order.ReceiptGrandTotal.Value.ToString("N0") تومان</strong>
                             @if (order.ReceiptIssuedAt.HasValue)
                             {
-                                <span class="order-receipt-card__meta">صدور: @order.ReceiptIssuedAt.Value.ToLocalTime().ToPersianDateTime()</span>
+                                <span class="order-receipt-card__meta">صدور: @order.ReceiptIssuedAt.Value.ToPersianDateTimeTehran()</span>
                             }
                         </div>
                     </div>

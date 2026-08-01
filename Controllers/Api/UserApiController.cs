@@ -43,7 +43,7 @@ namespace Resturanyar.Controllers.Api
     [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class UserApiController : ControllerBase
+    public partial class UserApiController : ControllerBase
     {
         private readonly IHubContext<OrderHub> _hubContext;
 
@@ -155,6 +155,8 @@ namespace Resturanyar.Controllers.Api
                     owner_id = request.owner_id,
                     restaurant_code = GenerateUniqueRestaurantCode(),
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
+                    ReceiptChargesEnabled = true,
+                    ReceiptChargesEnabledAt = DateTime.Now,
                 };
                 _context.Restaurants.Add(restaurant);
                 _context.SaveChanges(); // ذخیره تا ID رستوران تولید شود
@@ -1856,14 +1858,14 @@ namespace Resturanyar.Controllers.Api
 
 
         [HttpGet("GetOrdersByRestaurant/{restaurantId}")]
-        public IActionResult GetOrdersByRestaurant(int restaurantId)
+        public async Task<IActionResult> GetOrdersByRestaurant(int restaurantId)
         {
 
             var statusIds = new List<int> { 9, 10, 11 };
             
 
 
-            var orders = _context.Orders
+            var orders = await _context.Orders
                   .Include(o => o.Customer)
                 .Include(o => o.OrderItems)
                 .Where(o => o.RestaurantId == restaurantId)
@@ -1881,6 +1883,7 @@ namespace Resturanyar.Controllers.Api
                     CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
+                    OrderType = (byte)o.OrderType,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -1891,7 +1894,11 @@ namespace Resturanyar.Controllers.Api
                         FoodName = oi.FoodName,
                         FoodImageUrl = oi.FoodImageUrl
                     }).ToList()
-                }).ToList();
+                }).ToListAsync();
+
+            var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+            await receiptService.AttachReceiptTotalsForOrderListAsync(orders, restaurantId, userId: null);
+
             var serverTime = DateTimeOffset.Now.ToUnixTimeSeconds();
 
             return Ok(new
@@ -1905,7 +1912,7 @@ namespace Resturanyar.Controllers.Api
         }
 
         [HttpPost("GetOrdersByRestaurantWithDateFilter")]
-        public IActionResult GetOrdersByRestaurantWithDateFilter([FromBody] OrderDateFilterRequest request)
+        public async Task<IActionResult> GetOrdersByRestaurantWithDateFilter([FromBody] OrderDateFilterRequest request)
         {
             try
             {
@@ -1963,6 +1970,7 @@ namespace Resturanyar.Controllers.Api
                         CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                         Description = o.Description,
+                        OrderType = (byte)o.OrderType,
                         OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                         {
                             OrderItemId = oi.OrderItemId,
@@ -1975,6 +1983,14 @@ namespace Resturanyar.Controllers.Api
                         }).ToList()
                     })
                     .ToList();
+
+                if (orders.Count > 0)
+                {
+                    var receiptService = HttpContext.RequestServices
+                        .GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                    await receiptService.AttachReceiptTotalsForOrderListAsync(
+                        orders, request.RestaurantId, userId: null);
+                }
 
                 var serverTime = DateTimeOffset.Now.ToUnixTimeSeconds();
                 var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
@@ -2023,7 +2039,7 @@ namespace Resturanyar.Controllers.Api
 
                 var orders = await _context.Orders
                     .Include(o => o.OrderItems)
-                    .Include(o => o.Customer)    
+                    .Include(o => o.Customer)
                     .Where(o => o.RestaurantId == request.RestaurantId)
                     .Where(o => statusIds.Contains(o.StatusId))
                     .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate)
@@ -2039,140 +2055,68 @@ namespace Resturanyar.Controllers.Api
                     .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
                     .ToDictionaryAsync(s => s.OrderId);
 
-                using (var workbook = new XLWorkbook())
-                {
-                    // ------------------------ Sheet 1: Orders Summary ------------------------
-                    var wsOrders = workbook.Worksheets.Add("خلاصه سفارش‌ها");
+                var content = resturanyar.Services.OrdersExcelExportService.BuildWorkbook(
+                    orders,
+                    snapshotMap,
+                    request.FromDate,
+                    request.ToDate);
 
-                    // 🟩 Header (ستون‌های جدید در E و F)
-                    wsOrders.Cell(1, 1).Value = "شناسه سفارش";
-                    wsOrders.Cell(1, 2).Value = "تاریخ ایجاد (شمسی)";
-                    wsOrders.Cell(1, 3).Value = "شماره میز";
-                    wsOrders.Cell(1, 4).Value = "وضعیت";
-                    wsOrders.Cell(1, 5).Value = "نام مشتری";      // ← جدید
-                    wsOrders.Cell(1, 6).Value = "شماره موبایل";   // ← جدید
-                    wsOrders.Cell(1, 7).Value = "توضیحات";
-                    wsOrders.Cell(1, 8).Value = "تعداد آیتم‌ها";
-                    wsOrders.Cell(1, 9).Value = "جمع مبلغ کل (تومان)";
-                    wsOrders.Cell(1, 10).Value = "مبلغ فاکتور (تومان)";
-                    wsOrders.Cell(1, 11).Value = "تاریخ صدور فاکتور";
-
-                    int row = 2;
-                    foreach (var o in orders)
-                    {
-                        var itemSubtotal = o.OrderItems.Sum(i => (decimal)((i.UnitPriceWithDiscount.HasValue && i.UnitPriceWithDiscount > 0 ? i.UnitPriceWithDiscount : i.UnitPrice) * i.Quantity));
-                        snapshotMap.TryGetValue(o.OrderId, out var snapshot);
-
-                        wsOrders.Cell(row, 1).Value = o.OrderId;
-                        wsOrders.Cell(row, 2).Value = o.CreatedAtShamsi ?? DateHelper.ToShamsi(o.CreatedAt);
-                        wsOrders.Cell(row, 3).Value = o.TableNumber;
-                        wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
-
-
-                        if (o.Customer != null)
-                        {
-                            wsOrders.Cell(row, 5).Value = o.Customer.FullName ?? "-";
-                            string mobile = o.Customer.Mobile ?? "-";
-                            if (!string.IsNullOrEmpty(mobile) && mobile.StartsWith("991"))
-                                mobile = "-";
-                            wsOrders.Cell(row, 6).Value = mobile;
-                        }
-                        else
-                        {
-                            wsOrders.Cell(row, 5).Value = "مشتری مهمان";
-                            wsOrders.Cell(row, 6).Value = "-";
-                        }
-
-                        wsOrders.Cell(row, 7).Value = o.Description ?? "-";
-                        wsOrders.Cell(row, 8).Value = o.OrderItems.Count;
-                        wsOrders.Cell(row, 9).Value = itemSubtotal;
-                        if (snapshot != null)
-                        {
-                            wsOrders.Cell(row, 10).Value = snapshot.GrandTotal;
-                            wsOrders.Cell(row, 11).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
-                        }
-                        else
-                        {
-                            wsOrders.Cell(row, 10).Value = "-";
-                            wsOrders.Cell(row, 11).Value = "-";
-                        }
-                        row++;
-                    }
-
-                    // 🔹 جمع‌بندی (با ایندکس‌های جدید)
-                    wsOrders.Cell(row + 1, 8).Value = "جمع کل سفارشات:";
-                    wsOrders.Cell(row + 1, 9).FormulaA1 = $"=SUM(I2:I{row - 1})";
-
-                    wsOrders.Cell(row + 2, 8).Value = "تعداد کل سفارش‌ها:";
-                    wsOrders.Cell(row + 2, 9).Value = orders.Count;
-
-                    wsOrders.Cell(row + 3, 8).Value = "میانگین مبلغ هر سفارش:";
-                    wsOrders.Cell(row + 3, 9).FormulaA1 = $"=AVERAGE(I2:I{row - 1})";
-
-                    // 🎨 استایل هدر (محدوده جدید A1:K1)
-                    var headerRange1 = wsOrders.Range("A1:K1");
-                    headerRange1.Style.Font.Bold = true;
-                    headerRange1.Style.Fill.BackgroundColor = XLColor.LightGray;
-                    headerRange1.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    headerRange1.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                    headerRange1.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-
-                    wsOrders.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    wsOrders.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    wsOrders.Columns().AdjustToContents();
-
-                    // ------------------------ Sheet 2: Order Items (بدون تغییر) ------------------------
-                    var wsItems = workbook.Worksheets.Add("جزئیات سفارش‌ها");
-                    wsItems.Cell(1, 1).Value = "شناسه سفارش";
-                    wsItems.Cell(1, 2).Value = "شناسه آیتم";
-                    wsItems.Cell(1, 3).Value = "نام غذا";
-                    wsItems.Cell(1, 4).Value = "تعداد";
-                    wsItems.Cell(1, 5).Value = "قیمت واحد (تومان)";
-                    wsItems.Cell(1, 6).Value = "قیمت با تخفیف (تومان)";
-                    wsItems.Cell(1, 7).Value = "مبلغ کل (تومان)";
-
-                    int itemRow = 2;
-                    foreach (var o in orders)
-                    {
-                        foreach (var i in o.OrderItems)
-                        {
-                            var finalUnitPrice = (i.UnitPriceWithDiscount.HasValue && i.UnitPriceWithDiscount > 0) ? i.UnitPriceWithDiscount : i.UnitPrice;
-                            var total = (decimal)(finalUnitPrice * i.Quantity);
-                            wsItems.Cell(itemRow, 1).Value = o.OrderId;
-                            wsItems.Cell(itemRow, 2).Value = i.OrderItemId;
-                            wsItems.Cell(itemRow, 3).Value = i.FoodName ?? "-";
-                            wsItems.Cell(itemRow, 4).Value = i.Quantity;
-                            wsItems.Cell(itemRow, 5).Value = i.UnitPrice;
-                            wsItems.Cell(itemRow, 6).Value = finalUnitPrice;
-                            wsItems.Cell(itemRow, 7).Value = total;
-                            itemRow++;
-                        }
-                    }
-
-                    var headerRange2 = wsItems.Range("A1:G1");
-                    headerRange2.Style.Font.Bold = true;
-                    headerRange2.Style.Fill.BackgroundColor = XLColor.LightGray;
-                    headerRange2.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    headerRange2.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                    headerRange2.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
-
-                    wsItems.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-                    wsItems.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-                    wsItems.Columns().AdjustToContents();
-
-                    // ------------------------ Save & Return ------------------------
-                    using (var stream = new MemoryStream())
-                    {
-                        workbook.SaveAs(stream);
-                        var content = stream.ToArray();
-                        string fileName = $"OrdersReport_{request.RestaurantId}_{request.FromDate}_{request.ToDate}.xlsx";
-                        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-                    }
-                }
+                string fileName = $"OrdersReport_{request.RestaurantId}_{request.FromDate}_{request.ToDate}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
             catch (Exception ex)
             {
                 return BadRequest($"خطا در تولید گزارش: {ex.Message}");
+            }
+        }
+
+        [HttpPost("ExportOrdersToPdf")]
+        public async Task<IActionResult> ExportOrdersToPdf([FromBody] OrderDateFilterRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.FromDate) || string.IsNullOrEmpty(request.ToDate))
+                    return BadRequest("بازه تاریخ معتبر نیست");
+
+                var fromDate = DateHelper.ShamsiToDateTime(request.FromDate);
+                var toDate = DateHelper.ShamsiToDateTime(request.ToDate).AddDays(1).AddSeconds(-1);
+
+                var statusIds = new List<int> { 9, 10, 11 };
+
+                var orders = await _context.Orders
+                    .Include(o => o.OrderItems)
+                    .Include(o => o.Customer)
+                    .Where(o => o.RestaurantId == request.RestaurantId)
+                    .Where(o => statusIds.Contains(o.StatusId))
+                    .Where(o => o.CreatedAt >= fromDate && o.CreatedAt <= toDate)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .ToListAsync();
+
+                if (!orders.Any())
+                    return BadRequest("هیچ سفارشی در این بازه زمانی یافت نشد.");
+
+                var snapshotMap = await _context.OrderReceiptSnapshots
+                    .AsNoTracking()
+                    .Where(s => s.RestaurantId == request.RestaurantId)
+                    .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
+                    .ToDictionaryAsync(s => s.OrderId);
+
+                var webRoot = HttpContext.RequestServices
+                    .GetService<Microsoft.AspNetCore.Hosting.IWebHostEnvironment>()?.WebRootPath;
+
+                var content = resturanyar.Services.OrdersPdfExportService.BuildPdf(
+                    orders,
+                    snapshotMap,
+                    request.FromDate,
+                    request.ToDate,
+                    webRoot);
+
+                string fileName = $"OrdersReport_{request.RestaurantId}_{request.FromDate}_{request.ToDate}.pdf";
+                return File(content, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"خطا در تولید گزارش PDF: {ex.Message}");
             }
         }
 

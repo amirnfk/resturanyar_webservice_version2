@@ -277,17 +277,17 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
-        c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2");
-        c.RoutePrefix = "swagger";
-    });
+    //app.UseSwagger();
+    //app.UseSwaggerUI(c =>
+    //{
+    //    // لود کردن هر دو فایل جیسون ورژن ۱ و ۲ در منوی کشویی سوییچ Swagger
+    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Resturanyar API v1");
+    //    c.SwaggerEndpoint("/swagger/v2/swagger.json", "Resturanyar API v2");
+    //    c.RoutePrefix = "swagger";
+    //});
 
     
-    app.UseDeveloperExceptionPage();
+    //app.UseDeveloperExceptionPage();
 }
 
 // ✅ Middleware برای هندل‌کردن تمام exceptionها (اصلاح شده برای امنیت بیشتر)

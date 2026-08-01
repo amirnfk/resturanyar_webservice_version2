@@ -8,7 +8,7 @@
         return;
     }
 
-    string money(decimal v) => string.Format("{0:N0}", v).ToPersianDigits();
+    string money(decimal v) => $"{string.Format("{0:N0}", v).ToPersianDigits()} تومان";
     string num(int v) => v.ToString().ToPersianDigits();
     string percent(double v) => v.ToString("0.##").ToPersianDigits();
     string deltaText(double? v)
@@ -102,7 +102,7 @@
 
 <div class="report-period-header mr-reveal">
     <div class="report-period-header__text">
-        <span class="report-period-header__eyebrow">خلاصه عملکرد</span>
+        <span class="report-period-header__eyebrow">خلاصه عملکرد · مبالغ به تومان</span>
         <h2 class="report-period-header__title">گزارش مدیریتی — @periodLabel</h2>
         @if (!string.IsNullOrEmpty(rangeText))
         {
@@ -188,7 +188,7 @@
     </div>
 </div>
 
-<div class="report-section-label mt-4 mb-2 mr-reveal">تفکیک مالی فاکتور</div>
+<div class="report-section-label mt-4 mb-2 mr-reveal">تفکیک مالی فاکتور (تومان)</div>
 <div class="row g-3 report-finance-row">
     <div class="col-md-3 col-6">
         <div class="kpi-card kpi-card--food mr-reveal" style="--mr-delay: 40ms">
@@ -250,7 +250,7 @@
     <div class="col-lg-8">
         <div class="chart-card mr-reveal">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="m-0">روند فروش و تعداد سفارش‌ها</h6>
+                <h6 class="m-0">روند فروش و تعداد سفارش‌ها (مبالغ به تومان)</h6>
             </div>
             <div class="chart-container">
                 <canvas id="salesChart"></canvas>
@@ -264,7 +264,7 @@
     <div class="col-lg-4">
         <div class="chart-card mr-reveal" style="--mr-delay: 60ms">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="m-0">تفکیک هزینه‌ها و مالیات</h6>
+                <h6 class="m-0">تفکیک هزینه‌ها و مالیات (تومان)</h6>
             </div>
             <div class="chart-container">
                 <canvas id="chargeBreakdownChart"></canvas>
@@ -341,7 +341,7 @@
     <div class="col-lg-6">
         <div class="chart-card mr-reveal" style="--mr-delay: 60ms">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (مبلغ غذا)</h6>
+                <h6 class="m-0">پرفروش‌ترین آیتم‌ها (مبلغ غذا — تومان)</h6>
             </div>
             <div class="chart-container chart-container--sm">
                 <canvas id="topRevChart"></canvas>

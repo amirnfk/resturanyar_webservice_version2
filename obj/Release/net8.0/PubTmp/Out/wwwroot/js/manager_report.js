@@ -155,9 +155,15 @@ function hideLoading() {
     if (overlay) overlay.style.display = 'none';
 }
 
-function showExportLoading() {
+function showExportLoading(format) {
     const overlay = document.getElementById('exportLoadingOverlay');
     if (!overlay) return;
+    const textEl = overlay.querySelector('.export-loading-text');
+    if (textEl) {
+        textEl.textContent = format === 'pdf'
+            ? 'در حال آماده‌سازی فایل PDF...'
+            : 'در حال آماده‌سازی فایل اکسل...';
+    }
     overlay.style.display = 'flex';
     overlay.setAttribute('aria-hidden', 'false');
 }
@@ -196,7 +202,17 @@ function setupEventListeners() {
 
     const exportBtn = document.getElementById('exportBtn');
     if (exportBtn) {
-        registerListener(exportBtn, 'click', handleExportClick);
+        registerListener(exportBtn, 'click', openExportFormatModal);
+    }
+
+    const exportExcel = document.getElementById('exportFormatExcel');
+    if (exportExcel) {
+        registerListener(exportExcel, 'click', (e) => handleExportClick(e, 'excel'));
+    }
+
+    const exportPdf = document.getElementById('exportFormatPdf');
+    if (exportPdf) {
+        registerListener(exportPdf, 'click', (e) => handleExportClick(e, 'pdf'));
     }
 
     // فیلترهای سریع
@@ -256,15 +272,30 @@ async function loadReports(url) {
     }
 }
 
-// wireExportLink relies on window.__exportExcelUrl injected by the Razor view
+// wireExportLink stores resolved export URLs for the format chooser
 function wireExportLink() {
     const form = document.getElementById('reportFilterForm');
     if (!form) return;
-    const params = new URLSearchParams(new FormData(form));
-    const exp = document.getElementById('exportBtn');
-    if (exp && window.__exportExcelUrl) {
-        exp.href = `${window.__exportExcelUrl}?${params.toString()}`;
+    const query = getFormQuery(form);
+    if (window.__exportExcelUrl) {
+        window.__exportExcelHref = `${window.__exportExcelUrl}?${query}`;
     }
+    if (window.__exportPdfUrl) {
+        window.__exportPdfHref = `${window.__exportPdfUrl}?${query}`;
+    }
+}
+
+function openExportFormatModal(e) {
+    if (e) e.preventDefault();
+    syncCustomDateFields();
+    wireExportLink();
+
+    const modalEl = document.getElementById('exportFormatModal');
+    if (!modalEl || typeof bootstrap === 'undefined') {
+        handleExportClick(e || { preventDefault() {} }, 'excel');
+        return;
+    }
+    bootstrap.Modal.getOrCreateInstance(modalEl).show();
 }
 
 function showExportNoOrdersModal(message) {
@@ -300,21 +331,32 @@ function getExportFileName(contentDisposition, fallbackName) {
     return match && match[1] ? match[1].trim() : fallbackName;
 }
 
-async function handleExportClick(e) {
-    e.preventDefault();
+async function handleExportClick(e, format) {
+    if (e) e.preventDefault();
 
     syncCustomDateFields();
     wireExportLink();
 
-    const exportBtn = document.getElementById('exportBtn');
-    if (!exportBtn || !exportBtn.href) return;
+    const isPdf = format === 'pdf';
+    const exportUrl = isPdf ? window.__exportPdfHref : window.__exportExcelHref;
+    if (!exportUrl) return;
 
-    exportBtn.classList.add('disabled');
-    exportBtn.setAttribute('aria-disabled', 'true');
-    showExportLoading();
+    const formatModalEl = document.getElementById('exportFormatModal');
+    if (formatModalEl && typeof bootstrap !== 'undefined') {
+        const formatModal = bootstrap.Modal.getInstance(formatModalEl);
+        if (formatModal) formatModal.hide();
+    }
+
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.classList.add('disabled');
+        exportBtn.setAttribute('aria-disabled', 'true');
+        exportBtn.disabled = true;
+    }
+    showExportLoading(format);
 
     try {
-        const res = await fetch(exportBtn.href, { credentials: 'same-origin' });
+        const res = await fetch(exportUrl, { credentials: 'same-origin' });
         if (!res.ok) {
             const message = (await res.text()).trim() || 'هیچ سفارشی در این بازه زمانی یافت نشد.';
             showExportNoOrdersModal(message);
@@ -324,7 +366,7 @@ async function handleExportClick(e) {
         const blob = await res.blob();
         const fileName = getExportFileName(
             res.headers.get('Content-Disposition'),
-            'OrdersReport.xlsx'
+            isPdf ? 'OrdersReport.pdf' : 'OrdersReport.xlsx'
         );
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -336,11 +378,18 @@ async function handleExportClick(e) {
         URL.revokeObjectURL(url);
     } catch (error) {
         console.error('Export error:', error);
-        showExportNoOrdersModal('خطا در دانلود فایل اکسل. لطفا دوباره تلاش کنید.');
+        showExportNoOrdersModal(
+            isPdf
+                ? 'خطا در دانلود فایل PDF. لطفا دوباره تلاش کنید.'
+                : 'خطا در دانلود فایل اکسل. لطفا دوباره تلاش کنید.'
+        );
     } finally {
         hideExportLoading();
-        exportBtn.classList.remove('disabled');
-        exportBtn.removeAttribute('aria-disabled');
+        if (exportBtn) {
+            exportBtn.classList.remove('disabled');
+            exportBtn.removeAttribute('aria-disabled');
+            exportBtn.disabled = false;
+        }
     }
 }
 

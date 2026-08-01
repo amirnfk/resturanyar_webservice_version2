@@ -24,7 +24,7 @@
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <p class="export-loading-text mb-0">در حال آماده‌سازی فایل اکسل...</p>
+        <p class="export-loading-text mb-0">در حال آماده‌سازی گزارش...</p>
     </div>
 </div>
 
@@ -32,7 +32,7 @@
     <div class="filter-card__head">
         <div>
             <h1 class="filter-card__title">گزارش‌های مدیریتی</h1>
-            <p class="filter-card__subtitle mb-0">فیلتر بازه و وضعیت را تنظیم کنید، سپس نتیجه را ببینید یا اکسل بگیرید.</p>
+            <p class="filter-card__subtitle mb-0">فیلتر بازه و وضعیت را تنظیم کنید، سپس نتیجه را ببینید یا گزارش را دانلود کنید. همه مبالغ به تومان است.</p>
         </div>
         <div class="filter-card__ornament" aria-hidden="true">
             <i class="bi bi-bar-chart-line-fill"></i>
@@ -89,11 +89,10 @@
         </div>
 
         <div class="col-md-2 col-sm-6">
-            <a id="exportBtn" class="btn btn-success w-100"
-               href="@Url.Action("ExportOrdersToExcel", "Home")">
-                <i class="bi bi-file-earmark-excel me-1"></i>
-                دانلود اکسل
-            </a>
+            <button type="button" id="exportBtn" class="btn btn-success w-100">
+                <i class="bi bi-download me-1"></i>
+                دانلود گزارش
+            </button>
         </div>
 
         <input type="hidden" name="period" id="periodInput" value="@(Model?.Period ?? "")" />
@@ -115,6 +114,38 @@
 <div id="reportsContainer" class="reports-container">
     @await Html.PartialAsync("_ManagerReportsPartial", Model)
 </div>
+</div>
+
+<div class="modal fade" id="exportFormatModal" tabindex="-1" aria-labelledby="exportFormatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content export-format-modal" dir="rtl">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="exportFormatModalLabel">نوع گزارش</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <p class="text-center text-muted mb-3">فرمت دانلود گزارش را انتخاب کنید. مبالغ در هر دو فایل به تومان است.</p>
+                <div class="export-format-options d-grid gap-2">
+                    <button type="button" id="exportFormatExcel" class="export-format-option export-format-option--excel">
+                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-excel-fill"></i></span>
+                        <span class="export-format-option__text">
+                            <strong>اکسل</strong>
+                            <small>جدول کامل مالی به تومان (.xlsx)</small>
+                        </span>
+                    </button>
+                    <button type="button" id="exportFormatPdf" class="export-format-option export-format-option--pdf">
+                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                        <span class="export-format-option__text">
+                            <strong>PDF</strong>
+                            <small>گزارش چاپی به تومان (.pdf)</small>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-light export-format-cancel" data-bs-dismiss="modal">انصراف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="exportNoOrdersModal" tabindex="-1" aria-labelledby="exportNoOrdersModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -132,13 +163,13 @@
         </div>
     </div>
 </div>
-</div>
 
 @section Scripts {
     <script src="~/js/chart.umd.min.js"></script>
     <script src="~/js/jalalidatepicker.min.js"></script>
     <script>
         window.__exportExcelUrl = "@Url.Action("ExportOrdersToExcel", "Home")";
+        window.__exportPdfUrl = "@Url.Action("ExportOrdersToPdf", "Home")";
     </script>
     <script src="~/js/manager_report_partial.js" asp-append-version="true"></script>
     <script src="~/js/manager_report.js" asp-append-version="true"></script>

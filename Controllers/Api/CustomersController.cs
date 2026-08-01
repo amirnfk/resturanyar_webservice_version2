@@ -194,7 +194,8 @@ namespace resturanyar.Controllers.Api
                 if (!string.IsNullOrWhiteSpace(search))
                 {
                     query = query.Where(c => c.Mobile.Contains(search) ||
-                                             (c.FullName != null && c.FullName.Contains(search)));
+                                             (c.FullName != null && c.FullName.Contains(search)) ||
+                                             (c.Description != null && c.Description.Contains(search)));
                 }
 
                 var totalCount = query.Count();
@@ -419,8 +420,9 @@ namespace resturanyar.Controllers.Api
             {
                 var searchLower = search.Trim().ToLower();
                 customersQuery = customersQuery.Where(c =>
-                    c.FullName.ToLower().Contains(searchLower) ||
-                    c.Mobile.Contains(search));
+                    (c.FullName != null && c.FullName.ToLower().Contains(searchLower)) ||
+                    c.Mobile.Contains(search) ||
+                    (c.Description != null && c.Description.ToLower().Contains(searchLower)));
             }
 
             var customers = await customersQuery.ToListAsync();

@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "e:\\My Work Space\\resturanyar-web\\resturanyar.csproj": {}
+    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {}
   },
   "projects": {
-    "e:\\My Work Space\\resturanyar-web\\resturanyar.csproj": {
+    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\My Work Space\\resturanyar-web\\resturanyar.csproj",
+        "projectUniqueName": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
         "projectName": "resturanyar",
-        "projectPath": "e:\\My Work Space\\resturanyar-web\\resturanyar.csproj",
-        "packagesPath": "C:\\Users\\anoorafkan\\AppData\\Local\\Temp\\cursor-sandbox-cache\\4dcd236969338de54219ea7800d244d8\\nuget",
-        "outputPath": "e:\\My Work Space\\resturanyar-web\\obj\\",
+        "projectPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "packagesPath": "C:\\Users\\zmi13\\.nuget\\packages\\",
+        "outputPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\vs shared folder\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\anoorafkan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\zmi13\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -120,6 +120,10 @@
               "target": "Package",
               "version": "[1.6.0, )"
             },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2025.7.1, )"
+            },
             "Serilog.AspNetCore": {
               "target": "Package",
               "version": "[9.0.0, )"
@@ -156,7 +160,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

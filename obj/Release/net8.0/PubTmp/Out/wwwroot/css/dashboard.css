@@ -591,6 +591,11 @@ html, body {
     width: 100%;
 }
 
+/* Center a lone tile on the last row (3-column grid) */
+.tiles > .tile:last-child:nth-child(3n + 1) {
+    grid-column: 2;
+}
+
 .tile {
     background: var(--card);
     border: 1px solid #f1f1f1;
@@ -718,6 +723,17 @@ html, body {
     .tiles {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .tiles > .tile:last-child:nth-child(3n + 1) {
+        grid-column: auto;
+    }
+
+    /* Center a lone tile on the last row (2-column grid) */
+    .tiles > .tile:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc((100% - 16px) / 2);
+    }
 }
 
 @media (max-width: 768px) {
@@ -728,6 +744,10 @@ html, body {
     .tiles {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+    }
+
+    .tiles > .tile:last-child:nth-child(odd) {
+        width: calc((100% - 10px) / 2);
     }
 
     .dash-hero__card {
@@ -754,6 +774,10 @@ html, body {
     .tiles {
         grid-template-columns: 1fr 1fr;
         gap: 8px;
+    }
+
+    .tiles > .tile:last-child:nth-child(odd) {
+        width: calc((100% - 8px) / 2);
     }
 
     .tile {
@@ -905,6 +929,10 @@ html, body {
         gap: 8px;
     }
 
+    .tiles > .tile:last-child:nth-child(odd) {
+        width: calc((100% - 8px) / 2);
+    }
+
     .tile {
         flex-direction: column; /* آیکون بالا، متن پایین */
         align-items: center;
@@ -1009,6 +1037,12 @@ html, body {
     .tiles {
         grid-template-columns: 1fr;
         gap: 8px;
+    }
+
+    .tiles > .tile:last-child:nth-child(odd) {
+        grid-column: auto;
+        justify-self: stretch;
+        width: auto;
     }
 
     .tile {
