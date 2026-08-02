@@ -38,6 +38,7 @@ namespace Resturanyar.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<StaffRefreshToken> StaffRefreshTokens { get; set; }
         public DbSet<AdminMessage> AdminMessages { get; set; }
         public DbSet<AdminMessageRecipient> AdminMessageRecipients { get; set; }
         public DbSet<AdminMessageRead> AdminMessageReads { get; set; }
@@ -500,6 +501,27 @@ namespace Resturanyar.Data
 
                 entity.Property(sp => sp.UpdatedAt)
                     .HasDefaultValueSql("GETDATE()");
+            });
+
+            modelBuilder.Entity<StaffRefreshToken>(entity =>
+            {
+                entity.ToTable("StaffRefreshTokens");
+                entity.HasKey(t => t.Id);
+                entity.HasIndex(t => t.Token).IsUnique();
+                entity.HasIndex(t => t.UserId);
+                entity.HasIndex(t => t.ExpiryTime);
+                entity.Property(t => t.Token).HasMaxLength(512).IsRequired();
+                entity.Property(t => t.CreatedAtUtc).HasDefaultValueSql("SYSUTCDATETIME()");
+
+                entity.HasOne(t => t.User)
+                    .WithMany()
+                    .HasForeignKey(t => t.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(t => t.Restaurant)
+                    .WithMany()
+                    .HasForeignKey(t => t.RestaurantId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
