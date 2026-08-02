@@ -21,7 +21,7 @@ BEGIN
 
         SecondaryColor        NVARCHAR(9)    NOT NULL
             CONSTRAINT DF_RestaurantSettings_SecondaryColor
-            DEFAULT N'#fff7ed',
+            DEFAULT N'#f97316',
 
         BackgroundImageUrl    NVARCHAR(500)  NULL,
         LogoUrl               NVARCHAR(500)  NULL,

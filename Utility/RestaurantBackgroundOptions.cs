@@ -12,7 +12,9 @@ namespace resturanyar.Utility
             new RestaurantBackgroundOption("kababi", "کبابی", "/images/backgrounds/kababibackground.jpg"),
             new RestaurantBackgroundOption("sonati", "سنتی", "/images/backgrounds/sonatibackground.jpg"),
             new RestaurantBackgroundOption("modern", "مدرن", "/images/backgrounds/modernbackground.jpg"),
-            new RestaurantBackgroundOption("organic", "ارگانیک", "/images/backgrounds/organicbackground.jpg")
+            new RestaurantBackgroundOption("organic", "ارگانیک", "/images/backgrounds/organicbackground.jpg"),
+            new RestaurantBackgroundOption("seafood", "دریایی", "/images/backgrounds/seafoodbackground.jpg"),
+            new RestaurantBackgroundOption("juicebar", "آبمیوه و بستنی", "/images/backgrounds/juicebarbackground.jpg")
         };
 
         public static string DefaultUrl => All[0].Url;

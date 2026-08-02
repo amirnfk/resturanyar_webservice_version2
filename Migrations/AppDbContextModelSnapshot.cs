@@ -867,7 +867,7 @@ namespace resturanyar.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)")
-                        .HasDefaultValue("#fff7ed");
+                        .HasDefaultValue("#f97316");
 
                     b.HasKey("RestaurantId");
 

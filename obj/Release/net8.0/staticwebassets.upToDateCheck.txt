@@ -27,7 +27,7 @@ wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\brand-scrollbar.css
 wwwroot\css\chooserestaurant.css
-wwwroot\css\manager_report.css
+wwwroot\css\dashboard.css
 wwwroot\css\fntawsom600.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
@@ -51,13 +51,13 @@ wwwroot\css\index-page.css
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\css\manager-order-list.css
 wwwroot\css\managerlogin.css
-wwwroot\js\manager_report_partial.js
+wwwroot\css\manager_report.css
 wwwroot\css\manager_report_partial.css
 wwwroot\css\menu-settings-preview.css
 wwwroot\css\messages.css
 wwwroot\css\ownerlogin.css
 wwwroot\css\public-menu-embedded.css
-wwwroot\css\public-menu-templates.css
+wwwroot\images\backgrounds\seafoodbackground.jpg
 wwwroot\css\public-menu.css
 wwwroot\css\receipt-charge-settings.css
 wwwroot\css\restaurant-menu.css
@@ -88,6 +88,7 @@ wwwroot\fonts\iranyekan\iranyekanwebmediumfanum.eot
 wwwroot\fonts\iranyekan\iranyekanwebmediumfanum.woff
 wwwroot\fonts\iranyekan\iranyekanwebregularfanum.eot
 wwwroot\fonts\iranyekan\iranyekanwebregularfanum.woff
+wwwroot\fonts\Vazirmatn-Regular.ttf
 wwwroot\images\addfood.jpg
 wwwroot\images\apphome.jpg
 wwwroot\images\appscreenfoodlist.jpg
@@ -107,6 +108,7 @@ wwwroot\images\backgrounds\preset-elegant.jpg
 wwwroot\images\backgrounds\preset-fresh.jpg
 wwwroot\images\backgrounds\preset-minimal.jpg
 wwwroot\images\backgrounds\preset-warm.jpg
+wwwroot\js\restaurant-background-cache.js
 wwwroot\images\backgrounds\sonatibackground.jpg
 wwwroot\images\baker_9102653.png
 wwwroot\images\bergerback.jpg
@@ -154,14 +156,14 @@ wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
 wwwroot\js\managerlogin.js
-wwwroot\js\receipt-print.js
 wwwroot\js\manager_report.js
+wwwroot\js\manager_report_partial.js
 wwwroot\js\messages.js
 wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
 wwwroot\js\receipt-charge-settings.js
-wwwroot\css\dashboard.css
-wwwroot\js\restaurant-background-cache.js
+wwwroot\js\receipt-print.js
+wwwroot\css\public-menu-templates.css
 wwwroot\js\restaurant-general-settings.js
 wwwroot\js\restaurant-settings.js
 wwwroot\js\sidebar-nav.js
@@ -246,4 +248,4 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\fonts\Vazirmatn-Regular.ttf
+wwwroot\images\backgrounds\juicebarbackground.jpg

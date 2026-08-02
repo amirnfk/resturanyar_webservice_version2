@@ -15,7 +15,7 @@ namespace resturanyar.Models
 
         [Required]
         [MaxLength(9)]
-        public string SecondaryColor { get; set; } = "#fff7ed";
+        public string SecondaryColor { get; set; } = "#f97316";
 
         [MaxLength(500)]
         public string? BackgroundImageUrl { get; set; }

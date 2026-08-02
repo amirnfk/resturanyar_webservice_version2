@@ -10,7 +10,7 @@ namespace resturanyar.Utility
     public static class RestaurantSettingsHelper
     {
         public const string DefaultPrimaryColor = "#f97316";
-        public const string DefaultSecondaryColor = "#fff7ed";
+        public const string DefaultSecondaryColor = "#f97316";
         public const string DefaultLogoPath = "/images/logo.png";
         public const int MaxMenuHeroBadgeLength = 80;
         public const int MaxMenuTaglineLength = 160;

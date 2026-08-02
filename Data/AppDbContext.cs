@@ -329,7 +329,7 @@ namespace Resturanyar.Data
 
                 entity.Property(s => s.SecondaryColor)
                     .HasMaxLength(9)
-                    .HasDefaultValue("#fff7ed");
+                    .HasDefaultValue("#f97316");
 
                 entity.Property(s => s.BackgroundImageUrl)
                     .HasMaxLength(500);

@@ -456,6 +456,92 @@
 .menu-phone-preview .menu-template--sonati { --pm-primary: #1e3a5f; --pm-primary-2: #3d6b9a; --pm-bg: #f0ebe3; --pm-surface: #fff; --pm-surface-2: #f8f4ee; --pm-text: #1e293b; --pm-muted: #64748b; }
 .menu-phone-preview .menu-template--modern { --pm-primary: #6366f1; --pm-primary-2: #a855f7; --pm-bg: #f8fafc; --pm-surface: #fff; --pm-surface-2: #f1f5f9; --pm-text: #0f172a; --pm-muted: #64748b; }
 .menu-phone-preview .menu-template--organic { --pm-primary: #2d6a4f; --pm-primary-2: #52b788; --pm-bg: #f1f8f4; --pm-surface: #fff; --pm-surface-2: #f0faf4; --pm-text: #1b4332; --pm-muted: #52796f; }
+.menu-phone-preview .menu-template--seafood { --pm-primary: #0369a1; --pm-primary-2: #14b8a6; --pm-bg: #eef8fb; --pm-surface: #fff; --pm-surface-2: #e7f4f7; --pm-text: #123247; --pm-muted: #5b7585; --pm-border: rgba(3,105,161,0.13); }
+.menu-phone-preview .menu-template--juicebar { --pm-primary: #db2777; --pm-primary-2: #f472b6; --pm-bg: #fff9fb; --pm-surface: #fff; --pm-surface-2: #fff1f6; --pm-text: #2d1b24; --pm-muted: #8a6b78; --pm-border: rgba(219,39,119,0.12); }
+
+.menu-phone-preview .menu-template--seafood .pm-topbar {
+    background: linear-gradient(115deg, rgba(2, 40, 65, 0.94), rgba(3, 105, 161, 0.78));
+    border-bottom: 2px solid rgba(20, 184, 166, 0.62);
+}
+
+.menu-phone-preview .menu-template--seafood .pm-brand__logo {
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.24);
+}
+
+.menu-phone-preview .menu-template--seafood .pm-brand__name {
+    color: #fff;
+}
+
+.menu-phone-preview .menu-template--seafood .pm-brand__tagline {
+    color: #cffafe;
+}
+
+.menu-phone-preview .menu-template--seafood .pm-grid {
+    grid-template-columns: 1fr;
+}
+
+.menu-phone-preview .menu-template--seafood .pm-card {
+    display: flex;
+    min-height: 92px;
+}
+
+.menu-phone-preview .menu-template--seafood .pm-card__media {
+    flex: 0 0 92px;
+    aspect-ratio: auto;
+}
+
+.menu-phone-preview .menu-template--seafood .pm-card__body {
+    flex: 1;
+    align-self: center;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-topbar {
+    background: linear-gradient(180deg, #fff, #fff1f6);
+    border-bottom: 1px solid rgba(219, 39, 119, 0.12);
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-brand__logo {
+    border-radius: 14px;
+    background: #ffe0ef;
+    box-shadow: 0 0 0 2px rgba(219, 39, 119, 0.14);
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-brand__name {
+    color: #1f1220;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-brand__tagline {
+    color: #a8557a;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-card {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-card__media {
+    border-radius: 16px;
+    background: #d8f1ff;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-card:nth-child(2) .pm-card__media {
+    background: #e4f7d4;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-card__title {
+    color: #db2777;
+    text-align: center;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-card__foot {
+    justify-content: center;
+}
+
+.menu-phone-preview .menu-template--juicebar .pm-add {
+    border-radius: 50%;
+}
 
 /* Refined page surface */
 .menu-settings-page {

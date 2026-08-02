@@ -10,7 +10,9 @@
         '/images/backgrounds/kababibackground.jpg',
         '/images/backgrounds/sonatibackground.jpg',
         '/images/backgrounds/modernbackground.jpg',
-        '/images/backgrounds/organicbackground.jpg'
+        '/images/backgrounds/organicbackground.jpg',
+        '/images/backgrounds/seafoodbackground.jpg',
+        '/images/backgrounds/juicebarbackground.jpg'
     ];
 
     function normalizeBackgroundUrl(value) {

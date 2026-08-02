@@ -1265,6 +1265,501 @@
     }
 }
 
+/* =========================================================
+   SEAFOOD — Fresh coastal dining
+   ========================================================= */
+.menu-template--seafood {
+    --menu-primary: #0369a1;
+    --menu-primary-2: #14b8a6;
+    --pm-primary: #0369a1;
+    --pm-primary-2: #14b8a6;
+    --pm-bg: #eef8fb;
+    --pm-surface: #ffffff;
+    --pm-surface-2: #e7f4f7;
+    --pm-text: #123247;
+    --pm-muted: #5b7585;
+    --pm-border: rgba(3, 105, 161, 0.13);
+    background:
+        radial-gradient(circle at 100% 5%, rgba(20, 184, 166, 0.13), transparent 24rem),
+        radial-gradient(circle at 0 90%, rgba(3, 105, 161, 0.1), transparent 28rem),
+        linear-gradient(180deg, #f7fcfd, var(--pm-bg));
+}
+
+.menu-template--seafood .pm-topbar {
+    min-height: 160px;
+    padding-block: 28px;
+    background:
+        linear-gradient(110deg, rgba(2, 40, 65, 0.92), rgba(3, 105, 161, 0.72)),
+        var(--pm-type-bg) center 46% / cover;
+    border-bottom: 3px solid rgba(20, 184, 166, 0.6);
+    box-shadow: 0 10px 30px rgba(3, 69, 105, 0.18);
+}
+
+.menu-template--seafood .pm-topbar::after {
+    content: "";
+    position: absolute;
+    right: -5%;
+    bottom: -13px;
+    left: -5%;
+    z-index: 1;
+    height: 24px;
+    background:
+        radial-gradient(24px 13px at 50% 0, transparent 95%, #eef8fb 100%) 0 0 / 48px 24px repeat-x;
+    pointer-events: none;
+}
+
+.menu-template--seafood .pm-topbar__inner {
+    min-height: 96px;
+}
+
+.menu-template--seafood .pm-topbar__glow {
+    opacity: 0.12;
+    filter: saturate(1.15);
+}
+
+.menu-template--seafood .pm-brand__logo {
+    width: 64px;
+    height: 64px;
+    border: 2px solid rgba(255, 255, 255, 0.82);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 0 5px rgba(20, 184, 166, 0.22),
+        0 12px 26px rgba(0, 0, 0, 0.2);
+}
+
+.menu-template--seafood .pm-brand__badge {
+    color: #083344;
+    background: linear-gradient(135deg, #a7f3d0, #67e8f9);
+    box-shadow: 0 5px 15px rgba(20, 184, 166, 0.24);
+}
+
+.menu-template--seafood .pm-brand__name {
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.28);
+}
+
+.menu-template--seafood .pm-brand__tagline {
+    color: #cffafe;
+}
+
+.menu-template--seafood .pm-meta-pill {
+    color: #ecfeff;
+    background: rgba(8, 47, 73, 0.5);
+    border-color: rgba(165, 243, 252, 0.25);
+    backdrop-filter: blur(8px);
+}
+
+.menu-template--seafood .pm-sticky {
+    background: rgba(238, 248, 251, 0.93);
+    border-bottom-color: var(--pm-border);
+    box-shadow: 0 5px 18px rgba(3, 69, 105, 0.06);
+    backdrop-filter: blur(18px);
+}
+
+.menu-template--seafood .pm-search,
+.menu-template--seafood .pm-filter,
+.menu-template--seafood .pm-cat {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--pm-border);
+}
+
+.menu-template--seafood .pm-search:focus-within {
+    border-color: rgba(20, 184, 166, 0.55);
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+}
+
+.menu-template--seafood .pm-cat.is-active,
+.menu-template--seafood .pm-cat.active-category {
+    color: #fff;
+    background: linear-gradient(135deg, #0369a1, #14b8a6);
+    border-color: transparent;
+    box-shadow: 0 6px 15px rgba(3, 105, 161, 0.2);
+}
+
+.menu-template--seafood .pm-section__head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(3, 105, 161, 0.12);
+}
+
+.menu-template--seafood .pm-section__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #075985;
+}
+
+.menu-template--seafood .pm-section__title::before {
+    content: "≈";
+    color: #14b8a6;
+    font-size: 1.35em;
+    letter-spacing: -0.18em;
+}
+
+.menu-template--seafood .pm-card {
+    border-color: rgba(3, 105, 161, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 10px 28px rgba(3, 69, 105, 0.08);
+}
+
+.menu-template--seafood .pm-card:hover {
+    border-color: rgba(20, 184, 166, 0.34);
+    box-shadow: 0 16px 34px rgba(3, 69, 105, 0.13);
+}
+
+.menu-template--seafood .pm-card__media::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    height: 34%;
+    background: linear-gradient(transparent, rgba(3, 69, 105, 0.18));
+    pointer-events: none;
+}
+
+.menu-template--seafood .pm-card__title {
+    color: #075985;
+}
+
+.menu-template--seafood .pm-price__now {
+    color: #0f8f8b;
+}
+
+.menu-template--seafood .pm-add {
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0369a1, #14b8a6);
+    box-shadow: 0 5px 13px rgba(3, 105, 161, 0.22);
+}
+
+.menu-template--seafood .pm-cartbar,
+.menu-template--seafood .pm-btn--primary,
+.menu-template--seafood .pm-btn--primary#qvAddBtn {
+    background: linear-gradient(135deg, #075985, #0f9f99);
+}
+
+.menu-template--seafood .pm-sheet__content,
+.menu-template--seafood .pm-notebook {
+    color: var(--pm-text);
+    background: #f7fcfd !important;
+}
+
+.menu-template--seafood .pm-empty__visual {
+    color: var(--pm-primary);
+}
+
+@media (max-width: 575.98px) {
+    .menu-template--seafood .pm-topbar {
+        min-height: 150px;
+        padding-block: 24px 28px;
+    }
+
+    .menu-template--seafood .pm-grid {
+        grid-template-columns: 1fr;
+        gap: 11px;
+    }
+
+    .menu-template--seafood .pm-card {
+        flex-direction: row;
+        min-height: 118px;
+    }
+
+    .menu-template--seafood .pm-card__media {
+        flex: 0 0 118px;
+        width: 118px;
+        height: auto;
+        aspect-ratio: auto;
+    }
+
+    .menu-template--seafood .pm-card__body {
+        justify-content: center;
+    }
+}
+
+/* =========================================================
+   JUICE BAR — Pastel ice cream & juice shop
+   Inspired by soft pastel product blocks + magenta accents
+   ========================================================= */
+.menu-template--juicebar {
+    --menu-primary: #db2777;
+    --menu-primary-2: #f472b6;
+    --pm-primary: #db2777;
+    --pm-primary-2: #f472b6;
+    --pm-bg: #fff9fb;
+    --pm-surface: #ffffff;
+    --pm-surface-2: #fff1f6;
+    --pm-text: #2d1b24;
+    --pm-muted: #8a6b78;
+    --pm-border: rgba(219, 39, 119, 0.12);
+    --pm-pastel-1: #d8f1ff;
+    --pm-pastel-2: #e4f7d4;
+    --pm-pastel-3: #ffe0ef;
+    --pm-pastel-4: #fff3c4;
+    background:
+        radial-gradient(circle at 92% 4%, rgba(244, 114, 182, 0.14), transparent 22rem),
+        radial-gradient(circle at 4% 88%, rgba(216, 241, 255, 0.7), transparent 24rem),
+        radial-gradient(circle at 70% 70%, rgba(228, 247, 212, 0.45), transparent 20rem),
+        linear-gradient(180deg, #ffffff, var(--pm-bg));
+}
+
+.menu-template--juicebar .pm-topbar {
+    padding: 22px 16px 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 249, 251, 0.96)),
+        var(--pm-type-bg) center 40% / cover;
+    border-bottom: 1px solid var(--pm-border);
+    box-shadow: 0 8px 24px rgba(219, 39, 119, 0.06);
+}
+
+.menu-template--juicebar .pm-topbar__glow {
+    opacity: 0.08;
+    filter: saturate(1.2);
+}
+
+.menu-template--juicebar .pm-brand__logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    border: 3px solid #fff;
+    background: var(--pm-pastel-3);
+    box-shadow:
+        0 0 0 3px rgba(219, 39, 119, 0.12),
+        0 10px 22px rgba(219, 39, 119, 0.14);
+}
+
+.menu-template--juicebar .pm-brand__badge {
+    color: #fff;
+    background: linear-gradient(135deg, #db2777, #f472b6);
+    box-shadow: 0 5px 14px rgba(219, 39, 119, 0.22);
+}
+
+.menu-template--juicebar .pm-brand__name {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #1f1220;
+}
+
+.menu-template--juicebar .pm-brand__name span,
+.menu-template--juicebar .pm-brand__name em {
+    color: var(--pm-primary);
+}
+
+.menu-template--juicebar .pm-brand__tagline {
+    color: #a8557a;
+    font-weight: 600;
+}
+
+.menu-template--juicebar .pm-meta-pill {
+    color: var(--pm-primary);
+    background: rgba(255, 241, 246, 0.95);
+    border-color: rgba(219, 39, 119, 0.16);
+}
+
+.menu-template--juicebar .pm-sticky {
+    background: rgba(255, 249, 251, 0.94);
+    border-bottom-color: var(--pm-border);
+    backdrop-filter: blur(16px);
+}
+
+.menu-template--juicebar .pm-search,
+.menu-template--juicebar .pm-filter {
+    background: #fff;
+    border-color: rgba(219, 39, 119, 0.12);
+    border-radius: 999px;
+}
+
+.menu-template--juicebar .pm-search:focus-within {
+    border-color: rgba(219, 39, 119, 0.4);
+    box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.14);
+}
+
+.menu-template--juicebar .pm-filter.is-on {
+    color: #9d174d;
+    background: rgba(251, 207, 232, 0.55);
+    border-color: rgba(219, 39, 119, 0.28);
+}
+
+.menu-template--juicebar .pm-cat {
+    color: #7a5263;
+    background: #fff;
+    border: 1px solid rgba(219, 39, 119, 0.12);
+    border-radius: 999px;
+}
+
+.menu-template--juicebar .pm-cat.is-active,
+.menu-template--juicebar .pm-cat.active-category {
+    color: #fff;
+    background: linear-gradient(135deg, #db2777, #f472b6);
+    border-color: transparent;
+    box-shadow: 0 6px 16px rgba(219, 39, 119, 0.22);
+}
+
+.menu-template--juicebar .pm-section__head {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.menu-template--juicebar .pm-section__title {
+    color: #1f1220;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.menu-template--juicebar .pm-section__title::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #db2777, #f9a8d4);
+}
+
+.menu-template--juicebar .pm-section__count {
+    color: #b14d78;
+    background: rgba(251, 207, 232, 0.45);
+    border-radius: 999px;
+    padding: 2px 10px;
+}
+
+.menu-template--juicebar .pm-grid {
+    gap: 14px;
+}
+
+.menu-template--juicebar .pm-card {
+    overflow: visible;
+    border: 0;
+    border-radius: 24px;
+    background: transparent;
+    box-shadow: none;
+}
+
+.menu-template--juicebar .pm-card:hover {
+    transform: translateY(-3px);
+    box-shadow: none;
+}
+
+.menu-template--juicebar .pm-card__media {
+    margin: 0 10px;
+    padding: 10px;
+    aspect-ratio: 1;
+    border-radius: 22px;
+    background: var(--pm-pastel-1);
+    box-shadow: 0 12px 28px rgba(45, 27, 36, 0.08);
+}
+
+.menu-template--juicebar .pm-card:nth-child(4n + 2) .pm-card__media {
+    background: var(--pm-pastel-2);
+}
+
+.menu-template--juicebar .pm-card:nth-child(4n + 3) .pm-card__media {
+    background: var(--pm-pastel-3);
+}
+
+.menu-template--juicebar .pm-card:nth-child(4n + 4) .pm-card__media {
+    background: var(--pm-pastel-4);
+}
+
+.menu-template--juicebar .pm-card__media img {
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.menu-template--juicebar .pm-card__shade {
+    display: none;
+}
+
+.menu-template--juicebar .pm-badge--sale {
+    top: 10px;
+    inset-inline-start: 10px;
+    background: linear-gradient(135deg, #db2777, #f472b6);
+    color: #fff;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(219, 39, 119, 0.25);
+}
+
+.menu-template--juicebar .pm-card__body {
+    padding: 12px 8px 4px;
+    text-align: center;
+}
+
+.menu-template--juicebar .pm-card__title {
+    color: #db2777;
+    font-weight: 900;
+    font-size: 0.95rem;
+}
+
+.menu-template--juicebar .pm-card__desc {
+    color: var(--pm-muted);
+    -webkit-line-clamp: 2;
+}
+
+.menu-template--juicebar .pm-card__foot {
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.menu-template--juicebar .pm-price__now {
+    color: #9d174d;
+    font-weight: 900;
+}
+
+.menu-template--juicebar .pm-add {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #db2777, #f472b6);
+    box-shadow: 0 8px 18px rgba(219, 39, 119, 0.28);
+}
+
+.menu-template--juicebar .pm-cartbar,
+.menu-template--juicebar .pm-btn--primary,
+.menu-template--juicebar .pm-btn--primary#qvAddBtn {
+    background: linear-gradient(135deg, #db2777, #ec4899);
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(219, 39, 119, 0.25);
+}
+
+.menu-template--juicebar .pm-sheet__content,
+.menu-template--juicebar .pm-notebook {
+    color: var(--pm-text);
+    background: #fff9fb !important;
+}
+
+.menu-template--juicebar .pm-empty__visual {
+    color: var(--pm-primary);
+}
+
+@media (max-width: 575.98px) {
+    .menu-template--juicebar .pm-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 10px;
+    }
+
+    .menu-template--juicebar .pm-card__media {
+        margin-inline: 4px;
+    }
+
+    .menu-template--juicebar .pm-card__body {
+        padding-inline: 4px;
+    }
+
+    .menu-template--juicebar .pm-card__title {
+        font-size: 0.82rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .menu-template--juicebar .pm-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+}
+
 /* Dark template sheet/notebook polish */
 .menu-template--fastfood .pm-sheet__content,
 .menu-template--fastfood .pm-notebook,
@@ -1284,7 +1779,8 @@
 .menu-template--fastfood .pm-notebook__note textarea,
 .menu-template--kababi .pm-notebook__note textarea,
 .menu-template--modern .pm-notebook__note textarea,
-.menu-template--organic .pm-notebook__note textarea {
+.menu-template--organic .pm-notebook__note textarea,
+.menu-template--juicebar .pm-notebook__note textarea {
     background: var(--pm-surface-2);
     color: var(--pm-text);
     border-color: var(--pm-border);

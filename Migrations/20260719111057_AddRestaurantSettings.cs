@@ -16,7 +16,7 @@ namespace resturanyar.Migrations
                 {
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
                     PrimaryColor = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false, defaultValue: "#f97316"),
-                    SecondaryColor = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false, defaultValue: "#fff7ed"),
+                    SecondaryColor = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false, defaultValue: "#f97316"),
                     BackgroundImageUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     LogoUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },

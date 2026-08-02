@@ -3,7 +3,7 @@ namespace resturanyar.Models
     public class RestaurantSettingDto
     {
         public string PrimaryColor { get; set; } = "#f97316";
-        public string SecondaryColor { get; set; } = "#fff7ed";
+        public string SecondaryColor { get; set; } = "#f97316";
         public string? BackgroundImageUrl { get; set; }
         public string? LogoUrl { get; set; }
         public string MenuHeroBadge { get; set; } = string.Empty;
