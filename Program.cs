@@ -240,7 +240,10 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(); // جایگزین ILogger پیش‌فرض
 
-
+if (builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseUrls("http://0.0.0.0:7171");
+}
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

@@ -1,4 +1,5 @@
 ﻿@model resturanyar.Models.OrderListViewModel
+@using resturanyar.Helpers
     @{
     string baseImageUrl = "https://resturanyar.ir/";
 
@@ -27,8 +28,7 @@
 
                 <div class="d-flex align-items-center gap-3">
                     <div class="order-date"><i class="fa-regular fa-calendar ms-1"></i> @order.CreatedAt.ToString("yyyy/MM/dd HH:mm")</div>
-                    <div class="status-badge
-                        @(order.StatusId == 6 ? "bg-status-6" : order.StatusId == 7 ? "bg-status-7" : order.StatusId == 8 ? "bg-status-8" : order.StatusId == 11 ? "bg-status-11" : "bg-secondary")">
+                    <div class="@OrderStatusColors.ChipClass(order.StatusId)">
                         @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
                     </div>
                     <div>

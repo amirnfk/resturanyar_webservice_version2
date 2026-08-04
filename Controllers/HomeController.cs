@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using resturanyar.Helpers;
 using resturanyar.Models;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.Receipt;
@@ -944,21 +945,7 @@ namespace resturanyar.Controllers
             {12,"در انتظار اصلاح سفارش"}
         };
 
-            var statusColors = new Dictionary<int, string>
-        {
-            {1, "#6c757d"},
-            {2, "#0dcaf0"},
-            {3, "#198754"},
-            {4, "#ffc107"},
-            {5, "#0d6efd"},
-            {6, "#212529"},
-            {7, "#dc3545"},
-            {8, "#20c997"},
-            {9, "#dc3545"},
-            {10,"#dc3545"},
-            {11,"#6c757d"},
-            {12,"#ffc107"}
-        };
+            var statusColors = OrderStatusColors.HeaderHexDictionary();
 
             var activeStatuses = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 12 };
 
@@ -1803,21 +1790,7 @@ namespace resturanyar.Controllers
         {12, "در انتظار اصلاح سفارش"}
     };
 
-            var statusColors = new Dictionary<int, string>
-    {
-        {1, "secondary"},
-        {2, "info"},
-        {3, "success"},
-        {4, "warning"},
-        {5, "primary"},
-        {6, "dark"},
-        {7, "danger"},
-        {8, "success"},
-        {9, "danger"},
-        {10, "danger"},
-        {11, "secondary"},
-        {12, "warning"}
-    };
+            var statusColors = OrderStatusColors.HeaderHexDictionary();
 
             var activeStatuses = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
@@ -2059,14 +2032,7 @@ namespace resturanyar.Controllers
 
     };
 
-            var statusColors = new Dictionary<int, string>
-    {
-        {6, "dark"},
-        {7, "danger"},
-        {8, "success"},
-        {9, "danger"},
-        {10, "danger"}
-    };
+            var statusColors = OrderStatusColors.HeaderHexDictionary();
 
             var cashierStatuses = new[] { 6, 7, 8, 11 };
 

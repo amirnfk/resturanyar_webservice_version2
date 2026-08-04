@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json
+@using resturanyar.Helpers
 @model resturanyar.Models.ManagerReportViewModel
 
 @{
@@ -44,7 +45,6 @@
         rangeText = Model.FromDate.Value.ToPersianDate();
 
     var statusMap = Model.StatusMap ?? new Dictionary<int, string>();
-    var statusColors = Model.StatusColors ?? new Dictionary<int, string>();
     var chargeBreakdown = Model.ChargeBreakdown ?? new List<ChargeBreakdownItemDto>();
     var salesByHour = Model.SalesByHour ?? new List<HourlySalesPointDto>();
 
@@ -67,23 +67,7 @@
 
     var statusBg = statusMap
         .Where(kv => Model.StatusCounts?.ContainsKey(kv.Key) == true)
-        .Select(kv => statusColors.ContainsKey(kv.Key) ? statusColors[kv.Key] :
-            kv.Key switch
-            {
-                1 => "#6c757d",
-                2 => "#0dcaf0",
-                3 => "#198754",
-                4 => "#ffc107",
-                5 => "#0d6efd",
-                6 => "#212529",
-                7 => "#dc3545",
-                8 => "#20c997",
-                9 => "#dc3545",
-                10 => "#dc3545",
-                11 => "#6c757d",
-                12 => "#ffc107",
-                _ => "#6c757d"
-            })
+        .Select(kv => OrderStatusColors.HeaderHex(kv.Key))
         .ToArray();
 
     var chargeLabels = chargeBreakdown.Select(x => x.Title).ToArray();

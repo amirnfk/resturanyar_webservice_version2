@@ -433,6 +433,8 @@ namespace resturanyar.Services.Receipt
                 receipt = DeserializeReceipt(snapshot.ReceiptPayloadJson)
                     ?? BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!);
 
+                EnrichOriginalUnitPricesFromOrder(receipt, load.Order!);
+
                 if (recordPrintHistory)
                     await AddPrintHistory(orderId, snapshot.Id, userId, channel, receipt);
             }
@@ -783,14 +785,55 @@ namespace resturanyar.Services.Receipt
 
         private static ReceiptItemDto MapItem(OrderItem item)
         {
+            var original = item.UnitPrice;
             var unit = FoodItemPricing.GetEffectiveSellingPrice(item.UnitPrice, item.UnitPriceWithDiscount);
             return new ReceiptItemDto
             {
                 Name = item.FoodName ?? "-",
                 Quantity = item.Quantity,
+                OriginalUnitPrice = original,
                 UnitPrice = unit,
                 LineTotal = unit * item.Quantity
             };
+        }
+
+        /// <summary>
+        /// Older issued snapshots only store effective unit price. Backfill list price from live order items
+        /// so HTML/Android print can show original + discounted unit price.
+        /// </summary>
+        private static void EnrichOriginalUnitPricesFromOrder(ReceiptDto receipt, Order order)
+        {
+            if (receipt?.Items == null || order?.OrderItems == null || order.OrderItems.Count == 0)
+                return;
+
+            var orderItems = order.OrderItems.ToList();
+            for (var i = 0; i < receipt.Items.Count; i++)
+            {
+                var receiptItem = receipt.Items[i];
+                if (receiptItem.OriginalUnitPrice > 0 && receiptItem.OriginalUnitPrice > receiptItem.UnitPrice)
+                    continue;
+
+                OrderItem? match = null;
+                if (i < orderItems.Count
+                    && string.Equals(receiptItem.Name?.Trim(), orderItems[i].FoodName?.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && receiptItem.Quantity == orderItems[i].Quantity)
+                {
+                    match = orderItems[i];
+                }
+                else
+                {
+                    match = orderItems.FirstOrDefault(oi =>
+                        string.Equals(receiptItem.Name?.Trim(), oi.FoodName?.Trim(), StringComparison.OrdinalIgnoreCase)
+                        && oi.Quantity == receiptItem.Quantity);
+                }
+
+                match ??= i < orderItems.Count ? orderItems[i] : null;
+                if (match == null)
+                    continue;
+
+                if (match.UnitPrice > 0)
+                    receiptItem.OriginalUnitPrice = match.UnitPrice;
+            }
         }
 
         private static ChargeDefinitionDto MapDefinition(RestaurantChargeDefinition d) => new()

@@ -287,14 +287,21 @@ namespace resturanyar.Services.Receipt
                 }
                 """;
 
-            var itemRows = receipt.Items.Select((item, index) => $"""
+            var itemRows = receipt.Items.Select((item, index) =>
+            {
+                var hasDiscount = item.OriginalUnitPrice > 0 && item.OriginalUnitPrice > item.UnitPrice;
+                var unitPriceHtml = hasDiscount
+                    ? $"""<span style="display:block;text-decoration:line-through;color:#94a3b8;font-size:11px;font-weight:600;">{FormatMoney(item.OriginalUnitPrice)}</span><span>{FormatMoney(item.UnitPrice)}</span>"""
+                    : FormatMoney(item.UnitPrice);
+                return $"""
                 <tr>
                     <td class="name">{Escape(item.Name)}</td>
                     <td>{ToFa(item.Quantity)}</td>
-                    <td>{FormatMoney(item.UnitPrice)}</td>
+                    <td>{unitPriceHtml}</td>
                     <td>{FormatMoney(item.LineTotal)}</td>
                 </tr>
-                """).ToList();
+                """;
+            }).ToList();
 
             var chargeRows = receipt.ChargeLines
                 .Where(c => c.CalculatedAmount != 0 && c.Category != ChargeCategory.Discount)

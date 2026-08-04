@@ -33,6 +33,9 @@ namespace resturanyar.Models.Receipt
     {
         public string Name { get; set; } = string.Empty;
         public int Quantity { get; set; }
+        /// <summary>List / original unit price before item discount.</summary>
+        public decimal OriginalUnitPrice { get; set; }
+        /// <summary>Effective unit price charged (after item discount).</summary>
         public decimal UnitPrice { get; set; }
         public decimal LineTotal { get; set; }
     }

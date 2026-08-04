@@ -475,12 +475,13 @@
 }
 
 .orders-page .status-badge {
-    border-radius: 20px;
-    padding: 4px 12px;
+    border-radius: 12px;
+    padding: 5px 12px;
     font-size: .8rem;
     font-weight: 600;
     white-space: nowrap;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     flex-shrink: 0;
 }
 

@@ -1,5 +1,6 @@
 @model resturanyar.Models.OrderListViewModel
 @using resturanyar.Utility
+@using resturanyar.Helpers
 @{
     string BaseImageUrl = "https://resturanyar.ir/";
     var defaultImgUrl = Url.Content("~/images/food_default.jpg");
@@ -17,7 +18,7 @@
                 <div class="order-header">
                      سفارش #@order.OrderId.ToString().ToPersianDigits()
                     | میز: @order.TableNumber?.ToPersianDigits()
-                    <span class="status-badge bg-@(Model.StatusColors.GetValueOrDefault(order.StatusId, "secondary")) text-white ms-2">
+                    <span class="@OrderStatusColors.ChipClass(order.StatusId) ms-2">
                         @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
                     </span>
 
@@ -99,7 +100,9 @@
                     decimal finalUnit = item.FinalUnitPrice;
                     decimal itemSum = item.TotalPrice;
 
-                    <div class="food-row" data-price="@item.FinalUnitPrice.ToString("N0")">
+                    <div class="food-row"
+                         data-price="@item.FinalUnitPrice.ToString("N0")"
+                         data-original-price="@item.UnitPrice.ToString("N0")">
 
                         <img src="@imgUrl" alt="@item.FoodName"
                              class="food-img"
@@ -369,17 +372,10 @@ else
 
                 if (badge) {
                     const selectedText = sel.options[sel.selectedIndex].text.trim();
-
-                    // remove old bg-* color classes
-                    badge.className = badge.className.replace(/\bbg-\S+/g, '').trim();
-
-                    const colorMap = window.managerOrderColorMap || {};
-                    const newColor = colorMap[newStatus] ?? 'secondary';
-                    badge.classList.add(`bg-${newColor}`, 'text-white');
-
+                    badge.className = `status-badge ost-badge ost-${newStatus} ms-2`;
                     badge.textContent = selectedText;
                     badge.style.whiteSpace = 'nowrap';
-                    badge.style.display    = 'inline-block';
+                    badge.style.display    = 'inline-flex';
                 }
 
                 // update last-changed timestamp
@@ -426,13 +422,18 @@ else
         const description = orderCard.querySelector('.order-description-text')
             ?.innerText.trim() || '';
 
-        const items = [...orderCard.querySelectorAll('.food-row')].map(row => ({
-            name:     row.querySelector('.food-name')?.innerText.trim() || '',
-            quantity: row.querySelector('.food-qty')?.innerText.trim()  || '',
-            price:    row.dataset.price ||
-                      row.querySelector('.food-price .text-danger, .food-price .text-success')
-                         ?.innerText.trim() || ''
-        }));
+        const items = [...orderCard.querySelectorAll('.food-row')].map(row => {
+            const price = row.dataset.price ||
+                row.querySelector('.food-price .text-danger, .food-price .text-success')
+                    ?.innerText.trim() || '';
+            const originalPrice = row.dataset.originalPrice || '';
+            return {
+                name: row.querySelector('.food-name')?.innerText.trim() || '',
+                quantity: row.querySelector('.food-qty')?.innerText.trim() || '',
+                price,
+                originalPrice
+            };
+        });
 
         const totalText = orderCard.querySelector('.total-box')?.innerText.trim() || '';
         const now       = new Date().toLocaleString('fa-IR');

@@ -1,0 +1,121 @@
+/* Cross-platform order-status tokens — mirror Android values/colors.xml ost_* (light).
+   Android colors.xml is the source of truth; keep hex values identical. */
+
+:root {
+  --ost-1-header: #6366F1;
+  --ost-1-chip-bg: #E0E7FF;
+  --ost-1-chip-text: #4338CA;
+
+  --ost-2-header: #2563EB;
+  --ost-2-chip-bg: #DBEAFE;
+  --ost-2-chip-text: #1D4ED8;
+
+  --ost-3-header: #D97706;
+  --ost-3-chip-bg: #FEF3C7;
+  --ost-3-chip-text: #B45309;
+
+  --ost-4-header: #EA580C;
+  --ost-4-chip-bg: #FFEDD5;
+  --ost-4-chip-text: #C2410C;
+
+  --ost-5-header: #0891B2;
+  --ost-5-chip-bg: #CFFAFE;
+  --ost-5-chip-text: #0E7490;
+
+  --ost-6-header: #059669;
+  --ost-6-chip-bg: #D1FAE5;
+  --ost-6-chip-text: #047857;
+
+  --ost-7-header: #0D9488;
+  --ost-7-chip-bg: #CCFBF1;
+  --ost-7-chip-text: #0F766E;
+
+  --ost-8-header: #16A34A;
+  --ost-8-chip-bg: #DCFCE7;
+  --ost-8-chip-text: #15803D;
+
+  --ost-9-header: #DC2626;
+  --ost-9-chip-bg: #FEE2E2;
+  --ost-9-chip-text: #B91C1C;
+
+  --ost-10-header: #DC2626;
+  --ost-10-chip-bg: #FEE2E2;
+  --ost-10-chip-text: #B91C1C;
+
+  --ost-11-header: #64748B;
+  --ost-11-chip-bg: #E8EDF2;
+  --ost-11-chip-text: #475569;
+
+  --ost-12-header: #7C3AED;
+  --ost-12-chip-bg: #EDE9FE;
+  --ost-12-chip-text: #6D28D9;
+
+  --ost-99-header: #6D28D9;
+  --ost-99-chip-bg: #EDE9FE;
+  --ost-99-chip-text: #5B21B6;
+}
+
+.ost-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  border: none;
+}
+
+.ost-header {
+  color: #fff;
+}
+
+.ost-1 { --ost-h: var(--ost-1-header); --ost-bg: var(--ost-1-chip-bg); --ost-fg: var(--ost-1-chip-text); }
+.ost-2 { --ost-h: var(--ost-2-header); --ost-bg: var(--ost-2-chip-bg); --ost-fg: var(--ost-2-chip-text); }
+.ost-3 { --ost-h: var(--ost-3-header); --ost-bg: var(--ost-3-chip-bg); --ost-fg: var(--ost-3-chip-text); }
+.ost-4 { --ost-h: var(--ost-4-header); --ost-bg: var(--ost-4-chip-bg); --ost-fg: var(--ost-4-chip-text); }
+.ost-5 { --ost-h: var(--ost-5-header); --ost-bg: var(--ost-5-chip-bg); --ost-fg: var(--ost-5-chip-text); }
+.ost-6 { --ost-h: var(--ost-6-header); --ost-bg: var(--ost-6-chip-bg); --ost-fg: var(--ost-6-chip-text); }
+.ost-7 { --ost-h: var(--ost-7-header); --ost-bg: var(--ost-7-chip-bg); --ost-fg: var(--ost-7-chip-text); }
+.ost-8 { --ost-h: var(--ost-8-header); --ost-bg: var(--ost-8-chip-bg); --ost-fg: var(--ost-8-chip-text); }
+.ost-9 { --ost-h: var(--ost-9-header); --ost-bg: var(--ost-9-chip-bg); --ost-fg: var(--ost-9-chip-text); }
+.ost-10 { --ost-h: var(--ost-10-header); --ost-bg: var(--ost-10-chip-bg); --ost-fg: var(--ost-10-chip-text); }
+.ost-11 { --ost-h: var(--ost-11-header); --ost-bg: var(--ost-11-chip-bg); --ost-fg: var(--ost-11-chip-text); }
+.ost-12 { --ost-h: var(--ost-12-header); --ost-bg: var(--ost-12-chip-bg); --ost-fg: var(--ost-12-chip-text); }
+.ost-99 { --ost-h: var(--ost-99-header); --ost-bg: var(--ost-99-chip-bg); --ost-fg: var(--ost-99-chip-text); }
+
+.ost-badge.ost-1,
+.ost-badge.ost-2,
+.ost-badge.ost-3,
+.ost-badge.ost-4,
+.ost-badge.ost-5,
+.ost-badge.ost-6,
+.ost-badge.ost-7,
+.ost-badge.ost-8,
+.ost-badge.ost-9,
+.ost-badge.ost-10,
+.ost-badge.ost-11,
+.ost-badge.ost-12,
+.ost-badge.ost-99 {
+  background-color: var(--ost-bg);
+  color: var(--ost-fg);
+}
+
+.ost-header.ost-1,
+.ost-header.ost-2,
+.ost-header.ost-3,
+.ost-header.ost-4,
+.ost-header.ost-5,
+.ost-header.ost-6,
+.ost-header.ost-7,
+.ost-header.ost-8,
+.ost-header.ost-9,
+.ost-header.ost-10,
+.ost-header.ost-11,
+.ost-header.ost-12,
+.ost-header.ost-99 {
+  background-color: var(--ost-h);
+}

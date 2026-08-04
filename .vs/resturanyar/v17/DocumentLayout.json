@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\resturanyar.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:resturanyar.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -47,10 +63,6 @@
       "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\views\\receipt\\chargesettings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:views\\receipt\\chargesettings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -69,14 +81,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\controllers\\api\\v2\\userapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:controllers\\api\\v2\\userapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1B80E3DD-DC6A-4C68-9E31-92E355E1EDA7}|resturanyar.csproj|d:\\my workspace\\resturanyar-web\\resturanyar_webservice_version2\\wwwroot\\css\\public-menu-templates.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
@@ -559,7 +563,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -583,59 +587,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "RestaurantSetting.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSetting.cs",
-              "RelativeDocumentMoniker": "Models\\RestaurantSetting.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSetting.cs",
-              "RelativeToolTip": "Models\\RestaurantSetting.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAswBEAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-02T07:38:47.531Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AppDbContextModelSnapshot.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\AppDbContextModelSnapshot.cs",
-              "RelativeDocumentMoniker": "Migrations\\AppDbContextModelSnapshot.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\AppDbContextModelSnapshot.cs",
-              "RelativeToolTip": "Migrations\\AppDbContextModelSnapshot.cs",
-              "ViewState": "AgIAAFkDAAAAAAAAAADwv2UDAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-02T07:38:39.741Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "20260719173125_AddRestaurantMenuTexts.Designer.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
-              "RelativeDocumentMoniker": "Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
-              "RelativeToolTip": "Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
-              "ViewState": "AgIAAFwDAAAAAAAAAADwv2cDAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-02T07:38:31.159Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "20260719111057_AddRestaurantSettings.Designer.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
-              "RelativeDocumentMoniker": "Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
-              "RelativeToolTip": "Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
-              "ViewState": "AgIAAFEDAAAAAAAAAADwv2ADAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-02T07:38:14.276Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
               "Title": "RestaurantSettingDto.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSettingDto.cs",
               "RelativeDocumentMoniker": "Models\\RestaurantSettingDto.cs",
@@ -648,6 +600,30 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAADsAAAAAAAAAAAAAAEIAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-11T15:27:44.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "resturanyar",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+              "RelativeDocumentMoniker": "resturanyar.csproj",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+              "RelativeToolTip": "resturanyar.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-08-04T08:25:09.995Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Dashboard.cshtml",
@@ -655,12 +631,87 @@
               "RelativeToolTip": "Views\\Home\\Dashboard.cshtml",
               "ViewState": "AgIAABcAAAAAAAAAAAAlwBIAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-05T10:06:35.303Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-05T10:06:35.303Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAADwAAAAAAAAAAADwv2IAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-08T11:45:26.81Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAEABAAAAAAAAAAAAwEkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-08T08:29:54.563Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "20260719111057_AddRestaurantSettings.Designer.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
+              "RelativeToolTip": "Migrations\\20260719111057_AddRestaurantSettings.Designer.cs",
+              "ViewState": "AgIAAFEDAAAAAAAAAADwv2ADAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T07:38:14.276Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "20260719173125_AddRestaurantMenuTexts.Designer.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
+              "RelativeToolTip": "Migrations\\20260719173125_AddRestaurantMenuTexts.Designer.cs",
+              "ViewState": "AgIAAFwDAAAAAAAAAADwv2cDAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T07:38:31.159Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AppDbContextModelSnapshot.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\AppDbContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "Migrations\\AppDbContextModelSnapshot.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\AppDbContextModelSnapshot.cs",
+              "RelativeToolTip": "Migrations\\AppDbContextModelSnapshot.cs",
+              "ViewState": "AgIAAFkDAAAAAAAAAADwv2UDAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T07:38:39.741Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RestaurantSetting.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSetting.cs",
+              "RelativeDocumentMoniker": "Models\\RestaurantSetting.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSetting.cs",
+              "RelativeToolTip": "Models\\RestaurantSetting.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAswBEAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T07:38:47.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "AddRestaurantSettingsTable.sql",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Scripts\\AddRestaurantSettingsTable.sql",
               "RelativeDocumentMoniker": "Scripts\\AddRestaurantSettingsTable.sql",
@@ -671,7 +722,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "RestaurantSettingsHelper.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\RestaurantSettingsHelper.cs",
               "RelativeDocumentMoniker": "Utility\\RestaurantSettingsHelper.cs",
@@ -683,7 +734,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "20260719111057_AddRestaurantSettings.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Migrations\\20260719111057_AddRestaurantSettings.cs",
               "RelativeDocumentMoniker": "Migrations\\20260719111057_AddRestaurantSettings.cs",
@@ -695,19 +746,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAPgAAAAAAAAAAAAQwP4AAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-08T08:29:54.563Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "DashboardStatViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\DashboardStat\\DashboardStatViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\DashboardStat\\DashboardStatViewModel.cs",
@@ -719,7 +758,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "RestaurantViewHelper.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\RestaurantViewHelper.cs",
               "RelativeDocumentMoniker": "Utility\\RestaurantViewHelper.cs",
@@ -731,7 +770,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "ChargeSettings.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Receipt\\ChargeSettings.cshtml",
               "RelativeDocumentMoniker": "Views\\Receipt\\ChargeSettings.cshtml",
@@ -743,7 +782,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
@@ -755,7 +794,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "RestaurantLogoUploadHelper.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\RestaurantLogoUploadHelper.cs",
               "RelativeDocumentMoniker": "Utility\\RestaurantLogoUploadHelper.cs",
@@ -767,7 +806,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "ManagerOrderList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\ManagerOrderList.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\ManagerOrderList.cshtml",
@@ -779,7 +818,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "SeoDefaults.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\SeoDefaults.cs",
               "RelativeDocumentMoniker": "Utility\\SeoDefaults.cs",
@@ -791,7 +830,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
@@ -803,7 +842,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "MenuSettings.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\MenuSettings.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\MenuSettings.cshtml",
@@ -815,7 +854,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "SlugHelper.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\SlugHelper.cs",
               "RelativeDocumentMoniker": "Utility\\SlugHelper.cs",
@@ -827,31 +866,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "appsettings.Development.json",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
-              "RelativeDocumentMoniker": "appsettings.Development.json",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
-              "RelativeToolTip": "appsettings.Development.json",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-06-11T15:27:44.275Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAACsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-06-08T11:45:26.81Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "UserApiController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\V2\\UserApiController.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\V2\\UserApiController.cs",
@@ -863,7 +878,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "public-menu-templates.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\public-menu-templates.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\public-menu-templates.css",
@@ -875,7 +890,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "RestaurantBackgroundOptions.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\RestaurantBackgroundOptions.cs",
               "RelativeDocumentMoniker": "Utility\\RestaurantBackgroundOptions.cs",
@@ -887,7 +902,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
@@ -899,7 +914,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "add-order.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\add-order.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\add-order.css",
@@ -911,7 +926,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "ArticleSchemaHelper.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\ArticleSchemaHelper.cs",
               "RelativeDocumentMoniker": "Utility\\ArticleSchemaHelper.cs",
@@ -923,7 +938,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "CustomersList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\CustomersList.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\CustomersList.cshtml",
@@ -935,7 +950,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "AddOrder.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\AddOrder.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\AddOrder.cshtml",
@@ -947,7 +962,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "IranianMobileAttribute .cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\IranianMobileAttribute .cs",
               "RelativeDocumentMoniker": "Utility\\IranianMobileAttribute .cs",
@@ -959,7 +974,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "WarmupService.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\WarmupService.cs",
               "RelativeDocumentMoniker": "Utility\\WarmupService.cs",
@@ -971,7 +986,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "home.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\home.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\home.css",
@@ -983,7 +998,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "_ArticleStyles.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Articles\\_ArticleStyles.cshtml",
               "RelativeDocumentMoniker": "Views\\Articles\\_ArticleStyles.cshtml",
@@ -995,7 +1010,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "PublicController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\PublicController.cs",
               "RelativeDocumentMoniker": "Controllers\\PublicController.cs",
@@ -1007,7 +1022,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "Detail.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Articles\\Detail.cshtml",
               "RelativeDocumentMoniker": "Views\\Articles\\Detail.cshtml",
@@ -1019,7 +1034,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Articles\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Articles\\Index.cshtml",
@@ -1031,7 +1046,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "dashboard.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\dashboard.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\dashboard.css",
@@ -1043,7 +1058,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "TokenRequestModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\AuthorizationModels\\TokenRequestModel.cs",
               "RelativeDocumentMoniker": "Models\\AuthorizationModels\\TokenRequestModel.cs",
@@ -1055,7 +1070,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "StaticTokenMiddleware.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\StaticTokenMiddleware.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\StaticTokenMiddleware.cs",
@@ -1067,7 +1082,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "CategoryList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\CategoryList.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\CategoryList.cshtml",
@@ -1079,7 +1094,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "FoodList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\FoodList.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\FoodList.cshtml",
@@ -1091,7 +1106,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "HomeController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
@@ -1103,7 +1118,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "UserApiController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\UserApiController.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\UserApiController.cs",
@@ -1115,7 +1130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "MenuController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\MenuController.cs",
               "RelativeDocumentMoniker": "Controllers\\MenuController.cs",
@@ -1127,7 +1142,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "apiinterceptor.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\authentication\\apiinterceptor.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\authentication\\apiinterceptor.js",
@@ -1139,7 +1154,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "ChooseRestaurant.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\ChooseRestaurant.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\ChooseRestaurant.cshtml",
@@ -1151,7 +1166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "ManagerLogin.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\ManagerLogin.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\ManagerLogin.cshtml",
@@ -1163,7 +1178,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "managerlogin.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\managerlogin.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\managerlogin.js",
@@ -1175,7 +1190,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "chooserestaurant.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\chooserestaurant.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\chooserestaurant.js",
@@ -1187,7 +1202,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "TokenService.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\TokenService.cs",
               "RelativeDocumentMoniker": "Utility\\TokenService.cs",
@@ -1199,7 +1214,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "RefreshTokenRequestModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\AuthorizationModels\\RefreshTokenRequestModel.cs",
               "RelativeDocumentMoniker": "Models\\AuthorizationModels\\RefreshTokenRequestModel.cs",
@@ -1211,7 +1226,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "RefreshToken.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\AuthorizationModels\\RefreshToken.cs",
               "RelativeDocumentMoniker": "Models\\AuthorizationModels\\RefreshToken.cs",
@@ -1223,7 +1238,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "managerlogin.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\managerlogin.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\managerlogin.css",
@@ -1235,7 +1250,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "_SimpleLayout.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_SimpleLayout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_SimpleLayout.cshtml",
@@ -1247,7 +1262,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "_LayoutAdmin.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_LayoutAdmin.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_LayoutAdmin.cshtml",
@@ -1259,7 +1274,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 55,
               "Title": "chooserestaurant.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\chooserestaurant.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\chooserestaurant.css",
@@ -1271,7 +1286,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 56,
               "Title": "SitemapController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\SitemapController.cs",
               "RelativeDocumentMoniker": "Controllers\\SitemapController.cs",
@@ -1283,7 +1298,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "_Layout_dashboard.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_Layout_dashboard.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout_dashboard.cshtml",
@@ -1295,7 +1310,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "_Layout_public.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_Layout_public.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout_public.cshtml",
@@ -1307,7 +1322,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
@@ -1319,7 +1334,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "_IndexLayout.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_IndexLayout.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_IndexLayout.cshtml",
@@ -1331,7 +1346,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "site.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\site.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\site.js",
@@ -1343,7 +1358,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "upgrade.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\upgrade.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\upgrade.js",
@@ -1355,7 +1370,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "Upgrade.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Upgrade.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Upgrade.cshtml",
@@ -1367,7 +1382,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 69,
               "Title": "CafeShopManagement.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\CafeShopManagement.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\CafeShopManagement.cshtml",
@@ -1379,7 +1394,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "PayamakSettings.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Settings\\PayamakSettings.cs",
               "RelativeDocumentMoniker": "Models\\Settings\\PayamakSettings.cs",
@@ -1391,7 +1406,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "CustomersController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\CustomersController.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\CustomersController.cs",
@@ -1403,7 +1418,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "ResturanyarPriceList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\ResturanyarPriceList.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\ResturanyarPriceList.cshtml",
@@ -1415,7 +1430,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 70,
               "Title": "RestaurantManagement.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\RestaurantManagement.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\RestaurantManagement.cshtml",
@@ -1427,7 +1442,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 72,
               "Title": "home.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\home.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\home.js",
@@ -1439,7 +1454,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 71,
               "Title": "PublicSupport.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\PublicSupport.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\PublicSupport.cshtml",
@@ -1451,7 +1466,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 73,
               "Title": "OrderHub.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\OrderHub.cs",
               "RelativeDocumentMoniker": "Utility\\OrderHub.cs",
@@ -1463,7 +1478,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 74,
               "Title": "OtpPhoneNumberExtractorMiddleware.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Utility\\OtpPhoneNumberExtractorMiddleware.cs",
               "RelativeDocumentMoniker": "Utility\\OtpPhoneNumberExtractorMiddleware.cs",
@@ -1475,7 +1490,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 76,
               "Title": "SubscriptionController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\SubscriptionController.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\SubscriptionController.cs",
@@ -1487,7 +1502,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 75,
               "Title": "ProxyController.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Controllers\\Api\\ProxyController.cs",
               "RelativeDocumentMoniker": "Controllers\\Api\\ProxyController.cs",
@@ -1499,7 +1514,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 77,
               "Title": "RestaurantSubscription.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\RestaurantSubscription.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\RestaurantSubscription.cshtml",
@@ -1511,7 +1526,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 78,
               "Title": "ownerlogin.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\ownerlogin.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\ownerlogin.css",
@@ -1523,7 +1538,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 79,
               "Title": "Order.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Order.cs",
               "RelativeDocumentMoniker": "Models\\Order.cs",
@@ -1535,7 +1550,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 80,
               "Title": "OrderUpdate.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\OrderUpdate.cs",
               "RelativeDocumentMoniker": "Models\\OrderUpdate.cs",
@@ -1547,7 +1562,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 81,
               "Title": "_ManagerOrdersPartial.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\_ManagerOrdersPartial.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\_ManagerOrdersPartial.cshtml",
@@ -1559,7 +1574,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 83,
               "Title": "AdminLogin.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Admin\\AdminLogin.cshtml",
               "RelativeDocumentMoniker": "Views\\Admin\\AdminLogin.cshtml",
@@ -1571,7 +1586,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 82,
               "Title": "share.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\share.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\share.css",
@@ -1583,7 +1598,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 84,
               "Title": "_ValidationScriptsPartial.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
@@ -1595,7 +1610,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 85,
               "Title": "AboutUs.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\AboutUs.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\AboutUs.cshtml",
@@ -1607,7 +1622,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 87,
               "Title": "CustomerClub.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\CustomerClub.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\CustomerClub.cshtml",
@@ -1619,7 +1634,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 88,
               "Title": "DigitalMenu.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Public\\DigitalMenu.cshtml",
               "RelativeDocumentMoniker": "Views\\Public\\DigitalMenu.cshtml",
@@ -1631,7 +1646,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 86,
               "Title": "Support.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Support.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Support.cshtml",
@@ -1643,7 +1658,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 90,
               "Title": "site.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
@@ -1655,7 +1670,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 89,
               "Title": "TableList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\TableList.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\TableList.cshtml",
@@ -1667,7 +1682,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 91,
               "Title": "EditCoupon.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Admin\\EditCoupon.cshtml",
               "RelativeDocumentMoniker": "Views\\Admin\\EditCoupon.cshtml",
@@ -1679,7 +1694,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 93,
               "Title": "CreateCoupon.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Admin\\CreateCoupon.cshtml",
               "RelativeDocumentMoniker": "Views\\Admin\\CreateCoupon.cshtml",
@@ -1691,7 +1706,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 92,
               "Title": "CouponList.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Admin\\CouponList.cshtml",
               "RelativeDocumentMoniker": "Views\\Admin\\CouponList.cshtml",
@@ -1703,7 +1718,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 93,
+              "DocumentIndex": 94,
               "Title": "CouponViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\CopounViewModel\\CouponViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CopounViewModel\\CouponViewModel.cs",
@@ -1715,7 +1730,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 94,
+              "DocumentIndex": 95,
               "Title": "AdminLoginViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\Admin\\AdminLoginViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\Admin\\AdminLoginViewModel.cs",
@@ -1727,7 +1742,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 95,
+              "DocumentIndex": 96,
               "Title": "CouponListViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\CopounViewModel\\CouponListViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CopounViewModel\\CouponListViewModel.cs",
@@ -1739,7 +1754,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 96,
+              "DocumentIndex": 97,
               "Title": "AdminPanel.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Admin\\AdminPanel.cshtml",
               "RelativeDocumentMoniker": "Views\\Admin\\AdminPanel.cshtml",
@@ -1751,7 +1766,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 97,
+              "DocumentIndex": 98,
               "Title": "AdminDashboardViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\Admin\\AdminDashboardViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\Admin\\AdminDashboardViewModel.cs",
@@ -1763,7 +1778,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 98,
+              "DocumentIndex": 99,
               "Title": "dashboard.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\dashboard.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\dashboard.js",
@@ -1775,7 +1790,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 99,
+              "DocumentIndex": 100,
               "Title": "PaymentResult.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\PaymentResult.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\PaymentResult.cshtml",
@@ -1787,7 +1802,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 100,
+              "DocumentIndex": 101,
               "Title": "HourlySalesDto.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\DashboardStat\\HourlySalesDto.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\DashboardStat\\HourlySalesDto.cs",
@@ -1799,7 +1814,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 101,
+              "DocumentIndex": 102,
               "Title": "PublicMenu.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Menu\\PublicMenu.cshtml",
               "RelativeDocumentMoniker": "Views\\Menu\\PublicMenu.cshtml",
@@ -1811,7 +1826,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 102,
+              "DocumentIndex": 103,
               "Title": "OrderItem.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\OrderItem.cs",
               "RelativeDocumentMoniker": "Models\\OrderItem.cs",
@@ -1823,7 +1838,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 103,
+              "DocumentIndex": 104,
               "Title": "_CashierOrdersPartial.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\_CashierOrdersPartial.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\_CashierOrdersPartial.cshtml",
@@ -1835,7 +1850,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 104,
+              "DocumentIndex": 105,
               "Title": "simpleDashboardStatsViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\simpleDashboardStatsViewModel.cs",
               "RelativeDocumentMoniker": "Models\\simpleDashboardStatsViewModel.cs",
@@ -1847,7 +1862,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 105,
+              "DocumentIndex": 106,
               "Title": "CustomerDashboardStatsViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\CustomerDashboardStatsViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CustomerDashboardStatsViewModel.cs",
@@ -1859,7 +1874,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 106,
+              "DocumentIndex": 107,
               "Title": "Subscription.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Subscription.cs",
               "RelativeDocumentMoniker": "Models\\Subscription.cs",
@@ -1871,7 +1886,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 107,
+              "DocumentIndex": 108,
               "Title": "CouponUsage.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Copoun\\CouponUsage.cs",
               "RelativeDocumentMoniker": "Models\\Copoun\\CouponUsage.cs",
@@ -1883,7 +1898,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 108,
+              "DocumentIndex": 109,
               "Title": "Coupon.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Copoun\\Coupon.cs",
               "RelativeDocumentMoniker": "Models\\Copoun\\Coupon.cs",
@@ -1895,7 +1910,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 109,
+              "DocumentIndex": 110,
               "Title": "ValidateCouponRequest.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Copoun\\ValidateCouponRequest.cs",
               "RelativeDocumentMoniker": "Models\\Copoun\\ValidateCouponRequest.cs",
@@ -1907,7 +1922,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 110,
+              "DocumentIndex": 111,
               "Title": "CreateZarinpalPaymentRequest.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Copoun\\CreateZarinpalPaymentRequest.cs",
               "RelativeDocumentMoniker": "Models\\Copoun\\CreateZarinpalPaymentRequest.cs",
@@ -1919,7 +1934,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 111,
+              "DocumentIndex": 112,
               "Title": "ConsumeCouponRequest.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Copoun\\ConsumeCouponRequest.cs",
               "RelativeDocumentMoniker": "Models\\Copoun\\ConsumeCouponRequest.cs",
@@ -1931,7 +1946,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 112,
+              "DocumentIndex": 113,
               "Title": "CreateZarinpalPaymentRequest.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\CreateZarinpalPaymentRequest.cs",
               "RelativeDocumentMoniker": "Models\\CreateZarinpalPaymentRequest.cs",
@@ -1943,7 +1958,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 113,
+              "DocumentIndex": 114,
               "Title": "ManagerReports.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\ManagerReports.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\ManagerReports.cshtml",
@@ -1955,7 +1970,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 114,
+              "DocumentIndex": 115,
               "Title": "_ManagerReportsPartial.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\_ManagerReportsPartial.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\_ManagerReportsPartial.cshtml",
@@ -1967,7 +1982,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 116,
+              "DocumentIndex": 117,
               "Title": "CategoryViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\CategoryViewModel.cs",
               "RelativeDocumentMoniker": "Models\\CategoryViewModel.cs",
@@ -1979,7 +1994,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 115,
+              "DocumentIndex": 116,
               "Title": "FoodItemViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\FoodItemViewModel.cs",
               "RelativeDocumentMoniker": "Models\\FoodItemViewModel.cs",
@@ -1991,7 +2006,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 117,
+              "DocumentIndex": 118,
               "Title": "Category.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\Category.cs",
               "RelativeDocumentMoniker": "Models\\Category.cs",
@@ -2003,7 +2018,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 118,
+              "DocumentIndex": 119,
               "Title": "CustomerStatsViewModel.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\ViewModels\\CustomerStatsViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ViewModels\\CustomerStatsViewModel.cs",
@@ -2015,7 +2030,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 119,
+              "DocumentIndex": 120,
               "Title": "manager_report_partial.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\manager_report_partial.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\manager_report_partial.js",
@@ -2027,7 +2042,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 120,
+              "DocumentIndex": 121,
               "Title": "manager_report_partial.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\manager_report_partial.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\manager_report_partial.css",
@@ -2039,7 +2054,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 121,
+              "DocumentIndex": 122,
               "Title": "manager_report.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\manager_report.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\manager_report.css",
@@ -2051,7 +2066,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 122,
+              "DocumentIndex": 123,
               "Title": "manager_report.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\manager_report.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\manager_report.js",
@@ -2063,7 +2078,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 123,
+              "DocumentIndex": 124,
               "Title": "simple_share.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\simple_share.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\simple_share.css",
@@ -2075,7 +2090,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 124,
+              "DocumentIndex": 125,
               "Title": "simple_share.css",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\css\\simple_share.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\simple_share.css",
@@ -2087,7 +2102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 125,
+              "DocumentIndex": 126,
               "Title": "RegisterWithOtpRequest.cs",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RegisterWithOtpRequest.cs",
               "RelativeDocumentMoniker": "Models\\RegisterWithOtpRequest.cs",
@@ -2099,7 +2114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 126,
+              "DocumentIndex": 127,
               "Title": "StaffLogin.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\StaffLogin.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\StaffLogin.cshtml",
@@ -2111,7 +2126,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 127,
+              "DocumentIndex": 128,
               "Title": "SelectRestaurantDenied.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\SelectRestaurantDenied.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\SelectRestaurantDenied.cshtml",
@@ -2123,7 +2138,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 128,
+              "DocumentIndex": 129,
               "Title": "Register.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Register.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Register.cshtml",
@@ -2135,7 +2150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 129,
+              "DocumentIndex": 130,
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Privacy.cshtml",
@@ -2147,7 +2162,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 130,
+              "DocumentIndex": 131,
               "Title": "Error.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\Error.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Error.cshtml",
@@ -2159,7 +2174,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 131,
+              "DocumentIndex": 132,
               "Title": "CashierDashboard.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\CashierDashboard.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\CashierDashboard.cshtml",
@@ -2171,7 +2186,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 132,
+              "DocumentIndex": 133,
               "Title": "AddUser.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\Home\\AddUser.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\AddUser.cshtml",
@@ -2183,7 +2198,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 133,
+              "DocumentIndex": 134,
               "Title": "AppDownload.cshtml",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Views\\AppDownload\\AppDownload.cshtml",
               "RelativeDocumentMoniker": "Views\\AppDownload\\AppDownload.cshtml",
@@ -2195,7 +2210,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 134,
+              "DocumentIndex": 135,
               "Title": "invoice-print.js",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\wwwroot\\js\\invoice-print.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\invoice-print.js",
@@ -2207,7 +2222,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 135,
+              "DocumentIndex": 136,
               "Title": "Microsoft.NET.Sdk.StaticWebAssets.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.312\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
               "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.312\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
@@ -2217,7 +2232,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 137,
+              "DocumentIndex": 138,
               "Title": "Microsoft.Common.CurrentVersion.targets",
               "DocumentMoniker": "D:\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\visual studio 2022\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
@@ -2228,7 +2243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 136,
+              "DocumentIndex": 137,
               "Title": "Microsoft.NET.Sdk.StaticWebAssets.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",
               "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.targets",

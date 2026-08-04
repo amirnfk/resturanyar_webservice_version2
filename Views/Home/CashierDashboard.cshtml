@@ -21,6 +21,7 @@
     <title>@ViewData["Title"]</title>
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/order-status-tokens.css" asp-append-version="true" />
     <style>
         body {
             direction: rtl;
@@ -55,34 +56,8 @@
 
         .status-badge {
             font-size: 0.9rem;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #fff;
             min-width: 110px;
-            justify-content: center;
         }
-
-        .bg-status-6 {
-            background-color: #0d6efd;
-        }
-        /* تحویل داده شده */
-        .bg-status-7 {
-            background-color: #ffc107;
-            color: #212529 !important;
-        }
-        /* در انتظار پرداخت */
-        .bg-status-8 {
-            background-color: #198754;
-        }
-        /* پرداخت شده */
-        .bg-status-11 {
-            background-color: #6c757d;
-        }
-        /* بسته شده */
 
         .order-date {
             font-size: 0.9rem;
