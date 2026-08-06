@@ -291,6 +291,15 @@ namespace resturanyar.Controllers.Api.V2
             }
             catch { /* best-effort */ }
 
+            try
+            {
+                var inventoryConsumption = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                await inventoryConsumption.HandleStatusChangeAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId);
+            }
+            catch { /* best-effort */ }
+
             await _hubContext.Clients.Group(order.RestaurantId.ToString())
                 .SendAsync("ReceiveOrderUpdate", new
                 {

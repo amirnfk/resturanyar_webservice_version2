@@ -95,6 +95,10 @@
                     <i class="fas fa-utensils"></i>
                     <span>لیست غذاها</span>
                 </a>
+                <a href="@Url.Action("Inventory", "Home")" class="nav-item @(currentAction == "Inventory" || currentAction == "InventoryLowStock" ? "active" : "")">
+                    <i class="fas fa-box"></i>
+                    <span>مدیریت انبار</span>
+                </a>
 
                 <a href="@Url.Action("CustomersList", "Home")" class="nav-item @(currentAction == "CustomersList" ? "active" : "")">
                     <i class="fas fa-user-group"></i>

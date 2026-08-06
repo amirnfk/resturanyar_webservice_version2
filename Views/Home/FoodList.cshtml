@@ -6,6 +6,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/food-list.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
 }
 
 <div class="container food-page mt-4">
@@ -96,7 +97,7 @@
                             <div class="price-area">
                                 @if (hasDiscount)
                                 {
-                                    <span class="price-old">@item.Price.ToString("N0")</span>
+                                    <span class="price-old">@item.Price.ToString("N0") تومان</span>
                                     <span class="price-new">@item.DiscountPrice.ToString("N0") تومان</span>
                                 }
                                 else
@@ -106,6 +107,10 @@
                             </div>
                         </div>
                         <div class="food-footer">
+                            <button class="btn btn-outline-info btn-sm" type="button"
+                                    data-food-id="@item.FoodItemId"
+                                    data-food-name="@item.Name"
+                                    onclick="openRecipeModal(this)">دستور تهیه</button>
                             <button class="btn btn-warning btn-sm" onclick="openEditModal(@item.FoodItemId)">ویرایش</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteFood(@item.FoodItemId)">حذف</button>
                         </div>
@@ -148,11 +153,17 @@
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <label class="form-label">قیمت <span class="text-danger">*</span></label>
-                                    <input type="text" id="price" name="price" class="form-control price-input" inputmode="numeric" dir="ltr" required autocomplete="off" placeholder="مثلاً ۱۵۰٬۰۰۰" />
+                                    <div class="input-group">
+                                        <input type="text" id="price" name="price" class="form-control price-input" inputmode="numeric" dir="ltr" required autocomplete="off" placeholder="مثلاً ۱۵۰٬۰۰۰" />
+                                        <span class="input-group-text food-currency">تومان</span>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">قیمت با تخفیف</label>
-                                    <input type="text" id="discountPrice" name="discountPrice" class="form-control price-input" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="مثلاً ۱۲۰٬۰۰۰" />
+                                    <div class="input-group">
+                                        <input type="text" id="discountPrice" name="discountPrice" class="form-control price-input" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="مثلاً ۱۲۰٬۰۰۰" />
+                                        <span class="input-group-text food-currency">تومان</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-check mt-3">
@@ -181,9 +192,42 @@
     </div>
 </div>
 
+<!-- Recipe modal -->
+<div class="modal fade inventory-modal" id="recipeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">دستور تهیه: <span id="recipeFoodName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="recipeFoodId" />
+                <div id="recipeError" class="alert alert-danger d-none"></div>
+                <div id="recipeDisabledHint" class="alert alert-warning d-none">
+                    برای تعریف دستور تهیه، ابتدا ماژول <a href="@Url.Action("Inventory", "Home")">انبار</a> را فعال کنید و مواد اولیه را بسازید.
+                </div>
+                <div id="recipeEditor">
+                    <p class="text-muted small">مقدار هر ماده برای <strong>یک واحد</strong> از این غذا — واحد ورود می‌تواند با واحد پایه انبار فرق کند (مثلاً گرم به‌جای کیلو).</p>
+                    <div id="recipeLines" class="d-flex flex-column gap-2 mb-3"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddRecipeLine">+ افزودن ماده</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="btnDeleteRecipe">حذف دستور</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" id="btnSaveRecipe">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
     var API_BASE = "/api/v2/UserApi";
+    var INV_API = "/api/v2/inventory";
+    var inventoryItemsCache = null;
+    var inventoryUnitsCache = null;
+    var foodsWithRecipe = new Set();
     var compressedImageFile = null;
     var removeImageFlag = false;
     var foodImagePlaceholder = "@placeholder";
@@ -590,6 +634,260 @@
     }
 
     // -----------------------------------------------------------------
+    // RECIPE (inventory BOM)
+    function showRecipeError(msg) {
+        const el = document.getElementById('recipeError');
+        el.textContent = msg;
+        el.classList.remove('d-none');
+    }
+
+    function clearRecipeError() {
+        const el = document.getElementById('recipeError');
+        el.classList.add('d-none');
+        el.textContent = '';
+    }
+
+    async function invApi(url, options) {
+        const res = await window.fetchWithAuth(url, Object.assign({
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+        }, options || {}));
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) {
+            throw new Error(json.message || 'خطا در ارتباط با انبار');
+        }
+        return json;
+    }
+
+    async function loadInventoryItemsForRecipe() {
+        if (inventoryItemsCache) return inventoryItemsCache;
+        const res = await invApi(`${INV_API}/items?restaurantId=${restaurantId}`);
+        inventoryItemsCache = res.data || [];
+        return inventoryItemsCache;
+    }
+
+    async function loadInventoryUnits() {
+        if (inventoryUnitsCache) return inventoryUnitsCache;
+        const res = await invApi(`${INV_API}/units`);
+        inventoryUnitsCache = res.data || [];
+        return inventoryUnitsCache;
+    }
+
+    function recipeItemOptions(selectedId) {
+        const items = inventoryItemsCache || [];
+        return items.map(i =>
+            `<option value="${i.inventoryItemId}" ${String(i.inventoryItemId) === String(selectedId) ? 'selected' : ''}>${i.name} (${i.unit})</option>`
+        ).join('');
+    }
+
+    function unitLabel(u) {
+        return `${u.nameFa || u.code} (${u.code})`;
+    }
+
+    function compatibleUnitsForItem(item) {
+        const all = inventoryUnitsCache || [];
+        if (!item) return all;
+        return all.filter(u => {
+            if (u.unitId === item.baseUnitId) return true;
+            if (u.dimension !== (all.find(x => x.unitId === item.baseUnitId)?.dimension)) return false;
+            const base = all.find(x => x.unitId === item.baseUnitId);
+            if (!base) return false;
+            if (!u.allowsCrossUnitConversion || !base.allowsCrossUnitConversion) return false;
+            return true;
+        });
+    }
+
+    function recipeUnitOptions(item, selectedUnitId) {
+        const list = compatibleUnitsForItem(item);
+        const sel = selectedUnitId || item?.baseUnitId;
+        return list.map(u =>
+            `<option value="${u.unitId}" ${String(u.unitId) === String(sel) ? 'selected' : ''}>${unitLabel(u)}</option>`
+        ).join('');
+    }
+
+    function updateRecipeLineHint(row) {
+        const hint = row.querySelector('.recipe-hint');
+        if (!hint) return;
+        const itemId = Number(row.querySelector('.recipe-item').value);
+        const unitId = Number(row.querySelector('.recipe-unit').value);
+        const qty = Number(row.querySelector('.recipe-qty').value);
+        const item = (inventoryItemsCache || []).find(i => i.inventoryItemId === itemId);
+        const all = inventoryUnitsCache || [];
+        const entry = all.find(u => u.unitId === unitId);
+        const base = item ? all.find(u => u.unitId === item.baseUnitId) : null;
+        if (!entry || !base || !(qty > 0) || entry.unitId === base.unitId) {
+            hint.textContent = base ? `واحد پایه: ${base.code}` : '';
+            return;
+        }
+        if (entry.dimension !== base.dimension || !entry.allowsCrossUnitConversion || !base.allowsCrossUnitConversion) {
+            hint.textContent = '';
+            return;
+        }
+        const inBase = qty * (entry.toDimensionBaseFactor / base.toDimensionBaseFactor);
+        hint.textContent = `= ${Number(inBase).toLocaleString('fa-IR', { maximumFractionDigits: 3 })} ${base.code}`;
+    }
+
+    function bindRecipeLineEvents(row) {
+        const itemSel = row.querySelector('.recipe-item');
+        const unitSel = row.querySelector('.recipe-unit');
+        const qtyInput = row.querySelector('.recipe-qty');
+
+        itemSel.addEventListener('change', () => {
+            const item = (inventoryItemsCache || []).find(i => i.inventoryItemId === Number(itemSel.value));
+            unitSel.innerHTML = recipeUnitOptions(item, item?.baseUnitId);
+            updateRecipeLineHint(row);
+        });
+        unitSel.addEventListener('change', () => updateRecipeLineHint(row));
+        qtyInput.addEventListener('input', () => updateRecipeLineHint(row));
+    }
+
+    function addRecipeLineRow(line) {
+        const wrap = document.getElementById('recipeLines');
+        const row = document.createElement('div');
+        row.className = 'recipe-line border-bottom pb-2';
+        const item = (inventoryItemsCache || []).find(i => i.inventoryItemId === line?.inventoryItemId)
+            || (inventoryItemsCache || [])[0];
+        const unitId = line?.unitId || item?.baseUnitId;
+        row.innerHTML = `
+            <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <select class="form-select form-select-sm recipe-item">${recipeItemOptions(line?.inventoryItemId || item?.inventoryItemId)}</select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control form-control-sm recipe-qty" min="0.001" step="0.001" value="${line?.quantity ?? ''}" placeholder="مقدار" />
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-sm recipe-unit">${recipeUnitOptions(item, unitId)}</select>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="this.closest('.recipe-line').remove()">حذف</button>
+                </div>
+            </div>
+            <div class="form-text recipe-hint small"></div>`;
+        wrap.appendChild(row);
+        bindRecipeLineEvents(row);
+        updateRecipeLineHint(row);
+    }
+
+    window.openRecipeModal = async function (btn) {
+        clearRecipeError();
+        const foodId = btn.getAttribute('data-food-id');
+        const foodName = btn.getAttribute('data-food-name') || '';
+        document.getElementById('recipeFoodId').value = foodId;
+        document.getElementById('recipeFoodName').textContent = foodName;
+        document.getElementById('recipeLines').innerHTML = '';
+        document.getElementById('recipeDisabledHint').classList.add('d-none');
+        document.getElementById('recipeEditor').classList.remove('d-none');
+        document.getElementById('btnSaveRecipe').disabled = false;
+        document.getElementById('btnDeleteRecipe').disabled = false;
+
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('recipeModal'));
+        modal.show();
+
+        try {
+            const settings = await invApi(`${INV_API}/settings?restaurantId=${restaurantId}`);
+            if (!settings.data?.isEnabled) {
+                document.getElementById('recipeDisabledHint').classList.remove('d-none');
+                document.getElementById('recipeEditor').classList.add('d-none');
+                document.getElementById('btnSaveRecipe').disabled = true;
+                document.getElementById('btnDeleteRecipe').disabled = true;
+                return;
+            }
+
+            inventoryItemsCache = null;
+            inventoryUnitsCache = null;
+            await Promise.all([loadInventoryItemsForRecipe(), loadInventoryUnits()]);
+            if (!inventoryItemsCache.length) {
+                showRecipeError('ابتدا از صفحه انبار حداقل یک ماده اولیه بسازید.');
+                return;
+            }
+
+            const recipe = await invApi(`${INV_API}/foods/${foodId}/recipe?restaurantId=${restaurantId}`);
+            const lines = recipe.data?.lines || [];
+            if (lines.length) {
+                lines.forEach(l => addRecipeLineRow(l));
+            } else {
+                addRecipeLineRow(null);
+            }
+        } catch (e) {
+            showRecipeError(e.message);
+        }
+    };
+
+    document.getElementById('btnAddRecipeLine')?.addEventListener('click', () => addRecipeLineRow(null));
+
+    document.getElementById('btnSaveRecipe')?.addEventListener('click', async () => {
+        clearRecipeError();
+        const foodId = document.getElementById('recipeFoodId').value;
+        const lines = [];
+        document.querySelectorAll('#recipeLines .recipe-line').forEach(row => {
+            const inventoryItemId = Number(row.querySelector('.recipe-item').value);
+            const quantity = Number(row.querySelector('.recipe-qty').value);
+            const unitId = Number(row.querySelector('.recipe-unit').value);
+            if (inventoryItemId && quantity > 0 && unitId > 0) {
+                lines.push({ inventoryItemId, quantity, unitId });
+            }
+        });
+        if (!lines.length) {
+            showRecipeError('حداقل یک ماده با مقدار و واحد معتبر وارد کنید.');
+            return;
+        }
+        try {
+            await invApi(`${INV_API}/foods/${foodId}/recipe`, {
+                method: 'PUT',
+                body: JSON.stringify({ restaurantId, lines })
+            });
+            foodsWithRecipe.add(Number(foodId));
+            markFoodsWithRecipe();
+            bootstrap.Modal.getInstance(document.getElementById('recipeModal'))?.hide();
+            if (typeof showToast === 'function') showToast('دستور تهیه ذخیره شد.');
+        } catch (e) {
+            showRecipeError(e.message);
+        }
+    });
+
+    document.getElementById('btnDeleteRecipe')?.addEventListener('click', async () => {
+        const ok = typeof showConfirm === 'function'
+            ? await showConfirm({
+                title: 'حذف دستور تهیه',
+                message: 'دستور تهیه این غذا حذف شود؟',
+                confirmText: 'بله، حذف شود',
+                cancelText: 'انصراف',
+                iconClass: 'fa-solid fa-trash',
+                variant: 'danger'
+            })
+            : window.confirm('دستور تهیه این غذا حذف شود؟');
+        if (!ok) return;
+        const foodId = document.getElementById('recipeFoodId').value;
+        try {
+            await invApi(`${INV_API}/foods/${foodId}/recipe?restaurantId=${restaurantId}`, { method: 'DELETE' });
+            foodsWithRecipe.delete(Number(foodId));
+            markFoodsWithRecipe();
+            bootstrap.Modal.getInstance(document.getElementById('recipeModal'))?.hide();
+        } catch (e) {
+            showRecipeError(e.message);
+        }
+    });
+
+    function markFoodsWithRecipe() {
+        document.querySelectorAll('[data-food-id]').forEach(btn => {
+            if (!btn.classList.contains('btn-outline-info')) return;
+            const id = Number(btn.getAttribute('data-food-id'));
+            btn.classList.toggle('btn-info', foodsWithRecipe.has(id));
+            btn.classList.toggle('btn-outline-info', !foodsWithRecipe.has(id));
+        });
+    }
+
+    async function loadRecipeBadges() {
+        try {
+            const settings = await invApi(`${INV_API}/settings?restaurantId=${restaurantId}`);
+            if (!settings.data?.isEnabled) return;
+            const res = await invApi(`${INV_API}/foods-with-recipes?restaurantId=${restaurantId}`);
+            foodsWithRecipe = new Set((res.data || []).map(Number));
+            markFoodsWithRecipe();
+        } catch (_) { /* inventory off or schema missing */ }
+    }
+
+    // -----------------------------------------------------------------
     // INITIALIZATION
     function initFoodListPage() {
         if (!document.getElementById('foodList')) return;
@@ -611,6 +909,7 @@
             .on("input.foodList change.foodList", applyFilters);
 
         populateFilterCategories();
+        loadRecipeBadges();
     }
 
     window.initFoodListPage = initFoodListPage;

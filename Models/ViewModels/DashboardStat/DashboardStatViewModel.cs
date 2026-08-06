@@ -39,5 +39,9 @@
         public string LogoUrl { get; set; } = "/images/logo.png";
         public string BackgroundImageUrl { get; set; } = "/images/backgrounds/default.jpg";
         public bool ReceiptChargesEnabled { get; set; }
+
+        public bool InventoryEnabled { get; set; }
+        public int InventoryLowStockCount { get; set; }
+        public int InventoryItemCount { get; set; }
     }
 }

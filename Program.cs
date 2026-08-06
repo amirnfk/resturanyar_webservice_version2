@@ -98,6 +98,10 @@ builder.Services.AddScoped<resturanyar.Utility.MessageService>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptCalculationEngine, resturanyar.Services.Receipt.ReceiptCalculationEngine>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptRenderer, resturanyar.Services.Receipt.HtmlReceiptRenderer>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptService, resturanyar.Services.Receipt.ReceiptService>();
+builder.Services.AddScoped<resturanyar.Services.Inventory.IInventoryService, resturanyar.Services.Inventory.InventoryService>();
+builder.Services.AddScoped<resturanyar.Services.Inventory.IInventoryRecipeService, resturanyar.Services.Inventory.InventoryRecipeService>();
+builder.Services.AddScoped<resturanyar.Services.Inventory.IOrderInventoryConsumptionService, resturanyar.Services.Inventory.OrderInventoryConsumptionService>();
+builder.Services.AddScoped<resturanyar.Services.Inventory.IUnitConversionService, resturanyar.Services.Inventory.UnitConversionService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

@@ -563,7 +563,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -587,39 +587,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RestaurantSettingDto.cs",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSettingDto.cs",
-              "RelativeDocumentMoniker": "Models\\RestaurantSettingDto.cs",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSettingDto.cs",
-              "RelativeToolTip": "Models\\RestaurantSettingDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-02T07:38:55.801Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
               "RelativeDocumentMoniker": "appsettings.Development.json",
               "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
               "RelativeToolTip": "appsettings.Development.json",
-              "ViewState": "AgIAADsAAAAAAAAAAAAAAEIAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAADsAAAAAAAAAAAAAAEUAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-06-11T15:27:44.275Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "resturanyar",
-              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
-              "RelativeDocumentMoniker": "resturanyar.csproj",
-              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
-              "RelativeToolTip": "resturanyar.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-08-04T08:25:09.995Z"
             },
             {
               "$type": "Document",
@@ -646,10 +623,6 @@
               "WhenOpened": "2026-06-08T11:45:26.81Z"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Program.cs",
@@ -660,6 +633,33 @@
               "ViewState": "AgIAAEABAAAAAAAAAAAAwEkBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-08T08:29:54.563Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RestaurantSettingDto.cs",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSettingDto.cs",
+              "RelativeDocumentMoniker": "Models\\RestaurantSettingDto.cs",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\Models\\RestaurantSettingDto.cs",
+              "RelativeToolTip": "Models\\RestaurantSettingDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-02T07:38:55.801Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "resturanyar",
+              "DocumentMoniker": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+              "RelativeDocumentMoniker": "resturanyar.csproj",
+              "ToolTip": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+              "RelativeToolTip": "resturanyar.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-08-04T08:25:09.995Z"
             },
             {
               "$type": "Document",

@@ -194,6 +194,19 @@
         </div>
     </section>
 
+    <section id="dashStockCard"
+             class="dash-stock-card fade-up"
+             hidden
+             aria-live="polite"
+             data-restaurant-id="@(ViewBag.RestaurantId?.ToString() ?? "")"
+             data-inventory-url="@Url.Action("Inventory", "Home")"
+             data-low-stock-url="@Url.Action("InventoryLowStock", "Home")">
+        <div class="dash-stock-card__inner dash-stock-card__skeleton" aria-hidden="true">
+            <div class="dash-stock-card__pulse"></div>
+            <div class="dash-stock-card__pulse dash-stock-card__pulse--short"></div>
+        </div>
+    </section>
+
    
     @* @if (Model.ChefOrdersCount > 0 || Model.WaiterOrdersCount > 0)
     {
@@ -275,6 +288,33 @@
                     <h3 class="tile__title">لیست غذاها</h3>
                     <p class="tile__desc">افزودن، ویرایش، قیمت‌گذاری و وضعیت موجودی</p>
                 </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt @(Model.InventoryEnabled && Model.InventoryLowStockCount > 0 ? "tile--alert" : "")"
+               href="@Url.Action("Inventory", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-box"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">مدیریت انبار</h3>
+                    <p class="tile__desc">
+                        @if (!Model.InventoryEnabled)
+                        {
+                            <text>مدیریت مواد اولیه و موجودی</text>
+                        }
+                        else if (Model.InventoryLowStockCount > 0)
+                        {
+                            <text>@Model.InventoryLowStockCount مورد کمبود موجودی</text>
+                        }
+                        else
+                        {
+                            <text>@Model.InventoryItemCount ماده اولیه فعال</text>
+                        }
+                    </p>
+                </div>
+                @if (Model.InventoryEnabled && Model.InventoryLowStockCount > 0)
+                {
+                    <span class="tile__badge">@Model.InventoryLowStockCount</span>
+                }
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 

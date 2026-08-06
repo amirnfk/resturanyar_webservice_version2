@@ -1,0 +1,1066 @@
+@{
+    ViewData["Title"] = "انبار";
+    var restaurantId = (int)ViewBag.RestaurantId;
+    var inventoryEnabled = (bool)ViewBag.InventoryEnabled;
+    var lowStockCount = (int)(ViewBag.LowStockCount ?? 0);
+    var schemaReady = ViewBag.InventorySchemaReady == null || (bool)ViewBag.InventorySchemaReady;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+}
+
+<div class="container inventory-page mt-4" data-restaurant-id="@restaurantId" data-enabled="@inventoryEnabled.ToString().ToLowerInvariant()">
+    @if (!schemaReady)
+    {
+        <div class="inv-alert inv-alert--warn">
+            <i class="fas fa-database"></i>
+            <div>
+                <strong>جداول انبار آماده نیست</strong>
+                <p>جداول انبار هنوز روی دیتابیس ایجاد نشده‌اند. لطفاً اسکریپت SQL مربوط به انبار را در SSMS اجرا کنید و سپس این صفحه را دوباره باز کنید.</p>
+            </div>
+        </div>
+    }
+    else if (!inventoryEnabled)
+    {
+        <div class="inv-enable-card">
+            <div class="inv-enable-card__icon"><i class="fas fa-warehouse"></i></div>
+            <h4>ماژول انبار</h4>
+            <p>
+                موجودی مواد اولیه را ثبت کنید، کمبودها را ببینید و خریدهایتان را ساده پیگیری کنید.
+                این قابلیت برای رستوران شما فعلاً خاموش است و روی سفارش‌ها اثری ندارد.
+            </p>
+            <button type="button" class="btn btn-primary btn-lg px-4" id="btnEnableInventory">
+                فعال‌سازی انبار
+            </button>
+        </div>
+    }
+    else
+    {
+        <header class="inv-hero">
+            <div class="inv-hero__text">
+                <h1 class="inv-hero__title">انبار مواد اولیه</h1>
+                <p class="inv-hero__sub">مدیریت موجودی، ورود کالا و کسر خودکار از سفارش</p>
+            </div>
+            <div class="inv-hero__actions">
+                <button type="button" class="btn inv-btn-ghost" id="btnToggleSettings" title="تنظیمات کسر خودکار">
+                    <i class="fas fa-sliders"></i>
+                    <span class="d-none d-sm-inline">تنظیمات</span>
+                </button>
+                <button type="button" class="btn inv-btn-ghost" onclick="openCategoryModal()">
+                    <i class="fas fa-folder-plus"></i>
+                    <span class="d-none d-sm-inline">دسته‌بندی</span>
+                </button>
+                <button type="button" class="btn inv-btn-ghost inv-btn-ghost--muted" id="btnDisableInventory" title="غیرفعال‌سازی انبار">
+                    <i class="fas fa-power-off"></i>
+                </button>
+                <button type="button" class="btn btn-primary inv-btn-primary" onclick="openItemModal()">
+                    <i class="fas fa-plus"></i>
+                    افزودن ماده اولیه
+                </button>
+            </div>
+        </header>
+
+        <div class="inv-stats" id="invStats">
+            <div class="inv-stat">
+                <span class="inv-stat__value" id="statTotal">—</span>
+                <span class="inv-stat__label">کل مواد</span>
+            </div>
+            <a class="inv-stat inv-stat--link @(lowStockCount > 0 ? "inv-stat--alert" : "")" href="@Url.Action("InventoryLowStock", "Home")">
+                <span class="inv-stat__value" id="statLow">@lowStockCount</span>
+                <span class="inv-stat__label">کمبود موجودی</span>
+            </a>
+            <div class="inv-stat">
+                <span class="inv-stat__value" id="statCats">—</span>
+                <span class="inv-stat__label">دسته‌بندی</span>
+            </div>
+            <div class="inv-stat">
+                <span class="inv-stat__value" id="statOk">—</span>
+                <span class="inv-stat__label">موجودی کافی</span>
+            </div>
+        </div>
+
+        <div class="inv-settings" id="settingsPanel" hidden>
+            <div class="inv-settings__inner">
+                <div class="inv-settings__label">
+                    <i class="fas fa-bolt"></i>
+                    <div>
+                        <strong>کسر خودکار موجودی</strong>
+                        <span>وقتی سفارش به این وضعیت برسد (یا از آن رد شود)، مواد دستور تهیه از انبار کم می‌شود. لغو سفارش موجودی را برمی‌گرداند.</span>
+                    </div>
+                </div>
+                <div class="inv-settings__controls">
+                    <select id="autoDeductStatus" class="form-select form-select-sm">
+                        <option value="3">سفارش جدید / تایید شده</option>
+                        <option value="4" selected>در حال آماده‌سازی</option>
+                        <option value="5">آماده تحویل</option>
+                    </select>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnSaveDeductStatus">ذخیره</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="inv-toolbar">
+            <div class="inv-search">
+                <i class="fas fa-magnifying-glass"></i>
+                <input id="searchBox" type="text" class="form-control" placeholder="جستجو بر اساس نام..." />
+            </div>
+            <select id="filterCategory" class="form-select">
+                <option value="">همه دسته‌ها</option>
+            </select>
+            <select id="filterStock" class="form-select">
+                <option value="">همه وضعیت‌ها</option>
+                <option value="low">کمبود موجودی</option>
+                <option value="ok">موجودی کافی</option>
+            </select>
+        </div>
+
+        <div id="errorBanner" class="inv-alert inv-alert--error d-none" role="alert"></div>
+        <div id="successBanner" class="inv-alert inv-alert--success d-none" role="status"></div>
+
+        <div id="emptyState" class="inv-empty d-none">
+            <div class="inv-empty__icon"><i class="fas fa-box-open"></i></div>
+            <h5>هنوز ماده اولیه‌ای ثبت نشده</h5>
+            <p>اولین ماده اولیه را اضافه کنید تا موجودی انبار را پیگیری کنید.</p>
+            <button type="button" class="btn btn-primary inv-btn-primary" onclick="openItemModal()">افزودن اولین ماده اولیه</button>
+        </div>
+
+        <div class="inv-table-card table-responsive d-none" id="itemsTableWrap">
+            <table class="table inv-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>دسته</th>
+                        <th>موجودی</th>
+                        <th>حداقل</th>
+                        <th>آخرین قیمت (تومان)</th>
+                        <th>وضعیت</th>
+                        <th class="inv-th-actions">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody"></tbody>
+            </table>
+        </div>
+
+        <div id="noFilterMatch" class="inv-empty inv-empty--soft d-none">
+            <p class="mb-0">موردی با این فیلترها پیدا نشد.</p>
+        </div>
+    }
+</div>
+
+@if (inventoryEnabled)
+{
+    <!-- Item modal -->
+    <div class="modal fade inventory-modal" id="itemModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalTitle">افزودن ماده اولیه</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="itemId" />
+                    <div class="mb-3">
+                        <label class="form-label">نام <span class="text-danger">*</span></label>
+                        <input type="text" id="itemName" class="form-control" maxlength="200" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="itemCategory">دسته‌بندی</label>
+                        <div class="input-group">
+                            <select id="itemCategory" class="form-select"></select>
+                            <button type="button" class="btn btn-outline-primary" id="btnAddCategoryFromItem" title="افزودن دسته‌بندی جدید">
+                                + افزودن
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">واحد <span class="text-danger">*</span></label>
+                        <select id="itemUnit" class="form-select"></select>
+                    </div>
+                    <div class="row g-2" id="openingQtyRow">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">موجودی اولیه</label>
+                            <input type="text" id="itemOpeningQty" class="form-control inv-num-input" inputmode="decimal" dir="ltr" autocomplete="off" value="0" data-num-mode="decimal" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">حداقل موجودی</label>
+                            <input type="text" id="itemMinQty" class="form-control inv-num-input" inputmode="decimal" dir="ltr" autocomplete="off" value="0" data-num-mode="decimal" />
+                        </div>
+                    </div>
+                    <div class="mb-3" id="editMinQtyRow" style="display:none;">
+                        <label class="form-label">حداقل موجودی</label>
+                        <input type="text" id="itemMinQtyEdit" class="form-control inv-num-input" inputmode="decimal" dir="ltr" autocomplete="off" value="0" data-num-mode="decimal" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">آخرین قیمت خرید</label>
+                        <div class="input-group">
+                            <input type="text" id="itemPrice" class="form-control inv-num-input" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="مثلاً 150,000" data-num-mode="int" />
+                            <span class="input-group-text inv-currency">تومان</span>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">یادداشت</label>
+                        <textarea id="itemNotes" class="form-control" rows="2" maxlength="1000"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveItem">ذخیره</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add stock modal -->
+    <div class="modal fade inventory-modal" id="addStockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">افزایش موجودی</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="addStockItemId" />
+                    <div class="inv-modal-hint" id="addStockItemName"></div>
+                    <div class="mb-3">
+                        <label class="form-label">مقدار <span class="text-danger">*</span></label>
+                        <div class="row g-2">
+                            <div class="col-7">
+                                <input type="text" id="addStockQty" class="form-control inv-num-input" inputmode="decimal" dir="ltr" autocomplete="off" data-num-mode="decimal" />
+                            </div>
+                            <div class="col-5">
+                                <select id="addStockUnit" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="form-text" id="addStockHint"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">قیمت واحد (اختیاری)</label>
+                        <div class="input-group">
+                            <input type="text" id="addStockPrice" class="form-control inv-num-input" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="مثلاً 150,000" data-num-mode="int" />
+                            <span class="input-group-text inv-currency">تومان</span>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">یادداشت</label>
+                        <input type="text" id="addStockNote" class="form-control" maxlength="500" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmAddStock">ثبت</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adjust modal -->
+    <div class="modal fade inventory-modal" id="adjustModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تعدیل موجودی</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="adjustItemId" />
+                    <div class="inv-modal-hint" id="adjustItemName"></div>
+                    <div class="mb-3">
+                        <label class="form-label">موجودی جدید <span class="text-danger">*</span></label>
+                        <input type="text" id="adjustNewQty" class="form-control inv-num-input" inputmode="decimal" dir="ltr" autocomplete="off" data-num-mode="decimal" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">دلیل</label>
+                        <select id="adjustReason" class="form-select">
+                            <option value="Adjustment">اصلاح موجودی</option>
+                            <option value="Waste">ضایعات</option>
+                            <option value="Correction">اصلاح خطا</option>
+                            <option value="Opening">موجودی اولیه</option>
+                        </select>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">یادداشت</label>
+                        <input type="text" id="adjustNote" class="form-control" maxlength="500" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmAdjust">ثبت</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category modal -->
+    <div class="modal fade inventory-modal" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalTitle">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalTitle">افزودن دسته‌بندی انبار</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label" for="categoryName">نام دسته‌بندی <span class="text-danger">*</span></label>
+                    <input type="text" id="categoryName" class="form-control" maxlength="100" placeholder="مثلاً لبنیات، ادویه‌جات، ..." autocomplete="off" />
+                    <div class="form-text">دسته‌بندی برای گروه‌بندی مواد اولیه در انبار استفاده می‌شود.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveCategory">ذخیره</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+<script>
+(function () {
+    const page = document.querySelector('.inventory-page');
+    if (!page) return;
+
+    const restaurantId = Number(page.dataset.restaurantId);
+    const enabled = page.dataset.enabled === 'true';
+    const API = '/api/v2/inventory';
+
+    const dimLabels = { Mass: 'وزن', Volume: 'حجم', Count: 'تعداد' };
+
+    let items = [];
+    let categories = [];
+    let units = [];
+
+    function unitLabel(u) {
+        if (!u) return '';
+        if (typeof u === 'string') return u;
+        return `${u.nameFa || u.code} (${u.code})`;
+    }
+
+    function findUnit(unitId) {
+        return units.find(u => u.unitId === unitId);
+    }
+
+    function formatQty(n) {
+        return Number(n).toLocaleString('fa-IR', { maximumFractionDigits: 3 });
+    }
+
+    function formatPrice(n) {
+        if (n == null || n === '') return '—';
+        return Number(n).toLocaleString('fa-IR', { maximumFractionDigits: 0 }) + ' تومان';
+    }
+
+    function normalizeDigits(value) {
+        var persian = '۰۱۲۳۴۵۶۷۸۹';
+        var arabic = '٠١٢٣٤٥٦٧٨٩';
+        return String(value ?? '')
+            .replace(/[۰-۹]/g, function (d) { return String(persian.indexOf(d)); })
+            .replace(/[٠-٩]/g, function (d) { return String(arabic.indexOf(d)); });
+    }
+
+    function parseNumInput(value, mode) {
+        var raw = normalizeDigits(value).replace(/,/g, '').replace(/[^\d.]/g, '');
+        if (!raw) return mode === 'int' ? null : NaN;
+        if (mode === 'int') {
+            var intDigits = raw.replace(/\./g, '');
+            if (!intDigits) return null;
+            var intVal = parseInt(intDigits, 10);
+            return Number.isNaN(intVal) ? null : intVal;
+        }
+        var parts = raw.split('.');
+        var cleaned = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('').slice(0, 3) : '');
+        var num = parseFloat(cleaned);
+        return Number.isNaN(num) ? NaN : num;
+    }
+
+    function formatNumDisplay(value, mode) {
+        if (value == null || value === '') return '';
+        if (mode === 'int') {
+            var intVal = typeof value === 'number' ? Math.round(value) : parseNumInput(value, 'int');
+            if (intVal == null || Number.isNaN(intVal)) return '';
+            return String(intVal).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+        var num = typeof value === 'number' ? value : parseNumInput(value, 'decimal');
+        if (Number.isNaN(num)) return '';
+        var fixed = Number(num.toFixed(3));
+        var parts = String(fixed).split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return parts.join('.');
+    }
+
+    function setNumInput(id, value, mode) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (value == null || value === '' || (typeof value === 'number' && Number.isNaN(value))) {
+            el.value = '';
+            return;
+        }
+        el.value = formatNumDisplay(value, mode || el.dataset.numMode || 'decimal');
+    }
+
+    function getNumInput(id, mode) {
+        var el = document.getElementById(id);
+        if (!el) return mode === 'int' ? null : NaN;
+        return parseNumInput(el.value, mode || el.dataset.numMode || 'decimal');
+    }
+
+    function handleNumInput(input) {
+        if (!input) return;
+        var mode = input.dataset.numMode || 'decimal';
+        var cursor = input.selectionStart || 0;
+        var before = normalizeDigits(input.value.slice(0, cursor)).replace(/[^\d.]/g, '');
+        var digitsBefore = before.replace(/\./g, '').length;
+        var hadDotBefore = before.indexOf('.') >= 0;
+
+        var raw = normalizeDigits(input.value);
+        if (mode === 'int') {
+            var digits = raw.replace(/[^\d]/g, '');
+            if (digits.length > 15) digits = digits.slice(0, 15);
+            input.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        } else {
+            raw = raw.replace(/,/g, '').replace(/[^\d.]/g, '');
+            var parts = raw.split('.');
+            var intPart = parts[0] || '';
+            var decPart = parts.length > 1 ? parts.slice(1).join('').slice(0, 3) : '';
+            if (intPart.length > 12) intPart = intPart.slice(0, 12);
+            var formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            input.value = parts.length > 1 || raw.endsWith('.')
+                ? formattedInt + '.' + decPart
+                : formattedInt;
+        }
+
+        if (typeof input.setSelectionRange === 'function') {
+            var seen = 0;
+            var pos = input.value.length;
+            for (var i = 0; i < input.value.length; i++) {
+                var ch = input.value[i];
+                if (/\d/.test(ch)) {
+                    seen++;
+                    if (seen >= digitsBefore && !hadDotBefore) { pos = i + 1; break; }
+                    if (seen >= digitsBefore && hadDotBefore) { pos = i + 1; }
+                } else if (ch === '.' && hadDotBefore && seen >= digitsBefore) {
+                    pos = i + 1;
+                    break;
+                }
+            }
+            if (hadDotBefore && input.value.indexOf('.') >= 0 && before.indexOf('.') >= 0) {
+                var decTyped = before.split('.')[1] || '';
+                var dotPos = input.value.indexOf('.');
+                pos = Math.min(input.value.length, dotPos + 1 + decTyped.length);
+            }
+            input.setSelectionRange(pos, pos);
+        }
+    }
+
+    document.querySelectorAll('.inventory-modal .inv-num-input').forEach(function (input) {
+        input.addEventListener('input', function () { handleNumInput(input); });
+        input.addEventListener('blur', function () {
+            var mode = input.dataset.numMode || 'decimal';
+            var parsed = parseNumInput(input.value, mode);
+            if (mode === 'int') {
+                input.value = parsed == null ? '' : formatNumDisplay(parsed, 'int');
+            } else if (!Number.isNaN(parsed)) {
+                input.value = formatNumDisplay(parsed, 'decimal');
+            } else {
+                input.value = '';
+            }
+        });
+    });
+
+    function convertHint(qty, fromUnit, toUnit) {
+        if (!fromUnit || !toUnit || !(qty > 0)) return '';
+        if (fromUnit.unitId === toUnit.unitId) return '';
+        if (fromUnit.dimension !== toUnit.dimension) return '';
+        if (!fromUnit.allowsCrossUnitConversion || !toUnit.allowsCrossUnitConversion) return '';
+        const inBase = qty * (fromUnit.toDimensionBaseFactor / toUnit.toDimensionBaseFactor);
+        return `= ${formatQty(inBase)} ${toUnit.code}`;
+    }
+
+    function showError(msg) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(msg, 'error');
+            return;
+        }
+        const el = document.getElementById('errorBanner');
+        if (!el) return;
+        el.innerHTML = '<i class="fas fa-circle-exclamation"></i><span></span>';
+        el.querySelector('span').textContent = msg;
+        el.classList.remove('d-none');
+        setTimeout(() => el.classList.add('d-none'), 5000);
+    }
+
+    function showSuccess(msg) {
+        if (typeof window.showToast === 'function') {
+            window.showToast(msg, 'success');
+            return;
+        }
+        const el = document.getElementById('successBanner');
+        if (!el) return;
+        el.innerHTML = '<i class="fas fa-circle-check"></i><span></span>';
+        el.querySelector('span').textContent = msg;
+        el.classList.remove('d-none');
+        setTimeout(() => el.classList.add('d-none'), 3000);
+    }
+
+    async function askConfirm(options) {
+        if (typeof window.showConfirm === 'function') {
+            return await window.showConfirm(options);
+        }
+        return window.confirm(options.message || '');
+    }
+
+    async function waitForFetchWithAuth(timeoutMs) {
+        timeoutMs = timeoutMs || 10000;
+        if (typeof window.fetchWithAuth === 'function') {
+            return window.fetchWithAuth;
+        }
+        return new Promise(function (resolve, reject) {
+            var start = Date.now();
+            var timer = setInterval(function () {
+                if (typeof window.fetchWithAuth === 'function') {
+                    clearInterval(timer);
+                    resolve(window.fetchWithAuth);
+                } else if (Date.now() - start > timeoutMs) {
+                    clearInterval(timer);
+                    reject(new Error('احراز هویت هنوز آماده نیست. صفحه را تازه کنید.'));
+                }
+            }, 40);
+        });
+    }
+
+    async function api(url, options) {
+        var fetchAuth = await waitForFetchWithAuth();
+        const res = await fetchAuth(url, Object.assign({
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+        }, options || {}));
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.success === false) {
+            throw new Error(json.message || 'خطا در ارتباط با سرور');
+        }
+        return json;
+    }
+
+    const btnEnable = document.getElementById('btnEnableInventory');
+    if (btnEnable) {
+        btnEnable.addEventListener('click', async () => {
+            try {
+                btnEnable.disabled = true;
+                await api(`${API}/settings`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ restaurantId, isEnabled: true })
+                });
+                location.reload();
+            } catch (e) {
+                showError(e.message);
+                btnEnable.disabled = false;
+            }
+        });
+    }
+
+    if (!enabled) return;
+
+    const btnDisable = document.getElementById('btnDisableInventory');
+    if (btnDisable) {
+        btnDisable.addEventListener('click', async () => {
+            const ok = await askConfirm({
+                title: 'غیرفعال‌سازی انبار',
+                message: 'انبار غیرفعال شود؟ داده‌ها حذف نمی‌شوند و بعداً می‌توانید دوباره فعال کنید.',
+                confirmText: 'بله، غیرفعال شود',
+                cancelText: 'انصراف',
+                iconClass: 'fa-solid fa-power-off',
+                variant: 'danger'
+            });
+            if (!ok) return;
+            try {
+                await api(`${API}/settings`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ restaurantId, isEnabled: false })
+                });
+                location.reload();
+            } catch (e) {
+                showError(e.message);
+            }
+        });
+    }
+
+    const btnToggleSettings = document.getElementById('btnToggleSettings');
+    const settingsPanel = document.getElementById('settingsPanel');
+    if (btnToggleSettings && settingsPanel) {
+        btnToggleSettings.addEventListener('click', () => {
+            const open = settingsPanel.hasAttribute('hidden');
+            if (open) {
+                settingsPanel.removeAttribute('hidden');
+                btnToggleSettings.classList.add('is-active');
+            } else {
+                settingsPanel.setAttribute('hidden', '');
+                btnToggleSettings.classList.remove('is-active');
+            }
+        });
+    }
+
+    const btnSaveDeduct = document.getElementById('btnSaveDeductStatus');
+    if (btnSaveDeduct) {
+        btnSaveDeduct.addEventListener('click', async () => {
+            const autoDeductStatusId = Number(document.getElementById('autoDeductStatus').value);
+            try {
+                await api(`${API}/settings`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ restaurantId, autoDeductStatusId })
+                });
+                showSuccess('وضعیت کسر خودکار ذخیره شد.');
+            } catch (e) {
+                showError(e.message);
+            }
+        });
+    }
+
+    function updateStats() {
+        const low = items.filter(i => i.isLowStock).length;
+        const ok = items.length - low;
+        const set = (id, v) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = Number(v).toLocaleString('fa-IR');
+        };
+        set('statTotal', items.length);
+        set('statLow', low);
+        set('statOk', ok);
+        set('statCats', categories.length);
+
+        const lowStat = document.querySelector('.inv-stat--link');
+        if (lowStat) {
+            lowStat.classList.toggle('inv-stat--alert', low > 0);
+        }
+    }
+
+    function renderItems() {
+        const q = (document.getElementById('searchBox').value || '').trim().toLowerCase();
+        const cat = document.getElementById('filterCategory').value;
+        const stock = document.getElementById('filterStock').value;
+
+        let filtered = items.slice();
+        if (q) filtered = filtered.filter(i => (i.name || '').toLowerCase().includes(q));
+        if (cat) filtered = filtered.filter(i => String(i.categoryId || '') === cat);
+        if (stock === 'low') filtered = filtered.filter(i => i.isLowStock);
+        if (stock === 'ok') filtered = filtered.filter(i => !i.isLowStock);
+
+        const body = document.getElementById('itemsBody');
+        const empty = document.getElementById('emptyState');
+        const wrap = document.getElementById('itemsTableWrap');
+        const noMatch = document.getElementById('noFilterMatch');
+
+        updateStats();
+
+        if (!items.length) {
+            empty.classList.remove('d-none');
+            wrap.classList.add('d-none');
+            noMatch.classList.add('d-none');
+            return;
+        }
+        empty.classList.add('d-none');
+
+        if (!filtered.length) {
+            wrap.classList.add('d-none');
+            noMatch.classList.remove('d-none');
+            return;
+        }
+
+        noMatch.classList.add('d-none');
+        wrap.classList.remove('d-none');
+
+        body.innerHTML = filtered.map(i => {
+            const u = findUnit(i.baseUnitId);
+            const unitShort = i.unit || (u ? (u.code || u.nameFa) : '');
+            const unitFull = i.unitNameFa ? `${i.unitNameFa} (${i.unit})` : (u ? unitLabel(u) : i.unit);
+            return `
+            <tr class="${i.isLowStock ? 'inv-row--low' : ''}">
+                <td>
+                    <div class="inv-cell-name">${escapeHtml(i.name)}</div>
+                    <div class="inv-cell-meta">${escapeHtml(unitFull || '')}</div>
+                </td>
+                <td>
+                    <span class="inv-chip">${escapeHtml(i.categoryName || 'بدون دسته')}</span>
+                </td>
+                <td>
+                    <div class="inv-qty" dir="ltr">
+                        <span class="inv-qty__num">${formatQty(i.currentQuantity)}</span>
+                        <span class="inv-qty__unit">${escapeHtml(unitShort)}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="inv-qty inv-qty--muted" dir="ltr">${formatQty(i.minimumQuantity)}</span>
+                </td>
+                <td>
+                    <span class="inv-price">${formatPrice(i.lastPurchasePrice)}</span>
+                </td>
+                <td>
+                    ${i.isLowStock
+                        ? '<span class="inv-badge inv-badge--low"><i class="fas fa-triangle-exclamation"></i> کمبود</span>'
+                        : '<span class="inv-badge inv-badge--ok">کافی</span>'}
+                </td>
+                <td>
+                    <div class="inv-actions">
+                        <button type="button" class="inv-icon-btn inv-icon-btn--success" title="ورود موجودی" onclick="openAddStock(${i.inventoryItemId})">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="inv-icon-btn inv-icon-btn--warn" title="تعدیل" onclick="openAdjust(${i.inventoryItemId})">
+                            <i class="fas fa-sliders"></i>
+                        </button>
+                        <button type="button" class="inv-icon-btn" title="ویرایش" onclick="openItemModal(${i.inventoryItemId})">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button type="button" class="inv-icon-btn inv-icon-btn--danger" title="حذف" onclick="deactivateItem(${i.inventoryItemId})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function fillCategorySelects(selectedCategoryId) {
+        const itemSelect = document.getElementById('itemCategory');
+        const preserveItem = selectedCategoryId != null
+            ? String(selectedCategoryId)
+            : (itemSelect?.value || '');
+        const opts = '<option value="">بدون دسته</option>' +
+            categories.map(c => `<option value="${c.inventoryCategoryId}">${escapeHtml(c.name)}</option>`).join('');
+        const filter = document.getElementById('filterCategory');
+        const current = filter.value;
+        filter.innerHTML = '<option value="">همه دسته‌ها</option>' +
+            categories.map(c => `<option value="${c.inventoryCategoryId}">${escapeHtml(c.name)}</option>`).join('');
+        filter.value = current;
+        itemSelect.innerHTML = opts;
+        if (preserveItem && [...itemSelect.options].some(o => o.value === preserveItem)) {
+            itemSelect.value = preserveItem;
+        }
+    }
+
+    async function createCategory(name) {
+        const res = await api(`${API}/categories`, {
+            method: 'POST',
+            body: JSON.stringify({ restaurantId, name })
+        });
+        const created = res.data;
+        const catsRes = await api(`${API}/categories?restaurantId=${restaurantId}`);
+        categories = catsRes.data || [];
+        const newId = created?.inventoryCategoryId;
+        fillCategorySelects(newId);
+        updateStats();
+        return created;
+    }
+
+    let reopenItemModalAfterCategory = false;
+
+    function showCategoryModal() {
+        const input = document.getElementById('categoryName');
+        input.value = '';
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('categoryModal'));
+        const onShown = () => {
+            input.focus();
+            document.getElementById('categoryModal').removeEventListener('shown.bs.modal', onShown);
+        };
+        document.getElementById('categoryModal').addEventListener('shown.bs.modal', onShown);
+        modal.show();
+    }
+
+    function reopenItemModalIfNeeded() {
+        if (!reopenItemModalAfterCategory) return;
+        reopenItemModalAfterCategory = false;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('itemModal')).show();
+    }
+
+    function fillUnits() {
+        const groups = {};
+        units.forEach(u => {
+            const d = u.dimension || 'Other';
+            if (!groups[d]) groups[d] = [];
+            groups[d].push(u);
+        });
+        const html = Object.keys(groups).map(dim => {
+            const label = dimLabels[dim] || dim;
+            const opts = groups[dim].map(u =>
+                `<option value="${u.unitId}">${escapeHtml(unitLabel(u))}</option>`).join('');
+            return `<optgroup label="${escapeHtml(label)}">${opts}</optgroup>`;
+        }).join('');
+        document.getElementById('itemUnit').innerHTML = html;
+    }
+
+    async function loadAll() {
+        const [itemsRes, catsRes, unitsRes, settingsRes] = await Promise.all([
+            api(`${API}/items?restaurantId=${restaurantId}`),
+            api(`${API}/categories?restaurantId=${restaurantId}`),
+            api(`${API}/units`),
+            api(`${API}/settings?restaurantId=${restaurantId}`)
+        ]);
+        items = itemsRes.data || [];
+        categories = catsRes.data || [];
+        units = unitsRes.data || [];
+        const deductEl = document.getElementById('autoDeductStatus');
+        if (deductEl && settingsRes.data?.autoDeductStatusId) {
+            deductEl.value = String(settingsRes.data.autoDeductStatusId);
+        }
+        fillCategorySelects();
+        fillUnits();
+        renderItems();
+    }
+
+    window.openItemModal = function (id) {
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('itemModal'));
+        document.getElementById('itemId').value = id || '';
+        document.getElementById('itemModalTitle').textContent = id ? 'ویرایش ماده اولیه' : 'افزودن ماده اولیه';
+        document.getElementById('openingQtyRow').style.display = id ? 'none' : '';
+        document.getElementById('editMinQtyRow').style.display = id ? '' : 'none';
+
+        if (id) {
+            const item = items.find(x => x.inventoryItemId === id);
+            if (!item) return;
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.categoryId || '';
+            document.getElementById('itemUnit').value = String(item.baseUnitId);
+            setNumInput('itemMinQtyEdit', item.minimumQuantity, 'decimal');
+            setNumInput('itemPrice', item.lastPurchasePrice, 'int');
+            document.getElementById('itemNotes').value = item.notes || '';
+        } else {
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemCategory').value = '';
+            document.getElementById('itemUnit').value = units[0] ? String(units[0].unitId) : '';
+            setNumInput('itemOpeningQty', 0, 'decimal');
+            setNumInput('itemMinQty', 0, 'decimal');
+            setNumInput('itemPrice', null, 'int');
+            document.getElementById('itemNotes').value = '';
+        }
+        modal.show();
+    };
+
+    document.getElementById('btnSaveItem').addEventListener('click', async () => {
+        const id = document.getElementById('itemId').value;
+        const name = document.getElementById('itemName').value.trim();
+        const baseUnitId = Number(document.getElementById('itemUnit').value);
+        const categoryId = document.getElementById('itemCategory').value
+            ? Number(document.getElementById('itemCategory').value) : null;
+        const notes = document.getElementById('itemNotes').value.trim();
+        const lastPurchasePrice = getNumInput('itemPrice', 'int');
+
+        if (!name) { showError('نام الزامی است.'); return; }
+        if (!(baseUnitId > 0)) { showError('واحد الزامی است.'); return; }
+
+        try {
+            if (id) {
+                const minQty = getNumInput('itemMinQtyEdit', 'decimal');
+                await api(`${API}/items/${id}?restaurantId=${restaurantId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        name, baseUnitId, categoryId,
+                        minimumQuantity: Number.isNaN(minQty) ? 0 : minQty,
+                        lastPurchasePrice, notes
+                    })
+                });
+                showSuccess('ماده اولیه به‌روزرسانی شد.');
+            } else {
+                const opening = getNumInput('itemOpeningQty', 'decimal');
+                const minQty = getNumInput('itemMinQty', 'decimal');
+                await api(`${API}/items`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        restaurantId, name, baseUnitId, categoryId,
+                        currentQuantity: Number.isNaN(opening) ? 0 : opening,
+                        minimumQuantity: Number.isNaN(minQty) ? 0 : minQty,
+                        lastPurchasePrice, notes
+                    })
+                });
+                showSuccess('ماده اولیه ثبت شد.');
+            }
+            bootstrap.Modal.getInstance(document.getElementById('itemModal')).hide();
+            await loadAll();
+        } catch (e) {
+            showError(e.message);
+        }
+    });
+
+    function updateAddStockHint() {
+        const itemId = Number(document.getElementById('addStockItemId').value);
+        const item = items.find(x => x.inventoryItemId === itemId);
+        const qty = getNumInput('addStockQty', 'decimal');
+        const entryUnit = findUnit(Number(document.getElementById('addStockUnit').value));
+        const baseUnit = item ? findUnit(item.baseUnitId) : null;
+        const hint = document.getElementById('addStockHint');
+        if (hint) hint.textContent = convertHint(qty, entryUnit, baseUnit);
+    }
+
+    window.openAddStock = async function (id) {
+        const item = items.find(x => x.inventoryItemId === id);
+        if (!item) return;
+        document.getElementById('addStockItemId').value = id;
+        document.getElementById('addStockItemName').textContent =
+            item.name + ' — موجودی فعلی: ' + formatQty(item.currentQuantity) + ' ' + (item.unit || '');
+        setNumInput('addStockQty', null, 'decimal');
+        setNumInput('addStockPrice', item.lastPurchasePrice, 'int');
+        document.getElementById('addStockNote').value = '';
+        document.getElementById('addStockHint').textContent = '';
+
+        try {
+            const res = await api(`${API}/units/compatible?baseUnitId=${item.baseUnitId}`);
+            const compatible = res.data || [];
+            document.getElementById('addStockUnit').innerHTML = compatible.map(u =>
+                `<option value="${u.unitId}">${escapeHtml(unitLabel(u))}</option>`).join('');
+            document.getElementById('addStockUnit').value = String(item.baseUnitId);
+        } catch (e) {
+            showError(e.message);
+            return;
+        }
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('addStockModal')).show();
+    };
+
+    document.getElementById('addStockQty')?.addEventListener('input', updateAddStockHint);
+    document.getElementById('addStockUnit')?.addEventListener('change', updateAddStockHint);
+
+    document.getElementById('btnConfirmAddStock').addEventListener('click', async () => {
+        const id = Number(document.getElementById('addStockItemId').value);
+        const quantity = getNumInput('addStockQty', 'decimal');
+        const unitId = Number(document.getElementById('addStockUnit').value);
+        const unitPrice = getNumInput('addStockPrice', 'int');
+        const note = document.getElementById('addStockNote').value.trim();
+        if (!(quantity > 0)) { showError('مقدار باید بیشتر از صفر باشد.'); return; }
+        try {
+            await api(`${API}/items/${id}/add-stock?restaurantId=${restaurantId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    quantity,
+                    unitId: unitId || null,
+                    unitPrice,
+                    note
+                })
+            });
+            bootstrap.Modal.getInstance(document.getElementById('addStockModal')).hide();
+            showSuccess('موجودی افزایش یافت.');
+            await loadAll();
+        } catch (e) {
+            showError(e.message);
+        }
+    });
+
+    window.openAdjust = function (id) {
+        const item = items.find(x => x.inventoryItemId === id);
+        if (!item) return;
+        document.getElementById('adjustItemId').value = id;
+        document.getElementById('adjustItemName').textContent = item.name + ' — موجودی فعلی: ' + formatQty(item.currentQuantity);
+        setNumInput('adjustNewQty', item.currentQuantity, 'decimal');
+        document.getElementById('adjustReason').value = 'Adjustment';
+        document.getElementById('adjustNote').value = '';
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('adjustModal')).show();
+    };
+
+    document.getElementById('btnConfirmAdjust').addEventListener('click', async () => {
+        const id = Number(document.getElementById('adjustItemId').value);
+        const newQuantity = getNumInput('adjustNewQty', 'decimal');
+        if (newQuantity < 0 || Number.isNaN(newQuantity)) { showError('موجودی جدید معتبر نیست.'); return; }
+        try {
+            await api(`${API}/items/${id}/adjust?restaurantId=${restaurantId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    newQuantity,
+                    reason: document.getElementById('adjustReason').value,
+                    note: document.getElementById('adjustNote').value.trim()
+                })
+            });
+            bootstrap.Modal.getInstance(document.getElementById('adjustModal')).hide();
+            showSuccess('موجودی تعدیل شد.');
+            await loadAll();
+        } catch (e) {
+            showError(e.message);
+        }
+    });
+
+    window.deactivateItem = async function (id) {
+        const item = items.find(x => x.inventoryItemId === id);
+        const name = item?.name ? `«${item.name}»` : 'این ماده اولیه';
+        const ok = await askConfirm({
+            title: 'حذف ماده اولیه',
+            message: `${name} حذف (غیرفعال) شود؟`,
+            confirmText: 'بله، حذف شود',
+            cancelText: 'انصراف',
+            iconClass: 'fa-solid fa-trash',
+            variant: 'danger'
+        });
+        if (!ok) return;
+        try {
+            await api(`${API}/items/${id}?restaurantId=${restaurantId}`, { method: 'DELETE' });
+            showSuccess('حذف شد.');
+            await loadAll();
+        } catch (e) {
+            showError(e.message);
+        }
+    };
+
+    window.openCategoryModal = function (fromItemForm) {
+        reopenItemModalAfterCategory = !!fromItemForm;
+        const itemModalEl = document.getElementById('itemModal');
+        const itemInstance = bootstrap.Modal.getInstance(itemModalEl);
+
+        if (fromItemForm && itemModalEl.classList.contains('show') && itemInstance) {
+            const onHidden = () => {
+                itemModalEl.removeEventListener('hidden.bs.modal', onHidden);
+                showCategoryModal();
+            };
+            itemModalEl.addEventListener('hidden.bs.modal', onHidden);
+            itemInstance.hide();
+            return;
+        }
+
+        showCategoryModal();
+    };
+
+    document.getElementById('btnAddCategoryFromItem')?.addEventListener('click', () => {
+        openCategoryModal(true);
+    });
+
+    document.getElementById('categoryModal')?.addEventListener('hidden.bs.modal', () => {
+        reopenItemModalIfNeeded();
+    });
+
+    document.getElementById('categoryName')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnSaveCategory')?.click();
+        }
+    });
+
+    document.getElementById('btnSaveCategory').addEventListener('click', async () => {
+        const name = document.getElementById('categoryName').value.trim();
+        if (!name) { showError('نام دسته‌بندی الزامی است.'); return; }
+        const btn = document.getElementById('btnSaveCategory');
+        try {
+            if (btn) btn.disabled = true;
+            await createCategory(name);
+            const shouldReopenItem = reopenItemModalAfterCategory;
+            // Prevent double-reopen from hidden handler racing with explicit reopen
+            if (shouldReopenItem) reopenItemModalAfterCategory = false;
+            bootstrap.Modal.getInstance(document.getElementById('categoryModal'))?.hide();
+            showSuccess('دسته‌بندی ثبت شد.');
+            if (shouldReopenItem) {
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('itemModal')).show();
+            } else {
+                await loadAll();
+            }
+        } catch (e) {
+            showError(e.message);
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    });
+
+    document.getElementById('searchBox').addEventListener('input', renderItems);
+    document.getElementById('filterCategory').addEventListener('change', renderItems);
+    document.getElementById('filterStock').addEventListener('change', renderItems);
+
+    loadAll().catch(e => showError(e.message));
+})();
+</script>
+}

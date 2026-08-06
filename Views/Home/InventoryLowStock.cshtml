@@ -1,0 +1,88 @@
+@model IReadOnlyList<resturanyar.Models.Inventory.InventoryItemDto>
+@{
+    ViewData["Title"] = "کمبود موجودی";
+    var restaurantId = (int)ViewBag.RestaurantId;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+}
+
+<div class="container inventory-page mt-4">
+    <header class="inv-hero">
+        <div class="inv-hero__text">
+            <h1 class="inv-hero__title">کمبود موجودی</h1>
+            <p class="inv-hero__sub">موادی که موجودی آن‌ها به حداقل رسیده یا کمتر است</p>
+        </div>
+        <div class="inv-hero__actions">
+            <a href="@Url.Action("Inventory", "Home")" class="btn inv-btn-ghost">
+                <i class="fas fa-arrow-right"></i>
+                بازگشت به انبار
+            </a>
+        </div>
+    </header>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="inv-empty">
+            <div class="inv-empty__icon" style="background: rgba(22,163,74,0.1); color: #16a34a;">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <h5>همه چیز مرتب است</h5>
+            <p class="mb-0">همه مواد اولیه بالای حداقل موجودی هستند.</p>
+        </div>
+    }
+    else
+    {
+        <div class="inv-stats" style="grid-template-columns: repeat(2, minmax(0, 280px)); margin-bottom: 1rem;">
+            <div class="inv-stat inv-stat--alert">
+                <span class="inv-stat__value">@Model.Count.ToString("N0")</span>
+                <span class="inv-stat__label">مورد کمبود</span>
+            </div>
+        </div>
+
+        <div class="inv-table-card table-responsive">
+            <table class="table inv-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>دسته</th>
+                        <th>موجودی فعلی</th>
+                        <th>حداقل</th>
+                        <th>کمبود تقریبی</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    var shortage = item.MinimumQuantity - item.CurrentQuantity;
+                    if (shortage < 0) shortage = 0;
+                    <tr class="inv-row--low">
+                        <td>
+                            <div class="inv-cell-name">@item.Name</div>
+                            <div class="inv-cell-meta">@item.Unit</div>
+                        </td>
+                        <td>
+                            <span class="inv-chip">@(item.CategoryName ?? "بدون دسته")</span>
+                        </td>
+                        <td>
+                            <div class="inv-qty" dir="ltr">
+                                <span class="inv-qty__num">@item.CurrentQuantity.ToString("0.###")</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="inv-qty inv-qty--muted" dir="ltr">@item.MinimumQuantity.ToString("0.###")</span>
+                        </td>
+                        <td>
+                            <span class="inv-badge inv-badge--low" dir="ltr">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                @shortage.ToString("0.###")
+                            </span>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

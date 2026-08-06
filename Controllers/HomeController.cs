@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using resturanyar.Helpers;
@@ -32,19 +33,22 @@ namespace resturanyar.Controllers
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
         private readonly resturanyar.Services.Receipt.IReceiptService _receiptService;
+        private readonly resturanyar.Services.Inventory.IInventoryService _inventoryService;
 
         public HomeController(
             AppDbContext context,
             ILogger<HomeController> logger,
             IConfiguration configuration,
             IWebHostEnvironment env,
-            resturanyar.Services.Receipt.IReceiptService receiptService)
+            resturanyar.Services.Receipt.IReceiptService receiptService,
+            resturanyar.Services.Inventory.IInventoryService inventoryService)
         {
             _context = context;
             _logger = logger;
             _configuration = configuration;
             _env = env;
             _receiptService = receiptService;
+            _inventoryService = inventoryService;
         }
         public IActionResult Manage(int restaurantId)
         {
@@ -335,6 +339,26 @@ namespace resturanyar.Controllers
                 revenueChangePercent = 0;
             var settingsDto = await RestaurantSettingsHelper.GetSettingsDtoSafeAsync(_context, restaurantId.Value);
 
+            bool inventoryEnabled = false;
+            int inventoryLowStockCount = 0;
+            int inventoryItemCount = 0;
+            try
+            {
+                var invSettings = await _inventoryService.GetSettingsIfExistsAsync(restaurantId.Value);
+                if (invSettings?.IsEnabled == true)
+                {
+                    inventoryEnabled = true;
+                    var low = await _inventoryService.GetLowStockItemsAsync(restaurantId.Value);
+                    inventoryLowStockCount = low.Count;
+                    var items = await _inventoryService.ListItemsAsync(restaurantId.Value, activeOnly: true);
+                    inventoryItemCount = items.Count;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Inventory dashboard stats unavailable for restaurant {RestaurantId}", restaurantId);
+            }
+
             // ========== ساخت ViewModel ==========
             var vm = new DashboardStatsViewModel
             {
@@ -362,6 +386,9 @@ namespace resturanyar.Controllers
                 SecondaryColor = settingsDto.SecondaryColor,
                 LogoUrl = RestaurantSettingsHelper.ResolveAssetUrl(settingsDto.LogoUrl, RestaurantSettingsHelper.DefaultLogoPath),
                 BackgroundImageUrl = settingsDto.BackgroundImageUrl,
+                InventoryEnabled = inventoryEnabled,
+                InventoryLowStockCount = inventoryLowStockCount,
+                InventoryItemCount = inventoryItemCount,
             };
 
             ViewBag.RestaurantId = restaurantId;
@@ -1665,6 +1692,72 @@ namespace resturanyar.Controllers
             return View(items);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Inventory()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.RestaurantName = restaurant?.name;
+            ViewBag.InventoryEnabled = false;
+            ViewBag.LowStockCount = 0;
+            ViewBag.InventorySchemaReady = true;
+
+            try
+            {
+                var settings = await _inventoryService.GetSettingsAsync(restaurantId.Value);
+                ViewBag.InventoryEnabled = settings.IsEnabled;
+
+                if (settings.IsEnabled)
+                {
+                    var low = await _inventoryService.GetLowStockItemsAsync(restaurantId.Value);
+                    ViewBag.LowStockCount = low.Count;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Inventory schema not ready for restaurant {RestaurantId}", restaurantId);
+                ViewBag.InventorySchemaReady = false;
+            }
+
+            return View();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> InventoryLowStock()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            try
+            {
+                var settings = await _inventoryService.GetSettingsAsync(restaurantId.Value);
+                if (!settings.IsEnabled)
+                    return RedirectToAction("Inventory");
+
+                var restaurant = await _context.Restaurants
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+                var items = await _inventoryService.GetLowStockItemsAsync(restaurantId.Value);
+                ViewBag.RestaurantId = restaurantId.Value;
+                ViewBag.RestaurantName = restaurant?.name;
+                return View(items);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Inventory low-stock unavailable for restaurant {RestaurantId}", restaurantId);
+                return RedirectToAction("Inventory");
+            }
+        }
+
 
         public async Task<IActionResult> AddOrder()
         {
@@ -2002,6 +2095,18 @@ namespace resturanyar.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Auto-issue receipt failed for order {OrderId}", orderId);
+            }
+
+            try
+            {
+                var inventoryConsumption = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                await inventoryConsumption.HandleStatusChangeAsync(
+                    orderId, restaurantId.Value, previousStatusId, newStatusId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Inventory auto-deduct failed for order {OrderId}", orderId);
             }
 
             return Json(new { success = true, message = "وضعیت با موفقیت به‌روز شد.", newStatusId, receipt = receiptData });
