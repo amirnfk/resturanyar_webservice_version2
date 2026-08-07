@@ -767,39 +767,27 @@
 }
 
 @section Scripts {
-    <script type="text/javascript">
-        !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
-    </script>
     <script>
-        var restaurantId = @(ViewBag.RestaurantId ?? 0);
-        var restaurantName = @Html.Raw(Json.Serialize(ViewBag.RestaurantName ?? "رستوران"));
+        document.addEventListener('DOMContentLoaded', function () {
+            var openBtn = document.getElementById('open_chat');
+            if (openBtn) {
+                openBtn.addEventListener('click', function () {
+                    if (window.__rySupportChatInstance && typeof window.__rySupportChatInstance.open === 'function') {
+                        window.__rySupportChatInstance.open();
+                    }
+                });
+            }
 
-        window.addEventListener('goftino_ready', function () {
-            Goftino.setUser({
-                email: 'restaurant ID: ' + restaurantId,
-                name: 'restaurant Name: ' + restaurantName,
-                about: 'رستورانیار دلاویتا',
-                phone: '',
-                avatar: '',
-                forceUpdate: true
-            });
-
-            document.getElementById("open_chat").addEventListener("click", function () {
-                Goftino.open();
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
             var faqQuestions = document.querySelectorAll('.faq-question');
-            faqQuestions.forEach(function(btn) {
-                btn.addEventListener('click', function() {
+            faqQuestions.forEach(function (btn) {
+                btn.addEventListener('click', function () {
                     var answer = this.nextElementSibling;
                     var isOpen = answer.classList.contains('open');
 
-                    document.querySelectorAll('.faq-answer').forEach(function(el) {
+                    document.querySelectorAll('.faq-answer').forEach(function (el) {
                         el.classList.remove('open');
                     });
-                    document.querySelectorAll('.faq-question').forEach(function(el) {
+                    document.querySelectorAll('.faq-question').forEach(function (el) {
                         el.setAttribute('aria-expanded', 'false');
                     });
 

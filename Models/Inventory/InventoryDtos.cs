@@ -95,6 +95,31 @@ namespace resturanyar.Models.Inventory
         public string Name { get; set; } = string.Empty;
     }
 
+    public class UpdateInventoryCategoryRequest
+    {
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+    }
+
+    public class InventoryMovementDto
+    {
+        public int MovementId { get; set; }
+        public int InventoryItemId { get; set; }
+        public string ItemName { get; set; } = string.Empty;
+        public string? Unit { get; set; }
+        public string? UnitNameFa { get; set; }
+        public decimal DeltaQuantity { get; set; }
+        public decimal QuantityAfter { get; set; }
+        public string Reason { get; set; } = string.Empty;
+        public string? Note { get; set; }
+        /// <summary>Related order when movement came from sale consumption / cancel restore.</summary>
+        public int? OrderId { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int? CreatedByOwnerId { get; set; }
+    }
+
     public class InventoryItemDto
     {
         public int InventoryItemId { get; set; }

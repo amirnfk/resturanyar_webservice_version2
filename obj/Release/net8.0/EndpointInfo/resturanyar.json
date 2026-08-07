@@ -792,6 +792,18 @@
         }
       }
     },
+    "/support-chat": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/resturanyar-pricelist": {
       "get": {
         "tags": [
@@ -1026,6 +1038,223 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/settings": {
+      "get": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/admin/settings": {
+      "get": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportUpdateSettingsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportUpdateSettingsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportUpdateSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/admin/unread-total": {
+      "get": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/admin/conversations": {
+      "get": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/admin/conversations/{id}": {
+      "get": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/admin/conversations/{id}/read": {
+      "post": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/open": {
+      "post": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportOpenContextRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportOpenContextRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportOpenContextRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/messages": {
+      "post": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportSendMessageRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportSendMessageRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportSendMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/support-chat/upload": {
+      "post": {
+        "tags": [
+          "SupportChatApi"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -5728,6 +5957,123 @@
           },
           "registrationToken": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupportOpenContextRequest": {
+        "type": "object",
+        "properties": {
+          "guestKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "restaurantId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "restaurantName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupportSendMessageRequest": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientMessageId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "guestKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "restaurantId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "restaurantName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupportUpdateSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "smsNotifyWhenOffline": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "smsThrottleHours": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },

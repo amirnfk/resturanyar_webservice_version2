@@ -1758,6 +1758,35 @@ namespace resturanyar.Controllers
             }
         }
 
+        [Authorize]
+        public async Task<IActionResult> InventoryMovements(int? itemId = null)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            try
+            {
+                var settings = await _inventoryService.GetSettingsAsync(restaurantId.Value);
+                if (!settings.IsEnabled)
+                    return RedirectToAction("Inventory");
+
+                var restaurant = await _context.Restaurants
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+
+                ViewBag.RestaurantId = restaurantId.Value;
+                ViewBag.RestaurantName = restaurant?.name;
+                ViewBag.PreselectedItemId = itemId;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Inventory movements unavailable for restaurant {RestaurantId}", restaurantId);
+                return RedirectToAction("Inventory");
+            }
+        }
+
 
         public async Task<IActionResult> AddOrder()
         {

@@ -266,14 +266,17 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("categories")]
-        public async Task<IActionResult> ListCategories([FromQuery] int restaurantId, CancellationToken ct)
+        public async Task<IActionResult> ListCategories(
+            [FromQuery] int restaurantId,
+            [FromQuery] bool includeInactive = false,
+            CancellationToken ct = default)
         {
             if (!await EnsureOwnedRestaurantAsync(restaurantId, ct))
                 return ForbidResult();
 
             try
             {
-                var data = await _inventory.ListCategoriesAsync(restaurantId, activeOnly: true, ct);
+                var data = await _inventory.ListCategoriesAsync(restaurantId, activeOnly: !includeInactive, ct);
                 return Ok(new { success = true, message = "ok", data });
             }
             catch (InvalidOperationException ex)
@@ -292,6 +295,88 @@ namespace resturanyar.Controllers.Api.V2
             {
                 var data = await _inventory.CreateCategoryAsync(request, ct);
                 return Ok(new { success = true, message = "دسته‌بندی ثبت شد.", data });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPut("categories/{id:int}")]
+        public async Task<IActionResult> UpdateCategory(
+            int id,
+            [FromQuery] int restaurantId,
+            [FromBody] UpdateInventoryCategoryRequest request,
+            CancellationToken ct)
+        {
+            if (!await EnsureOwnedRestaurantAsync(restaurantId, ct))
+                return ForbidResult();
+
+            try
+            {
+                var data = await _inventory.UpdateCategoryAsync(restaurantId, id, request, ct);
+                if (data == null)
+                    return NotFound(new { success = false, message = "دسته‌بندی یافت نشد." });
+                return Ok(new { success = true, message = "دسته‌بندی به‌روزرسانی شد.", data });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpDelete("categories/{id:int}")]
+        public async Task<IActionResult> DeactivateCategory(int id, [FromQuery] int restaurantId, CancellationToken ct)
+        {
+            if (!await EnsureOwnedRestaurantAsync(restaurantId, ct))
+                return ForbidResult();
+
+            try
+            {
+                var ok = await _inventory.DeactivateCategoryAsync(restaurantId, id, ct);
+                if (!ok)
+                    return NotFound(new { success = false, message = "دسته‌بندی یافت نشد." });
+                return Ok(new { success = true, message = "دسته‌بندی غیرفعال شد." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet("movements")]
+        public async Task<IActionResult> ListMovements(
+            [FromQuery] int restaurantId,
+            [FromQuery] int? inventoryItemId,
+            [FromQuery] string? reason,
+            [FromQuery] DateTime? from,
+            [FromQuery] DateTime? to,
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 50,
+            CancellationToken ct = default)
+        {
+            if (!await EnsureOwnedRestaurantAsync(restaurantId, ct))
+                return ForbidResult();
+
+            try
+            {
+                DateTime? fromUtc = null;
+                DateTime? toExclusive = null;
+                if (from.HasValue)
+                    fromUtc = DateTime.SpecifyKind(from.Value.Date, DateTimeKind.Utc);
+                if (to.HasValue)
+                    toExclusive = DateTime.SpecifyKind(to.Value.Date.AddDays(1), DateTimeKind.Utc);
+
+                var data = await _inventory.ListMovementsAsync(
+                    restaurantId,
+                    inventoryItemId,
+                    reason,
+                    fromUtc,
+                    toExclusive,
+                    skip,
+                    take,
+                    ct);
+                return Ok(new { success = true, message = "ok", data });
             }
             catch (InvalidOperationException ex)
             {

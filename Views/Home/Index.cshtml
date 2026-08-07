@@ -489,40 +489,31 @@
 }
 
 @section Scripts {
-    <script type="text/javascript">
-        !function () { var i = "c6rsQH", a = window, d = document; function g() { var g = d.createElement("script"), s = "https://www.goftino.com/widget/" + i, l = localStorage.getItem("goftino_" + i); g.async = !0, g.src = l ? s + "?o=" + l : s; d.getElementsByTagName("head")[0].appendChild(g); } "complete" === d.readyState ? g() : a.attachEvent ? a.attachEvent("onload", g) : a.addEventListener("load", g, !1); }();
-    </script>
     <script>
-        window.addEventListener('goftino_ready', function () {
-            var openChat = document.getElementById("open_chat");
-            var closeChat = document.getElementById("close_chat");
-            var toggleChat = document.getElementById("toggle_chat");
-
-            if (openChat) {
-                openChat.addEventListener("click", function () {
-                    Goftino.setUser({
-                        email: '...',
-                        name: '...',
-                        about: 'Resturanyar...',
-                        phone: '...',
-                        avatar: '...',
-                        forceUpdate: true
-                    });
-                    Goftino.open();
-                });
+        function openSupportChat() {
+            if (window.__rySupportChatInstance && typeof window.__rySupportChatInstance.open === 'function') {
+                window.__rySupportChatInstance.open();
             }
-
-            if (closeChat) {
-                closeChat.addEventListener("click", function () {
-                    Goftino.close();
-                });
+        }
+        function closeSupportChat() {
+            if (window.__rySupportChatInstance && typeof window.__rySupportChatInstance.close === 'function') {
+                window.__rySupportChatInstance.close();
             }
+        }
+        function toggleSupportChat() {
+            if (!window.__rySupportChatInstance) return;
+            var p = window.__rySupportChatInstance.panel;
+            if (p && p.classList.contains('is-open')) window.__rySupportChatInstance.minimize();
+            else window.__rySupportChatInstance.open();
+        }
 
-            if (toggleChat) {
-                toggleChat.addEventListener("click", function () {
-                    Goftino.toggle();
-                });
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+            var openChat = document.getElementById('open_chat');
+            var closeChat = document.getElementById('close_chat');
+            var toggleChat = document.getElementById('toggle_chat');
+            if (openChat) openChat.addEventListener('click', openSupportChat);
+            if (closeChat) closeChat.addEventListener('click', closeSupportChat);
+            if (toggleChat) toggleChat.addEventListener('click', toggleSupportChat);
         });
     </script>
 }

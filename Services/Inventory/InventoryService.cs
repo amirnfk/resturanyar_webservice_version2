@@ -469,6 +469,159 @@ namespace resturanyar.Services.Inventory
             };
         }
 
+        public async Task<InventoryCategoryDto?> UpdateCategoryAsync(
+            int restaurantId,
+            int categoryId,
+            UpdateInventoryCategoryRequest request,
+            CancellationToken ct = default)
+        {
+            await EnsureEnabledAsync(restaurantId, ct);
+
+            var category = await _db.InventoryCategories
+                .FirstOrDefaultAsync(c => c.InventoryCategoryId == categoryId && c.RestaurantId == restaurantId, ct);
+            if (category == null || !category.IsActive)
+                return null;
+
+            var name = request.Name.Trim();
+            if (string.IsNullOrWhiteSpace(name))
+                throw new InvalidOperationException("نام دسته‌بندی الزامی است.");
+
+            var exists = await _db.InventoryCategories.AnyAsync(
+                c => c.RestaurantId == restaurantId
+                     && c.IsActive
+                     && c.Name == name
+                     && c.InventoryCategoryId != categoryId, ct);
+            if (exists)
+                throw new InvalidOperationException("این دسته‌بندی از قبل وجود دارد.");
+
+            category.Name = name;
+            await _db.SaveChangesAsync(ct);
+
+            return new InventoryCategoryDto
+            {
+                InventoryCategoryId = category.InventoryCategoryId,
+                RestaurantId = category.RestaurantId,
+                Name = category.Name,
+                IsActive = category.IsActive
+            };
+        }
+
+        public async Task<bool> DeactivateCategoryAsync(int restaurantId, int categoryId, CancellationToken ct = default)
+        {
+            await EnsureEnabledAsync(restaurantId, ct);
+
+            var category = await _db.InventoryCategories
+                .FirstOrDefaultAsync(c => c.InventoryCategoryId == categoryId && c.RestaurantId == restaurantId, ct);
+            if (category == null || !category.IsActive)
+                return false;
+
+            category.IsActive = false;
+            await _db.SaveChangesAsync(ct);
+            return true;
+        }
+
+        public async Task<IReadOnlyList<InventoryMovementDto>> ListMovementsAsync(
+            int restaurantId,
+            int? inventoryItemId = null,
+            string? reason = null,
+            DateTime? fromUtc = null,
+            DateTime? toUtcExclusive = null,
+            int skip = 0,
+            int take = 50,
+            CancellationToken ct = default)
+        {
+            await EnsureEnabledAsync(restaurantId, ct);
+
+            if (take <= 0) take = 50;
+            if (take > 100) take = 100;
+            if (skip < 0) skip = 0;
+
+            var query = _db.InventoryMovements.AsNoTracking()
+                .Where(m => m.RestaurantId == restaurantId);
+
+            if (inventoryItemId.HasValue && inventoryItemId.Value > 0)
+                query = query.Where(m => m.InventoryItemId == inventoryItemId.Value);
+
+            if (!string.IsNullOrWhiteSpace(reason))
+            {
+                var reasonNorm = InventoryMovementReasons.All
+                    .FirstOrDefault(r => string.Equals(r, reason.Trim(), StringComparison.OrdinalIgnoreCase));
+                if (reasonNorm == null)
+                    throw new InvalidOperationException("دلیل حرکت معتبر نیست.");
+                query = query.Where(m => m.Reason == reasonNorm);
+            }
+
+            if (fromUtc.HasValue)
+                query = query.Where(m => m.CreatedAt >= fromUtc.Value);
+
+            if (toUtcExclusive.HasValue)
+                query = query.Where(m => m.CreatedAt < toUtcExclusive.Value);
+
+            var rows = await query
+                .OrderByDescending(m => m.CreatedAt)
+                .ThenByDescending(m => m.MovementId)
+                .Skip(skip)
+                .Take(take)
+                .Select(m => new
+                {
+                    m.MovementId,
+                    m.InventoryItemId,
+                    ItemName = m.Item != null ? m.Item.Name : "",
+                    Unit = m.Item != null ? m.Item.Unit : null,
+                    UnitNameFa = m.Item != null && m.Item.BaseUnit != null ? m.Item.BaseUnit.NameFa : null,
+                    m.DeltaQuantity,
+                    m.QuantityAfter,
+                    m.Reason,
+                    m.Note,
+                    m.UnitPrice,
+                    m.CreatedAt,
+                    m.CreatedByOwnerId
+                })
+                .ToListAsync(ct);
+
+            return rows.Select(m => new InventoryMovementDto
+            {
+                MovementId = m.MovementId,
+                InventoryItemId = m.InventoryItemId,
+                ItemName = m.ItemName ?? "",
+                Unit = m.Unit,
+                UnitNameFa = m.UnitNameFa,
+                DeltaQuantity = m.DeltaQuantity,
+                QuantityAfter = m.QuantityAfter,
+                Reason = m.Reason,
+                Note = m.Note,
+                OrderId = TryParseRelatedOrderId(m.Note),
+                UnitPrice = m.UnitPrice,
+                CreatedAt = m.CreatedAt,
+                CreatedByOwnerId = m.CreatedByOwnerId
+            }).ToList();
+        }
+
+        /// <summary>
+        /// Sale deduct notes are "Order:{id}"; cancel restore notes are "Cancel order {id}".
+        /// </summary>
+        private static int? TryParseRelatedOrderId(string? note)
+        {
+            if (string.IsNullOrWhiteSpace(note))
+                return null;
+
+            note = note.Trim();
+            if (note.StartsWith("Order:", StringComparison.OrdinalIgnoreCase))
+            {
+                if (int.TryParse(note.AsSpan("Order:".Length), out var id) && id > 0)
+                    return id;
+            }
+
+            const string cancelPrefix = "Cancel order ";
+            if (note.StartsWith(cancelPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                if (int.TryParse(note.AsSpan(cancelPrefix.Length), out var id) && id > 0)
+                    return id;
+            }
+
+            return null;
+        }
+
         private async Task EnsureEnabledAsync(int restaurantId, CancellationToken ct)
         {
             if (!await IsEnabledAsync(restaurantId, ct))

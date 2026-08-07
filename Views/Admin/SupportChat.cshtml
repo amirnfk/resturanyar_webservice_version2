@@ -1,0 +1,810 @@
+@using resturanyar.Models.SupportChat
+@{
+    ViewData["Title"] = "چت پشتیبانی";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var settings = ViewBag.Settings as SupportChatSettingsDto;
+    var initialUnread = (int)(ViewBag.InitialUnread ?? 0);
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<style>
+    .sc-admin-page {
+        --sc-ink: #1c1917;
+        --sc-muted: #78716c;
+        --sc-line: rgba(28, 25, 23, 0.08);
+        --sc-surface: #fff;
+        --sc-surface-2: #fafaf9;
+        --sc-accent: #ea580c;
+        --sc-radius: 16px;
+        direction: rtl;
+    }
+
+    .sc-admin-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        background: linear-gradient(145deg, #1c1917 0%, #292524 100%);
+        border-radius: var(--sc-radius);
+        color: #fff;
+        box-shadow: 0 10px 28px rgba(28, 25, 23, 0.16);
+    }
+
+    .sc-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        user-select: none;
+        padding: 8px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sc-toggle input {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 40px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.22);
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        flex-shrink: 0;
+        margin: 0;
+        border: none;
+        outline: none;
+    }
+
+    .sc-toggle input::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 0.2s ease;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .sc-toggle input:checked {
+        background: #ea580c;
+    }
+
+    .sc-toggle input:checked::after {
+        transform: translateX(-18px);
+    }
+
+    .sc-online-pill {
+        margin-right: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #bbf7d0;
+        background: rgba(22, 163, 74, 0.18);
+        border: 1px solid rgba(74, 222, 128, 0.25);
+        padding: 8px 12px;
+        border-radius: 999px;
+    }
+
+    .sc-online-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+    }
+
+    .sc-admin-wrap {
+        display: grid;
+        grid-template-columns: 300px 1fr 270px;
+        gap: 14px;
+        height: calc(100vh - 260px);
+        min-height: 520px;
+    }
+
+    .sc-admin-card {
+        background: var(--sc-surface);
+        border: 1px solid var(--sc-line);
+        border-radius: var(--sc-radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        box-shadow: 0 4px 18px rgba(28, 25, 23, 0.05);
+    }
+
+    .sc-list-header,
+    .sc-chat-header,
+    .sc-ctx-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--sc-line);
+        font-weight: 800;
+        color: var(--sc-ink);
+        background: var(--sc-surface-2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .sc-chat-header {
+        background: linear-gradient(145deg, #fff7ed, #fff);
+    }
+
+    .sc-list {
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+        scrollbar-width: thin;
+    }
+
+    .sc-item {
+        padding: 13px 14px;
+        border-bottom: 1px solid rgba(28, 25, 23, 0.05);
+        cursor: pointer;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        transition: background 0.15s ease;
+    }
+
+    .sc-item:hover { background: #fafaf9; }
+
+    .sc-item.active {
+        background: linear-gradient(90deg, #fff7ed, #fffbeb);
+        box-shadow: inset 3px 0 0 #ea580c;
+    }
+
+    .sc-item-main { flex: 1; min-width: 0; }
+
+    .sc-item-title {
+        font-weight: 700;
+        font-size: 0.92rem;
+        color: var(--sc-ink);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sc-item-preview {
+        color: var(--sc-muted);
+        font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 5px;
+    }
+
+    .sc-item-time {
+        color: #a8a29e;
+        font-size: 0.72rem;
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+
+    .sc-badge {
+        background: #e11d48;
+        color: #fff;
+        border-radius: 999px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        font-size: 11px;
+        line-height: 20px;
+        text-align: center;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .sc-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background:
+            radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 88, 12, 0.06), transparent 55%),
+            var(--sc-surface-2);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+        scrollbar-width: thin;
+    }
+
+    .sc-bubble {
+        max-width: 78%;
+        padding: 11px 13px;
+        border-radius: 16px;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        word-break: break-word;
+        animation: scBubbleIn 0.2s ease;
+    }
+
+    @@keyframes scBubbleIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .sc-bubble.customer {
+        align-self: flex-end;
+        background: #fff;
+        border: 1px solid var(--sc-line);
+        border-bottom-left-radius: 5px;
+        color: var(--sc-ink);
+        box-shadow: 0 2px 8px rgba(28, 25, 23, 0.04);
+    }
+
+    .sc-bubble.support {
+        align-self: flex-start;
+        background: linear-gradient(145deg, #f97316, #ea580c);
+        color: #fff;
+        border-bottom-right-radius: 5px;
+        box-shadow: 0 6px 16px rgba(234, 88, 12, 0.22);
+    }
+
+    .sc-bubble img {
+        max-width: 100%;
+        border-radius: 12px;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .sc-meta {
+        font-size: 0.7rem;
+        opacity: 0.8;
+        margin-top: 7px;
+        font-weight: 500;
+    }
+
+    .sc-composer {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 12px;
+        border-top: 1px solid var(--sc-line);
+        background: rgba(255, 255, 255, 0.95);
+        flex-shrink: 0;
+    }
+
+    .sc-composer .sc-input-wrap {
+        flex: 1;
+        min-width: 0;
+        background: var(--sc-surface-2);
+        border: 1px solid var(--sc-line);
+        border-radius: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sc-composer .sc-input-wrap:focus-within {
+        border-color: rgba(234, 88, 12, 0.45);
+        box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+        background: #fff;
+    }
+
+    .sc-composer textarea {
+        display: block;
+        width: 100%;
+        border: none;
+        background: transparent;
+        border-radius: 14px;
+        padding: 11px 14px;
+        resize: none;
+        min-height: 44px;
+        max-height: 120px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        outline: none;
+        color: var(--sc-ink);
+    }
+
+    .sc-composer button {
+        border: none;
+        border-radius: 14px;
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(145deg, #f97316, #ea580c);
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        line-height: 1;
+        flex-shrink: 0;
+        box-shadow: 0 6px 14px rgba(234, 88, 12, 0.25);
+        transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .sc-composer button i {
+        display: block;
+        line-height: 1;
+        font-size: 0.95rem;
+        width: 1em;
+        text-align: center;
+    }
+
+    .sc-composer button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .sc-composer .sc-attach {
+        background: var(--sc-surface-2);
+        color: var(--sc-muted);
+        border: 1px solid var(--sc-line);
+        box-shadow: none;
+    }
+
+    .sc-composer .sc-attach:hover:not(:disabled) {
+        color: var(--sc-accent);
+        border-color: rgba(234, 88, 12, 0.3);
+        background: #fff;
+    }
+
+    .sc-composer #scSend:hover:not(:disabled) {
+        transform: translateY(-1px);
+    }
+
+    .sc-ctx {
+        padding: 14px;
+        font-size: 0.84rem;
+        color: var(--sc-muted);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    .sc-ctx-row {
+        padding: 10px 12px;
+        background: var(--sc-surface-2);
+        border: 1px solid var(--sc-line);
+        border-radius: 12px;
+    }
+
+    .sc-ctx-row strong {
+        color: var(--sc-ink);
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.75rem;
+        font-weight: 800;
+    }
+
+    .sc-ctx-row span {
+        word-break: break-word;
+        color: #57534e;
+        line-height: 1.5;
+    }
+
+    .sc-empty {
+        margin: auto;
+        color: var(--sc-muted);
+        text-align: center;
+        padding: 32px 20px;
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    .sc-empty i {
+        display: block;
+        font-size: 1.6rem;
+        color: #fdba74;
+        margin-bottom: 10px;
+    }
+
+    @@media (max-width: 1100px) {
+        .sc-admin-wrap { grid-template-columns: 260px 1fr; height: auto; min-height: 70vh; }
+        .sc-ctx-card { display: none; }
+    }
+
+    @@media (max-width: 760px) {
+        .sc-admin-wrap { grid-template-columns: 1fr; height: auto; }
+        .sc-admin-card { min-height: 360px; }
+        .sc-online-pill { width: 100%; justify-content: center; margin-right: 0; }
+    }
+</style>
+
+<div class="sc-admin-page">
+<div class="sc-admin-toolbar">
+    <label class="sc-toggle">
+        <input type="checkbox" id="scEnabled" @(settings?.IsEnabled == true ? "checked" : null) />
+        فعال‌سازی چت داخلی
+    </label>
+    <label class="sc-toggle">
+        <input type="checkbox" id="scSms" @(settings?.SmsNotifyWhenOffline != false ? "checked" : null) />
+        ارسال پیامک در حالت آفلاین
+    </label>
+    <span class="sc-online-pill" id="scPresenceLabel">شما آنلاین هستید</span>
+</div>
+
+<div class="sc-admin-wrap">
+    <div class="sc-admin-card">
+        <div class="sc-list-header"><i class="fas fa-comments" style="color:#ea580c"></i> گفتگوها</div>
+        <div class="sc-list" id="scList"><div class="sc-empty"><i class="fas fa-spinner fa-spin"></i>در حال بارگذاری…</div></div>
+    </div>
+    <div class="sc-admin-card">
+        <div class="sc-chat-header" id="scChatTitle"><i class="fas fa-headset" style="color:#ea580c"></i> یک گفتگو را انتخاب کنید</div>
+        <div class="sc-messages" id="scMessages"><div class="sc-empty"><i class="fas fa-inbox"></i>برای شروع، یک گفتگو را از لیست انتخاب کنید.</div></div>
+        <div class="sc-composer">
+            <button type="button" class="sc-attach" id="scAttach" title="تصویر"><i class="fas fa-image"></i></button>
+            <input type="file" id="scFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+            <div class="sc-input-wrap">
+                <textarea id="scInput" placeholder="پاسخ خود را بنویسید…" disabled></textarea>
+            </div>
+            <button type="button" id="scSend" disabled title="ارسال"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <div class="sc-admin-card sc-ctx-card">
+        <div class="sc-ctx-header"><i class="fas fa-info-circle" style="color:#ea580c"></i> اطلاعات</div>
+        <div class="sc-ctx" id="scContext">
+            <div class="sc-empty"><i class="fas fa-user"></i>گفتگویی انتخاب نشده است.</div>
+        </div>
+    </div>
+</div>
+</div>
+
+<audio id="scNotifyAudio" preload="auto" src="/sounds/support-notify.mp3"></audio>
+
+@section Scripts {
+<script src="/lib/microsoft-signalr/signalr.min.js"></script>
+<script src="~/js/support-image-prep.js" asp-append-version="true"></script>
+<script>
+(function () {
+    const api = '/api/support-chat';
+    let connection = null;
+    let activeId = null;
+    let conversations = [];
+    const notifyAudio = document.getElementById('scNotifyAudio');
+
+    function escapeHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function isAllowedSupportImageUrl(url) {
+        if (!url || typeof url !== 'string') return false;
+        var u = url.trim();
+        if (!u || u.length > 500) return false;
+        if (u.indexOf('..') >= 0) return false;
+        if (/[\s"'<>\\]/.test(u)) return false;
+        if (u.indexOf(':') >= 0) return false;
+        return /^\/uploads\/support\//i.test(u);
+    }
+
+    function imageHtml(url) {
+        if (!isAllowedSupportImageUrl(url)) return '';
+        var safe = escapeHtml(url);
+        return '<a href="' + safe + '" target="_blank" rel="noopener"><img src="' + safe + '" alt="" /></a>';
+    }
+
+    function toTehranDate(iso) {
+        if (!iso) return null;
+        var s = String(iso).trim();
+        if (!/[zZ]$|[+-]\d{2}:?\d{2}$/.test(s)) {
+            s = s.replace(' ', 'T');
+            if (s.indexOf('T') === -1) return null;
+            s += 'Z';
+        }
+        var d = new Date(s);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatTime(iso) {
+        try {
+            var d = toTehranDate(iso);
+            if (!d) return '';
+            return d.toLocaleString('fa-IR', {
+                timeZone: 'Asia/Tehran',
+                hour: '2-digit',
+                minute: '2-digit',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function playNotify() {
+        if (!notifyAudio) return;
+        try {
+            notifyAudio.currentTime = 0;
+            notifyAudio.play().catch(function () {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.connect(g); g.connect(ctx.destination);
+                    o.frequency.value = 880; g.gain.value = 0.05;
+                    o.start(); setTimeout(function () { o.stop(); ctx.close(); }, 180);
+                } catch (e) {}
+            });
+        } catch (e) {}
+    }
+
+    function updateNavBadge(total) {
+        if (typeof window.__rySetSupportUnreadBadge === 'function') {
+            window.__rySetSupportUnreadBadge(total);
+        }
+    }
+
+    function renderList() {
+        const list = document.getElementById('scList');
+        if (!conversations.length) {
+            list.innerHTML = '<div class="sc-empty"><i class="fas fa-comments"></i>هنوز گفتگویی نیست.</div>';
+            return;
+        }
+        list.innerHTML = conversations.map(c => `
+            <div class="sc-item ${c.id === activeId ? 'active' : ''}" data-id="${c.id}">
+                <div class="sc-item-main">
+                    <div class="sc-item-title">
+                        <span>${escapeHtml(c.displayName)}</span>
+                        ${c.unreadBySupport > 0 ? `<span class="sc-badge">${c.unreadBySupport > 99 ? '99+' : c.unreadBySupport}</span>` : ''}
+                    </div>
+                    <div class="sc-item-preview">${escapeHtml(c.preview || '')}</div>
+                </div>
+                <div class="sc-item-time">${formatTime(c.lastMessageAtUtc)}</div>
+            </div>`).join('');
+
+        list.querySelectorAll('.sc-item').forEach(el => {
+            el.addEventListener('click', () => openConversation(parseInt(el.getAttribute('data-id'), 10)));
+        });
+    }
+
+    function renderContext(detail) {
+        const el = document.getElementById('scContext');
+        if (!detail) {
+            el.innerHTML = '<div class="sc-empty"><i class="fas fa-user"></i>گفتگویی انتخاب نشده است.</div>';
+            return;
+        }
+        el.innerHTML = `
+            <div class="sc-ctx-row"><strong>رستوران</strong><span>${escapeHtml(detail.restaurantName || '—')}</span></div>
+            <div class="sc-ctx-row"><strong>مالک</strong><span>${escapeHtml(detail.ownerName || '—')}</span></div>
+            <div class="sc-ctx-row"><strong>تلفن</strong><span>${escapeHtml(detail.ownerPhone || '—')}</span></div>
+            <div class="sc-ctx-row"><strong>شناسه رستوران</strong><span>${detail.restaurantId ?? '—'}</span></div>
+            <div class="sc-ctx-row"><strong>صفحه</strong><span>${escapeHtml(detail.lastPageUrl || '—')}</span></div>
+            <div class="sc-ctx-row"><strong>مرورگر</strong><span>${escapeHtml(detail.userAgent || '—')}</span></div>`;
+    }
+
+    function renderMessages(messages) {
+        const box = document.getElementById('scMessages');
+        if (!messages || !messages.length) {
+            box.innerHTML = '<div class="sc-empty"><i class="fas fa-comment-dots"></i>پیامی نیست. اولین پاسخ را بنویسید.</div>';
+            return;
+        }
+        box.innerHTML = messages.map(m => {
+            const mine = m.senderType === 1;
+            return `<div class="sc-bubble ${mine ? 'support' : 'customer'}" ${m.id ? `data-mid="${m.id}"` : ''} ${m.clientMessageId ? `data-cid="${m.clientMessageId}"` : ''}>
+                ${imageHtml(m.imageUrl)}
+                ${m.body ? `<div>${escapeHtml(m.body)}</div>` : ''}
+                <div class="sc-meta">${formatTime(m.createdAtUtc)}</div>
+            </div>`;
+        }).join('');
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function loadConversations() {
+        const res = await fetch(api + '/admin/conversations', { credentials: 'same-origin' });
+        const json = await res.json();
+        conversations = (json.data || []).slice();
+        renderList();
+    }
+
+    async function openConversation(id) {
+        activeId = id;
+        renderList();
+        document.getElementById('scInput').disabled = false;
+        document.getElementById('scSend').disabled = false;
+
+        const res = await fetch(api + `/admin/conversations/${id}`, { credentials: 'same-origin' });
+        const json = await res.json();
+        if (!json.success) return;
+        const detail = json.data;
+        const title = detail.restaurantName || detail.ownerName || (detail.guestKey ? 'مهمان' : 'گفتگو');
+        document.getElementById('scChatTitle').innerHTML = `<i class="fas fa-headset" style="color:#ea580c"></i> ${escapeHtml(title)}`;
+        renderMessages(detail.messages || []);
+        renderContext(detail);
+
+        if (connection) {
+            await connection.invoke('JoinConversation', id);
+            await connection.invoke('MarkConversationRead', id);
+        } else {
+            await fetch(api + `/admin/conversations/${id}/read`, { method: 'POST', credentials: 'same-origin' });
+        }
+
+        const row = conversations.find(c => c.id === id);
+        if (row) row.unreadBySupport = 0;
+        renderList();
+    }
+
+    async function sendSupport(payload) {
+        if (!activeId || !connection) return;
+        const clientMessageId = crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random());
+        await connection.invoke('SendSupportMessage', {
+            conversationId: activeId,
+            body: payload.body || null,
+            imageUrl: payload.imageUrl || null,
+            clientMessageId: clientMessageId
+        });
+    }
+
+    async function saveSettings() {
+        await fetch(api + '/admin/settings', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                isEnabled: document.getElementById('scEnabled').checked,
+                smsNotifyWhenOffline: document.getElementById('scSms').checked
+            })
+        });
+    }
+
+    async function startHub() {
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl('/supportChatHub')
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on('ReceiveMessage', async (msg) => {
+            if (!msg) return;
+            if (msg.id && document.querySelector('#scMessages .sc-bubble[data-mid="' + msg.id + '"]')) return;
+            if (msg.clientMessageId && document.querySelector('#scMessages .sc-bubble[data-cid="' + msg.clientMessageId + '"]')) return;
+
+            // Sound only when this conversation is not currently open
+            if (msg.senderType === 0 && msg.conversationId !== activeId) playNotify();
+
+            const row = conversations.find(c => c.id === msg.conversationId);
+            if (row) {
+                row.lastMessageAtUtc = msg.createdAtUtc;
+                row.preview = msg.body || (msg.imageUrl ? '🖼 تصویر' : row.preview);
+                if (msg.senderType === 0 && msg.conversationId !== activeId) {
+                    row.unreadBySupport = (row.unreadBySupport || 0) + 1;
+                }
+                conversations = [row, ...conversations.filter(c => c.id !== row.id)];
+            } else if (msg.senderType === 0) {
+                await loadConversations();
+            }
+            renderList();
+
+            if (msg.conversationId === activeId) {
+                const box = document.getElementById('scMessages');
+                const empty = box.querySelector('.sc-empty');
+                if (empty) empty.remove();
+                const mine = msg.senderType === 1;
+                const div = document.createElement('div');
+                div.className = 'sc-bubble ' + (mine ? 'support' : 'customer');
+                if (msg.id) div.setAttribute('data-mid', msg.id);
+                if (msg.clientMessageId) div.setAttribute('data-cid', msg.clientMessageId);
+                div.innerHTML = `${imageHtml(msg.imageUrl)}${msg.body ? `<div>${escapeHtml(msg.body)}</div>` : ''}<div class="sc-meta">${formatTime(msg.createdAtUtc)}</div>`;
+                box.appendChild(div);
+                box.scrollTop = box.scrollHeight;
+                if (msg.senderType === 0) {
+                    await connection.invoke('MarkConversationRead', activeId);
+                }
+            }
+        });
+
+        connection.on('UnreadUpdated', (u) => {
+            if (u && typeof u.totalUnread === 'number') updateNavBadge(u.totalUnread);
+            if (u && u.conversationId && typeof u.conversationUnread === 'number') {
+                const row = conversations.find(c => c.id === u.conversationId);
+                if (row) {
+                    row.unreadBySupport = u.conversationUnread;
+                    renderList();
+                }
+            }
+        });
+
+        connection.on('ConversationUpdated', (c) => {
+            if (!c || !c.conversationId) return;
+            let row = conversations.find(x => x.id === c.conversationId);
+            if (!row) {
+                row = {
+                    id: c.conversationId,
+                    displayName: c.displayName || 'گفتگو',
+                    preview: c.preview || '',
+                    lastMessageAtUtc: c.lastMessageAtUtc,
+                    unreadBySupport: c.unreadBySupport || 0,
+                    restaurantId: c.restaurantId,
+                    isGuest: !!c.isGuest
+                };
+                conversations.unshift(row);
+            } else {
+                row.preview = c.preview || row.preview;
+                row.lastMessageAtUtc = c.lastMessageAtUtc || row.lastMessageAtUtc;
+                row.unreadBySupport = c.unreadBySupport ?? row.unreadBySupport;
+                conversations = [row, ...conversations.filter(x => x.id !== row.id)];
+            }
+            renderList();
+        });
+
+        connection.on('ConversationRead', (p) => {
+            if (!p) return;
+            const row = conversations.find(c => c.id === p.conversationId);
+            if (row) { row.unreadBySupport = 0; renderList(); }
+        });
+
+        connection.onreconnected(async () => {
+            try {
+                await connection.invoke('JoinSupportPresence');
+                if (activeId) {
+                    await connection.invoke('JoinConversation', activeId);
+                }
+            } catch (e) { }
+        });
+
+        await connection.start();
+        await connection.invoke('JoinSupportPresence');
+        window.__rySupportPresenceJoined = true;
+    }
+
+    document.getElementById('scEnabled').addEventListener('change', saveSettings);
+    document.getElementById('scSms').addEventListener('change', saveSettings);
+    document.getElementById('scSend').addEventListener('click', async () => {
+        const input = document.getElementById('scInput');
+        const text = (input.value || '').trim();
+        if (!text) return;
+        input.value = '';
+        await sendSupport({ body: text });
+    });
+    document.getElementById('scAttach').addEventListener('click', () => document.getElementById('scFile').click());
+    document.getElementById('scFile').addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        const sendBtn = document.getElementById('scSend');
+        const attachBtn = document.getElementById('scAttach');
+        const input = document.getElementById('scInput');
+        const prevSend = sendBtn ? sendBtn.disabled : false;
+        const prevAttach = attachBtn ? attachBtn.disabled : false;
+        if (sendBtn) sendBtn.disabled = true;
+        if (attachBtn) attachBtn.disabled = true;
+        if (input) input.disabled = true;
+        try {
+            const prepare = window.__ryPrepareSupportImage;
+            const ready = prepare ? await prepare(file) : file;
+            const form = new FormData();
+            form.append('file', ready, (ready && ready.name) ? ready.name : ('support-' + Date.now() + '.jpg'));
+            const res = await fetch(api + '/upload', { method: 'POST', body: form, credentials: 'same-origin' });
+            const json = await res.json();
+            if (!json.success) { alert(json.message || 'آپلود ناموفق'); return; }
+            const caption = (input.value || '').trim();
+            input.value = '';
+            await sendSupport({ body: caption || null, imageUrl: json.data.imageUrl });
+        } catch (err) {
+            alert('ارسال تصویر ناموفق بود.');
+        } finally {
+            if (sendBtn) sendBtn.disabled = prevSend;
+            if (attachBtn) attachBtn.disabled = prevAttach;
+            if (input) input.disabled = false;
+        }
+    });
+    document.getElementById('scInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('scSend').click();
+        }
+    });
+
+    updateNavBadge(@initialUnread);
+    loadConversations().then(startHub).catch(console.error);
+})();
+</script>
+}

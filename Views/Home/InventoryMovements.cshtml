@@ -1,0 +1,580 @@
+@{
+    ViewData["Title"] = "گردش موجودی";
+    var restaurantId = (int)ViewBag.RestaurantId;
+    var preselectedItemId = ViewBag.PreselectedItemId as int?;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
+    <link rel="stylesheet" href="~/css/inventory.css" asp-append-version="true" />
+}
+
+<div class="container inventory-page mt-4"
+     data-restaurant-id="@restaurantId"
+     data-item-id="@(preselectedItemId ?? 0)">
+    <header class="inv-hero">
+        <div class="inv-hero__text">
+            <h1 class="inv-hero__title">گردش موجودی</h1>
+            <p class="inv-hero__sub">ورود، تعدیل، ضایعات و مصرف سفارش‌ها</p>
+        </div>
+        <div class="inv-hero__actions">
+            <a href="@Url.Action("Inventory", "Home")" class="btn inv-btn-ghost">
+                <i class="fas fa-arrow-right"></i>
+                بازگشت به انبار
+            </a>
+        </div>
+    </header>
+
+    <div class="inv-toolbar inv-toolbar--movements">
+        <select id="filterItem" class="form-select">
+            <option value="">همه مواد</option>
+        </select>
+        <select id="filterReason" class="form-select">
+            <option value="">همه دلایل</option>
+            <option value="Purchase">خرید / ورود</option>
+            <option value="Waste">ضایعات</option>
+            <option value="Adjustment">اصلاح موجودی</option>
+            <option value="Correction">اصلاح خطا</option>
+            <option value="Opening">موجودی اولیه</option>
+            <option value="SaleConsumption">مصرف سفارش</option>
+        </select>
+        <input data-jdp id="fromFa" class="form-control bg-white" placeholder="از تاریخ" title="از تاریخ" readonly />
+        <input type="hidden" id="fromIso" value="" />
+        <input data-jdp id="toFa" class="form-control bg-white" placeholder="تا تاریخ" title="تا تاریخ" readonly />
+        <input type="hidden" id="toIso" value="" />
+        <button type="button" class="btn btn-primary" id="btnApplyFilters">اعمال</button>
+    </div>
+
+    <div id="errorBanner" class="inv-alert inv-alert--error d-none" role="alert"></div>
+
+    <div id="movementsEmpty" class="inv-empty d-none">
+        <div class="inv-empty__icon">
+            <i class="fas fa-clock-rotate-left"></i>
+        </div>
+        <h5>گردشی برای نمایش وجود ندارد</h5>
+        <p class="mb-0">با شرایط انتخاب‌شده، هیچ تغییری در موجودی ثبت نشده است. فیلترها را تغییر دهید یا بازه تاریخ دیگری را امتحان کنید.</p>
+    </div>
+
+    <div id="movementsWrap" class="inv-table-card table-responsive d-none">
+        <table class="table inv-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>ماده</th>
+                    <th>تغییر</th>
+                    <th>موجودی بعد</th>
+                    <th>دلیل</th>
+                    <th>مرجع / یادداشت</th>
+                </tr>
+            </thead>
+            <tbody id="movementsBody"></tbody>
+        </table>
+    </div>
+
+    <div class="inv-load-more d-none" id="loadMoreWrap">
+        <button type="button" class="btn inv-btn-ghost" id="btnLoadMore">بارگذاری بیشتر</button>
+    </div>
+</div>
+
+<div class="modal fade inventory-modal" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header inv-order-modal__header">
+                <div class="inv-order-modal__heading">
+                    <span class="inv-order-modal__icon" aria-hidden="true"><i class="fas fa-receipt"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="orderDetailModalTitle">جزئیات سفارش</h5>
+                        <p class="inv-order-modal__sub" id="orderDetailSubtitle">—</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div id="orderDetailLoading" class="inv-order-loading" hidden>
+                    <div class="inv-order-spinner" aria-hidden="true"></div>
+                    <p>در حال دریافت جزئیات سفارش…</p>
+                </div>
+                <div id="orderDetailError" class="alert alert-danger inv-order-error d-none" role="alert"></div>
+                <div id="orderDetailContent" class="d-none">
+                    <div class="inv-order-meta" id="orderDetailMeta"></div>
+                    <div class="inv-order-items-wrap">
+                        <div class="inv-order-items-head">
+                            <h6>اقلام سفارش</h6>
+                            <span class="inv-order-items-count" id="orderItemsCount"></span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table inv-order-items-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>غذا</th>
+                                        <th class="text-center">تعداد</th>
+                                        <th class="text-start">قیمت واحد</th>
+                                        <th class="text-start">جمع</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orderDetailItems"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="inv-order-total" id="orderDetailTotal"></div>
+                    <p class="inv-order-desc d-none" id="orderDetailDesc"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/jalalidatepicker.min.js"></script>
+<script>
+(function () {
+    const page = document.querySelector('.inventory-page');
+    if (!page) return;
+
+    const restaurantId = Number(page.dataset.restaurantId);
+    const preselectedItemId = Number(page.dataset.itemId) || 0;
+    const API = '/api/v2/inventory';
+    const PAGE_SIZE = 50;
+
+    const reasonLabels = {
+        Opening: 'موجودی اولیه',
+        Purchase: 'خرید / ورود',
+        Adjustment: 'اصلاح موجودی',
+        Waste: 'ضایعات',
+        Correction: 'اصلاح خطا',
+        SaleConsumption: 'مصرف سفارش'
+    };
+
+    let skip = 0;
+    let loading = false;
+    let hasMore = false;
+
+    function jalali_to_gregorian(jy, jm, jd) {
+        jy -= 979; jm -= 1; jd -= 1;
+        var j_day_no = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4);
+        var j_days = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+        for (var i = 0; i < jm; ++i) j_day_no += j_days[i];
+        j_day_no += jd;
+        var g_day_no = j_day_no + 79;
+        var gy = 1600 + 400 * Math.floor(g_day_no / 146097); g_day_no %= 146097;
+        var leap = true;
+        if (g_day_no >= 36525) {
+            g_day_no--; gy += 100 * Math.floor(g_day_no / 36524); g_day_no %= 36524;
+            if (g_day_no >= 365) g_day_no++; else leap = false;
+        }
+        gy += 4 * Math.floor(g_day_no / 1461); g_day_no %= 1461;
+        if (g_day_no >= 366) { leap = false; g_day_no--; gy += Math.floor(g_day_no / 365); g_day_no %= 365; }
+        var g_days = [31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var gm; for (gm = 0; g_day_no >= g_days[gm]; gm++) g_day_no -= g_days[gm];
+        return [gy, gm + 1, g_day_no + 1];
+    }
+
+    function jalaliFaToIso(faDate) {
+        if (!faDate) return '';
+        var parts = faDate.split('/').map(Number);
+        if (parts.length !== 3 || parts.some(function (n) { return !n && n !== 0; })) return '';
+        var g = jalali_to_gregorian(parts[0], parts[1], parts[2]);
+        return g[0] + '-' + String(g[1]).padStart(2, '0') + '-' + String(g[2]).padStart(2, '0');
+    }
+
+    function initializeDatepickers() {
+        if (typeof jalaliDatepicker !== 'undefined') {
+            jalaliDatepicker.startWatch({ time: false });
+        }
+        document.querySelectorAll('input[data-jdp]').forEach(function (input) {
+            var clone = input.cloneNode(true);
+            input.parentNode.replaceChild(clone, input);
+            clone.addEventListener('change', function () {
+                var faDate = clone.value;
+                var iso = jalaliFaToIso(faDate);
+                if (clone.id === 'fromFa') document.getElementById('fromIso').value = iso;
+                else if (clone.id === 'toFa') document.getElementById('toIso').value = iso;
+            });
+        });
+    }
+
+    function waitForFetchWithAuth(timeoutMs) {
+        if (typeof window.fetchWithAuth === 'function') {
+            return Promise.resolve(window.fetchWithAuth);
+        }
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            const t = setInterval(() => {
+                if (typeof window.fetchWithAuth === 'function') {
+                    clearInterval(t);
+                    resolve(window.fetchWithAuth);
+                } else if (Date.now() - start > timeoutMs) {
+                    clearInterval(t);
+                    reject(new Error('احراز هویت آماده نیست.'));
+                }
+            }, 50);
+        });
+    }
+
+    async function api(url, options) {
+        const fetchAuth = await waitForFetchWithAuth(8000);
+        const res = await fetchAuth(url, {
+            headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) },
+            ...options
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || body.success === false) {
+            throw new Error(body.message || 'خطا در ارتباط با سرور');
+        }
+        return body;
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('errorBanner');
+        el.textContent = msg;
+        el.classList.remove('d-none');
+    }
+
+    function clearError() {
+        document.getElementById('errorBanner').classList.add('d-none');
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function formatQty(n) {
+        if (n == null || Number.isNaN(Number(n))) return '—';
+        const v = Number(n);
+        return Number.isInteger(v) ? String(v) : v.toFixed(3).replace(/\.?0+$/, '');
+    }
+
+    /** Inventory movements are stored as UTC. */
+    function formatUtcAsTehran(iso) {
+        if (!iso) return '—';
+        try {
+            let s = String(iso).trim();
+            if (!/[zZ]$|[+-]\d{2}:?\d{2}$/.test(s)) {
+                s = s.replace(' ', 'T');
+                if (s.indexOf('T') === -1) return iso;
+                s += 'Z';
+            }
+            const d = new Date(s);
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleString('fa-IR', {
+                timeZone: 'Asia/Tehran',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch {
+            return iso;
+        }
+    }
+
+    /**
+     * Orders use DateTime.Now (Tehran wall-clock in DB).
+     * JSON may still append Z or +00:00 depending on DateTime.Kind — ignore that
+     * and always show the clock digits as Tehran local (no +3:30 shift).
+     */
+    function formatOrderDate(iso) {
+        if (!iso) return '—';
+        try {
+            let s = String(iso).trim().replace(' ', 'T');
+            // Drop timezone / Z so we never re-convert local wall-clock as UTC
+            s = s.replace(/[zZ]$/, '').replace(/[+-]\d{2}:?\d{2}$/, '');
+            const m = s.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/);
+            if (!m) return iso;
+            const d = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleString('fa-IR', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch {
+            return iso;
+        }
+    }
+
+    function formatDate(iso) {
+        return formatUtcAsTehran(iso);
+    }
+
+    function reasonBadge(reason) {
+        const label = reasonLabels[reason] || reason || '—';
+        const cls = reason === 'Waste'
+            ? 'inv-reason inv-reason--waste'
+            : (reason === 'SaleConsumption' ? 'inv-reason inv-reason--sale' : 'inv-reason');
+        return `<span class="${cls}">${escapeHtml(label)}</span>`;
+    }
+
+    function displayNote(note, orderId) {
+        if (orderId) {
+            // Hide raw "Order:123" / "Cancel order 123" when we show an order chip
+            if (/^Order:\d+$/i.test((note || '').trim()) || /^Cancel order \d+$/i.test((note || '').trim())) {
+                return '';
+            }
+        }
+        return note || '';
+    }
+
+    function referenceCell(m) {
+        const orderId = m.orderId || null;
+        const noteText = displayNote(m.note, orderId);
+        if (orderId) {
+            return `
+                <div class="inv-ref-cell">
+                    <button type="button" class="inv-order-chip" data-order-id="${orderId}" title="مشاهده جزئیات سفارش">
+                        <i class="fas fa-receipt" aria-hidden="true"></i>
+                        <span>سفارش ${escapeHtml(String(orderId))}</span>
+                        <i class="fas fa-chevron-left inv-order-chip__arrow" aria-hidden="true"></i>
+                    </button>
+                    ${noteText ? `<div class="inv-cell-meta mt-1">${escapeHtml(noteText)}</div>` : ''}
+                </div>`;
+        }
+        return `<span class="inv-cell-meta">${escapeHtml(m.note || '—')}</span>`;
+    }
+
+    function syncIsoFromFa() {
+        const fromFa = document.getElementById('fromFa');
+        const toFa = document.getElementById('toFa');
+        const fromIso = document.getElementById('fromIso');
+        const toIso = document.getElementById('toIso');
+        if (fromFa && fromIso) fromIso.value = jalaliFaToIso((fromFa.value || '').trim());
+        if (toFa && toIso) toIso.value = jalaliFaToIso((toFa.value || '').trim());
+    }
+
+    function buildQuery(nextSkip) {
+        syncIsoFromFa();
+        const params = new URLSearchParams();
+        params.set('restaurantId', String(restaurantId));
+        params.set('skip', String(nextSkip));
+        params.set('take', String(PAGE_SIZE));
+        const itemId = document.getElementById('filterItem').value;
+        const reason = document.getElementById('filterReason').value;
+        const from = document.getElementById('fromIso').value;
+        const to = document.getElementById('toIso').value;
+        if (itemId) params.set('inventoryItemId', itemId);
+        if (reason) params.set('reason', reason);
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+        return params.toString();
+    }
+
+    function appendRows(rows) {
+        const body = document.getElementById('movementsBody');
+        const html = rows.map(m => {
+            const delta = Number(m.deltaQuantity);
+            const deltaCls = delta < 0 ? 'inv-delta inv-delta--neg' : (delta > 0 ? 'inv-delta inv-delta--pos' : 'inv-delta');
+            const unit = m.unitNameFa || m.unit || '';
+            const wasteRow = m.reason === 'Waste' ? ' inv-row--waste' : '';
+            const saleRow = m.reason === 'SaleConsumption' ? ' inv-row--sale' : '';
+            return `
+            <tr class="${wasteRow}${saleRow}">
+                <td><span class="inv-cell-meta">${escapeHtml(formatDate(m.createdAt))}</span></td>
+                <td>
+                    <div class="inv-cell-name">${escapeHtml(m.itemName)}</div>
+                    <div class="inv-cell-meta">${escapeHtml(unit)}</div>
+                </td>
+                <td>
+                    <span class="${deltaCls}" dir="ltr">${delta > 0 ? '+' : ''}${formatQty(delta)}</span>
+                </td>
+                <td><span class="inv-qty" dir="ltr">${formatQty(m.quantityAfter)}</span></td>
+                <td>${reasonBadge(m.reason)}</td>
+                <td>${referenceCell(m)}</td>
+            </tr>`;
+        }).join('');
+        body.insertAdjacentHTML('beforeend', html);
+    }
+
+    const statusLabels = {
+        1: 'در انتظار ثبت نهایی',
+        2: 'در انتظار تایید',
+        3: 'تایید شده',
+        4: 'در حال آماده‌سازی',
+        5: 'آماده تحویل',
+        6: 'تحویل داده شده',
+        7: 'در انتظار پرداخت',
+        8: 'پرداخت شده',
+        9: 'لغو شده توسط مشتری',
+        10: 'لغو شده توسط رستوران',
+        11: 'بسته شده',
+        12: 'در انتظار اصلاح سفارش'
+    };
+
+    function formatMoney(n) {
+        const v = Number(n);
+        if (Number.isNaN(v)) return '—';
+        return Math.round(v).toLocaleString('fa-IR') + ' تومان';
+    }
+
+    function statusLabel(id) {
+        return statusLabels[id] || ('وضعیت ' + id);
+    }
+
+    let orderModal = null;
+    function getOrderModal() {
+        if (!orderModal) {
+            const el = document.getElementById('orderDetailModal');
+            if (el && window.bootstrap && bootstrap.Modal) {
+                orderModal = bootstrap.Modal.getOrCreateInstance(el);
+            }
+        }
+        return orderModal;
+    }
+
+    function setOrderModalState(state) {
+        const loading = document.getElementById('orderDetailLoading');
+        const error = document.getElementById('orderDetailError');
+        const content = document.getElementById('orderDetailContent');
+        loading.hidden = state !== 'loading';
+        error.classList.toggle('d-none', state !== 'error');
+        content.classList.toggle('d-none', state !== 'content');
+    }
+
+    function renderOrderDetail(order) {
+        const orderId = order.orderId;
+        document.getElementById('orderDetailModalTitle').textContent = 'سفارش #' + orderId;
+        document.getElementById('orderDetailSubtitle').textContent =
+            formatOrderDate(order.createdAt) + (order.tableNumber ? ' · میز ' + order.tableNumber : '');
+
+        const meta = [];
+        meta.push(`<div class="inv-order-meta__item"><span class="inv-order-meta__label">وضعیت</span><span class="inv-order-status inv-order-status--${order.statusId}">${escapeHtml(statusLabel(order.statusId))}</span></div>`);
+        if (order.tableNumber) {
+            meta.push(`<div class="inv-order-meta__item"><span class="inv-order-meta__label">میز</span><span class="inv-order-meta__value">${escapeHtml(String(order.tableNumber))}</span></div>`);
+        }
+        if (order.customerFullName || order.customerMobile) {
+            const name = order.customerFullName || 'مشتری';
+            const mobile = order.customerMobile ? ` · ${order.customerMobile}` : '';
+            meta.push(`<div class="inv-order-meta__item"><span class="inv-order-meta__label">مشتری</span><span class="inv-order-meta__value">${escapeHtml(name + mobile)}</span></div>`);
+        }
+        meta.push(`<div class="inv-order-meta__item"><span class="inv-order-meta__label">زمان ثبت</span><span class="inv-order-meta__value">${escapeHtml(formatOrderDate(order.createdAt))}</span></div>`);
+        document.getElementById('orderDetailMeta').innerHTML = meta.join('');
+
+        const items = order.orderItems || [];
+        document.getElementById('orderItemsCount').textContent = items.length
+            ? items.length.toLocaleString('fa-IR') + ' قلم'
+            : '';
+
+        let total = 0;
+        const rows = items.map(oi => {
+            const qty = Number(oi.quantity) || 0;
+            const price = oi.unitPriceWithDiscount != null ? Number(oi.unitPriceWithDiscount) : Number(oi.unitPrice) || 0;
+            const line = qty * price;
+            total += line;
+            return `<tr>
+                <td>
+                    <div class="inv-order-food-name">${escapeHtml(oi.foodName || '—')}</div>
+                </td>
+                <td class="text-center" dir="ltr">${escapeHtml(String(qty))}</td>
+                <td class="text-start" dir="ltr">${escapeHtml(formatMoney(price))}</td>
+                <td class="text-start inv-order-line-total" dir="ltr">${escapeHtml(formatMoney(line))}</td>
+            </tr>`;
+        }).join('');
+        document.getElementById('orderDetailItems').innerHTML = rows ||
+            '<tr><td colspan="4" class="text-center text-muted py-3">اقلامی ثبت نشده است</td></tr>';
+
+        document.getElementById('orderDetailTotal').innerHTML =
+            `<span>جمع اقلام</span><strong dir="ltr">${escapeHtml(formatMoney(total))}</strong>`;
+
+        const descEl = document.getElementById('orderDetailDesc');
+        if (order.description && String(order.description).trim()) {
+            descEl.textContent = 'توضیحات: ' + order.description;
+            descEl.classList.remove('d-none');
+        } else {
+            descEl.textContent = '';
+            descEl.classList.add('d-none');
+        }
+    }
+
+    async function openOrderDetail(orderId) {
+        const modal = getOrderModal();
+        if (!modal) {
+            showError('امکان نمایش پنجره جزئیات وجود ندارد.');
+            return;
+        }
+        document.getElementById('orderDetailError').textContent = '';
+        setOrderModalState('loading');
+        modal.show();
+        try {
+            const res = await api(`/api/v2/UserApi/getOrderById/${orderId}`);
+            const order = res.orderData || res.data || res.order;
+            if (!order) throw new Error('اطلاعات سفارش دریافت نشد');
+            renderOrderDetail(order);
+            setOrderModalState('content');
+        } catch (e) {
+            document.getElementById('orderDetailError').textContent = e.message || 'خطا در دریافت سفارش';
+            setOrderModalState('error');
+        }
+    }
+
+    document.getElementById('movementsBody').addEventListener('click', function (e) {
+        const btn = e.target.closest('.inv-order-chip');
+        if (!btn) return;
+        const id = Number(btn.getAttribute('data-order-id'));
+        if (id > 0) openOrderDetail(id);
+    });
+
+    async function loadMovements(reset) {
+        if (loading) return;
+        loading = true;
+        clearError();
+        try {
+            if (reset) {
+                skip = 0;
+                document.getElementById('movementsBody').innerHTML = '';
+            }
+            const res = await api(`${API}/movements?${buildQuery(skip)}`);
+            const rows = res.data || [];
+            hasMore = rows.length >= PAGE_SIZE;
+            skip += rows.length;
+
+            const empty = document.getElementById('movementsEmpty');
+            const wrap = document.getElementById('movementsWrap');
+            const more = document.getElementById('loadMoreWrap');
+
+            if (reset && !rows.length) {
+                empty.classList.remove('d-none');
+                wrap.classList.add('d-none');
+                more.classList.add('d-none');
+            } else {
+                empty.classList.add('d-none');
+                wrap.classList.remove('d-none');
+                appendRows(rows);
+                more.classList.toggle('d-none', !hasMore);
+            }
+        } catch (e) {
+            showError(e.message || 'خطا در دریافت گردش موجودی');
+        } finally {
+            loading = false;
+        }
+    }
+
+    async function loadItems() {
+        const res = await api(`${API}/items?restaurantId=${restaurantId}`);
+        const items = res.data || [];
+        const sel = document.getElementById('filterItem');
+        sel.innerHTML = '<option value="">همه مواد</option>' +
+            items.map(i => `<option value="${i.inventoryItemId}">${escapeHtml(i.name)}</option>`).join('');
+        if (preselectedItemId > 0) {
+            sel.value = String(preselectedItemId);
+        }
+    }
+
+    document.getElementById('btnApplyFilters').addEventListener('click', () => loadMovements(true));
+    document.getElementById('btnLoadMore').addEventListener('click', () => loadMovements(false));
+
+    initializeDatepickers();
+
+    (async () => {
+        try {
+            await loadItems();
+            await loadMovements(true);
+        } catch (e) {
+            showError(e.message || 'خطا در بارگذاری');
+        }
+    })();
+})();
+</script>
+}

@@ -6,6 +6,7 @@ using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.Inventory;
 using resturanyar.Models.Receipt;
+using resturanyar.Models.SupportChat;
 
 
 namespace Resturanyar.Data
@@ -55,6 +56,9 @@ namespace Resturanyar.Data
         public DbSet<InventoryRecipeLine> InventoryRecipeLines { get; set; }
         public DbSet<InventoryOrderConsumption> InventoryOrderConsumptions { get; set; }
         public DbSet<InventoryUnit> InventoryUnits { get; set; }
+        public DbSet<SupportChatSettings> SupportChatSettings { get; set; }
+        public DbSet<SupportConversation> SupportConversations { get; set; }
+        public DbSet<SupportMessage> SupportMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -688,6 +692,57 @@ namespace Resturanyar.Data
                     .WithMany()
                     .HasForeignKey(c => c.OrderId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<SupportChatSettings>(entity =>
+            {
+                entity.ToTable("SupportChatSettings");
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.IsEnabled).HasDefaultValue(false);
+                entity.Property(s => s.SmsNotifyWhenOffline).HasDefaultValue(true);
+                entity.Property(s => s.SmsThrottleHours).HasDefaultValue(3);
+                entity.Property(s => s.UpdatedAtUtc).HasDefaultValueSql("SYSUTCDATETIME()");
+            });
+
+            modelBuilder.Entity<SupportConversation>(entity =>
+            {
+                entity.ToTable("SupportConversations");
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.GuestKey).HasMaxLength(64);
+                entity.Property(c => c.RestaurantName).HasMaxLength(200);
+                entity.Property(c => c.OwnerName).HasMaxLength(200);
+                entity.Property(c => c.OwnerPhone).HasMaxLength(20);
+                entity.Property(c => c.LastPageUrl).HasMaxLength(500);
+                entity.Property(c => c.UserAgent).HasMaxLength(500);
+                entity.Property(c => c.LastMessageAtUtc).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(c => c.UnreadBySupport).HasDefaultValue(0);
+                entity.Property(c => c.UnreadByCustomer).HasDefaultValue(0);
+                entity.Property(c => c.CreatedAtUtc).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.HasIndex(c => c.RestaurantId)
+                    .IsUnique()
+                    .HasFilter("[RestaurantId] IS NOT NULL");
+                entity.HasIndex(c => c.GuestKey)
+                    .IsUnique()
+                    .HasFilter("[GuestKey] IS NOT NULL");
+                entity.HasIndex(c => c.LastMessageAtUtc);
+            });
+
+            modelBuilder.Entity<SupportMessage>(entity =>
+            {
+                entity.ToTable("SupportMessages");
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.SenderType).HasConversion<byte>();
+                entity.Property(m => m.Body).HasMaxLength(2000);
+                entity.Property(m => m.ImageUrl).HasMaxLength(500);
+                entity.Property(m => m.CreatedAtUtc).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.HasIndex(m => new { m.ConversationId, m.CreatedAtUtc });
+                entity.HasIndex(m => new { m.ConversationId, m.ClientMessageId })
+                    .IsUnique()
+                    .HasFilter("[ClientMessageId] IS NOT NULL");
+                entity.HasOne(m => m.Conversation)
+                    .WithMany(c => c.Messages)
+                    .HasForeignKey(m => m.ConversationId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

@@ -43,13 +43,21 @@
                 <p class="inv-hero__sub">مدیریت موجودی، ورود کالا و کسر خودکار از سفارش</p>
             </div>
             <div class="inv-hero__actions">
+                <button type="button" class="btn inv-btn-ghost" id="btnInventoryHelp" title="راهنمای انبار">
+                    <i class="fas fa-circle-question"></i>
+                    <span class="d-none d-sm-inline">راهنما</span>
+                </button>
+                <a href="@Url.Action("InventoryMovements", "Home")" class="btn inv-btn-ghost" title="گردش موجودی">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <span class="d-none d-sm-inline">گردش موجودی</span>
+                </a>
                 <button type="button" class="btn inv-btn-ghost" id="btnToggleSettings" title="تنظیمات کسر خودکار">
                     <i class="fas fa-sliders"></i>
                     <span class="d-none d-sm-inline">تنظیمات</span>
                 </button>
-                <button type="button" class="btn inv-btn-ghost" onclick="openCategoryModal()">
-                    <i class="fas fa-folder-plus"></i>
-                    <span class="d-none d-sm-inline">دسته‌بندی</span>
+                <button type="button" class="btn inv-btn-ghost" onclick="openManageCategoriesModal()" title="مدیریت دسته‌بندی‌ها">
+                    <i class="fas fa-folder-tree"></i>
+                    <span class="d-none d-sm-inline">دسته‌بندی‌ها</span>
                 </button>
                 <button type="button" class="btn inv-btn-ghost inv-btn-ghost--muted" id="btnDisableInventory" title="غیرفعال‌سازی انبار">
                     <i class="fas fa-power-off"></i>
@@ -272,15 +280,16 @@
                     <div class="mb-3">
                         <label class="form-label">دلیل</label>
                         <select id="adjustReason" class="form-select">
-                            <option value="Adjustment">اصلاح موجودی</option>
                             <option value="Waste">ضایعات</option>
+                            <option value="Adjustment">اصلاح موجودی</option>
                             <option value="Correction">اصلاح خطا</option>
                             <option value="Opening">موجودی اولیه</option>
                         </select>
+                        <div class="form-text d-none" id="adjustWasteHint">برای ضایعات، در یادداشت علت را بنویسید (اختیاری).</div>
                     </div>
                     <div class="mb-0">
                         <label class="form-label">یادداشت</label>
-                        <input type="text" id="adjustNote" class="form-control" maxlength="500" />
+                        <input type="text" id="adjustNote" class="form-control" maxlength="500" placeholder="" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -291,7 +300,7 @@
         </div>
     </div>
 
-    <!-- Category modal -->
+    <!-- Create category modal (quick add from item form) -->
     <div class="modal fade inventory-modal" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalTitle">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -307,6 +316,109 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
                     <button type="button" class="btn btn-primary" id="btnSaveCategory">ذخیره</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage categories modal -->
+    <div class="modal fade inventory-modal" id="manageCategoriesModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مدیریت دسته‌بندی‌ها</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="inv-manage-cats-hint mb-3">
+                        غیرفعال‌سازی دسته، مواد را بدون دسته نمی‌کند؛ فقط از لیست انتخاب حذف می‌شود.
+                    </p>
+                    <div class="inv-manage-cats-add mb-3">
+                        <input type="text" id="manageCatNewName" class="form-control" maxlength="100" placeholder="نام دسته جدید..." />
+                        <button type="button" class="btn btn-primary" id="btnManageCatAdd">افزودن</button>
+                    </div>
+                    <div id="manageCatsEmpty" class="inv-empty inv-empty--compact d-none">
+                        <p class="mb-0">هنوز دسته‌بندی‌ای ثبت نشده است.</p>
+                    </div>
+                    <ul class="inv-manage-cats-list" id="manageCatsList"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory help -->
+    <div class="modal fade inventory-modal" id="inventoryHelpModal" tabindex="-1" aria-labelledby="inventoryHelpTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content inv-help-modal">
+                <div class="modal-header inv-help-modal__header">
+                    <div class="inv-help-modal__heading">
+                        <span class="inv-help-modal__icon" aria-hidden="true"><i class="fas fa-circle-question"></i></span>
+                        <div>
+                            <h5 class="modal-title" id="inventoryHelpTitle">راهنمای انبار</h5>
+                            <p class="inv-help-modal__sub">با چند قدم ساده، موجودی رستوران‌تان را کنترل کنید</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body inv-help-modal__body">
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۱</span>
+                        <div>
+                            <h6>اول مواد را اضافه کنید</h6>
+                            <p>هر ماده اولیه را با اسم، واحد (مثل کیلو یا لیتر) و حداقل موجودی ثبت کنید. وقتی موجودی از حداقل کمتر شود، سیستم کمبود را به شما نشان می‌دهد.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۲</span>
+                        <div>
+                            <h6>مواد را دسته‌بندی کنید</h6>
+                            <p>برای نظم بیشتر، مواد را در دسته‌هایی مثل گوشت، لبنیات یا خشکبار بگذارید. این کار پیدا کردن و مدیریت آن‌ها را راحت‌تر می‌کند.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۳</span>
+                        <div>
+                            <h6>خریدها را ثبت کنید</h6>
+                            <p>هر بار که جنس می‌خرید، با دکمه «ورود کالا» مقدار را به انبار اضافه کنید. اگر بخواهید، قیمت خرید را هم بنویسید تا بعداً در گزارش‌ها بماند.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۴</span>
+                        <div>
+                            <h6>اشتباه یا ضایعات را اصلاح کنید</h6>
+                            <p>اگر موجودی واقعی با عدد سیستم یکی نیست، یا چیزی دور ریخته شده، از «تعدیل» استفاده کنید و دلیلش را مشخص کنید تا موجودی درست بماند.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۵</span>
+                        <div>
+                            <h6>برای هر غذا دستور تهیه بسازید</h6>
+                            <p>از بخش لیست غذاها، مواد لازم هر غذا را مشخص کنید. تا وقتی دستور تهیه نباشد، سیستم نمی‌تواند با سفارش‌ها موجودی را کم کند.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۶</span>
+                        <div>
+                            <h6>کسر خودکار را روشن کنید</h6>
+                            <p>در تنظیمات انبار بگویید وقتی سفارش به کدام وضعیت رسید، مواد از انبار کم شود. اگر سفارش لغو شود، همان مقدار دوباره به موجودی برمی‌گردد.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-section">
+                        <span class="inv-help-badge">۷</span>
+                        <div>
+                            <h6>کمبود و سابقه تغییرات</h6>
+                            <p>کمبود موجودی را از کارت یا صفحه کمبود ببینید. برای دیدن سابقه ورود، مصرف و ضایعات (گردش موجودی) وارد پنل مدیریت تحت وب شوید.</p>
+                        </div>
+                    </div>
+                    <div class="inv-help-tip">
+                        پیشنهاد: هر روز کمبودها را چک کنید و بعد از هر خرید، ورود کالا را ثبت کنید تا موجودی همیشه درست باشد. هر زمان بخواهید می‌توانید ماژول انبار را فعال یا غیرفعال کنید.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btnInventoryHelpClose">متوجه شدم</button>
                 </div>
             </div>
         </div>
@@ -703,6 +815,9 @@
                         <button type="button" class="inv-icon-btn inv-icon-btn--warn" title="تعدیل" onclick="openAdjust(${i.inventoryItemId})">
                             <i class="fas fa-sliders"></i>
                         </button>
+                        <a class="inv-icon-btn" title="گردش موجودی" href="@Url.Action("InventoryMovements", "Home")?itemId=${i.inventoryItemId}">
+                            <i class="fas fa-clock-rotate-left"></i>
+                        </a>
                         <button type="button" class="inv-icon-btn" title="ویرایش" onclick="openItemModal(${i.inventoryItemId})">
                             <i class="fas fa-pen"></i>
                         </button>
@@ -954,8 +1069,20 @@
         setNumInput('adjustNewQty', item.currentQuantity, 'decimal');
         document.getElementById('adjustReason').value = 'Adjustment';
         document.getElementById('adjustNote').value = '';
+        syncAdjustWasteUi();
         bootstrap.Modal.getOrCreateInstance(document.getElementById('adjustModal')).show();
     };
+
+    function syncAdjustWasteUi() {
+        const reason = document.getElementById('adjustReason')?.value;
+        const hint = document.getElementById('adjustWasteHint');
+        const note = document.getElementById('adjustNote');
+        const isWaste = reason === 'Waste';
+        if (hint) hint.classList.toggle('d-none', !isWaste);
+        if (note) note.placeholder = isWaste ? 'مثلاً فاسد، ریختگی، پخت اشتباه...' : '';
+    }
+
+    document.getElementById('adjustReason')?.addEventListener('change', syncAdjustWasteUi);
 
     document.getElementById('btnConfirmAdjust').addEventListener('click', async () => {
         const id = Number(document.getElementById('adjustItemId').value);
@@ -1056,11 +1183,139 @@
         }
     });
 
+    function renderManageCategories() {
+        const list = document.getElementById('manageCatsList');
+        const empty = document.getElementById('manageCatsEmpty');
+        if (!list) return;
+        if (!categories.length) {
+            list.innerHTML = '';
+            empty?.classList.remove('d-none');
+            return;
+        }
+        empty?.classList.add('d-none');
+        list.innerHTML = categories.map(c => `
+            <li class="inv-manage-cats-item" data-id="${c.inventoryCategoryId}">
+                <input type="text" class="form-control form-control-sm inv-manage-cats-name"
+                       value="${escapeHtml(c.name)}" maxlength="100" />
+                <div class="inv-manage-cats-actions">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-action="rename">ذخیره</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-action="deactivate">غیرفعال</button>
+                </div>
+            </li>`).join('');
+    }
+
+    window.openManageCategoriesModal = function () {
+        const input = document.getElementById('manageCatNewName');
+        if (input) input.value = '';
+        renderManageCategories();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('manageCategoriesModal')).show();
+    };
+
+    document.getElementById('btnManageCatAdd')?.addEventListener('click', async () => {
+        const name = document.getElementById('manageCatNewName').value.trim();
+        if (!name) { showError('نام دسته‌بندی الزامی است.'); return; }
+        try {
+            await createCategory(name);
+            document.getElementById('manageCatNewName').value = '';
+            showSuccess('دسته‌بندی ثبت شد.');
+            renderManageCategories();
+            renderItems();
+        } catch (e) {
+            showError(e.message);
+        }
+    });
+
+    document.getElementById('manageCatNewName')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnManageCatAdd')?.click();
+        }
+    });
+
+    document.getElementById('manageCatsList')?.addEventListener('click', async (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const row = btn.closest('.inv-manage-cats-item');
+        if (!row) return;
+        const id = Number(row.dataset.id);
+        const action = btn.dataset.action;
+        const nameInput = row.querySelector('.inv-manage-cats-name');
+
+        if (action === 'rename') {
+            const name = (nameInput?.value || '').trim();
+            if (!name) { showError('نام دسته‌بندی الزامی است.'); return; }
+            try {
+                await api(`${API}/categories/${id}?restaurantId=${restaurantId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ name })
+                });
+                const cat = categories.find(c => c.inventoryCategoryId === id);
+                if (cat) cat.name = name;
+                items.forEach(i => {
+                    if (i.categoryId === id) i.categoryName = name;
+                });
+                fillCategorySelects();
+                renderItems();
+                updateStats();
+                showSuccess('دسته‌بندی به‌روزرسانی شد.');
+            } catch (err) {
+                showError(err.message);
+            }
+            return;
+        }
+
+        if (action === 'deactivate') {
+            const cat = categories.find(c => c.inventoryCategoryId === id);
+            const label = cat?.name ? `«${cat.name}»` : 'این دسته‌بندی';
+            const ok = await askConfirm({
+                title: 'غیرفعال‌سازی دسته‌بندی',
+                message: `${label} غیرفعال شود؟ مواد این دسته بدون دسته نمی‌شوند؛ فقط از لیست انتخاب حذف می‌شود.`,
+                confirmText: 'بله، غیرفعال شود',
+                cancelText: 'انصراف',
+                iconClass: 'fa-solid fa-folder-minus',
+                variant: 'danger'
+            });
+            if (!ok) return;
+            try {
+                await api(`${API}/categories/${id}?restaurantId=${restaurantId}`, { method: 'DELETE' });
+                categories = categories.filter(c => c.inventoryCategoryId !== id);
+                fillCategorySelects();
+                renderManageCategories();
+                updateStats();
+                renderItems();
+                showSuccess('دسته‌بندی غیرفعال شد.');
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+    });
+
     document.getElementById('searchBox').addEventListener('input', renderItems);
     document.getElementById('filterCategory').addEventListener('change', renderItems);
     document.getElementById('filterStock').addEventListener('change', renderItems);
 
+    const HELP_KEY = 'ry_inventory_help_shown_' + restaurantId;
+
+    function openInventoryHelp() {
+        const el = document.getElementById('inventoryHelpModal');
+        if (!el || !window.bootstrap || !bootstrap.Modal) return;
+        bootstrap.Modal.getOrCreateInstance(el).show();
+    }
+
+    function maybeShowInventoryHelp() {
+        if (!enabled) return;
+        try {
+            if (localStorage.getItem(HELP_KEY) === '1') return;
+            localStorage.setItem(HELP_KEY, '1');
+        } catch (e) { /* ignore */ }
+        setTimeout(openInventoryHelp, 450);
+    }
+
+    const btnHelp = document.getElementById('btnInventoryHelp');
+    if (btnHelp) btnHelp.addEventListener('click', openInventoryHelp);
+
     loadAll().catch(e => showError(e.message));
+    maybeShowInventoryHelp();
 })();
 </script>
 }

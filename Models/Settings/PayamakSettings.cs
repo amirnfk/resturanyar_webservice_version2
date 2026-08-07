@@ -7,6 +7,7 @@
         public string BodyId { get; set; } = string.Empty;
         public string PriceListBodyId { get; set; } = string.Empty;
         public string PriceListToAdminBodyId { get; set; } = string.Empty;
+        public string SupportChatToAdminBodyId { get; set; } = string.Empty;
         public string BaseUrl { get; set; } = string.Empty;
         public string AdminPhoneNumber { get; set; } = string.Empty;
     }

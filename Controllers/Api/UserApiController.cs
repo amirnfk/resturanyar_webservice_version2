@@ -51,19 +51,22 @@ namespace Resturanyar.Controllers.Api
         private readonly IConfiguration _configuration; // <-- اضافه شد
         private readonly PayamakSettings _payamakSettings;
         private readonly AuthService _authService;
+        private readonly resturanyar.Services.IPayamakSmsService _payamakSms;
 
 
         public UserApiController(AppDbContext context,
             IHubContext<OrderHub> hubContext, 
             IConfiguration configuration,
             IOptions<PayamakSettings> payamakOptions,
-            AuthService authService)
+            AuthService authService,
+            resturanyar.Services.IPayamakSmsService payamakSms)
         {
             _context = context;
             _hubContext = hubContext;
             _configuration = configuration;
             _payamakSettings = payamakOptions.Value;
             _authService = authService;
+            _payamakSms = payamakSms;
         }
         private static string EncodePassword(string plainPassword)
         {
@@ -2263,33 +2266,10 @@ namespace Resturanyar.Controllers.Api
         {
             try
             {
-                var adminMessage = $"{fullName} - {phoneNumber}";
-
-                var smsRequest = new
-                {
-                    username = _payamakSettings.Username,
-                    password = _payamakSettings.Password,
-                    text = adminMessage,
-                    to = _payamakSettings.AdminPhoneNumber,
-                    bodyId = _payamakSettings.PriceListToAdminBodyId
-                };
-
-                using var client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-                var json = System.Text.Json.JsonSerializer.Serialize(smsRequest);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                // ✅ استفاده از await برای دریافت پاسخ
-                var response = await client.PostAsync(_payamakSettings.BaseUrl, content);
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                // ✅ لاگ کردن نتیجه برای دیباگ
-               
+                await _payamakSms.NotifyAdminPriceListAsync(fullName, phoneNumber);
             }
-            catch (Exception ex)
+            catch
             {
-               
                 // می‌توانید خطا را در دیتابیس لاگ کنید
             }
         }

@@ -27,6 +27,7 @@ wwwroot\css\bootstrap_min_poper.css
 wwwroot\css\bootstrap_rtl_min.css
 wwwroot\css\brand-scrollbar.css
 wwwroot\css\chooserestaurant.css
+wwwroot\css\dashboard.css
 wwwroot\css\fntawsom600.css
 wwwroot\css\fonts\bootstrap-icons.woff
 wwwroot\css\fonts\bootstrap-icons.woff2
@@ -167,7 +168,6 @@ wwwroot\js\restaurant-background-cache.js
 wwwroot\js\restaurant-general-settings.js
 wwwroot\js\restaurant-settings.js
 wwwroot\js\sidebar-nav.js
-wwwroot\js\site.js
 wwwroot\js\Sortable.min.js
 wwwroot\js\sweetalert2@11.js
 wwwroot\js\toastr.min.js
@@ -229,6 +229,7 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\lib\microsoft-signalr\signalr.min.js
 wwwroot\manifest.json
 wwwroot\ms-icon-144x144.png
 wwwroot\ms-icon-150x150.png
@@ -236,6 +237,7 @@ wwwroot\ms-icon-310x310.png
 wwwroot\ms-icon-70x70.png
 wwwroot\robots.txt
 wwwroot\site.webmanifest
+wwwroot\sounds\support-notify.mp3
 wwwroot\uploads\1ee5f16e-6146-4df7-ab2a-9cbccf855789.png
 wwwroot\uploads\ab77e76c-bad9-4991-8dbb-e712da65b39a.jpg
 wwwroot\uploads\articles\438f257b-c413-4169-9b51-74610c38aac6.jpg
@@ -244,12 +246,24 @@ wwwroot\uploads\articles\6c376939-5fc3-4665-a8ec-c26983ff5cb3.jpg
 wwwroot\uploads\articles\c0ac4da5-ef1a-42f4-af4c-ff2d3ae134aa.jpg
 wwwroot\uploads\articles\dcde9047-4b5f-4470-80da-1f9a5f8b5d26.jpg
 wwwroot\uploads\restaurants\62\logo.png
+wwwroot\uploads\support\2026\14b1827815ac4af8996f4178cd652ceb.png
+wwwroot\uploads\support\2026\2bf2fd0c69674dc5b81bd7c292413d8a.png
+wwwroot\uploads\support\2026\39c154c6cdea491b9de4c4febf1ec4e9.jpg
+wwwroot\uploads\support\2026\67e18052efb14c87b9ff736b381923cb.jpg
+wwwroot\uploads\support\2026\796471524b1a4a46b17731adf8f4f9d3.jpg
+wwwroot\uploads\support\2026\7e036c8bb1af4dd18ce613b7c3b94c23.jpg
+wwwroot\uploads\support\2026\e15277ec35ff42dca63cc0b63279f664.png
 wwwroot\web-app-manifest-192x192.png
 wwwroot\web-app-manifest-512x512.png
 wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\css\dashboard.css
 wwwroot\css\inventory.css
+wwwroot\css\support-chat.css
+wwwroot\js\admin-support-badge.js
 wwwroot\js\invoice-print.js
+wwwroot\js\site.js
+wwwroot\js\support-chat-boot.js
+wwwroot\js\support-chat.js
+wwwroot\js\support-image-prep.js

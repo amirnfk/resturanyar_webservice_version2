@@ -102,6 +102,10 @@ builder.Services.AddScoped<resturanyar.Services.Inventory.IInventoryService, res
 builder.Services.AddScoped<resturanyar.Services.Inventory.IInventoryRecipeService, resturanyar.Services.Inventory.InventoryRecipeService>();
 builder.Services.AddScoped<resturanyar.Services.Inventory.IOrderInventoryConsumptionService, resturanyar.Services.Inventory.OrderInventoryConsumptionService>();
 builder.Services.AddScoped<resturanyar.Services.Inventory.IUnitConversionService, resturanyar.Services.Inventory.UnitConversionService>();
+builder.Services.AddHttpClient(nameof(resturanyar.Services.PayamakSmsService));
+builder.Services.AddScoped<resturanyar.Services.IPayamakSmsService, resturanyar.Services.PayamakSmsService>();
+builder.Services.AddSingleton<resturanyar.Services.SupportChat.ISupportPresenceTracker, resturanyar.Services.SupportChat.SupportPresenceTracker>();
+builder.Services.AddScoped<resturanyar.Services.SupportChat.ISupportChatService, resturanyar.Services.SupportChat.SupportChatService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -194,7 +198,8 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
     {
         // If the request is for SignalR, do not limit it
-        if (httpContext.Request.Path.StartsWithSegments("/orderHub"))
+        if (httpContext.Request.Path.StartsWithSegments("/orderHub")
+            || httpContext.Request.Path.StartsWithSegments("/supportChatHub"))
         {
             return RateLimitPartition.GetNoLimiter<string>("signalr_exempt");
         }
@@ -351,6 +356,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<OrderHub>("/orderHub");
+app.MapHub<SupportChatHub>("/supportChatHub");
 
 // ✳️ Middleware توکن فقط برای مسیر /api
 // ✳️ Middleware توکن فقط برای مسیر /api (به جز verifyotpweb)
@@ -361,6 +367,11 @@ app.UseWhen(context =>
 
     // 🟢 شرط جدید: اگر آدرس مربوط به ورژن ۲ بود، میدل‌ور قدیمی اعمال نشود
     if (path.StartsWith("/api/v2", StringComparison.OrdinalIgnoreCase))
+    {
+        return false;
+    }
+
+    if (path.StartsWith("/api/support-chat", StringComparison.OrdinalIgnoreCase))
     {
         return false;
     }

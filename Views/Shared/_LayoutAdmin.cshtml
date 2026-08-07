@@ -1,3 +1,6 @@
+@{
+    var isSupportChatPage = string.Equals(ViewContext.RouteData.Values["action"]?.ToString(), "SupportChat", StringComparison.OrdinalIgnoreCase);
+}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -12,11 +15,13 @@
     @* <link rel="stylesheet" href="~/resturanyar.styles.css" asp-append-version="true" /> *@
     <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
     <meta name="theme-color" content="#FF7A00">
-
+    <style>
+        #navSupportChat { position: relative; }
+    </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body data-ry-admin="1" data-support-unread="0" data-support-chat-page="@(isSupportChatPage ? "1" : "0")">
 
   
         <!-- Mobile Menu Button -->
@@ -37,6 +42,11 @@
                 <a href="@Url.Action("AdminPanel", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "AdminPanel" ? "active" : "")">
                     <i class="fas fa-home"></i>
                     <span>داشبورد</span>
+                </a>
+                <a href="@Url.Action("SupportChat", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "SupportChat" ? "active" : "")" id="navSupportChat">
+                    <i class="fas fa-comments"></i>
+                    <span>چت پشتیبانی</span>
+                    <span class="nav-item-badge" id="ryAdminSupportBadge" hidden>0</span>
                 </a>
             <a href="@Url.Action("ArticleList", "Admin")" class="nav-item">
                     <i class="fas fa-newspaper"></i>
@@ -182,6 +192,8 @@
     <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
     <script src="~/js/app-toast.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/js/admin-support-badge.js" asp-append-version="true"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof wireLogoutConfirm === 'function') {

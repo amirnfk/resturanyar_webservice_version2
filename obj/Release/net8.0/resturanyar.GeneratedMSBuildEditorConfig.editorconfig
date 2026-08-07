@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2VuZE1lc3NhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Admin/SupportChat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU3VwcG9ydENoYXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Admin/_ArticleForm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX0FydGljbGVGb3JtLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -138,6 +142,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Home/InventoryLowStock.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbnZlbnRvcnlMb3dTdG9jay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Home/InventoryMovements.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbnZlbnRvcnlNb3ZlbWVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Home/ManagerLogin.cshtml]
@@ -246,6 +254,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Public/ResturanyarPriceList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXFJlc3R1cmFueWFyUHJpY2VMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Public/SupportChatEmbed.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVibGljXFN1cHBvcnRDaGF0RW1iZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/My Workspace/Resturanyar-Web/resturanyar_webservice_version2/Views/Receipt/ChargeSettings.cshtml]

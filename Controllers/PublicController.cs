@@ -47,6 +47,13 @@ namespace resturanyar.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("/support-chat")]
+        public IActionResult SupportChatEmbed()
+        {
+            ViewData["Title"] = "پشتیبانی";
+            return View();
+        }
 
         [HttpGet]
         [Route("/resturanyar-pricelist")]

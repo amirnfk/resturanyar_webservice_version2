@@ -19,36 +19,10 @@ $.ajaxSetup({
         }
     }
 });
- 
-!function () { var i ="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
- 
 
-
- 
-        window.addEventListener('goftino_ready', function () {
-            var openChat = document.getElementById("open_chat");
-            var closeChat = document.getElementById("close_chat");
-            var toggleChat = document.getElementById("toggle_chat");
-            if (!openChat || !closeChat || !toggleChat) return;
-
-            openChat.addEventListener("click", function () {
-                Goftino.setUser({
-                    email: '...',
-                    name: '...',
-                    about: 'Resturanyar...',
-                    phone: '...',
-                    avatar: '...',
-
-                    forceUpdate: true
-                });
-
-                Goftino.open();
-            });
-            closeChat.addEventListener("click", function () {
-                Goftino.close();
-            });
-            toggleChat.addEventListener("click", function () {
-                Goftino.toggle();
-            });
-        });
- 
+(function loadSupportBoot() {
+    var s = document.createElement('script');
+    s.src = '/js/support-chat-boot.js';
+    s.async = true;
+    document.head.appendChild(s);
+})();

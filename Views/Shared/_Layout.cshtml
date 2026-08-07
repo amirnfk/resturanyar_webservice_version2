@@ -48,7 +48,7 @@
         })();
     </script>
 </head>
-<body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")" data-restaurant-name="@layoutRestaurantName">
+<body data-restaurant-id="@(User.GetRestaurantId()?.ToString() ?? "")" data-restaurant-name="@layoutRestaurantName" data-owner-id="@(User.GetOwnerId()?.ToString() ?? "")">
 
     @if (User.Identity.IsAuthenticated)
     {
@@ -98,6 +98,10 @@
                 <a href="@Url.Action("Inventory", "Home")" class="nav-item @(currentAction == "Inventory" || currentAction == "InventoryLowStock" ? "active" : "")">
                     <i class="fas fa-box"></i>
                     <span>مدیریت انبار</span>
+                </a>
+                <a href="@Url.Action("InventoryMovements", "Home")" class="nav-item @(currentAction == "InventoryMovements" ? "active" : "")">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <span>گردش موجودی</span>
                 </a>
 
                 <a href="@Url.Action("CustomersList", "Home")" class="nav-item @(currentAction == "CustomersList" ? "active" : "")">

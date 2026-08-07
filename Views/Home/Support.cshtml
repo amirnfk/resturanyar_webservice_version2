@@ -536,66 +536,17 @@
 
     </div>
 </div>
-<!-- اسکریپت گوفتینو (همان کد قبلی) -->
-<script type="text/javascript">
-    !function(){var i="c6rsQH",a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/"+i,l=localStorage.getItem("goftino_"+i);g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
-</script>
-
 <script>
     (function () {
-        var goftinoReadyListenerRegistered = false;
-
-        function getSupportContext() {
-            return {
-                restaurantId: parseInt(document.body.dataset.restaurantId || '0', 10) || 0,
-                restaurantName: document.body.dataset.restaurantName || 'رستوران'
-            };
-        }
-
-        function setupGoftinoUser() {
-            if (typeof Goftino === 'undefined' || typeof Goftino.setUser !== 'function') {
-                return false;
-            }
-
-            var ctx = getSupportContext();
-            Goftino.setUser({
-                email: 'restaurant ID: ' + ctx.restaurantId,
-                name: 'restaurant Name: ' + ctx.restaurantName,
-                about: 'Resturanyar...',
-                phone: '...',
-                avatar: '...',
-                forceUpdate: true
-            });
-            return true;
-        }
-
         function bindOpenChatButton() {
             var btn = document.getElementById('open_chat');
-            if (!btn || btn.dataset.chatBound === 'true') {
-                return;
-            }
-
+            if (!btn || btn.dataset.chatBound === 'true') return;
             btn.dataset.chatBound = 'true';
             btn.addEventListener('click', function () {
-                if (typeof Goftino !== 'undefined' && typeof Goftino.open === 'function') {
-                    Goftino.open();
+                if (window.__rySupportChatInstance && typeof window.__rySupportChatInstance.open === 'function') {
+                    window.__rySupportChatInstance.open();
                 }
             });
-        }
-
-        function initGoftinoChat() {
-            if (setupGoftinoUser()) {
-                bindOpenChatButton();
-                return;
-            }
-
-            if (!goftinoReadyListenerRegistered) {
-                goftinoReadyListenerRegistered = true;
-                window.addEventListener('goftino_ready', function () {
-                    setupGoftinoUser();
-                    bindOpenChatButton();
-                });
-            }
         }
 
         function initFaqAccordion() {
@@ -603,10 +554,7 @@
                 question.setAttribute('data-faq-bound', 'true');
                 question.addEventListener('click', function () {
                     var answer = question.nextElementSibling;
-                    if (!answer || !answer.classList.contains('faq-answer')) {
-                        return;
-                    }
-
+                    if (!answer || !answer.classList.contains('faq-answer')) return;
                     var isOpen = answer.classList.contains('open');
                     document.querySelectorAll('.support-page .faq-answer').forEach(function (el) {
                         el.classList.remove('open');
@@ -614,7 +562,6 @@
                     document.querySelectorAll('.support-page .faq-question').forEach(function (el) {
                         el.setAttribute('aria-expanded', 'false');
                     });
-
                     if (!isOpen) {
                         answer.classList.add('open');
                         question.setAttribute('aria-expanded', 'true');
@@ -624,14 +571,31 @@
         }
 
         function initSupportPage() {
-            if (!document.querySelector('.support-page')) {
-                return;
-            }
-
+            if (!document.querySelector('.support-page')) return;
             initFaqAccordion();
-            initGoftinoChat();
+            bindOpenChatButton();
         }
 
         window.initSupportPage = initSupportPage;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSupportPage);
+        } else {
+            initSupportPage();
+        }
     })();
 </script>
+</script>
+</script>
+</script>
+</script>
+</script>
+</script>
+</script>
+</script>
+</script>
+</script>
+
+
+
+
+

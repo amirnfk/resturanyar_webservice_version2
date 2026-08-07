@@ -246,7 +246,7 @@ namespace resturanyar.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "خطا در بارگذاری AdminPanel");
-                return StatusCode(500, "خطای داخلی سرور"+ex.ToString);
+                return StatusCode(500, "خطای داخلی سرور: " + ex.Message);
             }
         }
 
@@ -1618,6 +1618,17 @@ namespace resturanyar.Controllers
                     ? "قابلیت فاکتور با کارمزد برای این رستوران فعال شد."
                     : "قابلیت فاکتور با کارمزد برای این رستوران غیرفعال شد."
             });
+        }
+
+        public async Task<IActionResult> SupportChat([FromServices] resturanyar.Services.SupportChat.ISupportChatService chatService)
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            ViewData["Title"] = "چت پشتیبانی";
+            ViewBag.InitialUnread = await chatService.GetTotalUnreadBySupportAsync();
+            ViewBag.Settings = await chatService.GetSettingsAsync();
+            return View();
         }
     }
 }

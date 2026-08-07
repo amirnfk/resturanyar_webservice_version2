@@ -1,0 +1,39 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "پشتیبانی رستورانیار";
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/support-chat.css" asp-append-version="true" />
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; background: #f8fafc; }
+    </style>
+</head>
+<body>
+    <script>
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var restaurantId = params.get('restaurantId');
+            var ownerId = params.get('ownerId');
+            window.__resturanyarSupport = {
+                restaurantId: restaurantId ? parseInt(restaurantId, 10) : null,
+                ownerId: ownerId ? parseInt(ownerId, 10) : null,
+                restaurantName: params.get('restaurantName') || null,
+                ownerName: params.get('ownerName') || params.get('restaurantName') || null,
+                phone: params.get('phone') || null
+            };
+        })();
+    </script>
+    <script src="~/js/support-image-prep.js" asp-append-version="true"></script>
+    <script src="~/js/support-chat.js" asp-append-version="true"></script>
+    <script>
+        window.__ryStartSupportChat({ embed: true, autoOpen: true, forceBuiltIn: true });
+    </script>
+</body>
+</html>
