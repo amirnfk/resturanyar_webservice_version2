@@ -10,6 +10,6 @@
     "\\wwwroot\\css",
     "\\wwwroot\\js"
   ],
-  "SelectedNode": "\\Views\\Home\\Dashboard.cshtml",
+  "SelectedNode": "\\appsettings.Development.json",
   "PreviewInSolutionExplorer": false
 }

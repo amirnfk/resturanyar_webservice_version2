@@ -48,6 +48,7 @@ wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
 wwwroot\css\food-list.css
 wwwroot\css\home.css
 wwwroot\css\index-page.css
+wwwroot\css\inventory.css
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\css\manager-order-list.css
 wwwroot\css\managerlogin.css
@@ -66,6 +67,7 @@ wwwroot\css\restaurant-settings.css
 wwwroot\css\share.css
 wwwroot\css\simple_share.css
 wwwroot\css\site.css
+wwwroot\css\support-chat.css
 wwwroot\css\toastr.min.css
 wwwroot\css\Vazirmatn_font_face.css
 wwwroot\favicon-16x16.png
@@ -143,6 +145,7 @@ wwwroot\images\support2.png
 wwwroot\images\tabletfoodlist.jpg
 wwwroot\images\tablethome.jpg
 wwwroot\images\waiter_2453333.png
+wwwroot\js\admin-support-badge.js
 wwwroot\js\app-toast.js
 wwwroot\js\authentication\apiinterceptor.js
 wwwroot\js\bootstrap.bundle.min.js
@@ -154,6 +157,7 @@ wwwroot\js\chooserestaurant.js
 wwwroot\js\confirm-modal.js
 wwwroot\js\dashboard.js
 wwwroot\js\home.js
+wwwroot\js\invoice-print.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
 wwwroot\js\managerlogin.js
@@ -168,7 +172,11 @@ wwwroot\js\restaurant-background-cache.js
 wwwroot\js\restaurant-general-settings.js
 wwwroot\js\restaurant-settings.js
 wwwroot\js\sidebar-nav.js
+wwwroot\js\site.js
 wwwroot\js\Sortable.min.js
+wwwroot\js\support-chat-boot.js
+wwwroot\js\support-chat.js
+wwwroot\js\support-image-prep.js
 wwwroot\js\sweetalert2@11.js
 wwwroot\js\toastr.min.js
 wwwroot\js\upgrade.js
@@ -259,11 +267,3 @@ wwwroot\webfonts\fa-brands-400.ttf
 wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
-wwwroot\css\inventory.css
-wwwroot\css\support-chat.css
-wwwroot\js\admin-support-badge.js
-wwwroot\js\invoice-print.js
-wwwroot\js\site.js
-wwwroot\js\support-chat-boot.js
-wwwroot\js\support-chat.js
-wwwroot\js\support-image-prep.js

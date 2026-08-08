@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {}
+    "E:\\My Work Space\\resturanyar-web\\resturanyar_webservice_version2\\resturanyar.csproj": {}
   },
   "projects": {
-    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {
+    "E:\\My Work Space\\resturanyar-web\\resturanyar_webservice_version2\\resturanyar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "projectUniqueName": "E:\\My Work Space\\resturanyar-web\\resturanyar_webservice_version2\\resturanyar.csproj",
         "projectName": "resturanyar",
-        "projectPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
-        "packagesPath": "C:\\Users\\zmi13\\.nuget\\packages\\",
-        "outputPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\obj\\",
+        "projectPath": "E:\\My Work Space\\resturanyar-web\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "packagesPath": "C:\\Users\\anoorafkan\\.nuget\\packages\\",
+        "outputPath": "E:\\My Work Space\\resturanyar-web\\resturanyar_webservice_version2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\vs shared folder\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\zmi13\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\anoorafkan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -160,7 +160,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

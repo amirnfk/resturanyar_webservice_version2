@@ -671,6 +671,39 @@ html, body {
     color: var(--primary);
 }
 
+.tile__badge {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35);
+    z-index: 2;
+}
+
+.tile--alert {
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.tile--alert .tile__icon {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.tile--alert:hover .tile__icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+}
+
 /* --- Footer --- */
 .dash-footer {
     max-width: 1200px;
@@ -1213,4 +1246,503 @@ html, body {
     text-align: right;
     max-height: 220px;
     overflow-y: auto;
+}
+
+/* --- Inventory critical-stock card (under hero) --- */
+.dash-stock-card {
+    --stock-pad-x: 24px;
+    --stock-pad-y: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+.dash-stock-card[hidden] {
+    display: none !important;
+}
+
+.dash-stock-card::before {
+    content: "";
+    position: absolute;
+    inset-block: 12px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: transparent;
+    z-index: 1;
+}
+
+.dash-stock-card::after {
+    content: "";
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    filter: blur(20px);
+}
+
+.dash-stock-card--critical {
+    border-color: color-mix(in srgb, var(--primary) 16%, rgba(15, 23, 42, 0.06));
+    background: var(--card);
+}
+
+.dash-stock-card--critical::before {
+    background: var(--gradient-primary);
+}
+
+.dash-stock-card--critical::after {
+    opacity: 0.7;
+    inset-inline-start: 40%;
+    top: -70px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.dash-stock-card--ok {
+    border-color: rgba(22, 163, 74, 0.16);
+    background: var(--card);
+}
+
+.dash-stock-card--ok::before {
+    background: linear-gradient(180deg, #34d399, #16a34a);
+}
+
+.dash-stock-card--ok::after {
+    opacity: 0.65;
+    inset-inline-start: 40%;
+    top: -70px;
+    background: rgba(52, 211, 153, 0.12);
+}
+
+.dash-stock-card__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto minmax(180px, 1fr) auto;
+    align-items: center;
+    gap: 14px 20px;
+    padding: 16px 20px;
+}
+
+.dash-stock-card__inner--ok {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.dash-stock-card__lead {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    max-width: 320px;
+}
+
+.dash-stock-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.dash-stock-card--critical .dash-stock-card__icon {
+    background: linear-gradient(145deg, color-mix(in srgb, var(--primary) 22%, #fff), color-mix(in srgb, var(--primary) 10%, #fff));
+    color: var(--primary-dark, var(--primary));
+}
+
+.dash-stock-card--ok .dash-stock-card__icon {
+    background: linear-gradient(145deg, rgba(52, 211, 153, 0.28), rgba(22, 163, 74, 0.1));
+    color: #15803d;
+}
+
+.dash-stock-card__copy {
+    min-width: 0;
+}
+
+.dash-stock-card__title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+}
+
+.dash-stock-card__title {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
+
+.dash-stock-card__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    color: var(--primary-dark, var(--primary));
+    white-space: nowrap;
+}
+
+.dash-stock-card__badge--ok {
+    background: rgba(22, 163, 74, 0.12);
+    color: #15803d;
+}
+
+.dash-stock-card__sub {
+    margin: 3px 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.dash-stock-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+    min-width: 0;
+}
+
+.dash-stock-chip {
+    position: relative;
+    flex: 1 1 150px;
+    max-width: 220px;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    animation: dashStockChipIn 0.35s ease both;
+    animation-delay: calc(var(--chip-i, 0) * 45ms);
+}
+
+.dash-stock-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+    border-color: color-mix(in srgb, var(--primary) 22%, rgba(15, 23, 42, 0.07));
+}
+
+@keyframes dashStockChipIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dash-stock-chip__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.dash-stock-chip__name {
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.dash-stock-chip__unit {
+    flex-shrink: 0;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: rgba(15, 23, 42, 0.045);
+    border-radius: 999px;
+    padding: 2px 7px;
+}
+
+.dash-stock-chip__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
+.dash-stock-chip__current {
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.dash-stock-chip__sep {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.dash-stock-chip__min {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.dash-stock-chip__bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.dash-stock-chip__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    min-width: 0;
+    transition: width 0.45s ease;
+}
+
+.dash-stock-chip--critical .dash-stock-chip__current {
+    color: #dc2626;
+}
+
+.dash-stock-chip--critical .dash-stock-chip__fill {
+    background: linear-gradient(90deg, #fb7185, #ef4444);
+}
+
+.dash-stock-chip--warn .dash-stock-chip__fill {
+    background: linear-gradient(90deg, #fdba74, var(--primary));
+}
+
+.dash-stock-card__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: #fff !important;
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 22%, transparent);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.dash-stock-card__cta i {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.dash-stock-card__cta:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--primary) 28%, transparent);
+    color: #fff !important;
+}
+
+.dash-stock-card__cta:hover i {
+    transform: translateX(-2px);
+}
+
+.dash-stock-card--ok .dash-stock-card__cta {
+    color: #fff !important;
+    background: linear-gradient(135deg, #34d399, #16a34a);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.22);
+}
+
+.dash-stock-card--ok .dash-stock-card__cta:hover {
+    box-shadow: 0 8px 18px rgba(22, 163, 74, 0.28);
+    color: #fff !important;
+}
+
+.dash-stock-card__skeleton {
+    gap: 12px;
+    min-height: 72px;
+}
+
+.dash-stock-card__pulse {
+    height: 12px;
+    width: min(220px, 40%);
+    border-radius: 8px;
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.06), rgba(15, 23, 42, 0.12), rgba(15, 23, 42, 0.06));
+    background-size: 200% 100%;
+    animation: dashStockPulse 1.2s ease infinite;
+}
+
+.dash-stock-card__pulse--short {
+    width: min(120px, 24%);
+}
+
+@keyframes dashStockPulse {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+[data-theme="dark"] .dash-stock-card {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .dash-stock-card--critical {
+    background:
+        radial-gradient(ellipse 55% 120% at 100% 0%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 70%),
+        var(--card);
+    border-color: color-mix(in srgb, var(--primary) 28%, #1e293b);
+}
+
+[data-theme="dark"] .dash-stock-card--ok {
+    border-color: rgba(52, 211, 153, 0.22);
+    background:
+        radial-gradient(ellipse 50% 120% at 100% 0%, rgba(52, 211, 153, 0.12), transparent 70%),
+        var(--card);
+}
+
+[data-theme="dark"] .dash-stock-card--critical .dash-stock-card__icon {
+    background: color-mix(in srgb, var(--primary) 18%, #11151f);
+    color: var(--primary-2, var(--primary));
+}
+
+[data-theme="dark"] .dash-stock-card--ok .dash-stock-card__icon {
+    background: rgba(52, 211, 153, 0.14);
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .dash-stock-chip {
+    background: rgba(15, 23, 42, 0.45);
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .dash-stock-chip:hover {
+    border-color: color-mix(in srgb, var(--primary) 30%, transparent);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="dark"] .dash-stock-chip__unit {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .dash-stock-chip__bar {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .dash-stock-card__pulse {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+    background-size: 200% 100%;
+}
+
+@media (max-width: 992px) {
+    .dash-stock-card__inner {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "lead cta"
+            "chips chips";
+    }
+
+    .dash-stock-card__inner--ok {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "lead cta";
+    }
+
+    .dash-stock-card__lead {
+        grid-area: lead;
+        max-width: none;
+    }
+
+    .dash-stock-card__chips {
+        grid-area: chips;
+    }
+
+    .dash-stock-card__cta {
+        grid-area: cta;
+        align-self: start;
+    }
+}
+
+@media (max-width: 768px) {
+    .dash-stock-card {
+        --stock-pad-x: 14px;
+        --stock-pad-y: 14px;
+    }
+
+    .dash-stock-card__inner {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "lead"
+            "chips"
+            "cta";
+        gap: 12px;
+        padding: 14px 16px;
+    }
+
+    .dash-stock-card__inner--ok {
+        grid-template-areas:
+            "lead"
+            "cta";
+    }
+
+    .dash-stock-card__cta {
+        width: 100%;
+    }
+
+    .dash-stock-chip {
+        max-width: none;
+        flex: 1 1 calc(50% - 10px);
+    }
+}
+
+@media (max-width: 480px) {
+    .dash-stock-chip {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+
+    .dash-stock-card__title {
+        font-size: 0.95rem;
+    }
+}
+
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+    .dash-stock-card--critical {
+        background: var(--card);
+        border-color: rgba(255, 122, 26, 0.22);
+    }
+
+    .dash-stock-card--critical .dash-stock-card__icon {
+        background: rgba(255, 122, 26, 0.12);
+        color: #ff7a1a;
+    }
+
+    .dash-stock-card__badge {
+        background: rgba(255, 122, 26, 0.12);
+        color: #e56a0f;
+    }
+
+    .dash-stock-card__cta {
+        background: linear-gradient(135deg, #ff7a1a, #ff9e53);
+        box-shadow: 0 8px 20px rgba(255, 122, 26, 0.28);
+    }
+
+    .dash-stock-chip {
+        background: #fff;
+        border-color: #e8edf5;
+    }
 }

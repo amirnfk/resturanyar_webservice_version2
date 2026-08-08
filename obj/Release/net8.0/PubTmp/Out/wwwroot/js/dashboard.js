@@ -165,7 +165,157 @@ function updateChartsTheme() {
 // Initialize charts after DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initCharts, 200); // کمی تاخیر برای بارگذاری کامل DOM
+    initDashStockCard();
 });
 
+// ============================================
+// Inventory critical-stock card (API summary)
+// ============================================
+function initDashStockCard() {
+    const card = document.getElementById('dashStockCard');
+    if (!card) return;
 
- 
+    const restaurantId = card.dataset.restaurantId;
+    if (!restaurantId) return;
+
+    const inventoryUrl = card.dataset.inventoryUrl || '/Home/Inventory';
+    const lowStockUrl = card.dataset.lowStockUrl || '/Home/InventoryLowStock';
+
+    waitForFetchWithAuth(10000)
+        .then(function (fetchAuth) {
+            return fetchAuth('/api/v2/inventory/summary?restaurantId=' + encodeURIComponent(restaurantId), {
+                headers: { 'Accept': 'application/json' }
+            });
+        })
+        .then(function (res) { return res.json().catch(function () { return {}; }); })
+        .then(function (json) {
+            if (!json || json.success === false || !json.data) {
+                card.hidden = true;
+                return;
+            }
+            renderDashStockCard(card, json.data, inventoryUrl, lowStockUrl);
+        })
+        .catch(function () {
+            card.hidden = true;
+        });
+}
+
+function waitForFetchWithAuth(timeoutMs) {
+    timeoutMs = timeoutMs || 10000;
+    if (typeof window.fetchWithAuth === 'function') {
+        return Promise.resolve(window.fetchWithAuth);
+    }
+    return new Promise(function (resolve, reject) {
+        var start = Date.now();
+        var timer = setInterval(function () {
+            if (typeof window.fetchWithAuth === 'function') {
+                clearInterval(timer);
+                resolve(window.fetchWithAuth);
+            } else if (Date.now() - start > timeoutMs) {
+                clearInterval(timer);
+                reject(new Error('auth not ready'));
+            }
+        }, 40);
+    });
+}
+
+function formatDashQty(n) {
+    return Number(n).toLocaleString('fa-IR', { maximumFractionDigits: 3 });
+}
+
+function escapeDashHtml(s) {
+    return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function renderDashStockCard(card, data, inventoryUrl, lowStockUrl) {
+    if (!data.isEnabled) {
+        card.hidden = true;
+        return;
+    }
+
+    const lowCount = Number(data.lowStockCount) || 0;
+    const items = Array.isArray(data.lowStockItems) ? data.lowStockItems : [];
+    const isCritical = lowCount > 0;
+
+    card.classList.toggle('dash-stock-card--critical', isCritical);
+    card.classList.toggle('dash-stock-card--ok', !isCritical);
+    card.hidden = false;
+
+    if (!isCritical) {
+        card.innerHTML =
+            '<div class="dash-stock-card__inner dash-stock-card__inner--ok">' +
+                '<div class="dash-stock-card__lead">' +
+                    '<div class="dash-stock-card__icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>' +
+                    '<div class="dash-stock-card__copy">' +
+                        '<div class="dash-stock-card__title-row">' +
+                            '<h2 class="dash-stock-card__title">وضعیت انبار</h2>' +
+                            '<span class="dash-stock-card__badge dash-stock-card__badge--ok">مطلوب</span>' +
+                        '</div>' +
+                        '<p class="dash-stock-card__sub">همه موجودی‌ها بالای حداقل هستند و نیازی به توجه فوری نیست.</p>' +
+                    '</div>' +
+                '</div>' +
+                '<a class="dash-stock-card__cta" href="' + escapeDashHtml(inventoryUrl) + '">' +
+                    '<span>مدیریت انبار</span>' +
+                    '<i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>' +
+                '</a>' +
+            '</div>';
+        revealDashStockCard(card);
+        return;
+    }
+
+    const countLabel = formatDashQty(lowCount) + ' مورد';
+    const chips = items.map(function (item, index) {
+        const current = Number(item.currentQuantity) || 0;
+        const minimum = Number(item.minimumQuantity) || 0;
+        const ratio = minimum > 0 ? Math.max(0, Math.min(1, current / minimum)) : 0;
+        const unit = item.unitNameFa || item.unit || '';
+        const severity = ratio <= 0.25 ? 'critical' : (ratio <= 0.6 ? 'warn' : 'low');
+        return (
+            '<div class="dash-stock-chip dash-stock-chip--' + severity + '" style="--chip-i:' + index + '">' +
+                '<div class="dash-stock-chip__head">' +
+                    '<span class="dash-stock-chip__name">' + escapeDashHtml(item.name) + '</span>' +
+                    (unit ? '<span class="dash-stock-chip__unit">' + escapeDashHtml(unit) + '</span>' : '') +
+                '</div>' +
+                '<div class="dash-stock-chip__meta">' +
+                    '<span class="dash-stock-chip__current" dir="ltr">' + formatDashQty(current) + '</span>' +
+                    '<span class="dash-stock-chip__sep">از</span>' +
+                    '<span class="dash-stock-chip__min" dir="ltr">' + formatDashQty(minimum) + '</span>' +
+                '</div>' +
+                '<div class="dash-stock-chip__bar" aria-hidden="true">' +
+                    '<span class="dash-stock-chip__fill" style="width:' + (ratio * 100).toFixed(1) + '%"></span>' +
+                '</div>' +
+            '</div>'
+        );
+    }).join('');
+
+    card.innerHTML =
+        '<div class="dash-stock-card__inner">' +
+            '<div class="dash-stock-card__lead">' +
+                '<div class="dash-stock-card__icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+                '<div class="dash-stock-card__copy">' +
+                    '<div class="dash-stock-card__title-row">' +
+                        '<h2 class="dash-stock-card__title">کمبود موجودی انبار</h2>' +
+                        '<span class="dash-stock-card__badge">' + escapeDashHtml(countLabel) + '</span>' +
+                    '</div>' +
+                    '<p class="dash-stock-card__sub">مواد اولیه‌ای که به حداقل موجودی رسیده‌اند یا کمتر هستند.</p>' +
+                '</div>' +
+            '</div>' +
+            (chips ? '<div class="dash-stock-card__chips">' + chips + '</div>' : '<div class="dash-stock-card__chips"></div>') +
+            '<a class="dash-stock-card__cta" href="' + escapeDashHtml(lowStockUrl) + '">' +
+                '<span>مشاهده کمبودها</span>' +
+                '<i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>' +
+            '</a>' +
+        '</div>';
+
+    revealDashStockCard(card);
+}
+
+function revealDashStockCard(card) {
+    requestAnimationFrame(function () {
+        card.classList.add('revealed');
+    });
+}

@@ -160,13 +160,22 @@ function buildInvoiceHtml({ restaurant, orderNumber, tableNumber, orderStatus,
         }
     `;
 
-    const itemRows = (items || []).map(item => `
+    const itemRows = (items || []).map(item => {
+        const priceText = String(item.price || '').replace(/,/g, '');
+        const originalText = String(item.originalPrice || '').replace(/,/g, '');
+        const priceNum = parseFloat(priceText) || 0;
+        const originalNum = parseFloat(originalText) || 0;
+        const hasDiscount = originalNum > 0 && originalNum > priceNum;
+        const unitPriceHtml = hasDiscount
+            ? `<span style="display:block;text-decoration:line-through;color:#94a3b8;font-size:11px;font-weight:600;">${toPersianDigits(item.originalPrice)}</span><span>${toPersianDigits(item.price)}</span>`
+            : toPersianDigits(item.price);
+        return `
         <tr>
             <td class="name">${escapeHtml(item.name)}</td>
             <td>${toPersianDigits(item.quantity)}</td>
-            <td>${toPersianDigits(item.price)}</td>
-        </tr>
-    `).join('');
+            <td>${unitPriceHtml}</td>
+        </tr>`;
+    }).join('');
 
     return `<!DOCTYPE html>
 <html lang="fa" dir="rtl">
