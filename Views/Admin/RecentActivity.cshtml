@@ -1,0 +1,713 @@
+@model resturanyar.Models.ViewModels.Admin.RecentActivityPageViewModel
+@using DNTPersianUtils.Core
+@using resturanyar.Models.ViewModels.Admin
+@{
+    ViewData["Title"] = "مانیتورینگ / فعالیت‌های اخیر";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var panels = new[]
+    {
+        new { Title = "آخرین سفارش‌ها", Icon = "fas fa-receipt", Accent = "accent-order", Empty = "سفارشی ثبت نشده است.", Items = Model.Orders },
+        new { Title = "آخرین خرید اشتراک", Icon = "fas fa-crown", Accent = "accent-sub", Empty = "خرید اشتراکی ثبت نشده است.", Items = Model.Subscriptions },
+        new { Title = "آخرین رستوران‌ها", Icon = "fas fa-store", Accent = "accent-restaurant", Empty = "رستوران جدیدی ثبت نشده است.", Items = Model.Restaurants },
+        new { Title = "آخرین غذاها", Icon = "fas fa-utensils", Accent = "accent-food", Empty = "غذایی ثبت نشده است.", Items = Model.Foods },
+        new { Title = "آخرین مشتریان", Icon = "fas fa-user", Accent = "accent-customer", Empty = "مشتری ثبت نشده است.", Items = Model.Customers },
+        new { Title = "آخرین مالک‌ها", Icon = "fas fa-user-tie", Accent = "accent-owner", Empty = "مالکی ثبت نشده است.", Items = Model.Owners },
+        new { Title = "آخرین حرکات انبار", Icon = "fas fa-boxes", Accent = "accent-inventory", Empty = "حرکت انباری ثبت نشده است.", Items = Model.InventoryMovements },
+        new { Title = "آخرین ورود مالک‌ها", Icon = "fas fa-sign-in-alt", Accent = "accent-owner-login", Empty = "ورود اپی ثبت نشده است.", Items = Model.OwnerLogins },
+        new { Title = "آخرین ورود پرسنل", Icon = "fas fa-id-badge", Accent = "accent-staff-login", Empty = "ورود پرسنلی ثبت نشده است.", Items = Model.StaffLogins },
+        new { Title = "آخرین استفاده کد تخفیف", Icon = "fas fa-ticket-alt", Accent = "accent-coupon", Empty = "استفاده‌ای ثبت نشده است.", Items = Model.CouponUsages },
+        new { Title = "آخرین فعالیت پشتیبانی", Icon = "fas fa-comments", Accent = "accent-support", Empty = "گفتگویی ثبت نشده است.", Items = Model.Support }
+    };
+}
+
+<div class="activity-page" dir="rtl">
+    <div class="activity-hero">
+        <div class="activity-hero-text">
+            <h1><i class="fas fa-satellite-dish"></i> مانیتورینگ فعالیت‌ها</h1>
+            <p>آخرین ۳ رویداد در هر بخش — برای جزئیات روی هر مورد کلیک کنید</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="window.location.reload()">
+            <i class="fas fa-sync-alt"></i>
+            <span>بروزرسانی</span>
+        </button>
+    </div>
+
+    <div class="activity-sections">
+        @foreach (var panel in panels)
+        {
+            <div class="activity-section @panel.Accent">
+                <div class="section-head">
+                    <h2><i class="@panel.Icon"></i> @panel.Title</h2>
+                    <span class="section-count">آخرین ۳ مورد</span>
+                </div>
+                @if (!panel.Items.Any())
+                {
+                    <div class="section-empty">@panel.Empty</div>
+                }
+                else
+                {
+                    <ul class="activity-feed">
+                        @foreach (var item in panel.Items)
+                        {
+                            <li class="feed-item"
+                                data-type="@item.Type"
+                                data-id="@item.EntityId"
+                                tabindex="0"
+                                role="button">
+                                <div class="feed-icon @item.BadgeClass">
+                                    <i class="@item.IconClass"></i>
+                                </div>
+                                <div class="feed-body">
+                                    <div class="feed-top">
+                                        @if (item.OccurredAt.Year >= 2000)
+                                        {
+                                            <time class="feed-time" title="@item.OccurredAt.ToString("yyyy/MM/dd HH:mm:ss")">
+                                                @item.OccurredAt.ToPersianDateTextify()
+                                                <span class="feed-clock">@item.OccurredAt.ToString("HH:mm")</span>
+                                            </time>
+                                        }
+                                    </div>
+                                    <div class="feed-title">@item.Title</div>
+                                    <div class="feed-subtitle">@item.Subtitle</div>
+                                </div>
+                                <div class="feed-chevron">
+                                    <i class="fas fa-chevron-left"></i>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="activityDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content activity-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activityDetailTitle">جزئیات</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body" id="activityDetailBody">
+                <div class="detail-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>در حال بارگذاری...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .activity-page {
+            padding: 8px 4px 32px;
+            max-width: 1100px;
+            margin: 0 auto;
+            font-family: 'Vazir', 'Segoe UI', Tahoma, sans-serif;
+            color: #334155;
+        }
+
+        .activity-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .activity-hero-text h1 {
+            margin: 0 0 6px;
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .activity-hero-text p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #334155;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: box-shadow .2s, transform .15s;
+        }
+
+        .btn-refresh:hover {
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .activity-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .activity-section {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03), 0 4px 16px rgba(0,0,0,0.04);
+            overflow: hidden;
+            border-top: 3px solid #cbd5e1;
+        }
+
+        .activity-section.accent-order { border-top-color: #0891b2; }
+        .activity-section.accent-sub { border-top-color: #d97706; }
+        .activity-section.accent-restaurant { border-top-color: #059669; }
+        .activity-section.accent-support { border-top-color: #4f46e5; }
+        .activity-section.accent-food { border-top-color: #ea580c; }
+        .activity-section.accent-customer { border-top-color: #0284c7; }
+        .activity-section.accent-owner { border-top-color: #7c3aed; }
+        .activity-section.accent-coupon { border-top-color: #db2777; }
+        .activity-section.accent-inventory { border-top-color: #0f766e; }
+        .activity-section.accent-owner-login { border-top-color: #6366f1; }
+        .activity-section.accent-staff-login { border-top-color: #475569; }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            gap: 10px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .accent-order .section-head h2 i { color: #0891b2; }
+        .accent-sub .section-head h2 i { color: #d97706; }
+        .accent-restaurant .section-head h2 i { color: #059669; }
+        .accent-support .section-head h2 i { color: #4f46e5; }
+        .accent-food .section-head h2 i { color: #ea580c; }
+        .accent-customer .section-head h2 i { color: #0284c7; }
+        .accent-owner .section-head h2 i { color: #7c3aed; }
+        .accent-coupon .section-head h2 i { color: #db2777; }
+        .accent-inventory .section-head h2 i { color: #0f766e; }
+        .accent-owner-login .section-head h2 i { color: #6366f1; }
+        .accent-staff-login .section-head h2 i { color: #475569; }
+
+        .section-count {
+            font-size: 0.78rem;
+            color: #64748b;
+            background: #f8fafc;
+            border-radius: 999px;
+            padding: 4px 10px;
+            white-space: nowrap;
+        }
+
+        .section-empty {
+            padding: 28px 16px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .activity-feed {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .feed-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .feed-item:last-child { border-bottom: none; }
+
+        .feed-item:hover,
+        .feed-item:focus {
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .feed-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .feed-icon.badge-order { background: #0891b2; }
+        .feed-icon.badge-sub { background: #d97706; }
+        .feed-icon.badge-restaurant { background: #059669; }
+        .feed-icon.badge-support { background: #4f46e5; }
+        .feed-icon.badge-food { background: #ea580c; }
+        .feed-icon.badge-customer { background: #0284c7; }
+        .feed-icon.badge-owner { background: #7c3aed; }
+        .feed-icon.badge-coupon { background: #db2777; }
+        .feed-icon.badge-inventory { background: #0f766e; }
+        .feed-icon.badge-owner-login { background: #6366f1; }
+        .feed-icon.badge-staff-login { background: #475569; }
+
+        .feed-body { flex: 1; min-width: 0; }
+
+        .feed-top {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 2px;
+        }
+
+        .feed-time {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        .feed-clock {
+            margin-right: 6px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .feed-title {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.92rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .feed-subtitle {
+            margin-top: 2px;
+            font-size: 0.82rem;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .feed-chevron {
+            color: #cbd5e1;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+
+        .activity-modal {
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .activity-modal .modal-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 16px 20px;
+        }
+
+        .activity-modal .modal-title {
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .activity-modal .modal-body {
+            padding: 18px 20px 22px;
+            min-height: 140px;
+        }
+
+        .detail-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #64748b;
+            padding: 28px 0;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 16px;
+        }
+
+        .detail-field {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .detail-field.full { grid-column: 1 / -1; }
+
+        .detail-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #0f172a;
+            word-break: break-word;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: right;
+        }
+
+        .detail-table th {
+            color: #64748b;
+            font-weight: 600;
+            background: #f8fafc;
+        }
+
+        .detail-error {
+            color: #e11d48;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .support-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            color: #4f46e5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .support-link:hover { text-decoration: underline; }
+
+        @@media (max-width: 900px) {
+            .activity-sections { grid-template-columns: 1fr; }
+        }
+
+        @@media (max-width: 560px) {
+            .detail-grid { grid-template-columns: 1fr; }
+            .feed-subtitle { white-space: normal; }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            const detailUrl = '@Url.Action("GetActivityDetail", "Admin")';
+            const supportChatUrl = '@Url.Action("SupportChat", "Admin")';
+            const modalEl = document.getElementById('activityDetailModal');
+            const modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+            const titleEl = document.getElementById('activityDetailTitle');
+            const bodyEl = document.getElementById('activityDetailBody');
+
+            function escapeHtml(value) {
+                if (value == null) return '';
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function formatMoney(n) {
+                try {
+                    return Number(n || 0).toLocaleString('fa-IR');
+                } catch {
+                    return n;
+                }
+            }
+
+            function formatDate(value) {
+                if (!value) return '-';
+                try {
+                    const d = new Date(value);
+                    if (isNaN(d.getTime())) return escapeHtml(value);
+                    return d.toLocaleString('fa-IR');
+                } catch {
+                    return escapeHtml(value);
+                }
+            }
+
+            function field(label, value, full) {
+                return `<div class="detail-field${full ? ' full' : ''}">
+                    <span class="detail-label">${escapeHtml(label)}</span>
+                    <span class="detail-value">${value == null || value === '' ? '-' : value}</span>
+                </div>`;
+            }
+
+            function renderOrder(data) {
+                titleEl.textContent = 'جزئیات سفارش #' + data.orderId;
+                let itemsHtml = '';
+                if (data.items && data.items.length) {
+                    itemsHtml = `<div class="detail-field full">
+                        <span class="detail-label">آیتم‌ها</span>
+                        <table class="detail-table">
+                            <thead><tr><th>غذا</th><th>تعداد</th><th>قیمت</th><th>جمع</th></tr></thead>
+                            <tbody>
+                                ${data.items.map(i => `<tr>
+                                    <td>${escapeHtml(i.foodName)}</td>
+                                    <td>${formatMoney(i.quantity)}</td>
+                                    <td>${formatMoney(i.unitPrice)}</td>
+                                    <td>${formatMoney(i.lineTotal)}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+                }
+
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('وضعیت', escapeHtml(data.statusName))}
+                    ${field('نوع سفارش', escapeHtml(data.orderTypeLabel))}
+                    ${field('میز / شناسه', escapeHtml(data.tableNumber))}
+                    ${field('مشتری', escapeHtml(data.customerName || '-'))}
+                    ${field('موبایل', escapeHtml(data.customerMobile || '-'))}
+                    ${field('زمان', formatDate(data.createdAt))}
+                    ${field('جمع آیتم‌ها', formatMoney(data.itemsTotal) + ' تومان')}
+                    ${field('توضیحات', escapeHtml(data.description || '-'), true)}
+                    ${itemsHtml}
+                </div>`;
+            }
+
+            function renderSubscription(data) {
+                titleEl.textContent = 'جزئیات اشتراک #' + data.subscriptionId;
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('طرح', escapeHtml(data.planName))}
+                    ${field('مالک', escapeHtml(data.ownerName))}
+                    ${field('تلفن', escapeHtml(data.ownerPhone))}
+                    ${field('دوره', escapeHtml(data.period))}
+                    ${field('وضعیت', escapeHtml(data.status))}
+                    ${field('مبلغ', formatMoney(data.pricePaid) + ' تومان')}
+                    ${field('تخفیف', data.discountApplied != null ? formatMoney(data.discountApplied) + ' تومان' : '-')}
+                    ${field('روش پرداخت', escapeHtml(data.paymentMethod))}
+                    ${field('تراکنش', escapeHtml(data.transactionId || '-'))}
+                    ${field('تاریخ خرید', formatDate(data.purchaseDate))}
+                    ${field('شروع', formatDate(data.startDate))}
+                    ${field('پایان', formatDate(data.endDate))}
+                </div>`;
+            }
+
+            function renderRestaurant(data) {
+                titleEl.textContent = 'جزئیات رستوران';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('نام', escapeHtml(data.name))}
+                    ${field('کد', escapeHtml(data.restaurantCode))}
+                    ${field('مالک', escapeHtml(data.ownerName))}
+                    ${field('تلفن', escapeHtml(data.ownerPhone))}
+                    ${field('تاریخ ایجاد', formatDate(data.createdAt))}
+                    ${field('فاکتور با کارمزد', data.receiptChargesEnabled ? 'فعال' : 'غیرفعال')}
+                </div>`;
+            }
+
+            function renderSupport(data) {
+                titleEl.textContent = 'جزئیات گفتگوی پشتیبانی';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('رستوران', escapeHtml(data.restaurantName || '-'))}
+                    ${field('مالک', escapeHtml(data.ownerName || '-'))}
+                    ${field('تلفن', escapeHtml(data.ownerPhone || '-'))}
+                    ${field('خوانده‌نشده پشتیبانی', formatMoney(data.unreadBySupport))}
+                    ${field('ایجاد', formatDate(data.createdAtUtc))}
+                    ${field('آخرین پیام', formatDate(data.lastMessageAtUtc))}
+                    ${field('پیش‌نمایش پیام', escapeHtml(data.lastMessagePreview || '-'), true)}
+                    ${field('صفحه آخر', escapeHtml(data.lastPageUrl || '-'), true)}
+                </div>
+                <a class="support-link" href="${supportChatUrl}">
+                    <i class="fas fa-external-link-alt"></i> رفتن به چت پشتیبانی
+                </a>`;
+            }
+
+            function renderFood(data) {
+                titleEl.textContent = 'جزئیات غذا';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('نام', escapeHtml(data.name))}
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('دسته', escapeHtml(data.categoryName || '-'))}
+                    ${field('قیمت', formatMoney(data.price) + ' تومان')}
+                    ${field('قیمت با تخفیف', data.discountPrice != null ? formatMoney(data.discountPrice) + ' تومان' : '-')}
+                    ${field('موجود', data.isAvailable ? 'بله' : 'خیر')}
+                    ${field('فعال', data.isActive ? 'بله' : 'خیر')}
+                    ${field('تاریخ ثبت', formatDate(data.createdAt))}
+                </div>`;
+            }
+
+            function renderCustomer(data) {
+                titleEl.textContent = 'جزئیات مشتری';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('نام', escapeHtml(data.fullName || '-'))}
+                    ${field('موبایل', escapeHtml(data.mobile))}
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('وضعیت', data.isActive ? 'فعال' : 'غیرفعال')}
+                    ${field('تاریخ ثبت', formatDate(data.createdAt))}
+                    ${field('توضیحات', escapeHtml(data.description || '-'), true)}
+                </div>`;
+            }
+
+            function renderOwner(data) {
+                titleEl.textContent = 'جزئیات مالک';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('نام', escapeHtml(data.name))}
+                    ${field('تلفن', escapeHtml(data.phone))}
+                    ${field('تعداد رستوران', formatMoney(data.restaurantCount))}
+                </div>`;
+            }
+
+            function renderCouponUsage(data) {
+                titleEl.textContent = 'جزئیات استفاده کد تخفیف';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('کد', escapeHtml(data.couponCode))}
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('مالک', escapeHtml(data.ownerName))}
+                    ${field('تلفن', escapeHtml(data.ownerPhone))}
+                    ${field('مبلغ تخفیف', formatMoney(data.discountAmount) + ' تومان')}
+                    ${field('مبلغ نهایی', formatMoney(data.appliedPrice) + ' تومان')}
+                    ${field('وضعیت', escapeHtml(data.status))}
+                    ${field('شناسه اشتراک', formatMoney(data.subscriptionId))}
+                    ${field('زمان استفاده', formatDate(data.usedAt))}
+                </div>`;
+            }
+
+            function renderInventory(data) {
+                titleEl.textContent = 'جزئیات حرکت انبار';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('کالا', escapeHtml(data.itemName))}
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('نوع حرکت', escapeHtml(data.reasonLabel || data.reason))}
+                    ${field('تغییر موجودی', escapeHtml(String(data.deltaQuantity)))}
+                    ${field('موجودی بعد', escapeHtml(String(data.quantityAfter)))}
+                    ${field('قیمت واحد', data.unitPrice != null ? formatMoney(data.unitPrice) + ' تومان' : '-')}
+                    ${field('زمان', formatDate(data.createdAt))}
+                    ${field('یادداشت', escapeHtml(data.note || '-'), true)}
+                </div>`;
+            }
+
+            function renderOwnerLogin(data) {
+                titleEl.textContent = 'جزئیات ورود مالک';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('مالک', escapeHtml(data.ownerName))}
+                    ${field('تلفن', escapeHtml(data.ownerPhone))}
+                    ${field('تخمین زمان ورود', formatDate(data.estimatedLoginAt))}
+                    ${field('انقضای توکن', formatDate(data.expiryTime))}
+                    ${field('توضیح', 'بر اساس صدور refresh token اپ/API (ورود وب کوکی‌محور در این لیست نیست)', true)}
+                </div>`;
+            }
+
+            function renderStaffLogin(data) {
+                titleEl.textContent = 'جزئیات ورود پرسنل';
+                bodyEl.innerHTML = `<div class="detail-grid">
+                    ${field('نام', escapeHtml(data.staffName))}
+                    ${field('نقش', escapeHtml(data.roleName || '-'))}
+                    ${field('رستوران', escapeHtml(data.restaurantName))}
+                    ${field('زمان ورود', formatDate(data.createdAtUtc))}
+                    ${field('انقضای توکن', formatDate(data.expiryTime))}
+                </div>`;
+            }
+
+            function openDetail(type, id) {
+                if (!modal) return;
+                titleEl.textContent = 'جزئیات';
+                bodyEl.innerHTML = `<div class="detail-loading"><i class="fas fa-spinner fa-spin"></i><span>در حال بارگذاری...</span></div>`;
+                modal.show();
+
+                fetch(`${detailUrl}?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`, {
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin'
+                })
+                    .then(r => {
+                        if (r.status === 401) throw new Error('نشست ادمین منقضی شده است');
+                        return r.json();
+                    })
+                    .then(res => {
+                        if (!res.success) {
+                            bodyEl.innerHTML = `<div class="detail-error">${escapeHtml(res.message || 'خطا')}</div>`;
+                            return;
+                        }
+                        switch (res.type) {
+                            case '@ActivityFeedTypes.OrderCreated':
+                                renderOrder(res.data);
+                                break;
+                            case '@ActivityFeedTypes.SubscriptionPurchased':
+                                renderSubscription(res.data);
+                                break;
+                            case '@ActivityFeedTypes.RestaurantCreated':
+                                renderRestaurant(res.data);
+                                break;
+                            case '@ActivityFeedTypes.SupportActivity':
+                                renderSupport(res.data);
+                                break;
+                            case '@ActivityFeedTypes.FoodCreated':
+                                renderFood(res.data);
+                                break;
+                            case '@ActivityFeedTypes.CustomerCreated':
+                                renderCustomer(res.data);
+                                break;
+                            case '@ActivityFeedTypes.OwnerRegistered':
+                                renderOwner(res.data);
+                                break;
+                            case '@ActivityFeedTypes.CouponUsed':
+                                renderCouponUsage(res.data);
+                                break;
+                            case '@ActivityFeedTypes.InventoryMovement':
+                                renderInventory(res.data);
+                                break;
+                            case '@ActivityFeedTypes.OwnerLogin':
+                                renderOwnerLogin(res.data);
+                                break;
+                            case '@ActivityFeedTypes.StaffLogin':
+                                renderStaffLogin(res.data);
+                                break;
+                            default:
+                                bodyEl.innerHTML = `<div class="detail-error">نوع ناشناخته</div>`;
+                        }
+                    })
+                    .catch(err => {
+                        bodyEl.innerHTML = `<div class="detail-error">${escapeHtml(err.message || 'خطا در دریافت جزئیات')}</div>`;
+                    });
+            }
+
+            document.querySelectorAll('.feed-item').forEach(el => {
+                el.addEventListener('click', () => openDetail(el.dataset.type, el.dataset.id));
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openDetail(el.dataset.type, el.dataset.id);
+                    }
+                });
+            });
+        })();
+    </script>
+}

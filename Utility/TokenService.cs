@@ -34,15 +34,14 @@ namespace resturanyar.Utility
                 new Claim(ClaimTypes.Role, "Owner")
             };
 
-            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
-            if (jwtDays <= 0)
-                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
+            // TEMP: prefer JwtExpirationMinutes for short-lived JWT refresh testing; remove minutes from config to restore days
+            var expires = GetJwtExpirationUtc();
 
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1),
+                expires: expires,
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -69,15 +68,14 @@ namespace resturanyar.Utility
                 new Claim("payment_permission", user.payment_management_permission ? "1" : "0")
             };
 
-            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
-            if (jwtDays <= 0)
-                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
+            // TEMP: prefer JwtExpirationMinutes for short-lived JWT refresh testing; remove minutes from config to restore days
+            var expires = GetJwtExpirationUtc();
 
             var token = new JwtSecurityToken(
                 issuer: jwtIssuer,
                 audience: jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1),
+                expires: expires,
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -91,6 +89,36 @@ namespace resturanyar.Utility
                 rng.GetBytes(randomNumber);
                 return Convert.ToBase64String(randomNumber);
             }
+        }
+
+        // TEMP: shared JWT lifetime helper for refresh testing — delete with JwtExpirationMinutes when done
+        public DateTime GetJwtExpirationUtc()
+        {
+            var jwtMinutes = _configuration.GetValue<int>("Jwt:JwtExpirationMinutes");
+            if (jwtMinutes <= 0)
+                jwtMinutes = _configuration.GetValue<int>("JwtSettings:JwtExpirationMinutes");
+            if (jwtMinutes > 0)
+                return DateTime.UtcNow.AddMinutes(jwtMinutes);
+
+            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
+            if (jwtDays <= 0)
+                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
+            return DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
+        }
+
+        // TEMP: shared refresh-token lifetime helper — remove RefreshExpirationMinutes from config to restore days
+        public DateTime GetRefreshExpirationUtc()
+        {
+            var refreshMinutes = _configuration.GetValue<int>("Jwt:RefreshExpirationMinutes");
+            if (refreshMinutes <= 0)
+                refreshMinutes = _configuration.GetValue<int>("JwtSettings:RefreshExpirationMinutes");
+            if (refreshMinutes > 0)
+                return DateTime.UtcNow.AddMinutes(refreshMinutes);
+
+            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
+            if (refreshDays <= 0)
+                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
+            return DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
         }
     }
 }

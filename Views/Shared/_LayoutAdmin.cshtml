@@ -43,6 +43,10 @@
                     <i class="fas fa-home"></i>
                     <span>داشبورد</span>
                 </a>
+                <a href="@Url.Action("RecentActivity", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "RecentActivity" ? "active" : "")">
+                    <i class="fas fa-satellite-dish"></i>
+                    <span>مانیتورینگ / فعالیت‌های اخیر</span>
+                </a>
                 <a href="@Url.Action("SupportChat", "Admin")" class="nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "SupportChat" ? "active" : "")" id="navSupportChat">
                     <i class="fas fa-comments"></i>
                     <span>چت پشتیبانی</span>

@@ -1944,3 +1944,4 @@ D:\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\bin\Debug\net8.0
 E:\My Work Space\resturanyar-web\resturanyar_webservice_version2\obj\Debug\net8.0\resturanyar.dll
 E:\My Work Space\resturanyar-web\resturanyar_webservice_version2\obj\Debug\net8.0\refint\resturanyar.dll
 E:\My Work Space\resturanyar-web\resturanyar_webservice_version2\obj\Debug\net8.0\resturanyar.pdb
+d:\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Debug\net8.0\swae.build.ex.cache

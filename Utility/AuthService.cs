@@ -60,16 +60,9 @@ namespace resturanyar.Utility
             string jwtToken = _tokenService.GenerateOwnerToken(owner);
             string refreshTokenString = _tokenService.GenerateRefreshToken();
 
-            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
-            if (jwtDays <= 0)
-                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
-
-            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
-            if (refreshDays <= 0)
-                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
-
-            var jwtExpiration = DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
-            var refreshExpiration = DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
+            // TEMP: uses JwtExpirationMinutes / RefreshExpirationMinutes when set
+            var jwtExpiration = _tokenService.GetJwtExpirationUtc();
+            var refreshExpiration = _tokenService.GetRefreshExpirationUtc();
 
             _context.RefreshTokens.Add(new RefreshToken
             {
@@ -92,16 +85,9 @@ namespace resturanyar.Utility
             string jwtToken = _tokenService.GenerateStaffToken(user);
             string refreshTokenString = _tokenService.GenerateRefreshToken();
 
-            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
-            if (jwtDays <= 0)
-                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
-
-            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
-            if (refreshDays <= 0)
-                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
-
-            var jwtExpiration = DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
-            var refreshExpiration = DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
+            // TEMP: uses JwtExpirationMinutes / RefreshExpirationMinutes when set
+            var jwtExpiration = _tokenService.GetJwtExpirationUtc();
+            var refreshExpiration = _tokenService.GetRefreshExpirationUtc();
 
             _context.StaffRefreshTokens.Add(new StaffRefreshToken
             {

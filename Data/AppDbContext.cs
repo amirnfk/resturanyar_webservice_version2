@@ -516,9 +516,22 @@ namespace Resturanyar.Data
                     .HasDefaultValueSql("GETDATE()");
             });
 
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                // Table has DB triggers; EF Core OUTPUT clause is incompatible with them.
+                entity.ToTable("RefreshTokens", tb => tb.UseSqlOutputClause(false));
+                entity.HasKey(t => t.Id);
+                entity.Property(t => t.Token).IsRequired();
+                entity.HasOne(t => t.Owner)
+                    .WithMany()
+                    .HasForeignKey(t => t.OwnerId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.Entity<StaffRefreshToken>(entity =>
             {
-                entity.ToTable("StaffRefreshTokens");
+                // Table may have DB triggers; EF Core OUTPUT clause is incompatible with them.
+                entity.ToTable("StaffRefreshTokens", tb => tb.UseSqlOutputClause(false));
                 entity.HasKey(t => t.Id);
                 entity.HasIndex(t => t.Token).IsUnique();
                 entity.HasIndex(t => t.UserId);

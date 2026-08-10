@@ -129,56 +129,59 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestModel request)
         {
-            if (request == null || string.IsNullOrWhiteSpace(request.RefreshToken))
+            try
             {
-                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
-            }
+                if (request == null || string.IsNullOrWhiteSpace(request.RefreshToken))
+                {
+                    return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+                }
 
-            var existingToken = await _context.StaffRefreshTokens
-                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+                var existingToken = await _context.StaffRefreshTokens
+                    .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
 
-            if (existingToken == null || existingToken.ExpiryTime <= DateTime.UtcNow)
-            {
-                if (existingToken != null)
+                if (existingToken == null || existingToken.ExpiryTime <= DateTime.UtcNow)
+                {
+                    if (existingToken != null)
+                    {
+                        _context.StaffRefreshTokens.Remove(existingToken);
+                        await _context.SaveChangesAsync();
+                    }
+                    return Unauthorized(new { success = false, message = "نشست منقضی شده است. لطفا مجدد وارد شوید." });
+                }
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.user_id == existingToken.UserId);
+                if (user == null)
                 {
                     _context.StaffRefreshTokens.Remove(existingToken);
                     await _context.SaveChangesAsync();
+                    return Unauthorized(new { success = false, message = "کاربر نامعتبر است." });
                 }
-                return Unauthorized(new { success = false, message = "نشست منقضی شده است. لطفا مجدد وارد شوید." });
-            }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.user_id == existingToken.UserId);
-            if (user == null)
-            {
-                _context.StaffRefreshTokens.Remove(existingToken);
+                string newJwt = _tokenService.GenerateStaffToken(user);
+                string newRefresh = _tokenService.GenerateRefreshToken();
+
+                existingToken.Token = newRefresh;
+                existingToken.RestaurantId = user.restaurant_id;
+                // TEMP: uses RefreshExpirationMinutes when set (see TokenService.GetRefreshExpirationUtc)
+                existingToken.ExpiryTime = _tokenService.GetRefreshExpirationUtc();
+
+                // TEMP: uses JwtExpirationMinutes when set (see TokenService.GetJwtExpirationUtc)
+                var jwtExpiration = _tokenService.GetJwtExpirationUtc();
+
                 await _context.SaveChangesAsync();
-                return Unauthorized(new { success = false, message = "کاربر نامعتبر است." });
+
+                return Ok(new
+                {
+                    success = true,
+                    token = newJwt,
+                    refreshToken = newRefresh,
+                    expiresAt = jwtExpiration
+                });
             }
-
-            string newJwt = _tokenService.GenerateStaffToken(user);
-            string newRefresh = _tokenService.GenerateRefreshToken();
-
-            existingToken.Token = newRefresh;
-            existingToken.RestaurantId = user.restaurant_id;
-            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
-            if (refreshDays <= 0)
-                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
-            existingToken.ExpiryTime = DateTime.UtcNow.AddDays(refreshDays > 0 ? refreshDays : 30);
-
-            var jwtDays = _configuration.GetValue<int>("Jwt:JwtExpirationDays");
-            if (jwtDays <= 0)
-                jwtDays = _configuration.GetValue<int>("JwtSettings:JwtExpirationDays");
-            var jwtExpiration = DateTime.UtcNow.AddDays(jwtDays > 0 ? jwtDays : 1);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
+            catch (Exception ex)
             {
-                success = true,
-                token = newJwt,
-                refreshToken = newRefresh,
-                expiresAt = jwtExpiration
-            });
+                return StatusCode(500, new { success = false, message = "خطا در تمدید نشست.", detail = ex.Message });
+            }
         }
 
         [AllowAnonymous]

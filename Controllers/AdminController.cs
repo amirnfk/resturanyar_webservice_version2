@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.AdminMessage;
 using resturanyar.Models.Copoun;
+using resturanyar.Models.Inventory;
+using resturanyar.Models.Receipt;
 using resturanyar.Models.ViewModels.Admin;
 using resturanyar.Models.ViewModels.CopounViewModel;
 using resturanyar.Utility;
@@ -66,144 +68,215 @@ namespace resturanyar.Controllers
                 var viewModel = new AdminDashboardViewModel();
 
                 // ===== آمار کلی (با اعمال فیلتر) =====
-                viewModel.TotalRestaurants = await _context.Restaurants
+                viewModel.TotalRestaurants = await _context.Restaurants.AsNoTracking()
                     .Where(r => !excludedIds.Contains(r.owner_id))
                     .CountAsync();
 
-                viewModel.TotalOwners = await _context.Owners
+                viewModel.TotalOwners = await _context.Owners.AsNoTracking()
                     .Where(o => !excludedIds.Contains(o.Id))
                     .CountAsync();
 
-
-
-                viewModel.TotalSubscriptions = await _context.Subscriptions
+                viewModel.TotalSubscriptions = await _context.Subscriptions.AsNoTracking()
                     .Where(s => !excludedIds.Contains(s.OwnerId))
                     .CountAsync();
 
-                viewModel.ActiveSubscriptions = await _context.Subscriptions
+                viewModel.ActiveSubscriptions = await _context.Subscriptions.AsNoTracking()
                     .Where(s => s.Status == "Active" && s.EndDate >= today && !excludedIds.Contains(s.OwnerId))
                     .CountAsync();
 
-                viewModel.TotalRevenue = await _context.Subscriptions
-                    .Where(s => s.IsPaid == true && !excludedIds.Contains(s.OwnerId))
-                    .SumAsync(s => s.PricePaid);
+                viewModel.TotalRevenue = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.IsPaid && !excludedIds.Contains(s.OwnerId))
+                    .SumAsync(s => (decimal?)s.PricePaid) ?? 0m;
 
-                // ===== لیست رستوران‌ها (با فیلتر) =====
-                var restaurantsQuery = from r in _context.Restaurants
-                                       join o in _context.Owners on r.owner_id equals o.Id
-                                       where !excludedIds.Contains(o.Id)
-                                       select new RestaurantStatusViewModel
-                                       {
-                                           RestaurantId = r.restaurant_id,
-                                           Name = r.name,
-                                           OwnerName = o.Name,
-                                           OwnerPhone = o.Phone,
-                                           TotalSubscriptions = _context.Subscriptions
-                               .Count(s => s.RestaurantId == r.restaurant_id && s.IsPaid == true),
-                                           SubscriptionStatus = _context.Subscriptions
-                                               .Where(s => s.RestaurantId == r.restaurant_id && s.Status == "Active" && s.EndDate >= today)
-                                               .Any() ? "Active" :
-                                               _context.Subscriptions.Any(s => s.RestaurantId == r.restaurant_id) ? "Expired" : "None",
-                                           SubscriptionEndDate = _context.Subscriptions
-                                               .Where(s => s.RestaurantId == r.restaurant_id)
-                                               .OrderByDescending(s => s.EndDate)
-                                               .Select(s => (DateTime?)s.EndDate)
-                                               .FirstOrDefault(),
-                                           PlanName = (from s in _context.Subscriptions
-                                                       join p in _context.SubscriptionPlans on s.SubscriptionPlanId equals p.Id
-                                                       where s.RestaurantId == r.restaurant_id
-                                                       orderby s.EndDate descending
-                                                       select p.Name).FirstOrDefault()
-                                       };
-
-                var startDate = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
-
-                var monthlyStats = new List<MonthlyStatsViewModel>();
-
-                for (int i = 0; i < 6; i++)
-                {
-                    var month = startDate.AddMonths(i);
-                    var monthStart = new DateTime(month.Year, month.Month, 1);
-                    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
-
-                    var revenue = await _context.Subscriptions
-                        .Where(s => s.IsPaid == true
-                            && s.PurchaseDate >= monthStart
-                            && s.PurchaseDate <= monthEnd
-                            && !excludedIds.Contains(s.OwnerId))
-                        .SumAsync(s => s.PricePaid);
-
-                    var newSubs = await _context.Subscriptions
-                        .Where(s => s.PurchaseDate >= monthStart
-                            && s.PurchaseDate <= monthEnd
-                            && !excludedIds.Contains(s.OwnerId))
-                        .CountAsync();
-
-                    monthlyStats.Add(new MonthlyStatsViewModel
+                // ===== لیست رستوران‌ها (بدون ساب‌کوئری وابسته به ازای هر ردیف) =====
+                var restaurants = await (
+                    from r in _context.Restaurants.AsNoTracking()
+                    join o in _context.Owners.AsNoTracking() on r.owner_id equals o.Id
+                    where !excludedIds.Contains(o.Id)
+                    select new RestaurantStatusViewModel
                     {
-                        Label = month.ToString("yyyy/MM"),
-                        Revenue = revenue,
-                        NewSubscriptions = newSubs
-                    });
-                }
+                        RestaurantId = r.restaurant_id,
+                        Name = r.name,
+                        OwnerName = o.Name,
+                        OwnerPhone = o.Phone
+                    }).ToListAsync();
 
-                viewModel.MonthlyStats = monthlyStats;
+                var restaurantIds = restaurants.Select(r => r.RestaurantId).ToList();
 
-                viewModel.Restaurants = await restaurantsQuery.ToListAsync();
-
-                if (viewModel.Restaurants.Count > 0)
+                if (restaurantIds.Count > 0)
                 {
-                    var restaurantIds = viewModel.Restaurants.Select(r => r.RestaurantId).ToList();
-                    var orderCounts = await _context.Orders
+                    var paidCounts = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => restaurantIds.Contains(s.RestaurantId) && s.IsPaid)
+                        .GroupBy(s => s.RestaurantId)
+                        .Select(g => new { RestaurantId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.RestaurantId, x => x.Count);
+
+                    var hasAnySub = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => restaurantIds.Contains(s.RestaurantId))
+                        .Select(s => s.RestaurantId)
+                        .Distinct()
+                        .ToListAsync();
+                    var hasAnySubSet = hasAnySub.ToHashSet();
+
+                    var activeEnds = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => restaurantIds.Contains(s.RestaurantId)
+                                    && s.Status == "Active"
+                                    && s.EndDate >= today)
+                        .GroupBy(s => s.RestaurantId)
+                        .Select(g => new { RestaurantId = g.Key, EndDate = g.Max(x => x.EndDate) })
+                        .ToDictionaryAsync(x => x.RestaurantId, x => x.EndDate);
+
+                    var latestSubEnds = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => restaurantIds.Contains(s.RestaurantId))
+                        .GroupBy(s => s.RestaurantId)
+                        .Select(g => new { RestaurantId = g.Key, EndDate = g.Max(x => x.EndDate) })
+                        .ToDictionaryAsync(x => x.RestaurantId, x => (DateTime?)x.EndDate);
+
+                    var latestPlanIds = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => restaurantIds.Contains(s.RestaurantId))
+                        .GroupBy(s => s.RestaurantId)
+                        .Select(g => new
+                        {
+                            RestaurantId = g.Key,
+                            PlanId = g.OrderByDescending(x => x.EndDate)
+                                      .ThenByDescending(x => x.Id)
+                                      .Select(x => x.SubscriptionPlanId)
+                                      .FirstOrDefault()
+                        })
+                        .ToListAsync();
+
+                    var planIds = latestPlanIds.Select(x => x.PlanId).Distinct().ToList();
+                    var planNames = planIds.Count == 0
+                        ? new Dictionary<int, string>()
+                        : await _context.SubscriptionPlans.AsNoTracking()
+                            .Where(p => planIds.Contains(p.Id))
+                            .ToDictionaryAsync(p => p.Id, p => p.Name);
+
+                    var planByRestaurant = latestPlanIds.ToDictionary(
+                        x => x.RestaurantId,
+                        x => planNames.GetValueOrDefault(x.PlanId));
+
+                    var orderCounts = await _context.Orders.AsNoTracking()
                         .Where(o => restaurantIds.Contains(o.RestaurantId))
                         .GroupBy(o => o.RestaurantId)
                         .Select(g => new { RestaurantId = g.Key, Count = g.Count() })
                         .ToDictionaryAsync(x => x.RestaurantId, x => x.Count);
 
-                    foreach (var restaurant in viewModel.Restaurants)
+                    foreach (var restaurant in restaurants)
+                    {
+                        restaurant.TotalSubscriptions = paidCounts.GetValueOrDefault(restaurant.RestaurantId);
                         restaurant.TotalOrders = orderCounts.GetValueOrDefault(restaurant.RestaurantId);
+                        restaurant.SubscriptionEndDate = latestSubEnds.GetValueOrDefault(restaurant.RestaurantId);
+                        restaurant.PlanName = planByRestaurant.GetValueOrDefault(restaurant.RestaurantId);
+
+                        if (activeEnds.ContainsKey(restaurant.RestaurantId))
+                            restaurant.SubscriptionStatus = "Active";
+                        else if (hasAnySubSet.Contains(restaurant.RestaurantId))
+                            restaurant.SubscriptionStatus = "Expired";
+                        else
+                            restaurant.SubscriptionStatus = "None";
+                    }
                 }
 
-                // ===== لیست مالک‌ها (با فیلتر) =====
-                var ownersQuery = from o in _context.Owners
-                                  where !excludedIds.Contains(o.Id)
-                                  select new OwnerSummaryViewModel
-                                  {
-                                      OwnerId = o.Id,
-                                      Name = o.Name,
-                                      Phone = o.Phone,
-                                      RestaurantCount = _context.Restaurants.Count(r => r.owner_id == o.Id),
-                                      ActiveSubscriptionCount = _context.Subscriptions
-                                          .Count(s => s.OwnerId == o.Id && s.Status == "Active" && s.EndDate >= today),
-                                      TotalSpent = _context.Subscriptions
-                                          .Where(s => s.OwnerId == o.Id && s.IsPaid == true)
-                                          .Sum(s => s.PricePaid),
-                                      LastPurchaseDate = _context.Subscriptions
-                                          .Where(s => s.OwnerId == o.Id && s.IsPaid == true)
-                                          .OrderByDescending(s => s.PurchaseDate)
-                                          .Select(s => (DateTime?)s.PurchaseDate)
-                                          .FirstOrDefault()
-                                  };
+                viewModel.Restaurants = restaurants;
 
-                viewModel.Owners = await ownersQuery.ToListAsync();
+                // ===== آمار ماهانه در یک کوئری =====
+                var monthWindowStart = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
+                var monthWindowEnd = new DateTime(today.Year, today.Month, 1).AddMonths(1);
 
-                // ===== اشتراک‌های در حال انقضا (با فیلتر) =====
-                var expiringData = await (from s in _context.Subscriptions
-                                          join r in _context.Restaurants on s.RestaurantId equals r.restaurant_id
-                                          join o in _context.Owners on s.OwnerId equals o.Id
-                                          join p in _context.SubscriptionPlans on s.SubscriptionPlanId equals p.Id
-                                          where s.Status == "Active" && s.EndDate >= today && s.EndDate <= today.AddDays(7)
-                                          && !excludedIds.Contains(o.Id)
-                                          select new
-                                          {
-                                              s.Id,
-                                              RestaurantName = r.name,
-                                              OwnerName = o.Name,
-                                              PlanName = p.Name,
-                                              s.EndDate,
-                                              s.PaymentMethod
-                                          })
-                                          .ToListAsync();
+                var monthlyRows = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.PurchaseDate >= monthWindowStart
+                                && s.PurchaseDate < monthWindowEnd
+                                && !excludedIds.Contains(s.OwnerId))
+                    .Select(s => new { s.PurchaseDate, s.PricePaid, s.IsPaid })
+                    .ToListAsync();
+
+                var monthlyStats = new List<MonthlyStatsViewModel>();
+                for (int i = 0; i < 6; i++)
+                {
+                    var month = monthWindowStart.AddMonths(i);
+                    var monthStart = new DateTime(month.Year, month.Month, 1);
+                    var nextMonth = monthStart.AddMonths(1);
+
+                    var inMonth = monthlyRows.Where(s => s.PurchaseDate >= monthStart && s.PurchaseDate < nextMonth);
+                    monthlyStats.Add(new MonthlyStatsViewModel
+                    {
+                        Label = month.ToString("yyyy/MM"),
+                        Revenue = inMonth.Where(s => s.IsPaid).Sum(s => s.PricePaid),
+                        NewSubscriptions = inMonth.Count()
+                    });
+                }
+
+                viewModel.MonthlyStats = monthlyStats;
+
+                // ===== لیست مالک‌ها (تجمیع گروهی به جای ساب‌کوئری در هر ردیف) =====
+                var owners = await _context.Owners.AsNoTracking()
+                    .Where(o => !excludedIds.Contains(o.Id))
+                    .Select(o => new OwnerSummaryViewModel
+                    {
+                        OwnerId = o.Id,
+                        Name = o.Name,
+                        Phone = o.Phone
+                    })
+                    .ToListAsync();
+
+                var ownerIds = owners.Select(o => o.OwnerId).ToList();
+                if (ownerIds.Count > 0)
+                {
+                    var restaurantCounts = await _context.Restaurants.AsNoTracking()
+                        .Where(r => ownerIds.Contains(r.owner_id))
+                        .GroupBy(r => r.owner_id)
+                        .Select(g => new { OwnerId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.OwnerId, x => x.Count);
+
+                    var activeSubCounts = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => ownerIds.Contains(s.OwnerId) && s.Status == "Active" && s.EndDate >= today)
+                        .GroupBy(s => s.OwnerId)
+                        .Select(g => new { OwnerId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.OwnerId, x => x.Count);
+
+                    var spendStats = await _context.Subscriptions.AsNoTracking()
+                        .Where(s => ownerIds.Contains(s.OwnerId) && s.IsPaid)
+                        .GroupBy(s => s.OwnerId)
+                        .Select(g => new
+                        {
+                            OwnerId = g.Key,
+                            TotalSpent = g.Sum(x => x.PricePaid),
+                            LastPurchaseDate = (DateTime?)g.Max(x => x.PurchaseDate)
+                        })
+                        .ToDictionaryAsync(x => x.OwnerId, x => x);
+
+                    foreach (var owner in owners)
+                    {
+                        owner.RestaurantCount = restaurantCounts.GetValueOrDefault(owner.OwnerId);
+                        owner.ActiveSubscriptionCount = activeSubCounts.GetValueOrDefault(owner.OwnerId);
+                        if (spendStats.TryGetValue(owner.OwnerId, out var spend))
+                        {
+                            owner.TotalSpent = spend.TotalSpent;
+                            owner.LastPurchaseDate = spend.LastPurchaseDate;
+                        }
+                    }
+                }
+
+                viewModel.Owners = owners;
+
+                // ===== اشتراک‌های در حال انقضا =====
+                var expiringData = await (
+                    from s in _context.Subscriptions.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on s.RestaurantId equals r.restaurant_id
+                    join o in _context.Owners.AsNoTracking() on s.OwnerId equals o.Id
+                    join p in _context.SubscriptionPlans.AsNoTracking() on s.SubscriptionPlanId equals p.Id
+                    where s.Status == "Active" && s.EndDate >= today && s.EndDate <= today.AddDays(7)
+                          && !excludedIds.Contains(o.Id)
+                    select new
+                    {
+                        s.Id,
+                        RestaurantName = r.name,
+                        OwnerName = o.Name,
+                        PlanName = p.Name,
+                        s.EndDate,
+                        s.PaymentMethod
+                    }).ToListAsync();
 
                 viewModel.ExpiringSubscriptions = expiringData
                     .Select(item => new ExpiringSubscriptionViewModel
@@ -219,27 +292,27 @@ namespace resturanyar.Controllers
                     .OrderBy(s => s.DaysLeft)
                     .ToList();
 
-                // ===== آخرین اشتراک‌های خریداری شده (با فیلتر) =====
-                var recentQuery = (from s in _context.Subscriptions
-                                   join r in _context.Restaurants on s.RestaurantId equals r.restaurant_id
-                                   join o in _context.Owners on s.OwnerId equals o.Id
-                                   join p in _context.SubscriptionPlans on s.SubscriptionPlanId equals p.Id
-                                   where !excludedIds.Contains(o.Id)
-                                   orderby s.PurchaseDate descending
-                                   select new RecentSubscriptionViewModel
-                                   {
-                                       SubscriptionId = s.Id,
-                                       RestaurantName = r.name,
-                                       OwnerName = o.Name,
-                                       PlanName = p.Name,
-                                       PricePaid = s.PricePaid,
-                                       PurchaseDate = s.PurchaseDate,
-                                       Status = s.Status,
-                                       PaymentMethod = s.PaymentMethod
-                                   })
-                                   .Take(10);
-
-                viewModel.RecentSubscriptions = await recentQuery.ToListAsync();
+                // ===== آخرین اشتراک‌ها — مرتب‌سازی با PK به‌جای PurchaseDate بدون ایندکس =====
+                viewModel.RecentSubscriptions = await (
+                    from s in _context.Subscriptions.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on s.RestaurantId equals r.restaurant_id
+                    join o in _context.Owners.AsNoTracking() on s.OwnerId equals o.Id
+                    join p in _context.SubscriptionPlans.AsNoTracking() on s.SubscriptionPlanId equals p.Id
+                    where !excludedIds.Contains(o.Id)
+                    orderby s.Id descending
+                    select new RecentSubscriptionViewModel
+                    {
+                        SubscriptionId = s.Id,
+                        RestaurantName = r.name,
+                        OwnerName = o.Name,
+                        PlanName = p.Name,
+                        PricePaid = s.PricePaid,
+                        PurchaseDate = s.PurchaseDate,
+                        Status = s.Status,
+                        PaymentMethod = s.PaymentMethod
+                    })
+                    .Take(10)
+                    .ToListAsync();
 
                 return View(viewModel);
             }
@@ -716,22 +789,51 @@ namespace resturanyar.Controllers
                 var sevenDaysAgo = now.AddDays(-7);
                 var thirtyDaysAgo = now.AddDays(-30);
 
-                // یک کوئری واحد برای دریافت اطلاعات تمام رستوران‌ها و شمارش‌های مورد نیاز
-                var query = from r in _context.Restaurants
-                            where !excludedIds.Contains(r.owner_id)
-                            select new
-                            {
-                                RestaurantId = r.restaurant_id,
-                                RestaurantName = r.name,
-                                Orders1Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= oneDayAgo),
-                                Orders7Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= sevenDaysAgo),
-                                Orders30Day = _context.Orders.Count(o => o.RestaurantId == r.restaurant_id && o.CreatedAt >= thirtyDaysAgo),
-                                FoodItems1Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= oneDayAgo),
-                                FoodItems7Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= sevenDaysAgo),
-                                FoodItems30Day = _context.FoodItems.Count(f => f.RestaurantId == r.restaurant_id && f.CreatedAt >= thirtyDaysAgo)
-                            };
+                var restaurants = await _context.Restaurants.AsNoTracking()
+                    .Where(r => !excludedIds.Contains(r.owner_id))
+                    .Select(r => new { RestaurantId = r.restaurant_id, RestaurantName = r.name })
+                    .ToListAsync();
 
-                var result = await query.AsNoTracking().ToListAsync();
+                var orderStats = await _context.Orders.AsNoTracking()
+                    .Where(o => o.CreatedAt >= thirtyDaysAgo)
+                    .GroupBy(o => o.RestaurantId)
+                    .Select(g => new
+                    {
+                        RestaurantId = g.Key,
+                        Orders1Day = g.Count(x => x.CreatedAt >= oneDayAgo),
+                        Orders7Day = g.Count(x => x.CreatedAt >= sevenDaysAgo),
+                        Orders30Day = g.Count()
+                    })
+                    .ToDictionaryAsync(x => x.RestaurantId, x => x);
+
+                var foodStats = await _context.FoodItems.AsNoTracking()
+                    .Where(f => f.CreatedAt != null && f.CreatedAt >= thirtyDaysAgo)
+                    .GroupBy(f => f.RestaurantId)
+                    .Select(g => new
+                    {
+                        RestaurantId = g.Key,
+                        FoodItems1Day = g.Count(x => x.CreatedAt >= oneDayAgo),
+                        FoodItems7Day = g.Count(x => x.CreatedAt >= sevenDaysAgo),
+                        FoodItems30Day = g.Count()
+                    })
+                    .ToDictionaryAsync(x => x.RestaurantId, x => x);
+
+                var result = restaurants.Select(r =>
+                {
+                    orderStats.TryGetValue(r.RestaurantId, out var orders);
+                    foodStats.TryGetValue(r.RestaurantId, out var foods);
+                    return new
+                    {
+                        r.RestaurantId,
+                        r.RestaurantName,
+                        Orders1Day = orders?.Orders1Day ?? 0,
+                        Orders7Day = orders?.Orders7Day ?? 0,
+                        Orders30Day = orders?.Orders30Day ?? 0,
+                        FoodItems1Day = foods?.FoodItems1Day ?? 0,
+                        FoodItems7Day = foods?.FoodItems7Day ?? 0,
+                        FoodItems30Day = foods?.FoodItems30Day ?? 0
+                    };
+                }).ToList();
 
                 return Json(new { success = true, data = result });
             }
@@ -1629,6 +1731,837 @@ namespace resturanyar.Controllers
             ViewBag.InitialUnread = await chatService.GetTotalUnreadBySupportAsync();
             ViewBag.Settings = await chatService.GetSettingsAsync();
             return View();
+        }
+
+        // ===== مانیتورینگ / فعالیت‌های اخیر =====
+        [HttpGet]
+        public async Task<IActionResult> RecentActivity()
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return RedirectToAction("AdminLogin");
+
+            try
+            {
+                var excludedIds = GetExcludedOwnerIds();
+                const int perSection = 3;
+
+                var orderRows = await (
+                    from o in _context.Orders.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on o.RestaurantId equals r.restaurant_id
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby o.OrderId descending
+                    select new
+                    {
+                        o.OrderId,
+                        o.RestaurantId,
+                        RestaurantName = r.name,
+                        o.TableNumber,
+                        o.OrderType,
+                        o.CreatedAt
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var subscriptionRows = await (
+                    from s in _context.Subscriptions.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on s.RestaurantId equals r.restaurant_id
+                    join p in _context.SubscriptionPlans.AsNoTracking() on s.SubscriptionPlanId equals p.Id
+                    where s.IsPaid && !excludedIds.Contains(s.OwnerId)
+                    orderby s.Id descending
+                    select new
+                    {
+                        s.Id,
+                        s.RestaurantId,
+                        RestaurantName = r.name,
+                        PlanName = p.Name,
+                        s.PricePaid,
+                        s.PaymentMethod,
+                        s.PurchaseDate
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var restaurantRows = await (
+                    from r in _context.Restaurants.AsNoTracking()
+                    join o in _context.Owners.AsNoTracking() on r.owner_id equals o.Id
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby r.restaurant_id descending
+                    select new
+                    {
+                        RestaurantId = r.restaurant_id,
+                        Name = r.name,
+                        OwnerName = o.Name,
+                        r.CreatedAt
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var supportRows = await (
+                    from c in _context.SupportConversations.AsNoTracking()
+                    where c.OwnerId == null || !excludedIds.Contains(c.OwnerId.Value)
+                    orderby c.LastMessageAtUtc descending
+                    select new
+                    {
+                        c.Id,
+                        c.RestaurantId,
+                        DisplayName = c.RestaurantName ?? c.OwnerName ?? "مهمان",
+                        c.UnreadBySupport,
+                        c.LastMessageAtUtc
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var foodRows = await (
+                    from f in _context.FoodItems.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on f.RestaurantId equals r.restaurant_id
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby f.FoodItemId descending
+                    select new
+                    {
+                        f.FoodItemId,
+                        f.RestaurantId,
+                        RestaurantName = r.name,
+                        FoodName = f.Name,
+                        CategoryName = f.CategoryName,
+                        f.Price,
+                        f.CreatedAt
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var customerRows = await (
+                    from c in _context.Customers.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on c.RestaurantId equals r.restaurant_id
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby c.CustomerId descending
+                    select new
+                    {
+                        c.CustomerId,
+                        c.RestaurantId,
+                        RestaurantName = r.name,
+                        c.FullName,
+                        c.Mobile,
+                        c.CreatedAt
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var ownerBaseRows = await _context.Owners.AsNoTracking()
+                    .Where(o => !excludedIds.Contains(o.Id))
+                    .OrderByDescending(o => o.Id)
+                    .Select(o => new { o.Id, o.Name, o.Phone })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var ownerIds = ownerBaseRows.Select(o => o.Id).ToList();
+                var ownerRestaurantCounts = ownerIds.Count == 0
+                    ? new Dictionary<int, int>()
+                    : await _context.Restaurants.AsNoTracking()
+                        .Where(r => ownerIds.Contains(r.owner_id))
+                        .GroupBy(r => r.owner_id)
+                        .Select(g => new { OwnerId = g.Key, Count = g.Count() })
+                        .ToDictionaryAsync(x => x.OwnerId, x => x.Count);
+
+                var couponUsageRows = await (
+                    from u in _context.CouponUsages.AsNoTracking()
+                    join c in _context.Coupons.AsNoTracking() on u.CouponId equals c.Id
+                    join r in _context.Restaurants.AsNoTracking() on u.RestaurantId equals r.restaurant_id
+                    where !excludedIds.Contains(u.OwnerId)
+                    orderby u.Id descending
+                    select new
+                    {
+                        u.Id,
+                        CouponCode = c.Code,
+                        u.RestaurantId,
+                        RestaurantName = r.name,
+                        u.DiscountAmount,
+                        u.UsedAt,
+                        u.Status
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var inventoryCandidates = await (
+                    from m in _context.InventoryMovements.AsNoTracking()
+                    join r in _context.Restaurants.AsNoTracking() on m.RestaurantId equals r.restaurant_id
+                    join i in _context.InventoryItems.AsNoTracking() on m.InventoryItemId equals i.InventoryItemId
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby m.MovementId descending
+                    select new
+                    {
+                        m.MovementId,
+                        m.RestaurantId,
+                        RestaurantName = r.name,
+                        ItemName = i.Name,
+                        m.Reason,
+                        m.DeltaQuantity,
+                        m.QuantityAfter,
+                        m.CreatedAt
+                    })
+                    .Take(80)
+                    .ToListAsync();
+
+                var inventoryRows = inventoryCandidates
+                    .Where(m => !string.Equals(m.Reason, InventoryMovementReasons.SaleConsumption, StringComparison.OrdinalIgnoreCase))
+                    .Take(perSection)
+                    .ToList();
+
+                var ownerLoginRows = await (
+                    from t in _context.RefreshTokens.AsNoTracking()
+                    join o in _context.Owners.AsNoTracking() on t.OwnerId equals o.Id
+                    where !excludedIds.Contains(o.Id)
+                    orderby t.Id descending
+                    select new
+                    {
+                        t.Id,
+                        OwnerId = o.Id,
+                        OwnerName = o.Name,
+                        OwnerPhone = o.Phone,
+                        t.ExpiryTime
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var staffLoginRows = await (
+                    from t in _context.StaffRefreshTokens.AsNoTracking()
+                    join u in _context.Users.AsNoTracking() on t.UserId equals u.user_id
+                    join r in _context.Restaurants.AsNoTracking() on t.RestaurantId equals r.restaurant_id
+                    join role in _context.Roles.AsNoTracking() on u.role_id equals role.role_id into roles
+                    from role in roles.DefaultIfEmpty()
+                    where !excludedIds.Contains(r.owner_id)
+                    orderby t.Id descending
+                    select new
+                    {
+                        t.Id,
+                        UserId = u.user_id,
+                        StaffName = u.name,
+                        RoleName = role != null ? role.role_name : null,
+                        t.RestaurantId,
+                        RestaurantName = r.name,
+                        t.CreatedAtUtc
+                    })
+                    .Take(perSection)
+                    .ToListAsync();
+
+                var refreshLifetime = GetRefreshTokenLifetime();
+
+                var viewModel = new RecentActivityPageViewModel
+                {
+                    Orders = orderRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.OrderCreated,
+                        EntityId = row.OrderId,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.RestaurantName,
+                        Subtitle = $"سفارش #{row.OrderId} · {GetOrderTypeLabel(row.OrderType)} · میز {row.TableNumber}",
+                        OccurredAt = row.CreatedAt,
+                        BadgeLabel = "سفارش",
+                        BadgeClass = "badge-order",
+                        IconClass = "fas fa-receipt"
+                    }).ToList(),
+                    Subscriptions = subscriptionRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.SubscriptionPurchased,
+                        EntityId = row.Id,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.RestaurantName,
+                        Subtitle = $"{row.PlanName} · {row.PricePaid:N0} تومان · {row.PaymentMethod}",
+                        OccurredAt = row.PurchaseDate,
+                        BadgeLabel = "اشتراک",
+                        BadgeClass = "badge-sub",
+                        IconClass = "fas fa-crown"
+                    }).ToList(),
+                    Restaurants = restaurantRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.RestaurantCreated,
+                        EntityId = row.RestaurantId,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.Name,
+                        Subtitle = $"مالک: {row.OwnerName}",
+                        OccurredAt = row.CreatedAt,
+                        BadgeLabel = "رستوران",
+                        BadgeClass = "badge-restaurant",
+                        IconClass = "fas fa-store"
+                    }).ToList(),
+                    Support = supportRows.Select(row =>
+                    {
+                        var unreadPart = row.UnreadBySupport > 0 ? $" · {row.UnreadBySupport} خوانده‌نشده" : "";
+                        return new ActivityFeedItem
+                        {
+                            Type = ActivityFeedTypes.SupportActivity,
+                            EntityId = row.Id,
+                            RestaurantId = row.RestaurantId,
+                            Title = row.DisplayName,
+                            Subtitle = $"چت پشتیبانی{unreadPart}",
+                            OccurredAt = row.LastMessageAtUtc.ToLocalTime(),
+                            BadgeLabel = "پشتیبانی",
+                            BadgeClass = "badge-support",
+                            IconClass = "fas fa-comments"
+                        };
+                    }).ToList(),
+                    Foods = foodRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.FoodCreated,
+                        EntityId = row.FoodItemId,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.FoodName,
+                        Subtitle = $"{row.RestaurantName} · {(string.IsNullOrWhiteSpace(row.CategoryName) ? "بدون دسته" : row.CategoryName)} · {row.Price:N0} تومان",
+                        OccurredAt = row.CreatedAt ?? DateTime.MinValue,
+                        BadgeLabel = "غذا",
+                        BadgeClass = "badge-food",
+                        IconClass = "fas fa-utensils"
+                    }).ToList(),
+                    Customers = customerRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.CustomerCreated,
+                        EntityId = row.CustomerId,
+                        RestaurantId = row.RestaurantId,
+                        Title = string.IsNullOrWhiteSpace(row.FullName) ? row.Mobile : row.FullName,
+                        Subtitle = $"{row.RestaurantName} · {row.Mobile}",
+                        OccurredAt = row.CreatedAt,
+                        BadgeLabel = "مشتری",
+                        BadgeClass = "badge-customer",
+                        IconClass = "fas fa-user"
+                    }).ToList(),
+                    Owners = ownerBaseRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.OwnerRegistered,
+                        EntityId = row.Id,
+                        RestaurantId = null,
+                        Title = row.Name,
+                        Subtitle = $"{row.Phone} · {ownerRestaurantCounts.GetValueOrDefault(row.Id)} رستوران",
+                        OccurredAt = DateTime.MinValue,
+                        BadgeLabel = "مالک",
+                        BadgeClass = "badge-owner",
+                        IconClass = "fas fa-user-tie"
+                    }).ToList(),
+                    CouponUsages = couponUsageRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.CouponUsed,
+                        EntityId = row.Id,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.CouponCode,
+                        Subtitle = $"{row.RestaurantName} · تخفیف {row.DiscountAmount:N0} تومان · {row.Status}",
+                        OccurredAt = row.UsedAt,
+                        BadgeLabel = "کد تخفیف",
+                        BadgeClass = "badge-coupon",
+                        IconClass = "fas fa-ticket-alt"
+                    }).ToList(),
+                    InventoryMovements = inventoryRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.InventoryMovement,
+                        EntityId = row.MovementId,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.ItemName,
+                        Subtitle = $"{row.RestaurantName} · {GetInventoryReasonLabel(row.Reason)} · {FormatSignedQuantity(row.DeltaQuantity)}",
+                        OccurredAt = row.CreatedAt.Kind == DateTimeKind.Utc ? row.CreatedAt.ToLocalTime() : row.CreatedAt,
+                        BadgeLabel = "انبار",
+                        BadgeClass = "badge-inventory",
+                        IconClass = "fas fa-boxes"
+                    }).ToList(),
+                    OwnerLogins = ownerLoginRows.Select(row =>
+                    {
+                        var estimatedLogin = EstimateLoginFromExpiry(row.ExpiryTime, refreshLifetime);
+                        return new ActivityFeedItem
+                        {
+                            Type = ActivityFeedTypes.OwnerLogin,
+                            EntityId = row.Id,
+                            RestaurantId = null,
+                            Title = row.OwnerName,
+                            Subtitle = $"{row.OwnerPhone} · ورود اپ/API",
+                            OccurredAt = estimatedLogin ?? DateTime.MinValue,
+                            BadgeLabel = "ورود مالک",
+                            BadgeClass = "badge-owner-login",
+                            IconClass = "fas fa-sign-in-alt"
+                        };
+                    }).ToList(),
+                    StaffLogins = staffLoginRows.Select(row => new ActivityFeedItem
+                    {
+                        Type = ActivityFeedTypes.StaffLogin,
+                        EntityId = row.Id,
+                        RestaurantId = row.RestaurantId,
+                        Title = row.StaffName,
+                        Subtitle = $"{row.RestaurantName} · {(string.IsNullOrWhiteSpace(row.RoleName) ? "پرسنل" : row.RoleName)}",
+                        OccurredAt = row.CreatedAtUtc.ToLocalTime(),
+                        BadgeLabel = "ورود پرسنل",
+                        BadgeClass = "badge-staff-login",
+                        IconClass = "fas fa-id-badge"
+                    }).ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در بارگذاری فعالیت‌های اخیر");
+                return StatusCode(500, "خطای داخلی سرور: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetActivityDetail(string type, long id)
+        {
+            if (HttpContext.Session.GetString("AdminLoggedIn") != "true")
+                return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(type) || id <= 0)
+                return Json(new { success = false, message = "درخواست نامعتبر است" });
+
+            try
+            {
+                var excludedIds = GetExcludedOwnerIds();
+
+                switch (type)
+                {
+                    case ActivityFeedTypes.OrderCreated:
+                    {
+                        var orderId = (int)id;
+                        var header = await (
+                            from o in _context.Orders.AsNoTracking()
+                            join r in _context.Restaurants.AsNoTracking() on o.RestaurantId equals r.restaurant_id
+                            join st in _context.OrderStatus.AsNoTracking() on o.StatusId equals st.OrderStatusId
+                            where o.OrderId == orderId && !excludedIds.Contains(r.owner_id)
+                            select new
+                            {
+                                o.OrderId,
+                                o.RestaurantId,
+                                RestaurantName = r.name,
+                                o.TableNumber,
+                                o.OrderType,
+                                o.Description,
+                                o.CreatedAt,
+                                StatusName = st.StatusName,
+                                o.CustomerId
+                            }).FirstOrDefaultAsync();
+
+                        if (header == null)
+                            return Json(new { success = false, message = "سفارش یافت نشد" });
+
+                        string customerName = null;
+                        string customerMobile = null;
+                        if (header.CustomerId.HasValue)
+                        {
+                            var customer = await _context.Customers.AsNoTracking()
+                                .Where(c => c.CustomerId == header.CustomerId.Value)
+                                .Select(c => new { c.FullName, c.Mobile })
+                                .FirstOrDefaultAsync();
+                            if (customer != null)
+                            {
+                                customerName = customer.FullName;
+                                customerMobile = customer.Mobile;
+                            }
+                        }
+
+                        var lineItems = await _context.OrderItems.AsNoTracking()
+                            .Where(oi => oi.OrderId == orderId)
+                            .Select(oi => new ActivityOrderItemDto
+                            {
+                                FoodName = oi.FoodName ?? ("#" + oi.FoodItemId),
+                                Quantity = oi.Quantity,
+                                UnitPrice = oi.UnitPriceWithDiscount ?? oi.UnitPrice,
+                                LineTotal = oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice)
+                            })
+                            .ToListAsync();
+
+                        var detail = new ActivityOrderDetailDto
+                        {
+                            OrderId = header.OrderId,
+                            RestaurantId = header.RestaurantId,
+                            RestaurantName = header.RestaurantName,
+                            TableNumber = header.TableNumber,
+                            StatusName = header.StatusName,
+                            OrderTypeLabel = GetOrderTypeLabel(header.OrderType),
+                            Description = header.Description,
+                            CreatedAt = header.CreatedAt,
+                            CustomerName = customerName,
+                            CustomerMobile = customerMobile,
+                            Items = lineItems,
+                            ItemsTotal = lineItems.Sum(i => i.LineTotal)
+                        };
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.SubscriptionPurchased:
+                    {
+                        var subscriptionId = (int)id;
+                        var detail = await (
+                            from s in _context.Subscriptions.AsNoTracking()
+                            join r in _context.Restaurants.AsNoTracking() on s.RestaurantId equals r.restaurant_id
+                            join o in _context.Owners.AsNoTracking() on s.OwnerId equals o.Id
+                            join p in _context.SubscriptionPlans.AsNoTracking() on s.SubscriptionPlanId equals p.Id
+                            where s.Id == subscriptionId && !excludedIds.Contains(s.OwnerId)
+                            select new ActivitySubscriptionDetailDto
+                            {
+                                SubscriptionId = s.Id,
+                                RestaurantId = s.RestaurantId,
+                                RestaurantName = r.name,
+                                OwnerName = o.Name,
+                                OwnerPhone = o.Phone,
+                                PlanName = p.Name,
+                                Period = s.SubscriptionPeriod,
+                                Status = s.Status,
+                                PricePaid = s.PricePaid,
+                                DiscountApplied = s.DiscountApplied,
+                                PaymentMethod = s.PaymentMethod,
+                                TransactionId = s.TransactionId,
+                                PurchaseDate = s.PurchaseDate,
+                                StartDate = s.StartDate,
+                                EndDate = s.EndDate
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "اشتراک یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.RestaurantCreated:
+                    {
+                        var restaurantId = (int)id;
+                        var detail = await (
+                            from r in _context.Restaurants.AsNoTracking()
+                            join o in _context.Owners.AsNoTracking() on r.owner_id equals o.Id
+                            where r.restaurant_id == restaurantId && !excludedIds.Contains(r.owner_id)
+                            select new ActivityRestaurantDetailDto
+                            {
+                                RestaurantId = r.restaurant_id,
+                                Name = r.name,
+                                RestaurantCode = r.restaurant_code,
+                                OwnerName = o.Name,
+                                OwnerPhone = o.Phone,
+                                CreatedAt = r.CreatedAt,
+                                ReceiptChargesEnabled = r.ReceiptChargesEnabled
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "رستوران یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.SupportActivity:
+                    {
+                        var conversation = await _context.SupportConversations.AsNoTracking()
+                            .Where(c => c.Id == id && (c.OwnerId == null || !excludedIds.Contains(c.OwnerId.Value)))
+                            .Select(c => new
+                            {
+                                c.Id,
+                                c.RestaurantId,
+                                c.RestaurantName,
+                                c.OwnerName,
+                                c.OwnerPhone,
+                                c.UnreadBySupport,
+                                c.CreatedAtUtc,
+                                c.LastMessageAtUtc,
+                                c.LastPageUrl
+                            })
+                            .FirstOrDefaultAsync();
+
+                        if (conversation == null)
+                            return Json(new { success = false, message = "گفتگو یافت نشد" });
+
+                        var lastMessage = await _context.SupportMessages.AsNoTracking()
+                            .Where(m => m.ConversationId == id)
+                            .OrderByDescending(m => m.CreatedAtUtc)
+                            .Select(m => m.Body)
+                            .FirstOrDefaultAsync();
+
+                        var detail = new ActivitySupportDetailDto
+                        {
+                            ConversationId = conversation.Id,
+                            RestaurantId = conversation.RestaurantId,
+                            RestaurantName = conversation.RestaurantName,
+                            OwnerName = conversation.OwnerName,
+                            OwnerPhone = conversation.OwnerPhone,
+                            UnreadBySupport = conversation.UnreadBySupport,
+                            CreatedAtUtc = conversation.CreatedAtUtc,
+                            LastMessageAtUtc = conversation.LastMessageAtUtc,
+                            LastMessagePreview = TruncateText(lastMessage, 160),
+                            LastPageUrl = conversation.LastPageUrl
+                        };
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.FoodCreated:
+                    {
+                        var foodId = (int)id;
+                        var detail = await (
+                            from f in _context.FoodItems.AsNoTracking()
+                            join r in _context.Restaurants.AsNoTracking() on f.RestaurantId equals r.restaurant_id
+                            where f.FoodItemId == foodId && !excludedIds.Contains(r.owner_id)
+                            select new ActivityFoodDetailDto
+                            {
+                                FoodItemId = f.FoodItemId,
+                                RestaurantId = f.RestaurantId,
+                                RestaurantName = r.name,
+                                Name = f.Name,
+                                CategoryName = f.CategoryName,
+                                Price = f.Price,
+                                DiscountPrice = f.DiscountPrice,
+                                IsAvailable = f.IsAvailable,
+                                IsActive = f.IsActive,
+                                CreatedAt = f.CreatedAt,
+                                ImageUrl = f.ImageUrl
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "غذا یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.CustomerCreated:
+                    {
+                        var customerId = (int)id;
+                        var detail = await (
+                            from c in _context.Customers.AsNoTracking()
+                            join r in _context.Restaurants.AsNoTracking() on c.RestaurantId equals r.restaurant_id
+                            where c.CustomerId == customerId && !excludedIds.Contains(r.owner_id)
+                            select new ActivityCustomerDetailDto
+                            {
+                                CustomerId = c.CustomerId,
+                                RestaurantId = c.RestaurantId,
+                                RestaurantName = r.name,
+                                FullName = c.FullName,
+                                Mobile = c.Mobile,
+                                IsActive = c.IsActive,
+                                CreatedAt = c.CreatedAt,
+                                Description = c.Description
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "مشتری یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.OwnerRegistered:
+                    {
+                        var ownerId = (int)id;
+                        var owner = await _context.Owners.AsNoTracking()
+                            .Where(o => o.Id == ownerId && !excludedIds.Contains(o.Id))
+                            .Select(o => new { o.Id, o.Name, o.Phone })
+                            .FirstOrDefaultAsync();
+
+                        if (owner == null)
+                            return Json(new { success = false, message = "مالک یافت نشد" });
+
+                        var restaurantCount = await _context.Restaurants.AsNoTracking()
+                            .CountAsync(r => r.owner_id == ownerId);
+
+                        var detail = new ActivityOwnerDetailDto
+                        {
+                            OwnerId = owner.Id,
+                            Name = owner.Name,
+                            Phone = owner.Phone,
+                            RestaurantCount = restaurantCount
+                        };
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.CouponUsed:
+                    {
+                        var usageId = (int)id;
+                        var detail = await (
+                            from u in _context.CouponUsages.AsNoTracking()
+                            join c in _context.Coupons.AsNoTracking() on u.CouponId equals c.Id
+                            join r in _context.Restaurants.AsNoTracking() on u.RestaurantId equals r.restaurant_id
+                            join o in _context.Owners.AsNoTracking() on u.OwnerId equals o.Id
+                            where u.Id == usageId && !excludedIds.Contains(u.OwnerId)
+                            select new ActivityCouponUsageDetailDto
+                            {
+                                UsageId = u.Id,
+                                CouponCode = c.Code,
+                                RestaurantId = u.RestaurantId,
+                                RestaurantName = r.name,
+                                OwnerName = o.Name,
+                                OwnerPhone = o.Phone,
+                                DiscountAmount = u.DiscountAmount,
+                                AppliedPrice = u.AppliedPrice,
+                                Status = u.Status,
+                                UsedAt = u.UsedAt,
+                                SubscriptionId = u.SubscriptionId
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "استفاده از کد تخفیف یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.InventoryMovement:
+                    {
+                        var movementId = (int)id;
+                        var detail = await (
+                            from m in _context.InventoryMovements.AsNoTracking()
+                            join r in _context.Restaurants.AsNoTracking() on m.RestaurantId equals r.restaurant_id
+                            join i in _context.InventoryItems.AsNoTracking() on m.InventoryItemId equals i.InventoryItemId
+                            where m.MovementId == movementId && !excludedIds.Contains(r.owner_id)
+                            select new ActivityInventoryDetailDto
+                            {
+                                MovementId = m.MovementId,
+                                RestaurantId = m.RestaurantId,
+                                RestaurantName = r.name,
+                                ItemName = i.Name,
+                                Reason = m.Reason,
+                                ReasonLabel = null,
+                                DeltaQuantity = m.DeltaQuantity,
+                                QuantityAfter = m.QuantityAfter,
+                                UnitPrice = m.UnitPrice,
+                                Note = m.Note,
+                                CreatedAt = m.CreatedAt
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "حرکت انبار یافت نشد" });
+
+                        detail.ReasonLabel = GetInventoryReasonLabel(detail.Reason);
+                        if (detail.CreatedAt.Kind == DateTimeKind.Utc)
+                            detail.CreatedAt = detail.CreatedAt.ToLocalTime();
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.OwnerLogin:
+                    {
+                        var tokenId = (int)id;
+                        var row = await (
+                            from t in _context.RefreshTokens.AsNoTracking()
+                            join o in _context.Owners.AsNoTracking() on t.OwnerId equals o.Id
+                            where t.Id == tokenId && !excludedIds.Contains(o.Id)
+                            select new
+                            {
+                                t.Id,
+                                OwnerId = o.Id,
+                                OwnerName = o.Name,
+                                OwnerPhone = o.Phone,
+                                t.ExpiryTime
+                            }).FirstOrDefaultAsync();
+
+                        if (row == null)
+                            return Json(new { success = false, message = "ورود مالک یافت نشد" });
+
+                        var detail = new ActivityOwnerLoginDetailDto
+                        {
+                            TokenId = row.Id,
+                            OwnerId = row.OwnerId,
+                            OwnerName = row.OwnerName,
+                            OwnerPhone = row.OwnerPhone,
+                            ExpiryTime = row.ExpiryTime,
+                            EstimatedLoginAt = EstimateLoginFromExpiry(row.ExpiryTime, GetRefreshTokenLifetime())
+                        };
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    case ActivityFeedTypes.StaffLogin:
+                    {
+                        var tokenId = (int)id;
+                        var detail = await (
+                            from t in _context.StaffRefreshTokens.AsNoTracking()
+                            join u in _context.Users.AsNoTracking() on t.UserId equals u.user_id
+                            join r in _context.Restaurants.AsNoTracking() on t.RestaurantId equals r.restaurant_id
+                            join role in _context.Roles.AsNoTracking() on u.role_id equals role.role_id into roles
+                            from role in roles.DefaultIfEmpty()
+                            where t.Id == tokenId && !excludedIds.Contains(r.owner_id)
+                            select new ActivityStaffLoginDetailDto
+                            {
+                                TokenId = t.Id,
+                                UserId = u.user_id,
+                                StaffName = u.name,
+                                RoleName = role != null ? role.role_name : null,
+                                RestaurantId = t.RestaurantId,
+                                RestaurantName = r.name,
+                                CreatedAtUtc = t.CreatedAtUtc,
+                                ExpiryTime = t.ExpiryTime
+                            }).FirstOrDefaultAsync();
+
+                        if (detail == null)
+                            return Json(new { success = false, message = "ورود پرسنل یافت نشد" });
+
+                        return Json(new { success = true, type, data = detail });
+                    }
+
+                    default:
+                        return Json(new { success = false, message = "نوع فعالیت نامعتبر است" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "خطا در دریافت جزئیات فعالیت {Type}/{Id}", type, id);
+                return Json(new { success = false, message = "خطا در دریافت جزئیات" });
+            }
+        }
+
+        private static string GetOrderTypeLabel(OrderTypeKind orderType)
+        {
+            return orderType switch
+            {
+                OrderTypeKind.Takeaway => "بیرون‌بر",
+                OrderTypeKind.Delivery => "ارسال",
+                _ => "حضوری"
+            };
+        }
+
+        private static string GetInventoryReasonLabel(string reason)
+        {
+            return reason switch
+            {
+                InventoryMovementReasons.Opening => "موجودی اولیه",
+                InventoryMovementReasons.Purchase => "خرید",
+                InventoryMovementReasons.Adjustment => "تعدیل",
+                InventoryMovementReasons.Waste => "ضایعات",
+                InventoryMovementReasons.Correction => "اصلاح",
+                InventoryMovementReasons.SaleConsumption => "مصرف فروش",
+                _ => string.IsNullOrWhiteSpace(reason) ? "نامشخص" : reason
+            };
+        }
+
+        private static string FormatSignedQuantity(decimal quantity)
+        {
+            var formatted = quantity.ToString("0.###");
+            return quantity > 0 ? "+" + formatted : formatted;
+        }
+
+        private TimeSpan GetRefreshTokenLifetime()
+        {
+            var refreshMinutes = _configuration.GetValue<int>("Jwt:RefreshExpirationMinutes");
+            if (refreshMinutes <= 0)
+                refreshMinutes = _configuration.GetValue<int>("JwtSettings:RefreshExpirationMinutes");
+            if (refreshMinutes > 0)
+                return TimeSpan.FromMinutes(refreshMinutes);
+
+            var refreshDays = _configuration.GetValue<int>("Jwt:RefreshExpirationDays");
+            if (refreshDays <= 0)
+                refreshDays = _configuration.GetValue<int>("JwtSettings:RefreshExpirationDays");
+            if (refreshDays <= 0)
+                refreshDays = 30;
+
+            return TimeSpan.FromDays(refreshDays);
+        }
+
+        private static DateTime? EstimateLoginFromExpiry(DateTime expiryTime, TimeSpan lifetime)
+        {
+            if (lifetime <= TimeSpan.Zero)
+                return null;
+
+            var estimated = expiryTime - lifetime;
+            if (estimated.Kind == DateTimeKind.Utc)
+                estimated = estimated.ToLocalTime();
+            return estimated;
+        }
+
+        private static string TruncateText(string value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+            value = value.Trim();
+            if (value.Length <= maxLength)
+                return value;
+            return value.Substring(0, maxLength) + "…";
         }
     }
 }
