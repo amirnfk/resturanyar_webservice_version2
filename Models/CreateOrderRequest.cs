@@ -12,5 +12,10 @@
         public string? Description { get; set; }
         public int? CustomerId { get; set; }
 
+        /// <summary>Optional saved customer address for Delivery (and optional Takeaway).</summary>
+        public int? CustomerAddressId { get; set; }
+
+        /// <summary>Free-text / override address; required for Delivery when no CustomerAddressId.</summary>
+        public string? AddressText { get; set; }
     }
 }

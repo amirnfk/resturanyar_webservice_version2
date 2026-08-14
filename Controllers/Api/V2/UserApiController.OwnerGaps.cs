@@ -72,6 +72,7 @@ namespace resturanyar.Controllers.Api.V2
 
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.Fulfillment)
                 .Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
@@ -92,6 +93,10 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerFullName = order.Customer != null ? order.Customer.FullName : null,
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
+                OrderType = (byte)order.OrderType,
+                AddressSnapshot = order.Fulfillment?.AddressSnapshot,
+                PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
+                CustomerNameSnapshot = order.Fulfillment?.CustomerNameSnapshot,
                 OrderItems = order.OrderItems.Select(oi => new OrderItemDto
                 {
                     OrderItemId = oi.OrderItemId,
@@ -141,6 +146,17 @@ namespace resturanyar.Controllers.Api.V2
             if (string.IsNullOrEmpty(order.CreatedAtShamsi))
                 order.CreatedAtShamsi = DateHelper.ToShamsi(order.CreatedAt);
 
+            if (request.CustomerAddressId.HasValue || !string.IsNullOrWhiteSpace(request.AddressText) || request.CustomerId.HasValue)
+            {
+                var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+                await fulfillmentService.TryUpdateFulfillmentSnapshotsAsync(
+                    order.OrderId,
+                    order.RestaurantId,
+                    request.CustomerId,
+                    request.CustomerAddressId,
+                    request.AddressText);
+            }
+
             _context.OrderItems.RemoveRange(order.OrderItems);
             order.OrderItems = new List<OrderItem>();
             foreach (var item in request.Items ?? new List<OrderItemDto>())
@@ -160,7 +176,7 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
-            int? nextRoleId = GetNextRoleId(request.StatusId);
+            int? nextRoleId = GetNextRoleId(request.StatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = await _context.OrderUpdates
@@ -180,6 +196,14 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             await _context.SaveChangesAsync();
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            if (await courierService.TryAutoAssignDefaultDriverAsync(
+                    order.OrderId, order.RestaurantId, oldStatusId, order.StatusId))
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId = order.OrderId, message = "driver assigned" });
+            }
 
             try
             {
@@ -252,7 +276,19 @@ namespace resturanyar.Controllers.Api.V2
             order.StatusId = dto.NewStatusId;
             order.UpdatedAt = DateTime.Now;
 
-            int? nextRoleId = GetNextRoleId(dto.NewStatusId);
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+
+            if (previousStatusId == 5 && dto.NewStatusId == 6)
+            {
+                var fulfillment = await _context.OrderFulfillments.FirstOrDefaultAsync(f => f.OrderId == order.OrderId);
+                if (fulfillment != null)
+                {
+                    courierService.ClearFailureFields(fulfillment);
+                    fulfillment.UpdatedAt = DateTime.UtcNow;
+                }
+            }
+
+            int? nextRoleId = GetNextRoleId(dto.NewStatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = await _context.OrderUpdates
@@ -272,6 +308,13 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             await _context.SaveChangesAsync();
+
+            if (await courierService.TryAutoAssignDefaultDriverAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId))
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId = order.OrderId, message = "driver assigned" });
+            }
 
             object? receiptData = null;
             try
@@ -358,6 +401,9 @@ namespace resturanyar.Controllers.Api.V2
                         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                         Description = o.Description,
                         OrderType = (byte)o.OrderType,
+                        AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                        PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                        CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
                         OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                         {
                             OrderItemId = oi.OrderItemId,
@@ -695,6 +741,64 @@ namespace resturanyar.Controllers.Api.V2
                     Message = "خطا در ایجاد اشتراک: " + ex.Message
                 });
             }
+        }
+
+        [HttpGet("restaurants/{restaurantId}/drivers")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ListDriversOwner(int restaurantId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+            if (await GetOwnedRestaurantAsync(restaurantId, ownerId) == null)
+                return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.ListDriversAsync(restaurantId);
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message, data = result.Drivers });
+        }
+
+        [HttpPost("orders/{orderId}/assign-driver")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AssignDriverOwner(int orderId, [FromBody] resturanyar.Services.Fulfillment.AssignDriverRequest request)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            if (await GetOwnedRestaurantAsync(order.RestaurantId, ownerId) == null)
+                return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.AssignDriverAsync(orderId, order.RestaurantId, request.DriverUserId);
+            if (result.Ok)
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId, message = "driver assigned" });
+            }
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message });
+        }
+
+        [HttpPost("orders/{orderId}/unassign-driver")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UnassignDriverOwner(int orderId)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            if (await GetOwnedRestaurantAsync(order.RestaurantId, ownerId) == null)
+                return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.UnassignDriverAsync(orderId, order.RestaurantId);
+            if (result.Ok)
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId, message = "driver unassigned" });
+            }
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message });
         }
     }
 }

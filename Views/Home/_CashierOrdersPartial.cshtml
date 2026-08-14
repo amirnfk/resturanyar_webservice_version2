@@ -23,13 +23,54 @@
                 <div>
                     سفارش شماره <span class="text-primary">#@order.OrderId</span>
                     <span class="mx-2">-</span>
-                    میز <span class="text-primary">@order.TableNumber</span>
+                    @{
+                        var cashierTypeLabel = order.OrderType switch
+                        {
+                            1 => "بیرون‌بر",
+                            2 => "ارسال",
+                            _ => null
+                        };
+                    }
+                    @if (cashierTypeLabel != null)
+                    {
+                        <span class="badge bg-info text-dark">@cashierTypeLabel</span>
+                    }
+                    else
+                    {
+                        <text>میز <span class="text-primary">@order.TableNumber</span></text>
+                    }
+                    @if (order.OrderType == 2 && !string.IsNullOrWhiteSpace(order.AddressSnapshot))
+                    {
+                        <div class="small text-muted mt-1">
+                            <i class="fa-solid fa-location-dot ms-1"></i>@order.AddressSnapshot
+                            @if (!string.IsNullOrWhiteSpace(order.PhoneSnapshot))
+                            {
+                                <span class="ms-2"><i class="fa-solid fa-phone ms-1"></i>@order.PhoneSnapshot</span>
+                            }
+                        </div>
+                    }
+                    @if (order.OrderType == 2 && !string.IsNullOrWhiteSpace(order.DeliveryFailureReason))
+                    {
+                        <div class="alert alert-warning py-1 px-2 mt-1 mb-0 small">
+                            <strong>تحویل ناموفق:</strong> @order.DeliveryFailureReason
+                        </div>
+                    }
+                    @if (order.OrderType == 2)
+                    {
+                        <div class="small mt-1 d-flex align-items-center gap-1">
+                            <img src="/images/food_delivery.png" alt="" style="width:18px;height:18px;object-fit:contain;" />
+                            <span>پیک: @(string.IsNullOrWhiteSpace(order.AssignedDriverName) ? "تخصیص نشده" : order.AssignedDriverName)</span>
+                        </div>
+                    }
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
                     <div class="order-date"><i class="fa-regular fa-calendar ms-1"></i> @order.CreatedAt.ToString("yyyy/MM/dd HH:mm")</div>
                     <div class="@OrderStatusColors.ChipClass(order.StatusId)">
-                        @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
+                        @{
+                            var cashierStatusLabel = Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص");
+                        }
+                        @cashierStatusLabel
                     </div>
                     <div>
                         @if (Model.StatusMap.ContainsKey(order.StatusId))

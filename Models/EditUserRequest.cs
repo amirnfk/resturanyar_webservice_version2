@@ -10,6 +10,7 @@
         public bool? order_management_permission { get; set; }
         public bool? kitchen_management_permission { get; set; }
         public bool? payment_management_permission { get; set; }
+        public bool? delivery_management_permission { get; set; }
 
     }
 }

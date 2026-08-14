@@ -112,11 +112,107 @@
         padding: 10px 0;
         border-bottom: 1px solid #f1f5f9;
         transition: var(--transition);
+        gap: 8px;
     }
 
         .list-item-row:last-child {
             border-bottom: none;
         }
+
+    /* رشد جدید — فشرده و خوانا در موبایل */
+    #growthCustomersList {
+        padding: 4px 12px 10px;
+    }
+
+    .growth-item {
+        align-items: center;
+        padding: 6px 0;
+        min-width: 0;
+    }
+
+    .growth-item__main {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .growth-item__name {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+
+    .growth-item__meta {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        line-height: 1.2;
+    }
+
+    .growth-item__amount {
+        flex-shrink: 0;
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--primary);
+        white-space: nowrap;
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+
+    @@media (max-width: 991.98px) {
+        #growthCustomersList {
+            max-height: 168px;
+            padding: 2px 10px 8px;
+        }
+
+        .insights-card:has(#growthCustomersList) .insights-card-header {
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            gap: 6px;
+        }
+
+        .growth-item {
+            padding: 5px 0;
+        }
+
+        .growth-item__name {
+            font-size: 0.76rem;
+        }
+
+        .growth-item__meta {
+            font-size: 0.64rem;
+        }
+
+        .growth-item__amount {
+            font-size: 0.68rem;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        #growthCustomersList {
+            max-height: 148px;
+        }
+
+        .growth-item {
+            padding: 4px 0;
+            gap: 6px;
+        }
+
+        .growth-item__name {
+            font-size: 0.74rem;
+            max-width: 9.5rem;
+        }
+
+        .growth-item__amount {
+            font-size: 0.66rem;
+            letter-spacing: -0.01em;
+        }
+    }
 
     /* پیشرفت بار سفارشی در نرخ بازگشت */
     .progress-wrapper {
@@ -321,16 +417,305 @@
         background: #fafdff;
         border-top: 1px solid var(--card-border);
         display: flex;
-        gap: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 
         .customer-footer .btn {
-            flex: 1;
-            font-size: 0.82rem;
-            padding: 8px 0;
+            flex: 1 1 calc(50% - 4px);
+            min-width: 0;
+            font-size: 0.8rem;
+            padding: 8px 6px;
             border-radius: var(--radius-sm);
             font-weight: 600;
         }
+
+        .customer-footer .btn-addresses {
+            flex: 1 1 100%;
+            background: var(--primary-light);
+            border-color: rgba(255, 122, 0, 0.25);
+            color: var(--primary);
+        }
+
+            .customer-footer .btn-addresses:hover {
+                background: var(--primary);
+                border-color: var(--primary);
+                color: #fff;
+            }
+
+    /* پنل مدیریت آدرس */
+    .addr-offcanvas {
+        width: min(520px, 100vw) !important;
+        height: 100% !important;
+        max-height: 100vh !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .addr-offcanvas .offcanvas-header {
+        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 70%);
+        border-bottom: 1px solid var(--card-border);
+        padding: 1.25rem 1.5rem;
+        align-items: flex-start;
+        gap: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .addr-offcanvas-heading {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .addr-offcanvas .offcanvas-header .btn-close {
+        flex-shrink: 0;
+        margin-top: 0.15rem;
+        z-index: 2;
+    }
+
+    .addr-offcanvas-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+        padding: 1rem 1.25rem 1.25rem !important;
+    }
+
+    .addr-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-shrink: 0;
+    }
+
+    .addr-list-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-left: 2px;
+        margin: 0 -2px 0 0;
+    }
+
+    .addr-customer-chip {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .addr-customer-chip .chip-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .addr-customer-chip .chip-name {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+        line-height: 1.2;
+    }
+
+    .addr-customer-chip .chip-mobile {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        direction: ltr;
+        display: inline-block;
+    }
+
+    .addr-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 0;
+        max-height: none;
+        overflow: visible;
+        padding-left: 0;
+        padding-bottom: 8px;
+    }
+
+    .addr-card {
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        padding: 14px 16px;
+        transition: var(--transition);
+        position: relative;
+    }
+
+        .addr-card:hover {
+            border-color: rgba(255, 122, 0, 0.35);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .addr-card.is-default {
+            border-color: rgba(255, 122, 0, 0.4);
+            background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+        }
+
+    .addr-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .addr-title {
+        font-weight: 800;
+        font-size: 0.92rem;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .addr-default-badge {
+        font-size: 0.7rem;
+        font-weight: 700;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--radius-pill);
+        padding: 3px 10px;
+        white-space: nowrap;
+    }
+
+    .addr-text {
+        font-size: 0.86rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+
+    .addr-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .addr-meta-chip {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        border-radius: var(--radius-pill);
+        padding: 3px 10px;
+    }
+
+    .addr-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+        .addr-actions .btn {
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            padding: 5px 12px;
+        }
+
+    .addr-empty {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: var(--text-muted);
+        background: #f8fafc;
+        border: 1px dashed #e2e8f0;
+        border-radius: var(--radius-sm);
+        margin: 0;
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .addr-empty i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            opacity: 0.7;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+    .addr-form-panel {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .addr-form-panel .form-label {
+        font-weight: 700;
+        font-size: 0.82rem;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+    }
+
+    .addr-form-panel .form-control,
+    .addr-form-panel .form-select {
+        border-radius: var(--radius-sm);
+        border-color: #e2e8f0;
+        font-size: 0.9rem;
+    }
+
+        .addr-form-panel .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.15);
+        }
+
+    #addressFormModal {
+        z-index: 1065;
+    }
+
+    .modal-backdrop.address-form-backdrop {
+        z-index: 1060;
+    }
+
+    #addressFormModal .modal-content {
+        border: 0;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    #addressFormModal .modal-header {
+        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 80%);
+        border-bottom: 1px solid var(--card-border);
+    }
+
+    #addressFormModal .modal-body {
+        max-height: min(70vh, 640px);
+        overflow-y: auto;
+    }
+
+    .addr-form-title {
+        font-weight: 800;
+        font-size: 0.95rem;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .addr-form-title i {
+            color: var(--primary);
+        }
+
+    .addr-coords-hint {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
 
     .stats-hint {
         background: var(--primary-light);
@@ -604,6 +989,133 @@
         </div>
     </div>
 </div>
+
+<!-- پنل مدیریت آدرس‌های مشتری -->
+<div class="offcanvas offcanvas-end addr-offcanvas" tabindex="-1" id="addressesOffcanvas" aria-labelledby="addressesOffcanvasLabel">
+    <div class="offcanvas-header">
+        <div class="addr-offcanvas-heading">
+            <h5 class="offcanvas-title fw-bold mb-0" id="addressesOffcanvasLabel">
+                <i class="fas fa-map-location-dot text-primary me-1"></i> مدیریت آدرس‌ها
+            </h5>
+            <div class="addr-customer-chip">
+                <div class="chip-avatar"><i class="fas fa-user"></i></div>
+                <div>
+                    <div class="chip-name" id="addrCustomerName">—</div>
+                    <div class="chip-mobile" id="addrCustomerMobile">—</div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseAddressesOffcanvas" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    </div>
+    <div class="offcanvas-body addr-offcanvas-body">
+        <div class="addr-toolbar">
+            <span class="fw-bold" style="font-size:0.9rem;">آدرس‌های ذخیره‌شده</span>
+            <button type="button" class="btn btn-sm btn-primary" id="btnNewAddress" style="border-radius:var(--radius-sm);">
+                <i class="fas fa-plus me-1"></i> آدرس جدید
+            </button>
+        </div>
+
+        <div id="addrListLoading" class="text-center py-4 text-muted flex-shrink-0" style="display:none;">
+            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+            در حال دریافت آدرس‌ها...
+        </div>
+        <div id="addrListContainer" class="addr-list-scroll"></div>
+    </div>
+</div>
+
+<!-- مودال افزودن / ویرایش آدرس -->
+<div class="modal fade" id="addressFormModal" tabindex="-1" aria-labelledby="addrFormHeading" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="addrFormHeading">
+                    <i class="fas fa-pen-to-square text-primary me-1"></i> ثبت آدرس جدید
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="addr-form-panel">
+                    <form id="addressForm" autocomplete="off">
+                        <input type="hidden" id="addrId" value="0" />
+                        <input type="hidden" id="addrCustomerId" value="0" />
+
+                        <div class="mb-3">
+                            <label class="form-label" for="addrTitle">عنوان آدرس</label>
+                            <input type="text" id="addrTitle" class="form-control" placeholder="مثلاً خانه، محل کار، شعبه شمال" maxlength="100" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="addrText">متن آدرس <span class="text-danger">*</span></label>
+                            <textarea id="addrText" class="form-control" rows="3" placeholder="خیابان، کوچه، پلاک و جزئیات کامل..." required></textarea>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label class="form-label" for="addrPlate">پلاک</label>
+                                <input type="text" id="addrPlate" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="addrFloor">طبقه</label>
+                                <input type="text" id="addrFloor" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="addrUnit">واحد</label>
+                                <input type="text" id="addrUnit" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2 d-none" aria-hidden="true">
+                            <div class="col-6">
+                                <label class="form-label" for="addrLat">عرض جغرافیایی</label>
+                                <input type="number" step="any" id="addrLat" class="form-control" placeholder="اختیاری" dir="ltr" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="addrLng">طول جغرافیایی</label>
+                                <input type="number" step="any" id="addrLng" class="form-control" placeholder="اختیاری" dir="ltr" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="addrDescription">یادداشت (اختیاری)</label>
+                            <input type="text" id="addrDescription" class="form-control" placeholder="مثلاً زنگ طبقه ۲ را بزنید" maxlength="200" />
+                        </div>
+
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" id="addrIsDefault" />
+                            <label class="form-check-label fw-semibold" for="addrIsDefault">آدرس پیش‌فرض مشتری</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="background:#f8fafc;">
+                <button type="button" class="btn btn-light" id="btnCancelAddressForm" data-bs-dismiss="modal" style="border-radius:var(--radius-sm);">انصراف</button>
+                <button type="button" class="btn btn-primary" id="btnSaveAddress" style="border-radius:var(--radius-sm);">
+                    <i class="fas fa-check me-1"></i> ذخیره آدرس
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تأیید حذف آدرس -->
+<div class="modal fade" id="deleteAddressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-trash text-danger me-1"></i> حذف آدرس</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-2">
+                این آدرس از پروفایل مشتری حذف می‌شود. ادامه می‌دهید؟
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:var(--radius-sm);">لغو</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDeleteAddress" style="border-radius:var(--radius-sm);">حذف آدرس</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 <script src="~/js/chart.umd.min.js" asp-append-version="true"></script>
 <script>
@@ -617,6 +1129,10 @@
     var currentSortBy = "TotalSpent";
     var customersListPageId = 0;
     var trendChart = null;
+    var addressCustomerId = 0;
+    var deleteAddressId = 0;
+    var addressesCache = [];
+    var addressesOffcanvas = null;
 
     function isCustomersListPageCurrent(pageId) {
         return pageId === customersListPageId;
@@ -646,16 +1162,16 @@
                     let growthHtml = '';
                     data.growthCustomers.forEach(c => {
                         growthHtml += `
-                            <div class="list-item-row">
-                                <div>
-                                    <strong class="text-dark d-block" style="font-size:0.87rem;">${escapeHtml(c.name)}</strong>
-                                    <span class="small text-muted">${c.orderCount} سفارش در هفته</span>
+                            <div class="list-item-row growth-item">
+                                <div class="growth-item__main">
+                                    <span class="growth-item__name">${escapeHtml(c.name)}</span>
+                                    <span class="growth-item__meta">${c.orderCount} سفارش</span>
                                 </div>
-                                <div class="fw-black text-primary small">${c.amount.toLocaleString('fa-IR')} ت</div>
+                                <span class="growth-item__amount">${c.amount.toLocaleString('fa-IR')} ت</span>
                             </div>
                         `;
                     });
-                    if (growthHtml === '') growthHtml = '<div class="text-center py-5 text-muted small">خریدی در ۷ روز اخیر ثبت نشده</div>';
+                    if (growthHtml === '') growthHtml = '<div class="text-center py-4 text-muted small">خریدی در ۷ روز اخیر ثبت نشده</div>';
                     $("#growthCustomersList").html(growthHtml);
 
                     // ۲. نرخ بازگشت (پیاده‌سازی نوارهای زیبا و مدرن پیشرفت)
@@ -920,6 +1436,12 @@
                             ${descriptionRow}
                         </div>
                         <div class="customer-footer">
+                            <button type="button" class="btn btn-addresses manage-addresses"
+                                    data-id="${c.customerId}"
+                                    data-name="${escapeHtml(c.fullName)}"
+                                    data-mobile="${escapeHtml(c.mobile)}">
+                                <i class="fas fa-map-location-dot me-1"></i> آدرس‌ها
+                            </button>
                             <button class="btn btn-outline-primary edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">
                                 <i class="fas fa-edit me-1"></i> ویرایش
                             </button>
@@ -1006,6 +1528,243 @@
             if (m === ">") return "&gt;";
             return m;
         });
+    }
+
+    function parseOptionalNumber(val) {
+        if (val === null || val === undefined || String(val).trim() === "") return null;
+        var n = parseFloat(String(val).trim());
+        return isNaN(n) ? null : n;
+    }
+
+    function resetAddressForm() {
+        $("#addrId").val("0");
+        $("#addrTitle").val("");
+        $("#addrText").val("");
+        $("#addrUnit").val("");
+        $("#addrFloor").val("");
+        $("#addrPlate").val("");
+        $("#addrLat").val("");
+        $("#addrLng").val("");
+        $("#addrDescription").val("");
+        $("#addrIsDefault").prop("checked", false);
+        setAddressFormTitle(false);
+    }
+
+    function setAddressFormTitle(isEdit) {
+        var title = isEdit ? "ویرایش آدرس" : "ثبت آدرس جدید";
+        $("#addrFormHeading").html('<i class="fas fa-pen-to-square text-primary me-1"></i> ' + title);
+    }
+
+    function getAddressFormModal() {
+        var el = document.getElementById("addressFormModal");
+        if (!el || !window.bootstrap) return null;
+        return bootstrap.Modal.getOrCreateInstance(el);
+    }
+
+    function showAddressForm(isEdit) {
+        setAddressFormTitle(!!isEdit);
+        var inst = getAddressFormModal();
+        if (inst) inst.show();
+    }
+
+    function hideAddressForm() {
+        var el = document.getElementById("addressFormModal");
+        var inst = el && window.bootstrap ? bootstrap.Modal.getInstance(el) : null;
+        if (inst) inst.hide();
+        resetAddressForm();
+    }
+
+    function renderAddressList(addresses) {
+        addressesCache = Array.isArray(addresses) ? addresses : [];
+        if (!addressesCache.length) {
+            $("#addrListContainer").html(`
+                <div class="addr-empty">
+                    <i class="fas fa-location-dot"></i>
+                    هنوز آدرسی برای این مشتری ثبت نشده است.
+                    <div class="mt-2 small">با دکمه «آدرس جدید» اولین آدرس را اضافه کنید.</div>
+                </div>`);
+            return;
+        }
+
+        let html = '<div class="addr-list">';
+        addressesCache.forEach(a => {
+            const id = a.addressId ?? a.AddressId;
+            const title = a.title ?? a.Title ?? "آدرس";
+            const text = a.addressText ?? a.AddressText ?? "";
+            const unit = a.unit ?? a.Unit;
+            const floor = a.floor ?? a.Floor;
+            const plate = a.plateNumber ?? a.PlateNumber;
+            const isDefault = !!(a.isDefault ?? a.IsDefault);
+            const desc = a.description ?? a.Description;
+
+            let meta = "";
+            if (unit) meta += `<span class="addr-meta-chip">واحد ${escapeHtml(unit)}</span>`;
+            if (floor) meta += `<span class="addr-meta-chip">طبقه ${escapeHtml(floor)}</span>`;
+            if (plate) meta += `<span class="addr-meta-chip">پلاک ${escapeHtml(plate)}</span>`;
+            if (desc) meta += `<span class="addr-meta-chip" title="${escapeHtml(desc)}"><i class="fas fa-sticky-note me-1"></i>یادداشت</span>`;
+
+            html += `
+                <div class="addr-card ${isDefault ? "is-default" : ""}" data-address-id="${id}">
+                    <div class="addr-card-top">
+                        <h6 class="addr-title">${escapeHtml(title)}</h6>
+                        ${isDefault ? '<span class="addr-default-badge">پیش‌فرض</span>' : ""}
+                    </div>
+                    <div class="addr-text">${escapeHtml(text)}</div>
+                    ${meta ? `<div class="addr-meta">${meta}</div>` : ""}
+                    <div class="addr-actions">
+                        <button type="button" class="btn btn-outline-primary btn-edit-address" data-id="${id}">
+                            <i class="fas fa-pen me-1"></i>ویرایش
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-delete-address" data-id="${id}">
+                            <i class="fas fa-trash me-1"></i>حذف
+                        </button>
+                    </div>
+                </div>`;
+        });
+        html += "</div>";
+        $("#addrListContainer").html(html);
+    }
+
+    async function loadCustomerAddresses(customerId) {
+        $("#addrListLoading").show();
+        $("#addrListContainer").empty();
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getaddresses/${customerId}`);
+            const res = await response.json();
+            if (res.success) {
+                renderAddressList(res.data || []);
+            } else {
+                showToast(res.message || "خطا در دریافت آدرس‌ها", "error");
+                renderAddressList([]);
+            }
+        } catch (e) {
+            showToast("خطا در ارتباط با سرور برای دریافت آدرس‌ها", "error");
+            renderAddressList([]);
+        } finally {
+            $("#addrListLoading").hide();
+        }
+    }
+
+    function cleanupAddressesOffcanvasArtifacts() {
+        document.querySelectorAll('.offcanvas-backdrop').forEach(function (backdrop) {
+            // Keep backdrops that still belong to another open offcanvas
+            var openPanels = document.querySelectorAll('.offcanvas.show');
+            if (!openPanels.length) backdrop.remove();
+        });
+        if (!document.querySelector('.offcanvas.show') && !document.querySelector('.modal.show')) {
+            document.body.classList.remove('offcanvas-open', 'modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+        }
+    }
+
+    function getAddressesOffcanvasEl() {
+        var nodes = Array.from(document.querySelectorAll('#addressesOffcanvas'));
+        if (!nodes.length) return null;
+
+        // Soft-nav can leave an old body-mounted panel + a new one in page HTML
+        var preferred = document.querySelector('.customers-page #addressesOffcanvas')
+            || nodes[nodes.length - 1];
+
+        nodes.forEach(function (el) {
+            if (el === preferred) return;
+            try {
+                if (window.bootstrap && bootstrap.Offcanvas) {
+                    var oldInst = bootstrap.Offcanvas.getInstance(el);
+                    if (oldInst) oldInst.dispose();
+                }
+            } catch (_) { /* ignore */ }
+            el.remove();
+        });
+
+        if (preferred.parentElement !== document.body) {
+            document.body.appendChild(preferred);
+        }
+        return preferred;
+    }
+
+    function ensureAddressModalsOnBody() {
+        ['addressFormModal', 'deleteAddressModal'].forEach(function (id) {
+            var nodes = Array.from(document.querySelectorAll('#' + id));
+            if (!nodes.length) return;
+            var preferred = document.querySelector('.customers-page #' + id) || nodes[nodes.length - 1];
+            nodes.forEach(function (el) {
+                if (el === preferred) return;
+                try {
+                    if (window.bootstrap && bootstrap.Modal) {
+                        var oldInst = bootstrap.Modal.getInstance(el);
+                        if (oldInst) oldInst.dispose();
+                    }
+                } catch (_) { /* ignore */ }
+                el.remove();
+            });
+            if (preferred.parentElement !== document.body) {
+                document.body.appendChild(preferred);
+            }
+        });
+    }
+
+    function getAddressesOffcanvas() {
+        var el = getAddressesOffcanvasEl();
+        if (!el || !window.bootstrap || !bootstrap.Offcanvas) return null;
+        addressesOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(el, {
+            backdrop: true,
+            keyboard: true,
+            scroll: false
+        });
+        return addressesOffcanvas;
+    }
+
+    function closeAddressesPanel() {
+        var el = getAddressesOffcanvasEl();
+        var inst = el && window.bootstrap && bootstrap.Offcanvas
+            ? (bootstrap.Offcanvas.getInstance(el) || getAddressesOffcanvas())
+            : null;
+        if (inst) {
+            inst.hide();
+        } else if (el) {
+            el.classList.remove('show');
+            el.style.visibility = '';
+            cleanupAddressesOffcanvasArtifacts();
+        }
+        hideAddressForm();
+    }
+
+    function openAddressesPanel(customerId, name, mobile) {
+        addressCustomerId = parseInt(customerId, 10) || 0;
+        $("#addrCustomerId").val(addressCustomerId);
+        $("#addrCustomerName").text(name || "—");
+        $("#addrCustomerMobile").text(mobile || "—");
+        hideAddressForm();
+
+        var inst = getAddressesOffcanvas();
+        if (inst) {
+            inst.show();
+        } else {
+            var el = getAddressesOffcanvasEl();
+            if (el) {
+                el.classList.add('show');
+                el.style.visibility = 'visible';
+            }
+        }
+        loadCustomerAddresses(addressCustomerId);
+    }
+
+    function fillAddressForm(address) {
+        if (!address) return;
+        $("#addrId").val(address.addressId ?? address.AddressId ?? 0);
+        $("#addrTitle").val(address.title ?? address.Title ?? "");
+        $("#addrText").val(address.addressText ?? address.AddressText ?? "");
+        $("#addrUnit").val(address.unit ?? address.Unit ?? "");
+        $("#addrFloor").val(address.floor ?? address.Floor ?? "");
+        $("#addrPlate").val(address.plateNumber ?? address.PlateNumber ?? "");
+        var lat = address.latitude ?? address.Latitude;
+        var lng = address.longitude ?? address.Longitude;
+        $("#addrLat").val(lat != null ? lat : "");
+        $("#addrLng").val(lng != null ? lng : "");
+        $("#addrDescription").val(address.description ?? address.Description ?? "");
+        $("#addrIsDefault").prop("checked", !!(address.isDefault ?? address.IsDefault));
+        showAddressForm(true);
     }
 
     function toEnglishDigits(str) {
@@ -1156,6 +1915,143 @@
             $("#deleteModal").modal("show");
         });
 
+        $(document).off('click' + ns, '.manage-addresses').on('click' + ns, '.manage-addresses', function () {
+            openAddressesPanel($(this).data("id"), $(this).data("name"), $(this).data("mobile"));
+        });
+
+        $("#btnCloseAddressesOffcanvas").off('click' + ns).on('click' + ns, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeAddressesPanel();
+        });
+
+        var addrEl = getAddressesOffcanvasEl();
+        if (addrEl) {
+            $(addrEl).off('hidden.bs.offcanvas' + ns).on('hidden.bs.offcanvas' + ns, function () {
+                hideAddressForm();
+                addressCustomerId = 0;
+                addressesCache = [];
+                $("#addrListContainer").empty();
+                cleanupAddressesOffcanvasArtifacts();
+            });
+        }
+
+        $("#btnNewAddress").off('click' + ns).on('click' + ns, function () {
+            resetAddressForm();
+            $("#addrCustomerId").val(addressCustomerId);
+            if (!addressesCache.length) $("#addrIsDefault").prop("checked", true);
+            showAddressForm(false);
+        });
+
+        var addrFormEl = document.getElementById("addressFormModal");
+        if (addrFormEl) {
+            $(addrFormEl).off('shown.bs.modal' + ns).on('shown.bs.modal' + ns, function () {
+                var backdrops = document.querySelectorAll('.modal-backdrop');
+                if (backdrops.length) {
+                    backdrops[backdrops.length - 1].classList.add('address-form-backdrop');
+                }
+            });
+            $(addrFormEl).off('hidden.bs.modal' + ns).on('hidden.bs.modal' + ns, function () {
+                resetAddressForm();
+                if (addressCustomerId) {
+                    $("#addrCustomerId").val(addressCustomerId);
+                }
+            });
+        }
+
+        $(document).off('click' + ns, '.btn-edit-address').on('click' + ns, '.btn-edit-address', function () {
+            var id = parseInt($(this).data("id"), 10);
+            var found = addressesCache.find(a => (a.addressId ?? a.AddressId) == id);
+            if (found) fillAddressForm(found);
+        });
+
+        $(document).off('click' + ns, '.btn-delete-address').on('click' + ns, '.btn-delete-address', function () {
+            deleteAddressId = parseInt($(this).data("id"), 10) || 0;
+            $("#deleteAddressModal").modal("show");
+        });
+
+        $("#btnConfirmDeleteAddress").off('click' + ns).on('click' + ns, async function () {
+            if (!deleteAddressId || !addressCustomerId) return;
+            try {
+                const response = await window.fetchWithAuth(`${API_BASE}/deleteaddress`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        addressId: deleteAddressId,
+                        customerId: addressCustomerId
+                    })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    showToast(res.message || "آدرس حذف شد", "success");
+                    $("#deleteAddressModal").modal("hide");
+                    if (parseInt($("#addrId").val(), 10) === deleteAddressId) hideAddressForm();
+                    await loadCustomerAddresses(addressCustomerId);
+                } else {
+                    showToast(res.message || "حذف آدرس ناموفق بود", "error");
+                }
+            } catch (e) {
+                showToast("خطا در حذف آدرس", "error");
+            }
+        });
+
+        $("#btnSaveAddress").off('click' + ns).on('click' + ns, async function () {
+            var customerId = parseInt($("#addrCustomerId").val(), 10) || addressCustomerId;
+            var addressText = ($("#addrText").val() || "").trim();
+            if (!customerId) {
+                showToast("مشتری مشخص نیست.", "error");
+                return;
+            }
+            if (!addressText) {
+                showToast("متن آدرس الزامی است.", "error");
+                return;
+            }
+
+            var addressId = parseInt($("#addrId").val(), 10) || 0;
+            var payload = {
+                customerId: customerId,
+                title: ($("#addrTitle").val() || "").trim() || "آدرس",
+                addressText: addressText,
+                unit: ($("#addrUnit").val() || "").trim().substring(0, 10) || "",
+                floor: ($("#addrFloor").val() || "").trim().substring(0, 10) || "",
+                plateNumber: ($("#addrPlate").val() || "").trim().substring(0, 10) || "",
+                isDefault: $("#addrIsDefault").prop("checked") === true,
+                description: ($("#addrDescription").val() || "").trim() || ""
+            };
+            var lat = parseOptionalNumber($("#addrLat").val());
+            var lng = parseOptionalNumber($("#addrLng").val());
+            if (lat != null) payload.latitude = lat;
+            if (lng != null) payload.longitude = lng;
+
+            var url = `${API_BASE}/addaddress`;
+            if (addressId > 0) {
+                url = `${API_BASE}/editaddress`;
+                payload.addressId = addressId;
+            }
+
+            var $btn = $("#btnSaveAddress").prop("disabled", true);
+            try {
+                const response = await window.fetchWithAuth(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                let res = {};
+                try { res = await response.json(); } catch (_) { res = {}; }
+                if (response.ok && res.success) {
+                    showToast(res.message || "آدرس ذخیره شد", "success");
+                    hideAddressForm();
+                    await loadCustomerAddresses(customerId);
+                } else {
+                    showToast(res.message || res.detail || ("ذخیره آدرس ناموفق بود" + (response.status ? ` (${response.status})` : "")), "error");
+                }
+            } catch (e) {
+                showToast("خطا در ذخیره آدرس", "error");
+            } finally {
+                $btn.prop("disabled", false);
+            }
+        });
+
         $("#confirmDelete").off('click' + ns).on('click' + ns, async function () {
             try {
                 var response = await window.fetchWithAuth(API_BASE + "/deletecustomer", {
@@ -1204,6 +2100,15 @@
         currentPeriod = "all";
         currentSortBy = "TotalSpent";
         deleteId = 0;
+        deleteAddressId = 0;
+        addressCustomerId = 0;
+        addressesCache = [];
+        addressesOffcanvas = null;
+
+        // Mount once under body so Bootstrap close/backdrop is reliable
+        getAddressesOffcanvasEl();
+        ensureAddressModalsOnBody();
+        cleanupAddressesOffcanvasArtifacts();
 
         bindCustomersListEvents();
 

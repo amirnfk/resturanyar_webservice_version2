@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using ClosedXML.Excel;
 using global::Resturanyar.Data;
 using Microsoft.AspNetCore.Authentication;
@@ -346,6 +346,8 @@ namespace resturanyar.Controllers.Api.V2
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
                     ReceiptChargesEnabled = true,
                     ReceiptChargesEnabledAt = DateTime.Now,
+                    EnableTakeaway = true,
+                    EnableDelivery = true,
                 };
                 _context.Restaurants.Add(restaurant);
                 _context.SaveChanges();
@@ -355,7 +357,8 @@ namespace resturanyar.Controllers.Api.V2
         {
             new User { name = "waiter1", role_id = 2, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, order_management_permission = true },
             new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
-            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
+            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true },
+            new User { name = "delivery1", role_id = 5, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, delivery_management_permission = true }
         };
                 _context.Users.AddRange(defaultUsers);
                 _context.SaveChanges();
@@ -470,7 +473,7 @@ namespace resturanyar.Controllers.Api.V2
                 user.role_id = request.role_id;
                 user.password = EncodePassword(request.password); // Relies on the EncodePassword method in your V2 controller[cite: 4, 5]
 
-                // Update permissions if provided[cite: 5]
+                // Update permissions if provided
                 if (request.order_management_permission.HasValue)
                     user.order_management_permission = request.order_management_permission.Value;
 
@@ -479,6 +482,22 @@ namespace resturanyar.Controllers.Api.V2
 
                 if (request.payment_management_permission.HasValue)
                     user.payment_management_permission = request.payment_management_permission.Value;
+
+                if (request.delivery_management_permission.HasValue)
+                    user.delivery_management_permission = request.delivery_management_permission.Value;
+
+                // پیک is delivery-only — never allow mixed permissions
+                if (request.role_id == 5)
+                {
+                    user.order_management_permission = false;
+                    user.kitchen_management_permission = false;
+                    user.payment_management_permission = false;
+                    user.delivery_management_permission = true;
+                }
+                else
+                {
+                    user.delivery_management_permission = false;
+                }
 
                 _context.SaveChanges();  
 
@@ -531,7 +550,8 @@ namespace resturanyar.Controllers.Api.V2
                         role_name = u.Role.role_name,
                         order_management_permission = u.order_management_permission,
                         kitchen_management_permission = u.kitchen_management_permission,
-                        payment_management_permission = u.payment_management_permission
+                        payment_management_permission = u.payment_management_permission,
+                        delivery_management_permission = u.delivery_management_permission
                     })
                     .ToList();
 
@@ -605,6 +625,13 @@ namespace resturanyar.Controllers.Api.V2
                         user.order_management_permission = false;
                         user.kitchen_management_permission = false;
                         user.payment_management_permission = true;
+                        user.delivery_management_permission = false;
+                        break;
+                    case 5: // پیک
+                        user.order_management_permission = false;
+                        user.kitchen_management_permission = false;
+                        user.payment_management_permission = false;
+                        user.delivery_management_permission = true;
                         break;
                 }
 
@@ -612,6 +639,20 @@ namespace resturanyar.Controllers.Api.V2
                 if (request.order_management_permission.HasValue) user.order_management_permission = request.order_management_permission.Value;
                 if (request.kitchen_management_permission.HasValue) user.kitchen_management_permission = request.kitchen_management_permission.Value;
                 if (request.payment_management_permission.HasValue) user.payment_management_permission = request.payment_management_permission.Value;
+                if (request.delivery_management_permission.HasValue) user.delivery_management_permission = request.delivery_management_permission.Value;
+
+                // پیک is delivery-only — never allow mixed permissions
+                if (request.role_id == 5)
+                {
+                    user.order_management_permission = false;
+                    user.kitchen_management_permission = false;
+                    user.payment_management_permission = false;
+                    user.delivery_management_permission = true;
+                }
+                else
+                {
+                    user.delivery_management_permission = false;
+                }
 
                 _context.Users.Add(user);
                 _context.SaveChanges();
@@ -1099,16 +1140,27 @@ namespace resturanyar.Controllers.Api.V2
                         return BadRequest(new { success = false, message = "مشتری با این شناسه برای این رستوران یافت نشد." });
                 }
 
+                var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+                var prepared = await fulfillmentService.ValidateAndPrepareAsync(
+                    request,
+                    restaurant.EnableTakeaway,
+                    restaurant.EnableDelivery);
+
+                if (!prepared.Success)
+                {
+                    if (prepared.StatusCode == 403)
+                        return StatusCode(403, new { success = false, message = prepared.ErrorMessage });
+                    return BadRequest(new { success = false, message = prepared.ErrorMessage });
+                }
+
                 // 4. Create order
                 var order = new Order
                 {
                     RestaurantId = request.RestaurantId,
-                    TableNumber = request.TableNumber,
+                    TableNumber = prepared.ResolvedTableNumber,
                     StatusId = request.StatusId,
                     CustomerId = request.CustomerId,
-                    OrderType = request.OrderType.HasValue
-                        ? (OrderTypeKind)request.OrderType.Value
-                        : OrderTypeKind.DineIn,
+                    OrderType = prepared.ResolvedOrderType,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     CreatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
@@ -1138,6 +1190,9 @@ namespace resturanyar.Controllers.Api.V2
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
+                if (prepared.Fulfillment != null)
+                    await fulfillmentService.AttachFulfillmentAsync(order, prepared.Fulfillment);
+
                 try
                 {
                     var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
@@ -1154,7 +1209,7 @@ namespace resturanyar.Controllers.Api.V2
                 }
 
                 // 6. Add initial OrderUpdate for the next role (e.g., Chef = 3)
-                int? nextRoleId = GetNextRoleId(request.StatusId);
+                int? nextRoleId = GetNextRoleId(request.StatusId, prepared.ResolvedOrderType);
                 if (nextRoleId.HasValue)
                 {
                     var existingUpdate = await _context.OrderUpdates
@@ -1197,24 +1252,28 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         // Helper method (same as V1)
-        private int? GetNextRoleId(int statusId)
+        private int? GetNextRoleId(int statusId, OrderTypeKind orderType = OrderTypeKind.DineIn)
         {
-            switch (statusId)
+            var courier = HttpContext.RequestServices.GetService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            if (courier != null)
+                return courier.GetNextRoleId(statusId, orderType);
+
+            return statusId switch
             {
-                case 2: return 3;  // Waiting -> Chef
-                case 3: return 3;  // Chef
-                case 4: return 3;  // Cashier
-                case 5: return 2;  // Waiter
-                case 6: return 4;  // Owner
-                case 7: return 4;
-                case 8: return 4;
-                case 9: return 4;
-                case 10: return 4;
-                case 11: return 4;
-                case 12: return 3;
-                case 99: return 3;
-                default: return null;
-            }
+                2 => 3,
+                3 => 3,
+                4 => 3,
+                5 => 2,
+                6 => 4,
+                7 => 4,
+                8 => 4,
+                9 => 4,
+                10 => 4,
+                11 => 4,
+                12 => 3,
+                99 => 3,
+                _ => null
+            };
         }
 
         [HttpGet("getcustomers/{restaurantId}")]
@@ -2405,6 +2464,15 @@ namespace resturanyar.Controllers.Api.V2
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
+                    AssignedDriverUserId = o.Fulfillment != null ? o.Fulfillment.AssignedDriverUserId : null,
+                    AssignedDriverName = o.Fulfillment != null && o.Fulfillment.AssignedDriver != null
+                        ? o.Fulfillment.AssignedDriver.name
+                        : null,
+                    DeliveryFailureReason = o.Fulfillment != null ? o.Fulfillment.DeliveryFailureReason : null,
+                    DeliveryFailedAt = o.Fulfillment != null ? o.Fulfillment.DeliveryFailedAt : null,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,

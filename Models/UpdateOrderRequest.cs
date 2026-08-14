@@ -10,6 +10,11 @@ public class UpdateOrderRequest
     public string? Description { get; set; }   
 
     public List<OrderItemDto> Items { get; set; }
-    public int? CustomerId { get; set; }  // ← اضافه کنید
+    public int? CustomerId { get; set; }
 
+    /// <summary>Update fulfillment address link for open Takeaway/Delivery orders. OrderType cannot change after create.</summary>
+    public int? CustomerAddressId { get; set; }
+
+    /// <summary>Override / free-text address snapshot for open Takeaway/Delivery orders.</summary>
+    public string? AddressText { get; set; }
 }

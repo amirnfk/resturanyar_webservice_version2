@@ -1,135 +1,491 @@
 @{
+
     ViewData["Title"] = "تنظیمات رستوران";
+
     var restaurantName = ViewBag.RestaurantName as string ?? "";
+
     var restaurantCode = ViewBag.RestaurantCode as string ?? "";
+
     var restaurantId = ViewBag.RestaurantId?.ToString() ?? "";
+
     var menuUrl = ViewBag.MenuUrl as string;
+
     var hasMenuUrl = ViewBag.HasPublicMenuToken == true && !string.IsNullOrEmpty(menuUrl);
+
+    var enableTakeaway = ViewBag.EnableTakeaway == true;
+
+    var enableDelivery = ViewBag.EnableDelivery == true;
+
+    var autoAssignDeliveryDriver = ViewBag.AutoAssignDeliveryDriver == true;
+
+    var defaultDeliveryDriverUserId = ViewBag.DefaultDeliveryDriverUserId as int?;
+
+    var deliveryDrivers = ViewBag.DeliveryDrivers as IEnumerable<resturanyar.Services.Fulfillment.DriverListItemDto>
+
+        ?? Enumerable.Empty<resturanyar.Services.Fulfillment.DriverListItemDto>();
+
+    var fulfillmentGlobalEnabled = ViewBag.FulfillmentOrdersGlobalEnabled == true;
+
+
+
+    if (!defaultDeliveryDriverUserId.HasValue && autoAssignDeliveryDriver && deliveryDrivers.Any())
+
+    {
+
+        defaultDeliveryDriverUserId = deliveryDrivers.First().UserId;
+
+    }
+
 }
+
+
 
 @section Styles {
+
     <link rel="stylesheet" href="~/css/restaurant-settings.css" asp-append-version="true" />
+
 }
 
-<div class="settings-page restaurant-general-settings-page"
+
+
+<div class="settings-page restaurant-general-settings-page rgs"
+
      data-restaurant-id="@restaurantId">
 
-    <header class="settings-header">
-        <div class="icon-circle">
-            <i class="fas fa-store"></i>
-        </div>
-        <div>
-            <h2>تنظیمات رستوران</h2>
-            <p class="text-muted mb-0">اطلاعات عمومی رستوران و دسترسی سریع به بخش‌های مرتبط</p>
-        </div>
-    </header>
 
-    <div class="restaurant-settings-layout">
-        <div class="restaurant-settings-main">
-            <div class="settings-card">
-                <div class="settings-card__title">
-                    <i class="fas fa-pen"></i>
+
+    @if (TempData["Success"] != null)
+
+    {
+
+        <div class="rgs-toast rgs-toast--success" role="status">
+
+            <i class="fas fa-circle-check"></i>
+
+            <span>@TempData["Success"]</span>
+
+        </div>
+
+    }
+
+
+
+    @if (TempData["Error"] != null)
+
+    {
+
+        <div class="rgs-toast rgs-toast--error" role="alert">
+
+            <i class="fas fa-circle-exclamation"></i>
+
+            <span>@TempData["Error"]</span>
+
+        </div>
+
+    }
+
+
+
+    <nav class="rgs-shortcuts" aria-label="تنظیمات مرتبط">
+
+        <a href="@Url.Action("MenuSettings", "Home")" class="rgs-shortcut">
+
+            <span class="rgs-shortcut__icon"><i class="fas fa-qrcode"></i></span>
+
+            <span class="rgs-shortcut__label">تنظیمات منو</span>
+
+        </a>
+
+        <a href="@Url.Action("ManageStaff", "Home")" class="rgs-shortcut">
+
+            <span class="rgs-shortcut__icon"><i class="fas fa-user-gear"></i></span>
+
+            <span class="rgs-shortcut__label">مدیریت کارکنان</span>
+
+        </a>
+
+        <a href="@Url.Action("RestaurantSubscription", "Home")" class="rgs-shortcut">
+
+            <span class="rgs-shortcut__icon"><i class="fas fa-crown"></i></span>
+
+            <span class="rgs-shortcut__label">اشتراک</span>
+
+        </a>
+
+    </nav>
+
+
+
+    <div class="rgs-dashboard">
+
+        <section class="rgs-card rgs-card--profile" aria-labelledby="rgs-profile-title">
+
+            <div class="rgs-card__header">
+
+                <span class="rgs-card__icon" aria-hidden="true"><i class="fas fa-store"></i></span>
+
+                <div>
+
+                    <h2 id="rgs-profile-title">نام نمایشی</h2>
+
+                    <p>در داشبورد، منوی دیجیتال و گزارش‌ها نمایش داده می‌شود.</p>
+
+                </div>
+
+            </div>
+
+
+
+            <form id="restaurantNameForm" class="rgs-form" autocomplete="off">
+
+                <label class="rgs-field" for="restaurantNameInput">
+
                     <span>نام رستوران</span>
+
+                    <input type="text"
+
+                           id="restaurantNameInput"
+
+                           maxlength="100"
+
+                           value="@restaurantName"
+
+                           placeholder="مثلاً: کافه دل‌آویز"
+
+                           required>
+
+                </label>
+
+                <div class="rgs-actions">
+
+                    <button type="submit" class="rgs-btn rgs-btn--primary" id="saveRestaurantNameBtn">
+
+                        ذخیره نام
+
+                    </button>
+
                 </div>
 
-                <form id="restaurantNameForm" class="settings-form" autocomplete="off">
-                    <div class="settings-field settings-field--full">
-                        <label for="restaurantNameInput">نام نمایشی</label>
-                        <input type="text"
-                               id="restaurantNameInput"
-                               maxlength="100"
-                               value="@restaurantName"
-                               placeholder="مثلاً: رستوران سنتی گیلان"
-                               required>
-                        <small class="field-hint">این نام در داشبورد، منوی دیجیتال و گزارش‌ها نمایش داده می‌شود.</small>
+            </form>
+
+        </section>
+
+
+
+        <section class="rgs-card rgs-card--access" aria-labelledby="rgs-access-title">
+
+            <div class="rgs-card__header">
+
+                <span class="rgs-card__icon" aria-hidden="true"><i class="fas fa-shield-halved"></i></span>
+
+                <div>
+
+                    <h2 id="rgs-access-title">دسترسی و هویت</h2>
+
+                    <p>کد ورود کارکنان و لینک منوی عمومی.</p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="rgs-creds">
+
+                <article class="rgs-cred">
+
+                    <div class="rgs-cred__label">
+
+                        <i class="fas fa-key" aria-hidden="true"></i>
+
+                        <span>کد ورود کارکنان</span>
+
                     </div>
 
-                    <div class="settings-actions">
-                        <button type="submit" class="btn-save" id="saveRestaurantNameBtn">
-                            <i class="fas fa-save ms-1"></i>
-                            ذخیره نام
+                    <div class="rgs-cred__row">
+
+                        <code id="identityRestaurantCode">@restaurantCode</code>
+
+                        <button type="button"
+
+                                class="rgs-copy-btn btn-copy-value"
+
+                                data-copy-target="identityRestaurantCode"
+
+                                aria-label="کپی کد رستوران">
+
+                            <i class="fas fa-copy" aria-hidden="true"></i>
+
+                            <span>کپی</span>
+
                         </button>
+
                     </div>
-                </form>
-            </div>
 
-            <div class="settings-card">
-                <div class="settings-card__title">
-                    <i class="fas fa-id-card"></i>
-                    <span>کد و دسترسی</span>
-                </div>
+                </article>
 
-                <dl class="restaurant-info-list">
-                    <div class="restaurant-info-item">
-                        <dt>کد ورود کارکنان</dt>
-                        <dd>
-                            <code id="identityRestaurantCode">@restaurantCode</code>
-                            <button type="button" class="btn-copy-value" data-copy-target="identityRestaurantCode" aria-label="کپی کد رستوران">
-                                <i class="fas fa-copy"></i>
+
+
+                <article class="rgs-cred">
+
+                    <div class="rgs-cred__label">
+
+                        <i class="fas fa-link" aria-hidden="true"></i>
+
+                        <span>لینک منوی عمومی</span>
+
+                    </div>
+
+                    <div class="rgs-cred__row">
+
+                        @if (hasMenuUrl)
+
+                        {
+
+                            <a id="identityMenuUrl" href="@menuUrl" target="_blank" rel="noopener" class="rgs-cred__link">@menuUrl</a>
+
+                            <button type="button"
+
+                                    class="rgs-copy-btn btn-copy-value"
+
+                                    data-copy-target="identityMenuUrl"
+
+                                    data-copy-text="true"
+
+                                    aria-label="کپی لینک منو">
+
+                                <i class="fas fa-copy" aria-hidden="true"></i>
+
+                                <span>کپی</span>
+
                             </button>
-                        </dd>
+
+                        }
+
+                        else
+
+                        {
+
+                            <span class="rgs-muted">توکن منوی عمومی هنوز تنظیم نشده است.</span>
+
+                        }
+
                     </div>
 
-                    <div class="restaurant-info-item">
-                        <dt>لینک منوی عمومی</dt>
-                        <dd>
-                            @if (hasMenuUrl)
-                            {
-                                <a id="identityMenuUrl" href="@menuUrl" target="_blank" rel="noopener" class="restaurant-info-link">@menuUrl</a>
-                                <button type="button" class="btn-copy-value" data-copy-target="identityMenuUrl" data-copy-text="true" aria-label="کپی لینک منو">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            }
-                            else
-                            {
-                                <span class="text-muted">توکن منوی عمومی تنظیم نشده است.</span>
-                            }
-                        </dd>
-                    </div>
-                </dl>
+                </article>
+
             </div>
-        </div>
 
-        <aside class="restaurant-settings-aside">
-            <div class="settings-card">
-                <div class="settings-card__title">
-                    <i class="fas fa-link"></i>
-                    <span>دسترسی سریع</span>
+        </section>
+
+
+
+        <section class="rgs-card rgs-card--channels" aria-labelledby="rgs-channels-title">
+
+            <div class="rgs-card__header">
+
+                <span class="rgs-card__icon" aria-hidden="true"><i class="fas fa-truck"></i></span>
+
+                <div>
+
+                    <h2 id="rgs-channels-title">کانال‌های سفارش</h2>
+
+                    <p>سالن همیشه فعال است؛ بیرون‌بر و ارسال را در صورت نیاز فعال کنید.</p>
+
                 </div>
 
-                <nav class="restaurant-quick-links" aria-label="دسترسی سریع">
-                    <a href="@Url.Action("MenuSettings", "Home")" class="restaurant-quick-link">
-                        <span class="restaurant-quick-link__icon"><i class="fas fa-qrcode"></i></span>
-                        <span class="restaurant-quick-link__body">
-                            <strong>تنظیمات منو</strong>
-                            <small>لوگو، قالب، متن‌ها و QR</small>
-                        </span>
-                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
-                    </a>
-
-                    <a href="@Url.Action("ManageStaff", "Home")" class="restaurant-quick-link">
-                        <span class="restaurant-quick-link__icon"><i class="fas fa-user-gear"></i></span>
-                        <span class="restaurant-quick-link__body">
-                            <strong>مدیریت کارکنان</strong>
-                            <small>افزودن گارسون، آشپز و صندوقدار</small>
-                        </span>
-                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
-                    </a>
-
-                    <a href="@Url.Action("RestaurantSubscription", "Home")" class="restaurant-quick-link">
-                        <span class="restaurant-quick-link__icon"><i class="fas fa-crown"></i></span>
-                        <span class="restaurant-quick-link__body">
-                            <strong>اشتراک</strong>
-                            <small>وضعیت پلن و تمدید</small>
-                        </span>
-                        <i class="fas fa-arrow-left restaurant-quick-link__arrow"></i>
-                    </a>
-                </nav>
             </div>
-        </aside>
+
+
+
+            @if (fulfillmentGlobalEnabled)
+
+            {
+
+                <form asp-action="SetFulfillmentSettings" asp-controller="Home" method="post" class="rgs-form" autocomplete="off">
+
+                    @Html.AntiForgeryToken()
+
+
+
+                    <div class="rgs-channels-body">
+
+                        <div class="rgs-toggles">
+
+                            <label class="rgs-toggle">
+
+                                <input type="checkbox" name="enableTakeaway" value="true" @(enableTakeaway ? "checked" : null) />
+
+                                <span class="rgs-toggle__ui" aria-hidden="true"></span>
+
+                                <span class="rgs-toggle__copy">
+
+                                    <strong>بیرون‌بر</strong>
+
+                                    <small>تحویل در محل بدون سرو میز</small>
+
+                                </span>
+
+                            </label>
+
+
+
+                            <label class="rgs-toggle">
+
+                                <input type="checkbox" id="enableDeliveryToggle" name="enableDelivery" value="true" @(enableDelivery ? "checked" : null) />
+
+                                <span class="rgs-toggle__ui" aria-hidden="true"></span>
+
+                                <span class="rgs-toggle__copy">
+
+                                    <strong>ارسال با پیک</strong>
+
+                                    <small>ثبت سفارش با آدرس مشتری</small>
+
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+
+                        <div id="deliveryAutoAssignSection" class="rgs-delivery-settings @(enableDelivery ? "" : "rgs-delivery-settings--hidden")">
+
+                            <label class="rgs-toggle rgs-toggle--inline">
+
+                                <input type="checkbox" id="autoAssignDeliveryDriverToggle" name="autoAssignDeliveryDriver" value="true" @(autoAssignDeliveryDriver ? "checked" : null) />
+
+                                <span class="rgs-toggle__ui" aria-hidden="true"></span>
+
+                                <span class="rgs-toggle__copy">
+
+                                    <strong>تخصیص خودکار به پیک پیش‌فرض</strong>
+
+                                    <small>وقتی سفارش به وضعیت «آماده تحویل» برسد، به‌صورت خودکار به پیک پیش‌فرض تخصیص داده می‌شود</small>
+
+                                </span>
+
+                            </label>
+
+
+
+                            <label class="rgs-field rgs-field--driver" for="defaultDeliveryDriverUserId">
+
+                                <span>پیک پیش‌فرض</span>
+
+                                @if (deliveryDrivers.Any())
+
+                                {
+
+                                    <select id="defaultDeliveryDriverUserId"
+
+                                            name="defaultDeliveryDriverUserId"
+
+                                            class="rgs-select"
+
+                                            @(autoAssignDeliveryDriver && enableDelivery ? null : "disabled")>
+
+                                        @foreach (var driver in deliveryDrivers)
+
+                                        {
+
+                                            if (defaultDeliveryDriverUserId == driver.UserId)
+
+                                            {
+
+                                                <option value="@driver.UserId" selected="selected">@driver.Name</option>
+
+                                            }
+
+                                            else
+
+                                            {
+
+                                                <option value="@driver.UserId">@driver.Name</option>
+
+                                            }
+
+                                        }
+
+                                    </select>
+
+                                }
+
+                                else
+
+                                {
+
+                                    <select id="defaultDeliveryDriverUserId"
+
+                                            name="defaultDeliveryDriverUserId"
+
+                                            class="rgs-select"
+
+                                            disabled>
+
+                                        <option value="">پیکی ثبت نشده است</option>
+
+                                    </select>
+
+                                    <small class="rgs-muted">ابتدا یک پیک در <a href="@Url.Action("ManageStaff", "Home")">مدیریت کارکنان</a> اضافه کنید.</small>
+
+                                }
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="rgs-actions">
+
+                        <button type="submit" class="rgs-btn rgs-btn--primary">
+
+                            ذخیره کانال‌ها
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            }
+
+            else
+
+            {
+
+                <div class="rgs-empty">
+
+                    <i class="fas fa-lock" aria-hidden="true"></i>
+
+                    <div>
+
+                        <strong>این قابلیت سراسری غیرفعال است</strong>
+
+                        <p>پس از فعال‌سازی سمت سرور، می‌توانید بیرون‌بر و ارسال را برای این رستوران روشن کنید.</p>
+
+                    </div>
+
+                </div>
+
+            }
+
+        </section>
+
     </div>
+
 </div>
 
+
+
 @section Scripts {
+
     <script src="~/js/restaurant-general-settings.js" asp-append-version="true"></script>
+
 }
+
+

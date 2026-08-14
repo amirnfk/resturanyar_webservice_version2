@@ -23,9 +23,12 @@ function updateBadge(count) {
             badge.textContent = label;
             badge.classList.toggle('is-single-digit', count < 10);
             badge.hidden = false;
-            badge.style.display = '';
+            badge.removeAttribute('hidden');
+            badge.style.display = 'inline-flex';
         } else {
+            badge.textContent = '';
             badge.hidden = true;
+            badge.setAttribute('hidden', '');
             badge.style.display = 'none';
             badge.classList.remove('is-single-digit');
         }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.AuthorizationModels;
+using resturanyar.Models.Receipt;
 using resturanyar.Utility;
 using Resturanyar.Data;
 using Resturanyar.Hubs;
@@ -113,7 +114,8 @@ namespace resturanyar.Controllers.Api.V2
                         restaurant_name = restaurant.name,
                         order_management_permission = user.order_management_permission,
                         kitchen_management_permission = user.kitchen_management_permission,
-                        payment_management_permission = user.payment_management_permission
+                        payment_management_permission = user.payment_management_permission,
+                        delivery_management_permission = user.delivery_management_permission
                     },
                     subscription = activeSubscription,
                     has_active_subscription = activeSubscription != null
@@ -225,23 +227,25 @@ namespace resturanyar.Controllers.Api.V2
             return null;
         }
 
-        private int? GetNextRoleId(int statusId)
+        private int? GetNextRoleId(int statusId, OrderTypeKind orderType = OrderTypeKind.DineIn)
         {
-            switch (statusId)
-            {
-                case 3: return 3;
-                case 4: return 3;
-                case 5: return 2;
-                case 6: return 4;
-                case 7: return 4;
-                case 8: return 4;
-                case 9: return 4;
-                case 10: return 4;
-                case 11: return 4;
-                case 12: return 3;
-                case 99: return 3;
-                default: return null;
-            }
+            var courier = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            return courier.GetNextRoleId(statusId, orderType);
+        }
+
+        private bool IsDeliveryOnlyStaff()
+        {
+            var delivery = User.FindFirst("delivery_permission")?.Value == "1";
+            var order = User.FindFirst("order_permission")?.Value == "1";
+            var kitchen = User.FindFirst("kitchen_permission")?.Value == "1";
+            var payment = User.FindFirst("payment_permission")?.Value == "1";
+            return delivery && !order && !kitchen && !payment;
+        }
+
+        private bool HasOrderOrDeliveryPermission()
+        {
+            return User.FindFirst("order_permission")?.Value == "1"
+                   || User.FindFirst("delivery_permission")?.Value == "1";
         }
     }
 }

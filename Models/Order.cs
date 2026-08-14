@@ -29,6 +29,8 @@ namespace resturanyar.Models
 
         [ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
+
+        public OrderFulfillment? Fulfillment { get; set; }
     }
 
 

@@ -33,6 +33,18 @@ namespace resturanyar.Models
         /// </summary>
         public DateTime? ReceiptChargesEnabledAt { get; set; }
 
+        /// <summary>When true, Takeaway (OrderType=1) create is allowed for this restaurant.</summary>
+        public bool EnableTakeaway { get; set; } = true;
+
+        /// <summary>When true, Delivery (OrderType=2) create is allowed for this restaurant.</summary>
+        public bool EnableDelivery { get; set; } = true;
+
+        /// <summary>When true, delivery orders at status 5 are auto-assigned to DefaultDeliveryDriverUserId.</summary>
+        public bool AutoAssignDeliveryDriver { get; set; } = true;
+
+        /// <summary>Default courier (Users.user_id) for auto-assign when AutoAssignDeliveryDriver is on.</summary>
+        public int? DefaultDeliveryDriverUserId { get; set; }
+
         public ICollection<Category> Categories { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual RestaurantSetting? Setting { get; set; }

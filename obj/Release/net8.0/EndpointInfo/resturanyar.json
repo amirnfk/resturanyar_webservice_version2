@@ -5344,6 +5344,10 @@
           "payment_management_permission": {
             "type": "boolean",
             "nullable": true
+          },
+          "delivery_management_permission": {
+            "type": "boolean",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5436,6 +5440,15 @@
           "customerId": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "customerAddressId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "addressText": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -5723,6 +5736,10 @@
             "nullable": true
           },
           "payment_management_permission": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "delivery_management_permission": {
             "type": "boolean",
             "nullable": true
           }
@@ -6112,6 +6129,15 @@
           "customerId": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "customerAddressId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "addressText": {
+            "type": "string",
             "nullable": true
           }
         },

@@ -48,6 +48,7 @@ namespace Resturanyar.Data
         public DbSet<RestaurantChargeDefinition> RestaurantChargeDefinitions { get; set; }
         public DbSet<OrderReceiptSnapshot> OrderReceiptSnapshots { get; set; }
         public DbSet<ReceiptPrintHistory> ReceiptPrintHistories { get; set; }
+        public DbSet<OrderFulfillment> OrderFulfillments { get; set; }
         public DbSet<InventorySettings> InventorySettings { get; set; }
         public DbSet<InventoryCategory> InventoryCategories { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
@@ -88,6 +89,12 @@ namespace Resturanyar.Data
                     .HasDefaultValue(true);
 
                 entity.Property(r => r.ReceiptChargesEnabledAt);
+
+                entity.Property(r => r.EnableTakeaway)
+                    .HasDefaultValue(true);
+
+                entity.Property(r => r.EnableDelivery)
+                    .HasDefaultValue(true);
             });
 
             
@@ -123,6 +130,34 @@ namespace Resturanyar.Data
             modelBuilder.Entity<Order>()
                 .Property(o => o.OrderType)
                 .HasDefaultValue(OrderTypeKind.DineIn);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Fulfillment)
+                .WithOne(f => f.Order!)
+                .HasForeignKey<OrderFulfillment>(f => f.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderFulfillment>(entity =>
+            {
+                entity.ToTable("OrderFulfillments");
+                entity.HasKey(f => f.OrderId);
+                entity.Property(f => f.CustomerNameSnapshot).HasMaxLength(200);
+                entity.Property(f => f.PhoneSnapshot).HasMaxLength(20);
+                entity.Property(f => f.AddressSnapshot).HasMaxLength(1000);
+                entity.Property(f => f.DeliveryFailureReason).HasMaxLength(500);
+                entity.Property(f => f.CreatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.Property(f => f.UpdatedAt).HasDefaultValueSql("SYSUTCDATETIME()");
+                entity.HasIndex(f => f.CustomerAddressId);
+                entity.HasIndex(f => f.AssignedDriverUserId);
+                entity.HasOne(f => f.CustomerAddress)
+                    .WithMany()
+                    .HasForeignKey(f => f.CustomerAddressId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne(f => f.AssignedDriver)
+                    .WithMany()
+                    .HasForeignKey(f => f.AssignedDriverUserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             modelBuilder.Entity<RestaurantChargeDefinition>(entity =>
             {
@@ -224,16 +259,23 @@ namespace Resturanyar.Data
             {
                 entity.HasKey(a => a.AddressId);
 
-                // رابطه با مشتری
-                entity.HasOne<Customer>()
+                // Single relationship only (avoid shadow FK CustomerId1)
+                entity.HasOne(a => a.Customer)
                     .WithMany()
                     .HasForeignKey(a => a.CustomerId)
-                    .OnDelete(DeleteBehavior.Cascade); // با حذف مشتری، آدرس‌هایش هم حذف شوند
+                    .OnDelete(DeleteBehavior.Cascade);
 
-                // ایندکس برای جستجوی سریع آدرس‌های یک مشتری
                 entity.HasIndex(a => a.CustomerId);
 
-                // مقادیر پیش‌فرض
+                entity.Property(a => a.Title).HasMaxLength(100);
+                entity.Property(a => a.AddressText).HasMaxLength(1000).IsRequired();
+                entity.Property(a => a.Unit).HasMaxLength(10);
+                entity.Property(a => a.Floor).HasMaxLength(10);
+                entity.Property(a => a.PlateNumber).HasMaxLength(10);
+                entity.Property(a => a.Description).HasMaxLength(500);
+                entity.Property(a => a.Latitude).HasColumnType("decimal(10,7)");
+                entity.Property(a => a.Longitude).HasColumnType("decimal(10,7)");
+
                 entity.Property(a => a.IsDefault)
                     .HasDefaultValue(false);
                 entity.Property(a => a.CreatedAt)

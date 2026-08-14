@@ -201,6 +201,7 @@
                 case 3: roleIcon = "/images/baker_9102653.png"; break;
                 case 2: roleIcon = "/images/waiter_2453333.png"; break;
                 case 4: roleIcon = "/images/cashier_1651946.png"; break;
+                case 5: roleIcon = "/images/food_delivery.png"; break;
             }
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -208,7 +209,8 @@
                     <!-- Three permission image places -->
                     <div class="user-permissions" data-order="@user.order_management_permission"
                          data-kitchen="@user.kitchen_management_permission"
-                         data-payment="@user.payment_management_permission">
+                         data-payment="@user.payment_management_permission"
+                         data-delivery="@user.delivery_management_permission">
                         <!-- Order -->
                         <div class="perm-icon perm-order @(user.order_management_permission ? "" : "inactive")"
                              title="دسترسی مدیریت سفارشات">
@@ -228,6 +230,12 @@
                              title="دسترسی مدیریت پرداخت">
                             <img src="/images/cashier_1651946.png" alt="Payment">  
 
+                        </div>
+
+                        <!-- Delivery -->
+                        <div class="perm-icon perm-delivery @(user.delivery_management_permission ? "" : "inactive")"
+                             title="دسترسی تحویل / پیک">
+                            <img src="/images/food_delivery.png" alt="Delivery">
                         </div>
                     </div>
 
@@ -252,6 +260,7 @@
                                 data-order_management_permission="@(user.order_management_permission ? 1 : 0)"
                                 data-kitchen_management_permission="@(user.kitchen_management_permission ? 1 : 0)"
                                 data-payment_management_permission="@(user.payment_management_permission ? 1 : 0)"
+                                data-delivery_management_permission="@(user.delivery_management_permission ? 1 : 0)"
                                 title="ویرایش">
                             <i class="bi bi-pencil-square"></i>
                         </button>
@@ -318,6 +327,7 @@
                         <option value="2">گارسون</option>
                         <option value="3">آشپز</option>
                         <option value="4">صندوقدار</option>
+                        <option value="5">پیک</option>
                     </select>
                 </div>
                 <div class="mb-3 form-check form-switch">
@@ -331,6 +341,10 @@
                 <div class="mb-3 form-check form-switch">
                     <input type="checkbox" class="form-check-input" id="editPaymentPermission">
                     <label class="form-check-label" for="editPaymentPermission">دسترسی مدیریت پرداخت</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="editDeliveryPermission">
+                    <label class="form-check-label" for="editDeliveryPermission">دسترسی تحویل / پیک</label>
                 </div>
 
                 <input type="hidden" id="editRestaurantId">
@@ -365,6 +379,7 @@
                         <option value="2">گارسون</option>
                         <option value="3">آشپز</option>
                         <option value="4">صندوقدار</option>
+                        <option value="5">پیک</option>
                     </select>
                 </div>
                 <div class="mb-3 form-check form-switch">
@@ -378,6 +393,10 @@
                 <div class="mb-3 form-check form-switch">
                     <input type="checkbox" class="form-check-input" id="addPaymentPermission">
                     <label class="form-check-label" for="addPaymentPermission">دسترسی مدیریت پرداخت</label>
+                </div>
+                <div class="mb-3 form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="addDeliveryPermission">
+                    <label class="form-check-label" for="addDeliveryPermission">دسترسی تحویل / پیک</label>
                 </div>
 
             </div>
@@ -404,14 +423,58 @@
             var base = (modal === 'edit') ? '#edit' : '#add';
             roleId = parseInt(roleId) || 0;
 
-            var order = false, kitchen = false, payment = false;
+            var order = false, kitchen = false, payment = false, delivery = false;
             if (roleId === 2) { order = true; }
             else if (roleId === 3) { kitchen = true; }
             else if (roleId === 4) { payment = true; }
+            else if (roleId === 5) { delivery = true; }
 
             $(base + 'OrderPermission').prop('checked', order);
             $(base + 'KitchenPermission').prop('checked', kitchen);
             $(base + 'PaymentPermission').prop('checked', payment);
+            $(base + 'DeliveryPermission').prop('checked', delivery);
+
+            applyPermissionLocks(roleId, modal);
+        }
+
+        // پیک: only delivery permission (locked). Other roles: delivery locked off; order/kitchen/payment stay editable.
+        function applyPermissionLocks(roleId, modal) {
+            var base = (modal === 'edit') ? '#edit' : '#add';
+            roleId = parseInt(roleId) || 0;
+            var isCourier = roleId === 5;
+
+            $(base + 'OrderPermission').prop('disabled', isCourier);
+            $(base + 'KitchenPermission').prop('disabled', isCourier);
+            $(base + 'PaymentPermission').prop('disabled', isCourier);
+            $(base + 'DeliveryPermission').prop('disabled', true); // never mixed; only auto-set for role 5
+
+            if (isCourier) {
+                $(base + 'OrderPermission').prop('checked', false);
+                $(base + 'KitchenPermission').prop('checked', false);
+                $(base + 'PaymentPermission').prop('checked', false);
+                $(base + 'DeliveryPermission').prop('checked', true);
+            } else {
+                $(base + 'DeliveryPermission').prop('checked', false);
+            }
+        }
+
+        function permissionsPayloadForRole(roleId, modal) {
+            roleId = parseInt(roleId) || 0;
+            if (roleId === 5) {
+                return {
+                    order_management_permission: false,
+                    kitchen_management_permission: false,
+                    payment_management_permission: false,
+                    delivery_management_permission: true
+                };
+            }
+            var base = (modal === 'edit') ? '#edit' : '#add';
+            return {
+                order_management_permission: $(base + 'OrderPermission').prop('checked'),
+                kitchen_management_permission: $(base + 'KitchenPermission').prop('checked'),
+                payment_management_permission: $(base + 'PaymentPermission').prop('checked'),
+                delivery_management_permission: false
+            };
         }
 
         function isValidUsername(username) {
@@ -471,11 +534,13 @@
             const hasOrder   = !$card.find(".perm-order").hasClass("inactive");
             const hasKitchen = !$card.find(".perm-kitchen").hasClass("inactive");
             const hasPayment = !$card.find(".perm-payment").hasClass("inactive");
+            const hasDelivery = !$card.find(".perm-delivery").hasClass("inactive");
 
             let roles = [];
             if (hasOrder) roles.push("گارسون");
             if (hasKitchen) roles.push("آشپز");
             if (hasPayment) roles.push("صندوقدار");
+            if (hasDelivery) roles.push("پیک");
             let roleText = roles.length > 0 ? roles.join(" ، ") : "نامشخص";
 
             try {
@@ -513,6 +578,8 @@
             $("#editOrderPermission").prop("checked", $(this).data("order_management_permission") == 1);
             $("#editKitchenPermission").prop("checked", $(this).data("kitchen_management_permission") == 1);
             $("#editPaymentPermission").prop("checked", $(this).data("payment_management_permission") == 1);
+            $("#editDeliveryPermission").prop("checked", $(this).data("delivery_management_permission") == 1);
+            applyPermissionLocks(parseInt($(this).data("role_id")) || 0, 'edit');
 
             new bootstrap.Modal(document.getElementById('editModal')).show();
         });
@@ -526,16 +593,13 @@
 
             if (!validateUserForm(name, password, role_id)) return;
 
-            var payload = {
+            var payload = Object.assign({
                 user_id: id,
                 name: name,
                 password: password,
                 role_id: role_id,
-                restaurant_id: restaurantId,
-                order_management_permission: $("#editOrderPermission").prop("checked"),
-                kitchen_management_permission: $("#editKitchenPermission").prop("checked"),
-                payment_management_permission: $("#editPaymentPermission").prop("checked")
-            };
+                restaurant_id: restaurantId
+            }, permissionsPayloadForRole(role_id, 'edit'));
 
             try {
                 const response = await window.fetchWithAuth('/api/v2/UserApi/edituser', {
@@ -572,15 +636,12 @@
                 return;
             }
 
-            var payload = {
+            var payload = Object.assign({
                 name: name,
                 password: password,
                 role_id: role_id,
-                restaurant_id: restaurantId,
-                order_management_permission: $("#addOrderPermission").prop("checked"),
-                kitchen_management_permission: $("#addKitchenPermission").prop("checked"),
-                payment_management_permission: $("#addPaymentPermission").prop("checked")
-            };
+                restaurant_id: restaurantId
+            }, permissionsPayloadForRole(role_id, 'add'));
 
             try {
                 const response = await window.fetchWithAuth('/api/v2/UserApi/adduser', {

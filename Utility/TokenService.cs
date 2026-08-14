@@ -65,7 +65,8 @@ namespace resturanyar.Utility
                 new Claim("role_id", user.role_id.ToString()),
                 new Claim("order_permission", user.order_management_permission ? "1" : "0"),
                 new Claim("kitchen_permission", user.kitchen_management_permission ? "1" : "0"),
-                new Claim("payment_permission", user.payment_management_permission ? "1" : "0")
+                new Claim("payment_permission", user.payment_management_permission ? "1" : "0"),
+                new Claim("delivery_permission", user.delivery_management_permission ? "1" : "0")
             };
 
             // TEMP: prefer JwtExpirationMinutes for short-lived JWT refresh testing; remove minutes from config to restore days

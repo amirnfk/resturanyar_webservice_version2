@@ -121,6 +121,42 @@
         });
     }
 
+    function bindFulfillmentToggles(page) {
+        var deliveryToggle = page.querySelector('#enableDeliveryToggle');
+        var autoAssignToggle = page.querySelector('#autoAssignDeliveryDriverToggle');
+        var autoAssignSection = page.querySelector('#deliveryAutoAssignSection');
+        var driverSelect = page.querySelector('#defaultDeliveryDriverUserId');
+
+        if (!deliveryToggle || !autoAssignSection) return;
+
+        function syncFulfillmentControls() {
+            var deliveryOn = deliveryToggle.checked;
+            autoAssignSection.classList.toggle('rgs-delivery-settings--hidden', !deliveryOn);
+
+            if (!driverSelect) return;
+
+            var autoAssignOn = autoAssignToggle && autoAssignToggle.checked;
+            var canSelect = deliveryOn && autoAssignOn && !driverSelect.querySelector('option[value=""]');
+            driverSelect.disabled = !canSelect;
+        }
+
+        deliveryToggle.addEventListener('change', syncFulfillmentControls);
+        if (autoAssignToggle) {
+            autoAssignToggle.addEventListener('change', syncFulfillmentControls);
+        }
+
+        var form = autoAssignSection.closest('form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                if (driverSelect) {
+                    driverSelect.disabled = false;
+                }
+            });
+        }
+
+        syncFulfillmentControls();
+    }
+
     function initRestaurantGeneralSettingsPage() {
         var page = getPageRoot();
         if (!page) return;
@@ -129,6 +165,7 @@
         page.dataset.generalSettingsReady = 'true';
         bindCopyButtons(page);
         bindNameForm(page);
+        bindFulfillmentToggles(page);
     }
 
     window.initRestaurantGeneralSettingsPage = initRestaurantGeneralSettingsPage;

@@ -17,6 +17,8 @@ namespace resturanyar.Models.Receipt
         public string? Description { get; set; }
         public string? CustomerName { get; set; }
         public string? CustomerMobile { get; set; }
+        /// <summary>Delivery/takeaway address snapshot when OrderType is not DineIn.</summary>
+        public string? DeliveryAddress { get; set; }
         public List<ReceiptItemDto> Items { get; set; } = new();
         public List<ReceiptChargeLineDto> ChargeLines { get; set; } = new();
         public decimal ItemsSubtotal { get; set; }

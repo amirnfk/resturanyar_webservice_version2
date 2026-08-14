@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using Azure.Core;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authentication;
@@ -160,6 +160,8 @@ namespace Resturanyar.Controllers.Api
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
                     ReceiptChargesEnabled = true,
                     ReceiptChargesEnabledAt = DateTime.Now,
+                    EnableTakeaway = true,
+                    EnableDelivery = true,
                 };
                 _context.Restaurants.Add(restaurant);
                 _context.SaveChanges(); // ذخیره تا ID رستوران تولید شود
@@ -169,7 +171,8 @@ namespace Resturanyar.Controllers.Api
         {
             new User { name = "waiter1", role_id = 2, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, order_management_permission = true },
             new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
-            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
+            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true },
+            new User { name = "delivery1", role_id = 5, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, delivery_management_permission = true }
         };
                 _context.Users.AddRange(defaultUsers);
                 _context.SaveChanges();
@@ -923,11 +926,19 @@ namespace Resturanyar.Controllers.Api
                         user.order_management_permission = false;
                         user.kitchen_management_permission = false;
                         user.payment_management_permission = true;
+                        user.delivery_management_permission = false;
+                        break;
+                    case 5: // پیک
+                        user.order_management_permission = false;
+                        user.kitchen_management_permission = false;
+                        user.payment_management_permission = false;
+                        user.delivery_management_permission = true;
                         break;
                     default:
                         user.order_management_permission = false;
                         user.kitchen_management_permission = false;
                         user.payment_management_permission = false;
+                        user.delivery_management_permission = false;
                         break;
                 }
 
@@ -938,6 +949,8 @@ namespace Resturanyar.Controllers.Api
                     user.kitchen_management_permission = request.kitchen_management_permission.Value;
                 if (request.payment_management_permission.HasValue)
                     user.payment_management_permission = request.payment_management_permission.Value;
+                if (request.delivery_management_permission.HasValue)
+                    user.delivery_management_permission = request.delivery_management_permission.Value;
 
 
                 // اگر می‌خوای از request هم مقداردهی دستی امکان‌پذیر باشه:
@@ -1512,12 +1525,38 @@ namespace Resturanyar.Controllers.Api
                     }
                 }
 
+                var restaurant = await _context.Restaurants
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId);
+                if (restaurant == null)
+                {
+                    return BadRequest(new CreateOrderApiResponse
+                    {
+                        Success = false,
+                        Message = "رستوران یافت نشد."
+                    });
+                }
+
+                var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+                var prepared = await fulfillmentService.ValidateAndPrepareAsync(
+                    request,
+                    restaurant.EnableTakeaway,
+                    restaurant.EnableDelivery);
+
+                if (!prepared.Success)
+                {
+                    if (prepared.StatusCode == 403)
+                        return StatusCode(403, new CreateOrderApiResponse { Success = false, Message = prepared.ErrorMessage });
+                    return BadRequest(new CreateOrderApiResponse { Success = false, Message = prepared.ErrorMessage });
+                }
+
                 var order = new Order
                 {
                     RestaurantId = request.RestaurantId,
-                    TableNumber = request.TableNumber,
+                    TableNumber = prepared.ResolvedTableNumber,
                     StatusId = request.StatusId,
                     CustomerId = request.CustomerId,   
+                    OrderType = prepared.ResolvedOrderType,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     CreatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
@@ -1553,6 +1592,9 @@ namespace Resturanyar.Controllers.Api
                 // 1️⃣ Save order first to get OrderId
                 _context.Orders.Add(order);
                 _context.SaveChanges();
+
+                if (prepared.Fulfillment != null)
+                    await fulfillmentService.AttachFulfillmentAsync(order, prepared.Fulfillment);
 
                 // 2️⃣ Add initial OrderUpdate
                 int? nextRoleId = 3; // Default first role
@@ -1636,7 +1678,7 @@ namespace Resturanyar.Controllers.Api
             order.UpdatedAt = DateTime.Now;
 
             
-            int? nextRoleId = GetNextRoleId(dto.NewStatusId);
+            int? nextRoleId = GetNextRoleId(dto.NewStatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = _context.OrderUpdates
@@ -1732,6 +1774,17 @@ namespace Resturanyar.Controllers.Api
                     order.CreatedAtShamsi = DateHelper.ToShamsi(order.CreatedAt);
                 }
 
+                if (request.CustomerAddressId.HasValue || !string.IsNullOrWhiteSpace(request.AddressText) || request.CustomerId.HasValue)
+                {
+                    var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+                    await fulfillmentService.TryUpdateFulfillmentSnapshotsAsync(
+                        order.OrderId,
+                        order.RestaurantId,
+                        request.CustomerId,
+                        request.CustomerAddressId,
+                        request.AddressText);
+                }
+
                 // Remove existing items
                 _context.OrderItems.RemoveRange(order.OrderItems);
 
@@ -1757,7 +1810,7 @@ namespace Resturanyar.Controllers.Api
                 order.UpdatedAt = DateTime.Now;
 
                 // تعیین نقش بعدی
-                int? nextRoleId = GetNextRoleId(request.StatusId); // 🔥 اصلاح: استفاده از StatusId فعلی
+                int? nextRoleId = GetNextRoleId(request.StatusId, order.OrderType);
                 if (nextRoleId.HasValue)
                 {
                     var existingUpdate = _context.OrderUpdates
@@ -1887,6 +1940,9 @@ namespace Resturanyar.Controllers.Api
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -1974,6 +2030,9 @@ namespace Resturanyar.Controllers.Api
                         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                         Description = o.Description,
                         OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
                         OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                         {
                             OrderItemId = oi.OrderItemId,
@@ -2151,52 +2210,41 @@ namespace Resturanyar.Controllers.Api
         [HttpGet("CheckOrderUpdates")]
         public IActionResult CheckOrderUpdates(int restaurantId, int role2, int role3, int role4, long lastCheck)
         {
-            // لیست رول‌هایی که باید بررسی بشن
-            var targetRoles = new List<int>();
-            if (role2 == 1) targetRoles.Add(2);
-            if (role3 == 1) targetRoles.Add(3);
-            if (role4 == 1) targetRoles.Add(4);
-
-            //bool hasUpdates = _context.OrderUpdates
-            //    .Any(u => u.RestaurantId == restaurantId
-            //           && targetRoles.Contains(u.TargetRoleId)
-            //           && u.UpdateTime > lastCheck);
-
-
             bool hasUpdates = _context.OrderUpdates.Any(u =>
-    u.RestaurantId == restaurantId &&
-    (
-        (role2 == 1 && u.TargetRoleId == 2) ||
-        (role3 == 1 && u.TargetRoleId == 3) ||
-        (role4 == 1 && u.TargetRoleId == 4)
-    ) &&
-    u.UpdateTime > lastCheck
-);
-
+                u.RestaurantId == restaurantId &&
+                (
+                    (role2 == 1 && u.TargetRoleId == 2) ||
+                    (role3 == 1 && u.TargetRoleId == 3) ||
+                    (role4 == 1 && u.TargetRoleId == 4)
+                ) &&
+                u.UpdateTime > lastCheck);
 
             return Ok(new { success = true, hasUpdates });
         }
 
 
-        private int? GetNextRoleId(int statusId)
+        private int? GetNextRoleId(int statusId, resturanyar.Models.Receipt.OrderTypeKind orderType = resturanyar.Models.Receipt.OrderTypeKind.DineIn)
         {
-            // اینجا باید طبق بیزینس خودت مپ کنی
-            switch (statusId)
+            var courier = HttpContext.RequestServices.GetService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            if (courier != null)
+                return courier.GetNextRoleId(statusId, orderType);
+
+            return statusId switch
             {
-               
-                case 3: return 3;  // Chef
-                case 4: return 3;  // Cashier
-                case 5: return 2;  // waiter
-                case 6: return 4;  // Owner
-                case 7: return 4;  // Owner
-                case 8: return 4;  // Owner
-                case 9: return 4;  // Owner
-                case 10: return 4; // Owner
-                case 11: return 4; // Owner
-                case 12: return 3; // Chef
-                case 99: return 3; // Chef
-                default: return null;
-            }
+                2 => 3,
+                3 => 3,
+                4 => 3,
+                5 => 2,
+                6 => 4,
+                7 => 4,
+                8 => 4,
+                9 => 4,
+                10 => 4,
+                11 => 4,
+                12 => 3,
+                99 => 3,
+                _ => null
+            };
         }
         public class PriceListRequest
         {

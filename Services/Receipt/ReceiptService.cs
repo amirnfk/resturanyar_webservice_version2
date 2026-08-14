@@ -591,6 +591,7 @@ namespace resturanyar.Services.Receipt
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
                 .Include(o => o.Customer)
+                .Include(o => o.Fulfillment)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
 
             if (order == null)
@@ -668,8 +669,9 @@ namespace resturanyar.Services.Receipt
                 CreatedAt = order.CreatedAtShamsi ?? Utility.DateHelper.ToShamsi(order.CreatedAt),
                 UpdatedAt = order.UpdatedAtShamsi ?? Utility.DateHelper.ToShamsi(order.UpdatedAt),
                 Description = order.Description,
-                CustomerName = order.Customer?.FullName,
-                CustomerMobile = order.Customer?.Mobile,
+                CustomerName = order.Customer?.FullName ?? order.Fulfillment?.CustomerNameSnapshot,
+                CustomerMobile = order.Customer?.Mobile ?? order.Fulfillment?.PhoneSnapshot,
+                DeliveryAddress = order.Fulfillment?.AddressSnapshot,
                 Items = items,
                 ChargeLines = calculation.ChargeLines,
                 ItemsSubtotal = calculation.ItemsSubtotal,
@@ -700,8 +702,9 @@ namespace resturanyar.Services.Receipt
                 CreatedAt = order.CreatedAtShamsi ?? Utility.DateHelper.ToShamsi(order.CreatedAt),
                 UpdatedAt = order.UpdatedAtShamsi ?? Utility.DateHelper.ToShamsi(order.UpdatedAt),
                 Description = order.Description,
-                CustomerName = order.Customer?.FullName,
-                CustomerMobile = order.Customer?.Mobile,
+                CustomerName = order.Customer?.FullName ?? order.Fulfillment?.CustomerNameSnapshot,
+                CustomerMobile = order.Customer?.Mobile ?? order.Fulfillment?.PhoneSnapshot,
+                DeliveryAddress = order.Fulfillment?.AddressSnapshot,
                 Items = items,
                 ItemsSubtotal = subtotal,
                 GrandTotal = subtotal,

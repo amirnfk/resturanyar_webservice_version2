@@ -16,27 +16,40 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
                 <div class="order-header">
-                     سفارش #@order.OrderId.ToString().ToPersianDigits()
-                    | میز: @order.TableNumber?.ToPersianDigits()
-                    <span class="@OrderStatusColors.ChipClass(order.StatusId) ms-2">
-                        @Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص")
-                    </span>
-
-                    @if (order.CustomerId.HasValue)
+                    سفارش #@order.OrderId.ToString().ToPersianDigits()
+                    @{
+                        var typeLabel = order.OrderType switch
+                        {
+                            1 => "بیرون‌بر",
+                            2 => "ارسال",
+                            _ => null
+                        };
+                    }
+                    @if (typeLabel != null)
                     {
-                        <div class="customer-info">
-                            <i class="fas fa-user-circle"></i>
-                            <span class="customer-name">@order.CustomerFullName</span>
-                            <span class="customer-mobile">@order.CustomerMobile</span>
-                        </div>
+                        <span class="badge bg-info text-dark ms-1">@typeLabel</span>
                     }
                     else
                     {
-                        <div class="customer-info unknown">
-                            <i class="fas fa-walkie-talkie"></i>
-                            <span>مشتری مهمان</span>
-                        </div>
+                        <text>| میز: @order.TableNumber?.ToPersianDigits()</text>
                     }
+                    <span class="@OrderStatusColors.ChipClass(order.StatusId) ms-2">
+                        @{
+                            var statusLabel = Model.StatusMap.GetValueOrDefault(order.StatusId, "نامشخص");
+                            if (order.OrderType == 2)
+                            {
+                                statusLabel = order.StatusId switch
+                                {
+                                    5 => "آماده ارسال",
+                                    6 => "تحویل شد",
+                                    9 => "لغو شده توسط مشتری",
+                                    10 => "لغو شده توسط رستوران",
+                                    _ => statusLabel
+                                };
+                            }
+                        }
+                        @statusLabel
+                    </span>
                 </div>
 
                 <button class="btn btn-sm btn-dark receipt-print-btn"
@@ -68,6 +81,131 @@
                     </select>
                 </div>
             </div>
+
+            @if (order.OrderType == 2)
+            {
+                var hasCourier = order.AssignedDriverUserId.HasValue
+                    && !string.IsNullOrWhiteSpace(order.AssignedDriverName);
+                var canChangeCourier = resturanyar.Services.Fulfillment.DeliveryCourierService.CanChangeCourierAssignment(order.StatusId);
+                var deliveryPhone = !string.IsNullOrWhiteSpace(order.PhoneSnapshot)
+                    ? order.PhoneSnapshot
+                    : order.CustomerMobile;
+                var customerLabel = order.CustomerId.HasValue
+                    ? order.CustomerFullName
+                    : "مشتری مهمان";
+                <div class="delivery-meta mb-3">
+                    <div class="delivery-meta__grid">
+                        <div class="delivery-meta__item">
+                            <span class="delivery-meta__icon" aria-hidden="true">
+                                <i class="@(order.CustomerId.HasValue ? "fas fa-user" : "fas fa-walkie-talkie")"></i>
+                            </span>
+                            <div class="delivery-meta__copy">
+                                <span class="delivery-meta__label">مشتری</span>
+                                <span class="delivery-meta__value">@customerLabel</span>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(deliveryPhone))
+                        {
+                            <div class="delivery-meta__item">
+                                <span class="delivery-meta__icon" aria-hidden="true">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <div class="delivery-meta__copy">
+                                    <span class="delivery-meta__label">تماس</span>
+                                    <span class="delivery-meta__value delivery-meta__phone">@deliveryPhone</span>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(order.AddressSnapshot))
+                        {
+                            <div class="delivery-meta__item delivery-meta__item--wide">
+                                <span class="delivery-meta__icon" aria-hidden="true">
+                                    <i class="fas fa-location-dot"></i>
+                                </span>
+                                <div class="delivery-meta__copy">
+                                    <span class="delivery-meta__label">آدرس ارسال</span>
+                                    <span class="delivery-meta__value">@order.AddressSnapshot</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(order.DeliveryFailureReason))
+                    {
+                        <div class="courier-failure" role="status">
+                            <div class="courier-failure__icon" aria-hidden="true">
+                                <i class="fas fa-triangle-exclamation"></i>
+                            </div>
+                            <div class="courier-failure__body">
+                                <div class="courier-failure__title">تحویل ناموفق</div>
+                                <div class="courier-failure__reason">@order.DeliveryFailureReason</div>
+                                @if (order.DeliveryFailedAt.HasValue)
+                                {
+                                    <div class="courier-failure__time">@order.DeliveryFailedAt.Value.ToPersianDateTime()</div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="courier-panel courier-assign @(hasCourier ? "is-assigned" : "is-unassigned") @(canChangeCourier ? "" : "is-readonly")"
+                         data-orderid="@order.OrderId">
+                        <div class="courier-panel__main">
+                            <div class="courier-panel__identity">
+                                <span class="courier-panel__avatar" aria-hidden="true">
+                                    <img src="/images/food_delivery.png" alt="" />
+                                </span>
+                                <div class="courier-panel__text">
+                                    <span class="courier-panel__label">پیک ارسال</span>
+                                    <span class="courier-panel__name">
+                                        @(hasCourier ? order.AssignedDriverName : "هنوز تخصیص داده نشده")
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="courier-panel__badge @(hasCourier ? "is-assigned" : "is-unassigned")">
+                                @(canChangeCourier
+                                    ? (hasCourier ? "تخصیص‌شده" : "بدون پیک")
+                                    : (hasCourier ? "تحویل شده" : "بدون پیک"))
+                            </span>
+                        </div>
+                        @if (canChangeCourier)
+                        {
+                            <div class="courier-panel__actions">
+                                <div class="courier-panel__select-wrap">
+                                    <select class="form-select form-select-sm courier-select" aria-label="انتخاب پیک">
+                                        <option value="">انتخاب پیک…</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-assign-courier courier-panel__assign">
+                                    <i class="fas fa-user-check" aria-hidden="true"></i>
+                                    <span>تخصیص</span>
+                                </button>
+                                @if (order.AssignedDriverUserId.HasValue)
+                                {
+                                    <button type="button" class="btn btn-sm btn-unassign-courier courier-panel__clear" title="حذف تخصیص">
+                                        <i class="fas fa-link-slash" aria-hidden="true"></i>
+                                        <span>حذف</span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (order.CustomerId.HasValue)
+            {
+                <div class="customer-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="customer-name">@order.CustomerFullName</span>
+                    <span class="customer-mobile">@order.CustomerMobile</span>
+                </div>
+            }
+            else
+            {
+                <div class="customer-info unknown">
+                    <i class="fas fa-walkie-talkie"></i>
+                    <span>مشتری مهمان</span>
+                </div>
+            }
 
             <div class="order-meta mb-2">
                 ثبت: @order.CreatedAt.ToPersianDateTime()
@@ -407,6 +545,11 @@ else
         const orderNumber   = orderHeader.match(/سفارش #(\S+)/)?.[1] || orderId;
         const tableNumber   = orderHeader.match(/میز: (\S+)/)?.[1] || '';
         const orderStatus   = orderCard.querySelector('.status-badge')?.innerText.trim() || '';
+        const printBtn      = orderCard.querySelector('.receipt-print-btn');
+        const typeMatch     = (printBtn?.getAttribute('onclick') || '').match(/handleReceiptPrint\(\d+\s*,\s*(\d+)/);
+        const orderType     = typeMatch ? parseInt(typeMatch[1], 10) : 0;
+        const orderTypeLabel = orderType === 2 ? 'ارسال' : (orderType === 1 ? 'بیرون‌بر' : '');
+        const deliveryAddress = orderCard.querySelector('.delivery-meta__item--wide .delivery-meta__value')?.innerText.trim() || '';
 
         let customerName = '', customerMobile = '';
         const ci = orderCard.querySelector('.customer-info');
@@ -442,7 +585,8 @@ else
             restaurant: "@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(ViewBag.RestaurantName?.ToString() ?? "رستوران"))",
             orderNumber, tableNumber, orderStatus,
             createdAt, updatedAt, description,
-            items, totalText, customerName, customerMobile, now
+            items, totalText, customerName, customerMobile, now,
+            orderType, orderTypeLabel, deliveryAddress
         });
 
         if (!openPrintWindow(html)) {
@@ -498,4 +642,79 @@ else
 
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
     };
+
+    (function initCourierAssignUi() {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+        let driversLoaded = false;
+        let driversCache = [];
+
+        async function ensureDrivers() {
+            if (driversLoaded) return driversCache;
+            const res = await fetch('@Url.Action("ListDrivers", "Home")');
+            const data = await res.json();
+            if (data.success && Array.isArray(data.data)) {
+                driversCache = data.data;
+                driversLoaded = true;
+            }
+            return driversCache;
+        }
+
+        async function fillSelects() {
+            const drivers = await ensureDrivers();
+            document.querySelectorAll('.courier-select').forEach(sel => {
+                if (sel.dataset.filled === '1') return;
+                drivers.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.userId ?? d.UserId;
+                    opt.textContent = d.name ?? d.Name;
+                    sel.appendChild(opt);
+                });
+                sel.dataset.filled = '1';
+            });
+        }
+
+        fillSelects().catch(() => {});
+
+        document.querySelectorAll('.btn-assign-courier').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const box = btn.closest('.courier-assign');
+                const orderId = box?.dataset.orderid;
+                const driverUserId = box?.querySelector('.courier-select')?.value;
+                if (!orderId || !driverUserId) {
+                    window.showToast?.('پیک را انتخاب کنید', 'error');
+                    return;
+                }
+                const res = await fetch('@Url.Action("AssignDriver", "Home")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: `orderId=${orderId}&driverUserId=${driverUserId}`
+                });
+                const data = await res.json();
+                window.showToast?.(data.message || (data.success ? 'انجام شد' : 'خطا'), data.success ? 'success' : 'error');
+                if (data.success) location.reload();
+            });
+        });
+
+        document.querySelectorAll('.btn-unassign-courier').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const box = btn.closest('.courier-assign');
+                const orderId = box?.dataset.orderid;
+                if (!orderId) return;
+                const res = await fetch('@Url.Action("UnassignDriver", "Home")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: `orderId=${orderId}`
+                });
+                const data = await res.json();
+                window.showToast?.(data.message || (data.success ? 'انجام شد' : 'خطا'), data.success ? 'success' : 'error');
+                if (data.success) location.reload();
+            });
+        });
+    })();
 </script>

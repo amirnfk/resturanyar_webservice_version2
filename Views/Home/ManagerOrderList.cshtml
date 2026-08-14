@@ -160,7 +160,7 @@
 
 
 
-    <div id="ordersContainer" class="orders-scroll">
+    <div id="ordersContainer" class="orders-scroll" data-restaurant-id="@(ViewBag.RestaurantId)">
 
         @await Html.PartialAsync("_ManagerOrdersPartial", Model)
 
@@ -173,6 +173,7 @@
 @section Scripts {
 
     <script src="~/js/jalalidatepicker.min.js"></script>
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
 
     <script>
 
@@ -190,6 +191,19 @@
 
             window._managerOrderListAbortController = new AbortController();
             var signal = window._managerOrderListAbortController.signal;
+
+            if (window._managerOrderHubReloadTimer) {
+                clearTimeout(window._managerOrderHubReloadTimer);
+                window._managerOrderHubReloadTimer = null;
+            }
+
+            if (window._managerOrderHub) {
+                try { window._managerOrderHub.stop(); } catch (e) { /* ignore */ }
+                window._managerOrderHub = null;
+            }
+
+            var currentOrdersUrl = window.location.pathname + window.location.search;
+            var restaurantId = ordersContainer.getAttribute('data-restaurant-id') || '';
 
 
 
@@ -293,6 +307,8 @@
                         'X-Orders-Partial': 'true'
                     }
                 });
+                if (!res.ok) return;
+                currentOrdersUrl = url;
                 var html = await res.text();
                 var doc = new DOMParser().parseFromString(html, 'text/html');
                 doc.querySelectorAll('style, link[rel="stylesheet"], script[src]').forEach(function (node) {
@@ -312,6 +328,59 @@
 
                 setTimeout(initializeDatepickers, 100);
 
+            }
+
+            function isBlockingUiOpen() {
+                var receipt = document.getElementById('receiptChargeModal');
+                if (receipt && receipt.style.display && receipt.style.display !== 'none') {
+                    return true;
+                }
+                return !!document.querySelector('.modal.show');
+            }
+
+            function scheduleOrdersReload() {
+                if (window._managerOrderHubReloadTimer) {
+                    clearTimeout(window._managerOrderHubReloadTimer);
+                }
+                window._managerOrderHubReloadTimer = setTimeout(function () {
+                    window._managerOrderHubReloadTimer = null;
+                    if (isBlockingUiOpen()) {
+                        scheduleOrdersReload();
+                        return;
+                    }
+                    loadOrders(currentOrdersUrl);
+                }, 400);
+            }
+
+            function connectOrderHub() {
+                if (!restaurantId || typeof signalR === 'undefined') return;
+
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl('/orderHub?restaurantId=' + encodeURIComponent(restaurantId))
+                    .withAutomaticReconnect()
+                    .build();
+
+                connection.on('ReceiveOrderUpdate', function () {
+                    scheduleOrdersReload();
+                });
+
+                connection.start()
+                    .then(function () {
+                        return connection.invoke('JoinRestaurantGroup', String(restaurantId));
+                    })
+                    .catch(function () { /* keep page usable without live updates */ });
+
+                window._managerOrderHub = connection;
+                signal.addEventListener('abort', function () {
+                    if (window._managerOrderHubReloadTimer) {
+                        clearTimeout(window._managerOrderHubReloadTimer);
+                        window._managerOrderHubReloadTimer = null;
+                    }
+                    try { connection.stop(); } catch (e) { /* ignore */ }
+                    if (window._managerOrderHub === connection) {
+                        window._managerOrderHub = null;
+                    }
+                });
             }
 
 
@@ -421,6 +490,8 @@
 
 
             initializeDatepickers();
+
+            connectOrderHub();
 
         }
 

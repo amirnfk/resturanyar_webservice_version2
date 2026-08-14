@@ -87,11 +87,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    function copyPasswordPhoneToOtp() {
+        if (!passwordPhoneInput || !otpPhoneInput) return;
+        const phone = toEnglishDigits(passwordPhoneInput.value || "").replace(/\s+/g, "").trim();
+        if (phone) {
+            otpPhoneInput.value = phone;
+        }
+        otpPhoneInput.focus();
+    }
+
     btnSwitchToOtp.addEventListener("click", function (e) {
         e.preventDefault();
         passwordSection.classList.add("d-none");
         otpSection.classList.remove("d-none");
         document.querySelector("#passwordForm .alert")?.remove();
+        copyPasswordPhoneToOtp();
     });
 
     btnSwitchToRegister.addEventListener("click", function (e) {
@@ -99,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
         passwordSection.classList.add("d-none");
         otpSection.classList.remove("d-none");
         document.querySelector("#passwordForm .alert")?.remove();
+        copyPasswordPhoneToOtp();
     });
 
     btnSwitchToPassword.addEventListener("click", function (e) {

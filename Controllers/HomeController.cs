@@ -15,6 +15,8 @@ using resturanyar.Models.ViewModels;
 using resturanyar.Models.ViewModels.DashboardStat;
 using resturanyar.Utility;
 using Resturanyar.Data;
+using Resturanyar.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
@@ -34,6 +36,7 @@ namespace resturanyar.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly resturanyar.Services.Receipt.IReceiptService _receiptService;
         private readonly resturanyar.Services.Inventory.IInventoryService _inventoryService;
+        private readonly IHubContext<OrderHub> _hubContext;
 
         public HomeController(
             AppDbContext context,
@@ -41,7 +44,8 @@ namespace resturanyar.Controllers
             IConfiguration configuration,
             IWebHostEnvironment env,
             resturanyar.Services.Receipt.IReceiptService receiptService,
-            resturanyar.Services.Inventory.IInventoryService inventoryService)
+            resturanyar.Services.Inventory.IInventoryService inventoryService,
+            IHubContext<OrderHub> hubContext)
         {
             _context = context;
             _logger = logger;
@@ -49,6 +53,7 @@ namespace resturanyar.Controllers
             _env = env;
             _receiptService = receiptService;
             _inventoryService = inventoryService;
+            _hubContext = hubContext;
         }
         public IActionResult Manage(int restaurantId)
         {
@@ -638,6 +643,8 @@ namespace resturanyar.Controllers
                     PublicMenuToken = Guid.NewGuid().ToString("N"),
                     ReceiptChargesEnabled = true,
                     ReceiptChargesEnabledAt = DateTime.Now,
+                    EnableTakeaway = true,
+                    EnableDelivery = true,
                 };
                 _context.Restaurants.Add(restaurant);
                 _context.SaveChanges(); // ذخیره تا ID رستوران تولید شود
@@ -647,7 +654,8 @@ namespace resturanyar.Controllers
         {
             new User { name = "waiter1", role_id = 2, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, order_management_permission = true },
             new User { name = "chief1", role_id = 3, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, kitchen_management_permission = true },
-            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true }
+            new User { name = "cashier1", role_id = 4, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, payment_management_permission = true },
+            new User { name = "delivery1", role_id = 5, password = EncodePassword("123456"), restaurant_id = restaurant.restaurant_id, delivery_management_permission = true }
         };
                 _context.Users.AddRange(defaultUsers);
                 _context.SaveChanges();
@@ -928,7 +936,11 @@ namespace resturanyar.Controllers
                     name = name,
                     password = password, // هش کردن در محیط واقعی
                     role_id = role_id,
-                    restaurant_id = restaurantId.Value
+                    restaurant_id = restaurantId.Value,
+                    order_management_permission = role_id == 2,
+                    kitchen_management_permission = role_id == 3,
+                    payment_management_permission = role_id == 4,
+                    delivery_management_permission = role_id == 5
                 };
 
                 _context.Users.Add(user);
@@ -1827,8 +1839,53 @@ namespace resturanyar.Controllers
                 .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
 
             ViewBag.ReceiptChargesEnabled = restaurant?.ReceiptChargesEnabled == true;
+            ViewBag.EnableTakeaway = restaurant?.EnableTakeaway == true;
+            ViewBag.EnableDelivery = restaurant?.EnableDelivery == true;
+            ViewBag.FulfillmentOrdersGlobalEnabled = HttpContext.RequestServices
+                .GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>()
+                .IsGlobalEnabled();
 
             return View(items);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetFulfillmentSettings(
+            bool enableTakeaway,
+            bool enableDelivery,
+            bool autoAssignDeliveryDriver,
+            int? defaultDeliveryDriverUserId)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId.Value);
+            if (restaurant == null)
+                return NotFound();
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var validation = await courierService.ValidateFulfillmentDriverSettingsAsync(
+                restaurantId.Value, enableDelivery, autoAssignDeliveryDriver, defaultDeliveryDriverUserId);
+            if (!validation.Valid)
+            {
+                TempData["Success"] = null;
+                TempData["Error"] = validation.Message;
+                return RedirectToAction(nameof(RestaurantSetting));
+            }
+
+            restaurant.EnableTakeaway = enableTakeaway;
+            restaurant.EnableDelivery = enableDelivery;
+            restaurant.AutoAssignDeliveryDriver = autoAssignDeliveryDriver;
+            restaurant.DefaultDeliveryDriverUserId = autoAssignDeliveryDriver
+                ? defaultDeliveryDriverUserId
+                : restaurant.DefaultDeliveryDriverUserId;
+            restaurant.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "تنظیمات بیرون‌بر/ارسال ذخیره شد.";
+            return RedirectToAction(nameof(RestaurantSetting));
         }
 
 
@@ -1894,6 +1951,7 @@ namespace resturanyar.Controllers
             }
 
             ViewBag.RestaurantName = restaurant.name;
+            ViewBag.RestaurantId = restaurantId.Value;
             ViewBag.ReceiptChargesEnabled = restaurant.ReceiptChargesEnabled;
 
             var statusMap = new Dictionary<int, string>
@@ -1985,7 +2043,8 @@ namespace resturanyar.Controllers
 
             var orders = await query
                  .Include(o => o.Customer)
-                .OrderByDescending(o => o.CreatedAt)
+                .OrderByDescending(o => o.UpdatedAt)
+                .ThenByDescending(o => o.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(o => new OrderDto
@@ -2000,6 +2059,15 @@ namespace resturanyar.Controllers
                     CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
+                    AssignedDriverUserId = o.Fulfillment != null ? o.Fulfillment.AssignedDriverUserId : null,
+                    AssignedDriverName = o.Fulfillment != null && o.Fulfillment.AssignedDriver != null
+                        ? o.Fulfillment.AssignedDriver.name
+                        : null,
+                    DeliveryFailureReason = o.Fulfillment != null ? o.Fulfillment.DeliveryFailureReason : null,
+                    DeliveryFailedAt = o.Fulfillment != null ? o.Fulfillment.DeliveryFailedAt : null,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -2095,7 +2163,26 @@ namespace resturanyar.Controllers
             var previousStatusId = order.StatusId;
             order.StatusId = newStatusId;
             order.UpdatedAt = DateTime.Now;
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+
+            if (previousStatusId == 5 && newStatusId == 6)
+            {
+                var fulfillment = await _context.OrderFulfillments.FirstOrDefaultAsync(f => f.OrderId == orderId);
+                if (fulfillment != null)
+                {
+                    courierService.ClearFailureFields(fulfillment);
+                    fulfillment.UpdatedAt = DateTime.UtcNow;
+                }
+            }
+
             await _context.SaveChangesAsync();
+
+            if (await courierService.TryAutoAssignDefaultDriverAsync(
+                    orderId, restaurantId.Value, previousStatusId, newStatusId))
+            {
+                await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, null, "driver assigned");
+            }
 
             object? receiptData = null;
             try
@@ -2138,7 +2225,64 @@ namespace resturanyar.Controllers
                 _logger.LogWarning(ex, "Inventory auto-deduct failed for order {OrderId}", orderId);
             }
 
+            await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, newStatusId, "وضعیت سفارش به‌روز شد");
+
             return Json(new { success = true, message = "وضعیت با موفقیت به‌روز شد.", newStatusId, receipt = receiptData });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListDrivers()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.ListDriversAsync(restaurantId.Value);
+            return Json(new { success = result.Ok, message = result.Message, data = result.Drivers });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignDriver(int orderId, int driverUserId)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.AssignDriverAsync(orderId, restaurantId.Value, driverUserId);
+            if (result.Ok)
+                await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, null, "driver assigned");
+            return Json(new { success = result.Ok, message = result.Message });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnassignDriver(int orderId)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.UnassignDriverAsync(orderId, restaurantId.Value);
+            if (result.Ok)
+                await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, null, "driver unassigned");
+            return Json(new { success = result.Ok, message = result.Message });
+        }
+
+        private async Task TryNotifyOrderUpdateAsync(int restaurantId, int orderId, int? newStatusId, string message)
+        {
+            try
+            {
+                await _hubContext.Clients.Group(restaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId, newStatusId, message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "SignalR order update failed for order {OrderId}", orderId);
+            }
         }
 
         [HttpGet]
@@ -2219,6 +2363,19 @@ namespace resturanyar.Controllers
          StatusId = o.StatusId,
          CreatedAt = o.CreatedAt,
          Description = o.Description,
+         OrderType = (byte)o.OrderType,
+         AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+         PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+         CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
+         AssignedDriverUserId = o.Fulfillment != null ? o.Fulfillment.AssignedDriverUserId : null,
+         AssignedDriverName = o.Fulfillment != null && o.Fulfillment.AssignedDriver != null
+             ? o.Fulfillment.AssignedDriver.name
+             : null,
+         DeliveryFailureReason = o.Fulfillment != null ? o.Fulfillment.DeliveryFailureReason : null,
+         DeliveryFailedAt = o.Fulfillment != null ? o.Fulfillment.DeliveryFailedAt : null,
+         CustomerId = o.CustomerId,
+         CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
+         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
          OrderItems = o.OrderItems.Select(oi => new OrderItemDto
          {
              OrderItemId = oi.OrderItemId,
@@ -2252,6 +2409,7 @@ namespace resturanyar.Controllers
             };
 
             ViewBag.OrderTotals = orderTotals;
+            ViewBag.RestaurantId = restaurantId.Value;
 
             return View("CashierDashboard", vm);
 
@@ -2327,6 +2485,19 @@ namespace resturanyar.Controllers
                     StatusId = o.StatusId,
                     CreatedAt = o.CreatedAt,
                     Description = o.Description,
+                    OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
+                    AssignedDriverUserId = o.Fulfillment != null ? o.Fulfillment.AssignedDriverUserId : null,
+                    AssignedDriverName = o.Fulfillment != null && o.Fulfillment.AssignedDriver != null
+                        ? o.Fulfillment.AssignedDriver.name
+                        : null,
+                    DeliveryFailureReason = o.Fulfillment != null ? o.Fulfillment.DeliveryFailureReason : null,
+                    DeliveryFailedAt = o.Fulfillment != null ? o.Fulfillment.DeliveryFailedAt : null,
+                    CustomerId = o.CustomerId,
+                    CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
+                    CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -2506,6 +2677,17 @@ namespace resturanyar.Controllers
             ViewBag.RestaurantId = restaurantId.Value;
             ViewBag.RestaurantName = restaurant.name ?? string.Empty;
             ViewBag.RestaurantCode = restaurant.restaurant_code ?? string.Empty;
+            ViewBag.EnableTakeaway = restaurant.EnableTakeaway;
+            ViewBag.EnableDelivery = restaurant.EnableDelivery;
+            ViewBag.AutoAssignDeliveryDriver = restaurant.AutoAssignDeliveryDriver;
+            ViewBag.DefaultDeliveryDriverUserId = restaurant.DefaultDeliveryDriverUserId;
+            ViewBag.FulfillmentOrdersGlobalEnabled = HttpContext.RequestServices
+                .GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>()
+                .IsGlobalEnabled();
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var driversResult = await courierService.ListDriversAsync(restaurantId.Value);
+            ViewBag.DeliveryDrivers = driversResult.Drivers ?? new List<resturanyar.Services.Fulfillment.DriverListItemDto>();
 
             var menuUrl = !string.IsNullOrWhiteSpace(restaurant.PublicMenuToken)
                 ? PublicMenuQrHelper.BuildMenuUrl(Url, Request, restaurant.PublicMenuToken)

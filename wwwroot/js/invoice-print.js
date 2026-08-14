@@ -19,7 +19,7 @@ function formatPersianMoney(value) {
 
 function buildInvoiceHtml({ restaurant, orderNumber, tableNumber, orderStatus,
     createdAt, updatedAt, description, items, totalText,
-    customerName, customerMobile, now }) {
+    customerName, customerMobile, now, orderType, orderTypeLabel, deliveryAddress }) {
 
     const css = `
         :root {
@@ -160,6 +160,9 @@ function buildInvoiceHtml({ restaurant, orderNumber, tableNumber, orderStatus,
         }
     `;
 
+    const type = Number(orderType) || 0;
+    const typeLabel = orderTypeLabel || (type === 2 ? 'ارسال' : type === 1 ? 'بیرون‌بر' : '');
+
     const itemRows = (items || []).map(item => {
         const priceText = String(item.price || '').replace(/,/g, '');
         const originalText = String(item.originalPrice || '').replace(/,/g, '');
@@ -202,7 +205,9 @@ function buildInvoiceHtml({ restaurant, orderNumber, tableNumber, orderStatus,
         </div>
         <div class="body">
             <div class="info-grid">
-                <div class="info-item"><span class="label">میز</span><span class="value">${toPersianDigits(tableNumber) || '—'}</span></div>
+                ${type === 0 ? `<div class="info-item"><span class="label">میز</span><span class="value">${toPersianDigits(tableNumber) || '—'}</span></div>` : ''}
+                ${type === 1 || type === 2 ? `<div class="info-item"><span class="label">نوع سفارش</span><span class="value">${escapeHtml(typeLabel)}</span></div>` : ''}
+                ${deliveryAddress ? `<div class="info-item"><span class="label">آدرس</span><span class="value">${escapeHtml(deliveryAddress)}</span></div>` : ''}
                 <div class="info-item"><span class="label">وضعیت</span><span class="value">${escapeHtml(orderStatus)}</span></div>
                 <div class="info-item"><span class="label">تاریخ ثبت</span><span class="value">${toPersianDigits(createdAt)}</span></div>
                 ${updatedAt ? `<div class="info-item"><span class="label">آخرین تغییر</span><span class="value">${toPersianDigits(updatedAt)}</span></div>` : ''}
@@ -227,6 +232,7 @@ function buildInvoiceHtml({ restaurant, orderNumber, tableNumber, orderStatus,
             <div class="customer">
                 ${customerName ? `<div><strong>مشتری:</strong> ${escapeHtml(customerName)}</div>` : ''}
                 ${customerMobile ? `<div><strong>تلفن:</strong> ${toPersianDigits(customerMobile)}</div>` : ''}
+                ${deliveryAddress ? `<div><strong>آدرس:</strong> ${escapeHtml(deliveryAddress)}</div>` : ''}
             </div>
 
             <div class="footer">

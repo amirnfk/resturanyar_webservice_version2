@@ -347,12 +347,13 @@ namespace resturanyar.Services.Receipt
                     """;
 
             var customerBlock = "";
-            if (!string.IsNullOrWhiteSpace(receipt.CustomerName) || !string.IsNullOrWhiteSpace(receipt.CustomerMobile))
+            if (!string.IsNullOrWhiteSpace(receipt.CustomerName) || !string.IsNullOrWhiteSpace(receipt.CustomerMobile) || !string.IsNullOrWhiteSpace(receipt.DeliveryAddress))
             {
                 customerBlock = $"""
                     <div class="customer">
                         {(string.IsNullOrWhiteSpace(receipt.CustomerName) ? "" : $"<div class=\"chip\"><strong>مشتری:</strong> {Escape(receipt.CustomerName)}</div>")}
                         {(string.IsNullOrWhiteSpace(receipt.CustomerMobile) ? "" : $"<div class=\"chip\"><strong>تلفن:</strong> {ToFa(receipt.CustomerMobile)}</div>")}
+                        {(string.IsNullOrWhiteSpace(receipt.DeliveryAddress) ? "" : $"<div class=\"chip\"><strong>آدرس:</strong> {Escape(receipt.DeliveryAddress)}</div>")}
                     </div>
                     """;
             }
@@ -367,6 +368,10 @@ namespace resturanyar.Services.Receipt
 
             var issuedAtText = receipt.IssuedAt.HasValue
                 ? $"<div class=\"info-item\"><span class=\"label\">زمان صدور</span><span class=\"value\">{Escape(receipt.IssuedAt.Value.ToPersianDateTimeTehran())}</span></div>"
+                : "";
+
+            var tableInfoItem = receipt.OrderType == OrderTypeKind.DineIn
+                ? $"<div class=\"info-item\"><span class=\"label\">میز</span><span class=\"value\">{(string.IsNullOrWhiteSpace(receipt.TableNumber) ? "—" : ToFa(receipt.TableNumber))}</span></div>"
                 : "";
 
             return $"""
@@ -400,8 +405,9 @@ namespace resturanyar.Services.Receipt
                         </div>
                         <div class="body">
                             <div class="info-grid">
-                                <div class="info-item"><span class="label">میز</span><span class="value">{(string.IsNullOrWhiteSpace(receipt.TableNumber) ? "—" : ToFa(receipt.TableNumber))}</span></div>
+                                {tableInfoItem}
                                 <div class="info-item"><span class="label">نوع سفارش</span><span class="value">{Escape(receipt.OrderTypeLabel)}</span></div>
+                                {(string.IsNullOrWhiteSpace(receipt.DeliveryAddress) ? "" : $"<div class=\"info-item\"><span class=\"label\">آدرس</span><span class=\"value\">{Escape(receipt.DeliveryAddress)}</span></div>")}
                                 <div class="info-item"><span class="label">وضعیت</span><span class="value">{Escape(receipt.OrderStatus)}</span></div>
                                 <div class="info-item"><span class="label">تاریخ ثبت</span><span class="value">{ToFa(receipt.CreatedAt)}</span></div>
                                 {(string.IsNullOrWhiteSpace(receipt.UpdatedAt) ? "" : $"<div class=\"info-item\"><span class=\"label\">آخرین تغییر</span><span class=\"value\">{ToFa(receipt.UpdatedAt)}</span></div>")}

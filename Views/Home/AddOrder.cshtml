@@ -8,54 +8,53 @@
     <link rel="stylesheet" href="~/css/add-order.css" asp-append-version="true" />
 }
 
-<div class="container food-page order-page mt-4">
-    <div class="row">
+<div class="container-fluid food-page order-page order-page--v2 px-3 px-xl-4 py-3">
+    <div class="row order-layout-row g-3 g-xl-4">
 
         <!-- Food List Column -->
-        <div class="col-lg-8">
-            <div class="food-toolbar mb-3">
-                <div class="row g-2 align-items-center">
-                    <div class="col-12 col-md-4">
-                        <input id="searchBox" type="text" class="form-control form-control-sm" placeholder="جستجو..." />
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <select id="filterCategory" class="form-select form-select-sm">
-                            <option value="">همه دسته‌ها</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <select id="filterAvailability" class="form-select form-select-sm">
-                            <option value="">همه وضعیت‌ها</option>
-                            <option value="true">موجود</option>
-                            <option value="false">ناموجود</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <select id="sortBy" class="form-select form-select-sm">
-                            <option value="newest">جدیدترین</option>
-                            <option value="name-asc">نام (الف تا ی)</option>
-                            <option value="name-desc">نام (ی تا الف)</option>
-                            <option value="price-asc">قیمت (کم به زیاد)</option>
-                            <option value="price-desc">قیمت (زیاد به کم)</option>
-                            <option value="discount-desc">بیشترین تخفیف</option>
-                        </select>
-                    </div>
+        <div class="col-lg-8 order-food-col">
+            <div class="food-toolbar">
+                <div class="food-toolbar__search">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="searchBox" type="text" class="form-control" placeholder="جستجوی غذا..." autocomplete="off" />
+                </div>
+                <div class="food-toolbar__filters">
+                    <select id="filterCategory" class="form-select">
+                        <option value="">همه دسته‌ها</option>
+                    </select>
+                    <select id="filterAvailability" class="form-select">
+                        <option value="">همه</option>
+                        <option value="true">موجود</option>
+                        <option value="false">ناموجود</option>
+                    </select>
+                    <select id="sortBy" class="form-select">
+                        <option value="newest">جدیدترین</option>
+                        <option value="name-asc">نام (الف تا ی)</option>
+                        <option value="name-desc">نام (ی تا الف)</option>
+                        <option value="price-asc">قیمت ↑</option>
+                        <option value="price-desc">قیمت ↓</option>
+                        <option value="discount-desc">تخفیف</option>
+                    </select>
                 </div>
             </div>
 
             @if (!Model.Any())
             {
-                <div class="alert alert-warning text-center">غذایی برای نمایش وجود ندارد.</div>
+                <div class="order-empty-state">
+                    <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+                    <p>غذایی برای نمایش وجود ندارد.</p>
+                </div>
             }
             else
             {
-                <div class="row" id="foodList">
+                <div class="row g-2 g-md-3" id="foodList">
                     @foreach (var item in Model)
                     {
                         var hasDiscount = item.DiscountPrice > 0 && item.DiscountPrice != item.Price;
                         var discountPercent = hasDiscount ? (int)Math.Round(((item.Price - item.DiscountPrice) / item.Price) * 100) : 0;
                         var unavailableClass = item.IsAvailable ? "" : "is-unavailable";
-                        <div class="col-6 col-md-4 col-lg-3 mb-3 food-card-item"
+                        var sellPrice = item.DiscountPrice > 0 ? item.DiscountPrice : item.Price;
+                        <div class="col-6 col-md-4 col-xl-3 food-card-item"
                              data-id="@item.FoodItemId"
                              data-name="@item.Name"
                              data-description="@item.Description"
@@ -65,56 +64,53 @@
                              data-discountprice="@item.DiscountPrice"
                              data-isavailable="@item.IsAvailable"
                              data-image="@(item.ImageUrl ?? "")">
-                            <div class="food-card h-100 @unavailableClass">
+                            <div class="food-card @unavailableClass"
+                                 role="button"
+                                 tabindex="@(item.IsAvailable ? "0" : "-1")"
+                                 data-id="@item.FoodItemId"
+                                 data-name="@item.Name"
+                                 data-price="@sellPrice">
                                 <div class="food-img-wrap">
                                     <img src="@(string.IsNullOrWhiteSpace(item.ImageUrl) ? placeholder : item.ImageUrl)"
-                                         class="food-img" loading="lazy"
+                                         class="food-img" loading="lazy" alt=""
                                          onerror="this.onerror=null;this.src='@placeholder';" />
                                     @if (hasDiscount)
                                     {
-                                        <span class="ribbon">@discountPercent% تخفیف</span>
+                                        <span class="ribbon">@discountPercent٪</span>
                                     }
                                     @if (!item.IsAvailable)
                                     {
                                         <div class="unavailable-overlay">
-                                            <i class="fa-solid fa-circle-xmark"></i>
                                             <span>ناموجود</span>
                                         </div>
                                     }
+                                    else
+                                    {
+                                        <button type="button" class="food-quick-add add-to-cart-btn"
+                                                data-id="@item.FoodItemId"
+                                                data-name="@item.Name"
+                                                data-price="@sellPrice"
+                                                aria-label="افزودن @item.Name">
+                                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                    }
                                 </div>
                                 <div class="food-body">
+                                    <span class="food-cat">@item.CategoryName</span>
                                     <h5 class="food-title">@item.Name</h5>
-                                    <p class="food-desc">@item.Description</p>
-                                    <div class="mb-2">
-                                        <span class="chip"><i class="fa-solid fa-folder ms-1"></i> @item.CategoryName</span>
-                                        @if (!item.IsAvailable)
-                                        {
-                                            <span class="badge bg-danger badge-availability ms-1">ناموجود</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success badge-availability ms-1">موجود</span>
-                                        }
+                                    <div class="food-meta">
+                                        <div class="price-area">
+                                            @if (hasDiscount)
+                                            {
+                                                <span class="price-old">@item.Price.ToString("N0")</span>
+                                                <span class="price-new">@sellPrice.ToString("N0") <small>تومان</small></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="price-new">@sellPrice.ToString("N0") <small>تومان</small></span>
+                                            }
+                                        </div>
                                     </div>
-                                    <div class="price-area">
-                                        @if (hasDiscount)
-                                        {
-                                            <span class="price-old">@item.Price.ToString("N0") تومان</span>
-                                            <span class="price-new">@item.DiscountPrice.ToString("N0") تومان</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="price-new">@item.Price.ToString("N0") تومان</span>
-                                        }
-                                    </div>
-                                </div>
-                                <div class="food-footer">
-                                    <button class="btn btn-primary add-to-cart-btn"
-                                            data-id="@item.FoodItemId"
-                                            data-name="@item.Name"
-                                            data-price="@(item.DiscountPrice > 0 ? item.DiscountPrice : item.Price)">
-                                        افزودن به سفارش
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -124,53 +120,115 @@
         </div>
 
         <!-- Desktop cart sidebar -->
-        <div class="col-lg-4">
-            <div class="cart-sidebar">
-                <h4 class="cart-title"><i class="fa-solid fa-cart-shopping ms-1"></i> سفارش جاری</h4>
-                <div id="cart-items-container">
-                    <div class="empty-cart">سبد خرید خالی است</div>
+        <div class="col-lg-4 order-cart-col d-none d-lg-block">
+            <aside class="cart-sidebar">
+                <div class="cart-sidebar__head">
+                    <div>
+                        <h4 class="cart-title">سفارش جاری</h4>
+                        <p class="cart-subtitle">آیتم‌ها را انتخاب کنید و ثبت کنید</p>
+                    </div>
+                    <span class="cart-count-pill" id="desktopCartCount">۰</span>
                 </div>
-                <div class="mb-3 mt-3">
-                    <label class="form-label">انتخاب میز <span class="text-danger">*</span></label>
-                    <select id="tableSelect" class="form-select" required>
-                        <option value="">-- انتخاب میز --</option>
-                    </select>
-                    <small class="text-muted" id="tableSeatsInfo"></small>
+
+                <div id="cart-items-container" class="cart-items-panel">
+                    <div class="empty-cart">
+                        <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+                        <span>سبد خالی است</span>
+                        <small>از لیست غذاها اضافه کنید</small>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">مشتری </label>
-                    <div class="customer-search-wrapper">
-                        <div class="input-group">
-                            <input type="text" id="desktopCustomerSearch" class="form-control"
-                                   placeholder="شماره موبایل یا نام ..." autocomplete="off">
-                            <button class="btn btn-new-customer" type="button"
-                                    data-bs-toggle="modal" data-bs-target="#newCustomerModal"
-                                    data-context="desktop">
-                                <i class="bi bi-person-plus"></i> مشتری جدید
+
+                <div class="cart-checkout">
+                    <div class="cart-checkout__title">جزئیات سفارش</div>
+
+                    <div class="mb-3" id="orderTypeSection">
+                        <label class="form-label">نوع سفارش</label>
+                        <div class="order-type-chips" id="orderTypeChips" role="radiogroup" aria-label="نوع سفارش">
+                            <button type="button" class="order-type-chip is-active" data-order-type="0" aria-pressed="true">
+                                <span class="order-type-chip__icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>
+                                <span class="order-type-chip__title">سالن</span>
+                            </button>
+                            <button type="button" class="order-type-chip d-none" data-order-type="1" data-requires="takeaway" aria-pressed="false">
+                                <span class="order-type-chip__icon"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span>
+                                <span class="order-type-chip__title">بیرون‌بر</span>
+                            </button>
+                            <button type="button" class="order-type-chip d-none" data-order-type="2" data-requires="delivery" aria-pressed="false">
+                                <span class="order-type-chip__icon"><i class="fa-solid fa-motorcycle" aria-hidden="true"></i></span>
+                                <span class="order-type-chip__title">ارسال</span>
                             </button>
                         </div>
-                        <div class="search-spinner" id="desktopSearchSpinner"></div>
-                        <div id="desktopCustomerSearchResults" class="customer-search-results"></div>
+                        <select id="orderTypeSelect" class="visually-hidden" tabindex="-1" aria-hidden="true">
+                            <option value="0" selected>سالن</option>
+                        </select>
                     </div>
-                    <input type="hidden" id="desktopSelectedCustomerId">
-                    <div id="desktopSelectedCustomerInfo" class="mt-2"></div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">توضیحات</label>
-                    <textarea id="orderDescription" class="form-control" rows="2" placeholder="..."></textarea>
-                </div>
-                <button id="submitOrderBtn" class="btn btn-primary w-100 py-2">نهایی کردن سفارش</button>
-                <div id="orderEstimateBox" class="order-estimate-card" style="display:none;" aria-live="polite">
-                    <div class="order-estimate-card__icon" aria-hidden="true">
-                        <i class="fa-solid fa-receipt"></i>
+
+                    <div class="mb-3" id="tableSelectSection">
+                        <label class="form-label">میز <span class="text-danger" id="tableRequiredMark">*</span></label>
+                        <select id="tableSelect" class="form-select" required>
+                            <option value="">انتخاب میز</option>
+                        </select>
+                        <small class="text-muted" id="tableSeatsInfo"></small>
                     </div>
-                    <div class="order-estimate-card__content">
-                        <span class="order-estimate-card__label">برآورد مبلغ نهایی</span>
-                        <strong id="orderEstimateAmount" class="order-estimate-card__amount"></strong>
-                        <span id="orderEstimateMeta" class="order-estimate-card__meta"></span>
+
+                    <div class="mb-3">
+                        <label class="form-label">مشتری <span class="text-danger d-none" id="customerRequiredMark">*</span></label>
+                        <div class="customer-search-wrapper">
+                            <div class="input-group">
+                                <input type="text" id="desktopCustomerSearch" class="form-control"
+                                       placeholder="موبایل یا نام..." autocomplete="off">
+                                <button class="btn btn-new-customer" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#newCustomerModal"
+                                        data-context="desktop" title="مشتری جدید">
+                                    <i class="bi bi-person-plus"></i>
+                                </button>
+                            </div>
+                            <div class="search-spinner" id="desktopSearchSpinner"></div>
+                            <div id="desktopCustomerSearchResults" class="customer-search-results"></div>
+                        </div>
+                        <input type="hidden" id="desktopSelectedCustomerId">
+                        <div id="desktopSelectedCustomerInfo" class="mt-2"></div>
+                    </div>
+
+                    <div class="mb-3 d-none" id="addressSection">
+                        <label class="form-label">آدرس ارسال <span class="text-danger">*</span></label>
+                        <div id="selectedAddressInfo" class="d-none"></div>
+                        <div id="addressPickerPanel">
+                            <select id="addressSelect" class="form-select mb-2">
+                                <option value="">انتخاب آدرس ذخیره‌شده</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-primary w-100 mb-2" id="btnOpenAddressForm">
+                                <i class="fa-solid fa-plus ms-1"></i> ثبت آدرس جدید برای مشتری
+                            </button>
+                            <div class="address-or-divider"><span>یا فقط برای این سفارش</span></div>
+                            <textarea id="addressText" class="form-control mb-2" rows="2" placeholder="خیابان، کوچه، پلاک..."></textarea>
+                            <button type="button" class="btn btn-sm btn-outline-primary w-100" id="btnUseCustomAddress">
+                                <i class="fa-solid fa-check ms-1"></i> انتخاب این آدرس
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">توضیحات</label>
+                        <textarea id="orderDescription" class="form-control" rows="2" placeholder="اختیاری..."></textarea>
                     </div>
                 </div>
-            </div>
+
+                <div class="cart-sidebar__footer">
+                    <button id="submitOrderBtn" class="btn btn-primary w-100 btn-submit-order">
+                        <i class="fa-solid fa-circle-check ms-1"></i> ثبت سفارش
+                    </button>
+                    <div id="orderEstimateBox" class="order-estimate-card" style="display:none;" aria-live="polite">
+                        <div class="order-estimate-card__icon" aria-hidden="true">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="order-estimate-card__content">
+                            <span class="order-estimate-card__label">برآورد مبلغ نهایی</span>
+                            <strong id="orderEstimateAmount" class="order-estimate-card__amount"></strong>
+                            <span id="orderEstimateMeta" class="order-estimate-card__meta"></span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
 </div>
@@ -192,17 +250,44 @@
     </div>
     <div class="offcanvas-body d-flex flex-column">
         <div id="offcanvas-cart-items-container">
-            <div class="empty-cart">سبد خرید خالی است</div>
+            <div class="empty-cart">
+                <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+                <span>سبد خالی است</span>
+                <small>از لیست غذاها اضافه کنید</small>
+            </div>
         </div>
-        <div class="mt-3 mb-3">
-            <label class="form-label">انتخاب میز <span class="text-danger">*</span></label>
+        <div class="mt-3 mb-3" id="offcanvasOrderTypeSection">
+            <label class="form-label fw-semibold">نوع سفارش</label>
+            <div class="order-type-chips" id="offcanvasOrderTypeChips" role="radiogroup" aria-label="نوع سفارش">
+                <button type="button" class="order-type-chip is-active" data-order-type="0" aria-pressed="true">
+                    <span class="order-type-chip__icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>
+                    <span class="order-type-chip__title">سالن</span>
+                    <span class="order-type-chip__hint">صرف در رستوران</span>
+                </button>
+                <button type="button" class="order-type-chip d-none" data-order-type="1" data-requires="takeaway" aria-pressed="false">
+                    <span class="order-type-chip__icon"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span>
+                    <span class="order-type-chip__title">بیرون‌بر</span>
+                    <span class="order-type-chip__hint">تحویل حضوری</span>
+                </button>
+                <button type="button" class="order-type-chip d-none" data-order-type="2" data-requires="delivery" aria-pressed="false">
+                    <span class="order-type-chip__icon"><i class="fa-solid fa-motorcycle" aria-hidden="true"></i></span>
+                    <span class="order-type-chip__title">ارسال</span>
+                    <span class="order-type-chip__hint">پیک / ارسال</span>
+                </button>
+            </div>
+            <select id="offcanvasOrderTypeSelect" class="visually-hidden" tabindex="-1" aria-hidden="true">
+                <option value="0" selected>سالن</option>
+            </select>
+        </div>
+        <div class="mt-3 mb-3" id="offcanvasTableSelectSection">
+            <label class="form-label">انتخاب میز <span class="text-danger" id="offcanvasTableRequiredMark">*</span></label>
             <select id="offcanvasTableSelect" class="form-select" required>
                 <option value="">-- انتخاب میز --</option>
             </select>
             <small class="text-muted" id="offcanvasTableSeatsInfo"></small>
         </div>
         <div class="mb-3">
-            <label class="form-label fw-semibold">مشتری (اختیاری)</label>
+            <label class="form-label fw-semibold">مشتری (اختیاری) <span class="text-danger d-none" id="offcanvasCustomerRequiredMark">*</span></label>
             <div class="customer-search-wrapper">
                 <div class="input-group">
                     <input type="text" id="offcanvasCustomerSearch" class="form-control"
@@ -218,6 +303,25 @@
             </div>
             <input type="hidden" id="offcanvasSelectedCustomerId">
             <div id="offcanvasSelectedCustomerInfo" class="mt-2"></div>
+        </div>
+        <div class="mb-3 d-none" id="offcanvasAddressSection">
+            <label class="form-label fw-semibold">آدرس ارسال <span class="text-danger">*</span></label>
+
+            <div id="offcanvasSelectedAddressInfo" class="d-none"></div>
+
+            <div id="offcanvasAddressPickerPanel">
+                <select id="offcanvasAddressSelect" class="form-select mb-2">
+                    <option value="">انتخاب آدرس ذخیره‌شده</option>
+                </select>
+                <button type="button" class="btn btn-sm btn-primary w-100 mb-2" id="offcanvasBtnOpenAddressForm">
+                    <i class="fa-solid fa-plus ms-1"></i> ثبت آدرس جدید برای مشتری
+                </button>
+                <div class="address-or-divider"><span>یا فقط برای این سفارش</span></div>
+                <textarea id="offcanvasAddressText" class="form-control mb-2" rows="2" placeholder="خیابان، کوچه، پلاک..."></textarea>
+                <button type="button" class="btn btn-sm btn-outline-primary w-100" id="offcanvasBtnUseCustomAddress">
+                    <i class="fa-solid fa-check ms-1"></i> انتخاب این آدرس
+                </button>
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label">توضیحات (اختیاری)</label>
@@ -257,6 +361,90 @@
     </div>
 </div>
 
+<!-- ثبت آدرس مشتری (همان جزئیات CustomersList) -->
+<div class="modal fade" id="orderAddressModal" tabindex="-1" aria-labelledby="orderAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content order-addr-modal">
+            <div class="modal-header order-addr-modal__header">
+                <div class="flex-grow-1 pe-2">
+                    <h5 class="modal-title fw-bold mb-1" id="orderAddressModalLabel">
+                        <i class="fas fa-map-location-dot text-primary me-1"></i> ثبت آدرس جدید
+                    </h5>
+                    <div class="order-addr-customer-chip">
+                        <div class="chip-avatar"><i class="fas fa-user"></i></div>
+                        <div>
+                            <div class="chip-name" id="orderAddrCustomerName">—</div>
+                            <div class="chip-mobile" id="orderAddrCustomerMobile">—</div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div class="addr-form-panel order-addr-form-panel">
+                    <div class="addr-form-title">
+                        <i class="fas fa-pen-to-square"></i>
+                        <span>جزئیات آدرس</span>
+                    </div>
+                    <form id="orderAddressForm" autocomplete="off">
+                        <div class="mb-3">
+                            <label class="form-label" for="orderAddrTitle">عنوان آدرس</label>
+                            <input type="text" id="orderAddrTitle" class="form-control" placeholder="مثلاً خانه، محل کار، شعبه شمال" maxlength="100" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="orderAddrText">متن آدرس <span class="text-danger">*</span></label>
+                            <textarea id="orderAddrText" class="form-control" rows="3" placeholder="خیابان، کوچه، پلاک و جزئیات کامل..." required></textarea>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label class="form-label" for="orderAddrPlate">پلاک</label>
+                                <input type="text" id="orderAddrPlate" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="orderAddrFloor">طبقه</label>
+                                <input type="text" id="orderAddrFloor" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" for="orderAddrUnit">واحد</label>
+                                <input type="text" id="orderAddrUnit" class="form-control" placeholder="—" maxlength="10" />
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2 d-none" aria-hidden="true">
+                            <div class="col-6">
+                                <label class="form-label" for="orderAddrLat">عرض جغرافیایی</label>
+                                <input type="number" step="any" id="orderAddrLat" class="form-control" placeholder="اختیاری" dir="ltr" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" for="orderAddrLng">طول جغرافیایی</label>
+                                <input type="number" step="any" id="orderAddrLng" class="form-control" placeholder="اختیاری" dir="ltr" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="orderAddrDescription">یادداشت (اختیاری)</label>
+                            <input type="text" id="orderAddrDescription" class="form-control" placeholder="مثلاً زنگ طبقه ۲ را بزنید" maxlength="200" />
+                        </div>
+
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" id="orderAddrIsDefault" />
+                            <label class="form-check-label fw-semibold" for="orderAddrIsDefault">آدرس پیش‌فرض مشتری</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer order-addr-modal__footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" id="btnSaveOrderAddress">
+                    <i class="fas fa-check me-1"></i> ذخیره آدرس
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 @section Scripts {
@@ -267,13 +455,320 @@
     var API_BASE      = "/api/v2/UserApi";
     var   restaurantId  = @(ViewBag.RestaurantId ?? 0);
     var receiptChargesEnabled = @(ViewBag.ReceiptChargesEnabled == true ? "true" : "false");
+    var enableTakeaway = @(ViewBag.EnableTakeaway == true ? "true" : "false");
+    var enableDelivery = @(ViewBag.EnableDelivery == true ? "true" : "false");
+    var fulfillmentGlobalEnabled = @(ViewBag.FulfillmentOrdersGlobalEnabled == true ? "true" : "false");
 
     var cart               = [];
     var selectedCustomerId = null;
+    var selectedCustomerMobile = null;
+    var selectedCustomerName = null;
+    var selectedAddressId  = null;
+    var selectedAddressText = null;
+    var addressesCache = [];
     var activeModalContext = 'desktop';
     var isSubmittingOrder  = false;
     var isSubmittingCustomer = false;
     var currentSearchXhr   = null;
+    var orderAddressModalInstance = null;
+
+    function getSelectedOrderType() {
+        return parseInt($('#orderTypeSelect').val() || '0', 10) || 0;
+    }
+
+    function setOrderTypeChipActive(type) {
+        type = String(type);
+        $('.order-type-chip').each(function() {
+            var isActive = String($(this).data('order-type')) === type;
+            $(this).toggleClass('is-active', isActive).attr('aria-pressed', isActive ? 'true' : 'false');
+        });
+    }
+
+    function syncOrderTypeControls(sourceId) {
+        var val = $(sourceId).val();
+        $('#orderTypeSelect, #offcanvasOrderTypeSelect').val(val);
+        setOrderTypeChipActive(val);
+        applyOrderTypeUi();
+    }
+
+    function applyOrderTypeUi() {
+        var type = getSelectedOrderType();
+        var isDineIn = type === 0;
+        var isDelivery = type === 2;
+
+        setOrderTypeChipActive(type);
+        $('#tableSelectSection, #offcanvasTableSelectSection').toggle(isDineIn);
+        $('#tableSelect, #offcanvasTableSelect').prop('required', isDineIn);
+        $('#addressSection, #offcanvasAddressSection').toggleClass('d-none', !isDelivery);
+        $('#customerRequiredMark, #offcanvasCustomerRequiredMark').toggleClass('d-none', !isDelivery);
+
+        if (!isDineIn) {
+            $('#tableSelect, #offcanvasTableSelect').val('');
+            $('#tableSeatsInfo, #offcanvasTableSeatsInfo').text('');
+        }
+        if (!isDelivery) {
+            clearSelectedAddress(true);
+        } else if (selectedCustomerId) {
+            loadCustomerAddresses(selectedCustomerId);
+        }
+    }
+
+    function buildSelectedAddressCardHtml(title, text, isCustom, metaHtml) {
+        var badge = isCustom
+            ? '<span class="selected-address-badge">دستی</span>'
+            : '<span class="selected-address-badge is-saved">ذخیره‌شده</span>';
+        return `<div class="selected-address-card">
+            <div class="selected-address-card__icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></div>
+            <div class="selected-address-card__body">
+                <div class="selected-address-card__top">
+                    <strong class="selected-address-card__title">${escapeHtml(title || 'آدرس')}</strong>
+                    ${badge}
+                </div>
+                <div class="selected-address-card__text">${escapeHtml(text || '')}</div>
+                ${metaHtml || ''}
+                <div class="small text-muted mt-1"><i class="fa-solid fa-circle-check ms-1"></i> انتخاب شده</div>
+            </div>
+            <button type="button" class="btn-change-address">تغییر</button>
+        </div>`;
+    }
+
+    function buildAddressMetaHtml(addr) {
+        if (!addr) return '';
+        var chips = [];
+        var unit = addr.unit ?? addr.Unit;
+        var floor = addr.floor ?? addr.Floor;
+        var plate = addr.plateNumber ?? addr.PlateNumber;
+        if (unit) chips.push(`<span class="addr-meta-chip">واحد ${escapeHtml(unit)}</span>`);
+        if (floor) chips.push(`<span class="addr-meta-chip">طبقه ${escapeHtml(floor)}</span>`);
+        if (plate) chips.push(`<span class="addr-meta-chip">پلاک ${escapeHtml(plate)}</span>`);
+        if (addr.isDefault ?? addr.IsDefault) {
+            chips.push('<span class="addr-meta-chip addr-meta-chip--default">پیش‌فرض</span>');
+        }
+        if (!chips.length) return '';
+        return `<div class="addr-meta selected-address-card__meta">${chips.join('')}</div>`;
+    }
+
+    function parseOptionalNumber(val) {
+        if (val == null || String(val).trim() === '') return null;
+        var n = Number(val);
+        return Number.isFinite(n) ? n : null;
+    }
+
+    function resetOrderAddressForm() {
+        $('#orderAddrTitle').val('');
+        $('#orderAddrText').val('');
+        $('#orderAddrUnit').val('');
+        $('#orderAddrFloor').val('');
+        $('#orderAddrPlate').val('');
+        $('#orderAddrLat').val('');
+        $('#orderAddrLng').val('');
+        $('#orderAddrDescription').val('');
+        $('#orderAddrIsDefault').prop('checked', !addressesCache.length);
+    }
+
+    function openOrderAddressForm() {
+        if (!selectedCustomerId) {
+            showToast('ابتدا مشتری را انتخاب کنید.', 'error');
+            return;
+        }
+        $('#orderAddrCustomerName').text(selectedCustomerName || 'مشتری');
+        $('#orderAddrCustomerMobile').text(selectedCustomerMobile || '—');
+        resetOrderAddressForm();
+        var el = document.getElementById('orderAddressModal');
+        if (!el) return;
+        orderAddressModalInstance = bootstrap.Modal.getOrCreateInstance(el);
+        orderAddressModalInstance.show();
+    }
+
+    async function saveOrderCustomerAddress() {
+        if (!selectedCustomerId) {
+            showToast('ابتدا مشتری را انتخاب کنید.', 'error');
+            return;
+        }
+        var addressText = ($('#orderAddrText').val() || '').trim();
+        if (!addressText) {
+            showToast('متن آدرس الزامی است.', 'error');
+            return;
+        }
+
+        var payload = {
+            customerId: parseInt(selectedCustomerId, 10),
+            title: ($('#orderAddrTitle').val() || '').trim() || 'آدرس',
+            addressText: addressText,
+            unit: ($('#orderAddrUnit').val() || '').trim().substring(0, 10) || '',
+            floor: ($('#orderAddrFloor').val() || '').trim().substring(0, 10) || '',
+            plateNumber: ($('#orderAddrPlate').val() || '').trim().substring(0, 10) || '',
+            isDefault: $('#orderAddrIsDefault').prop('checked') === true,
+            description: ($('#orderAddrDescription').val() || '').trim() || ''
+        };
+        var lat = parseOptionalNumber($('#orderAddrLat').val());
+        var lng = parseOptionalNumber($('#orderAddrLng').val());
+        if (lat != null) payload.latitude = lat;
+        if (lng != null) payload.longitude = lng;
+
+        var $btn = $('#btnSaveOrderAddress').prop('disabled', true);
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/addaddress`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            var res = {};
+            try { res = await response.json(); } catch (_) { res = {}; }
+            if (response.ok && res.success) {
+                showToast(res.message || 'آدرس ذخیره شد', 'success');
+                selectedAddressId = res.addressId ? String(res.addressId) : selectedAddressId;
+                selectedAddressText = null;
+                if (orderAddressModalInstance) orderAddressModalInstance.hide();
+                await loadCustomerAddresses(selectedCustomerId);
+            } else {
+                showToast(res.message || res.detail || ('ذخیره آدرس ناموفق بود' + (response.status ? ` (${response.status})` : '')), 'error');
+            }
+        } catch (e) {
+            showToast('خطا در ذخیره آدرس', 'error');
+        } finally {
+            $btn.prop('disabled', false);
+        }
+    }
+
+    function showAddressPicker() {
+        $('#addressPickerPanel, #offcanvasAddressPickerPanel').removeClass('d-none');
+        $('#selectedAddressInfo, #offcanvasSelectedAddressInfo').addClass('d-none').empty();
+    }
+
+    function hideAddressPicker() {
+        $('#addressPickerPanel, #offcanvasAddressPickerPanel').addClass('d-none');
+    }
+
+    function renderSelectedAddressCard(title, text, isCustom, metaHtml) {
+        var html = buildSelectedAddressCardHtml(title, text, isCustom, metaHtml);
+        $('#selectedAddressInfo, #offcanvasSelectedAddressInfo').html(html).removeClass('d-none');
+        hideAddressPicker();
+    }
+
+    function clearSelectedAddress(resetFields) {
+        selectedAddressId = null;
+        selectedAddressText = null;
+        $('#selectedAddressInfo, #offcanvasSelectedAddressInfo').addClass('d-none').empty();
+        showAddressPicker();
+        if (resetFields) {
+            $('#addressSelect, #offcanvasAddressSelect').val('');
+            $('#addressText, #offcanvasAddressText').val('');
+        }
+    }
+
+    function applySelectedSavedAddress(addressId) {
+        if (!addressId) {
+            clearSelectedAddress(false);
+            return;
+        }
+        var found = addressesCache.find(function(a) {
+            return String(a.addressId ?? a.AddressId) === String(addressId);
+        });
+        selectedAddressId = String(addressId);
+        selectedAddressText = null;
+        $('#addressSelect, #offcanvasAddressSelect').val(String(addressId));
+        $('#addressText, #offcanvasAddressText').val('');
+        if (found) {
+            renderSelectedAddressCard(
+                found.title ?? found.Title ?? 'آدرس',
+                found.addressText ?? found.AddressText ?? '',
+                false,
+                buildAddressMetaHtml(found)
+            );
+        } else {
+            var label = $('#addressSelect option:selected').text() || 'آدرس';
+            renderSelectedAddressCard('آدرس', label, false);
+        }
+    }
+
+    function applySelectedCustomAddress(text) {
+        text = (text || '').trim();
+        if (!text) {
+            showToast('متن آدرس را وارد کنید.', 'error');
+            return false;
+        }
+        selectedAddressId = null;
+        selectedAddressText = text;
+        $('#addressSelect, #offcanvasAddressSelect').val('');
+        $('#addressText, #offcanvasAddressText').val(text);
+        renderSelectedAddressCard('آدرس دستی', text, true);
+        return true;
+    }
+
+    function initOrderTypeOptions() {
+        var $selects = $('#orderTypeSelect, #offcanvasOrderTypeSelect');
+        $selects.find('option:not([value="0"])').remove();
+
+        var showTakeaway = fulfillmentGlobalEnabled && enableTakeaway;
+        var showDelivery = fulfillmentGlobalEnabled && enableDelivery;
+
+        $('.order-type-chip[data-requires="takeaway"]').toggleClass('d-none', !showTakeaway);
+        $('.order-type-chip[data-requires="delivery"]').toggleClass('d-none', !showDelivery);
+
+        if (showTakeaway) {
+            $selects.append('<option value="1">بیرون‌بر</option>');
+        }
+        if (showDelivery) {
+            $selects.append('<option value="2">ارسال</option>');
+        }
+
+        // Layout: 1 / 2 / 3 visible chips
+        var visibleCount = 1 + (showTakeaway ? 1 : 0) + (showDelivery ? 1 : 0);
+        $('.order-type-chips').attr('data-count', String(visibleCount));
+
+        $('#orderTypeSection, #offcanvasOrderTypeSection').show();
+        $selects.val('0');
+        setOrderTypeChipActive(0);
+        applyOrderTypeUi();
+    }
+
+    async function loadCustomerAddresses(customerId) {
+        if (!customerId) return;
+        var keepId = selectedAddressId;
+        var options = '<option value="">انتخاب آدرس ذخیره‌شده</option>';
+        addressesCache = [];
+        $('#addressSelect, #offcanvasAddressSelect').html(options);
+        clearSelectedAddress(true);
+        try {
+            const response = await window.fetchWithAuth(`${API_BASE}/getaddresses/${customerId}`);
+            const res = await response.json();
+            if (res.success && Array.isArray(res.data) && res.data.length) {
+                addressesCache = res.data;
+                res.data.forEach(function(a) {
+                    var id = a.addressId ?? a.AddressId;
+                    var title = a.title ?? a.Title ?? '';
+                    var text = a.addressText ?? a.AddressText ?? '';
+                    var bits = [];
+                    if (title) bits.push(title);
+                    if (text) bits.push(text);
+                    var unit = a.unit ?? a.Unit;
+                    var floor = a.floor ?? a.Floor;
+                    var plate = a.plateNumber ?? a.PlateNumber;
+                    var extras = [];
+                    if (unit) extras.push('واحد ' + unit);
+                    if (floor) extras.push('طبقه ' + floor);
+                    if (plate) extras.push('پلاک ' + plate);
+                    var label = bits.join(' — ');
+                    if (extras.length) label += ' (' + extras.join('، ') + ')';
+                    if (a.isDefault ?? a.IsDefault) label = '★ ' + label;
+                    options += `<option value="${id}">${escapeHtml(label)}</option>`;
+                });
+                $('#addressSelect, #offcanvasAddressSelect').html(options);
+
+                var defaultAddr = res.data.find(function(a) { return !!(a.isDefault ?? a.IsDefault); });
+                if (keepId && res.data.some(function(a) { return String(a.addressId ?? a.AddressId) === String(keepId); })) {
+                    applySelectedSavedAddress(keepId);
+                } else if (defaultAddr) {
+                    applySelectedSavedAddress(defaultAddr.addressId ?? defaultAddr.AddressId);
+                }
+            } else if (!res.success) {
+                console.warn('getaddresses failed', res.message || response.status);
+            }
+        } catch (e) {
+            console.warn('load addresses failed', e);
+        }
+    }
 
     // ══════════════════════════════════════════════════════════
     //  HELPERS
@@ -313,9 +808,41 @@
         return num.toLocaleString('en-US');
     }
 
+    var orderEstimateHideTimer = null;
+    var orderEstimateFadeTimer = null;
+    var ORDER_ESTIMATE_VISIBLE_MS = 6000;
+
+    function clearOrderEstimateTimers() {
+        if (orderEstimateHideTimer) {
+            clearTimeout(orderEstimateHideTimer);
+            orderEstimateHideTimer = null;
+        }
+        if (orderEstimateFadeTimer) {
+            clearTimeout(orderEstimateFadeTimer);
+            orderEstimateFadeTimer = null;
+        }
+    }
+
     function hideOrderEstimate() {
         var box = document.getElementById('orderEstimateBox');
-        if (box) box.style.display = 'none';
+        clearOrderEstimateTimers();
+        if (!box) return;
+        box.classList.remove('is-hiding');
+        box.style.display = 'none';
+    }
+
+    function scheduleHideOrderEstimate() {
+        clearOrderEstimateTimers();
+        orderEstimateHideTimer = setTimeout(function () {
+            orderEstimateHideTimer = null;
+            var box = document.getElementById('orderEstimateBox');
+            if (!box || box.style.display === 'none') return;
+            box.classList.add('is-hiding');
+            orderEstimateFadeTimer = setTimeout(function () {
+                orderEstimateFadeTimer = null;
+                hideOrderEstimate();
+            }, 450);
+        }, ORDER_ESTIMATE_VISIBLE_MS);
     }
 
     function showOrderEstimate(orderId, grandTotal) {
@@ -325,7 +852,9 @@
         if (!box || !amountEl || !metaEl) return;
         amountEl.textContent = formatMoney(grandTotal) + ' تومان';
         metaEl.textContent = 'سفارش #' + orderId + ' · با احتساب هزینه و مالیات · تا صدور فاکتور تقریبی است';
+        box.classList.remove('is-hiding');
         box.style.display = 'flex';
+        scheduleHideOrderEstimate();
     }
 
     async function fetchEstimatedPayableTotal(orderId) {
@@ -371,6 +900,11 @@
 
     function selectCustomer(id, mobile, name) {
         selectedCustomerId = id;
+        selectedCustomerMobile = mobile || '';
+        selectedCustomerName = name || '';
+        selectedAddressId = null;
+        selectedAddressText = null;
+        addressesCache = [];
         const nameHtml = name ? ` - ${escapeHtml(name)}` : '';
         $.each(CONTEXTS, function(ctx, sel) {
             $(sel.hiddenId).val(id);
@@ -386,10 +920,23 @@
             $(sel.resultsId).empty().hide();
             $(sel.spinnerId).hide();
         });
+
+        // Load saved addresses whenever a customer is chosen for delivery orders
+        if (getSelectedOrderType() === 2) {
+            loadCustomerAddresses(id);
+        } else {
+            clearSelectedAddress(true);
+            $('#addressSelect, #offcanvasAddressSelect').html('<option value="">انتخاب آدرس ذخیره‌شده</option>');
+        }
     }
 
     function resetCustomer() {
         selectedCustomerId = null;
+        selectedCustomerMobile = null;
+        selectedCustomerName = null;
+        addressesCache = [];
+        clearSelectedAddress(true);
+        $('#addressSelect, #offcanvasAddressSelect').html('<option value="">انتخاب آدرس ذخیره‌شده</option>');
         $.each(CONTEXTS, function(ctx, sel) {
             $(sel.hiddenId).val('');
             $(sel.infoId).empty();
@@ -414,7 +961,10 @@
 
         $(sel.searchId).off('input' + ns).on('input' + ns, function() {
             clearTimeout(debounceTimer);
-            var val = $(this).val();
+            var val = toEnglishDigits($(this).val() || '');
+            if (val !== $(this).val()) {
+                $(this).val(val);
+            }
             if (!val.trim()) {
                 $(sel.resultsId).empty().hide();
                 $(sel.spinnerId).hide();
@@ -446,6 +996,7 @@
 
     async function doSearch(context, query) {
         var sel = CONTEXTS[context];
+        query = toEnglishDigits(query || '').trim();
         // Increment counter to ignore old responses
         const currentSearchId = ++searchCounter;
         $(sel.spinnerId).show();
@@ -576,7 +1127,12 @@
         function buildHtml(container) {
             if (!$(container).length) return;
             if (!cart.length) {
-                $(container).html('<div class="empty-cart">سبد خرید خالی است</div>');
+                $(container).html(
+                    `<div class="empty-cart">
+                        <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+                        <span>سبد خالی است</span>
+                        <small>از لیست غذاها اضافه کنید</small>
+                    </div>`);
                 return;
             }
             var html = '<div class="cart-items-list">';
@@ -588,15 +1144,19 @@
                         <small>${item.price.toLocaleString()} تومان</small>
                     </div>
                     <div class="cart-item-actions">
-                        <input type="number" min="1" value="${item.quantity}" class="cart-qty" data-idx="${idx}">
-                        <button class="remove-item-btn" data-idx="${idx}" aria-label="حذف"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="qty-stepper" role="group" aria-label="تعداد">
+                            <button type="button" class="qty-btn qty-minus" data-idx="${idx}" aria-label="کاهش">−</button>
+                            <span class="qty-value">${item.quantity}</span>
+                            <button type="button" class="qty-btn qty-plus" data-idx="${idx}" aria-label="افزایش">+</button>
+                        </div>
+                        <button type="button" class="remove-item-btn" data-idx="${idx}" aria-label="حذف"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
-                    <div class="cart-item-total ms-2 fw-bold">${itemTotal.toLocaleString()} تومان</div>
+                    <div class="cart-item-total">${itemTotal.toLocaleString()} <small>تومان</small></div>
                 </div>`;
             });
-            html += `<div class="cart-total d-flex justify-content-between">
-                        <span>جمع کل:</span>
-                        <span>${cartTotal.toLocaleString()} تومان</span>
+            html += `<div class="cart-total">
+                        <span>جمع اقلام</span>
+                        <strong>${cartTotal.toLocaleString()} <small>تومان</small></strong>
                      </div>`;
             $(container).html(html);
         }
@@ -605,12 +1165,22 @@
         buildHtml('#offcanvas-cart-items-container');
         $('#mobileCartCount').text(itemCount);
         $('#mobileCartTotal').text(cartTotal.toLocaleString());
+        $('#desktopCartCount').text(itemCount);
     }
 
     function addToCart(id, name, price) {
+        id = parseInt(id, 10);
+        price = parseFloat(price);
         var existing = cart.find(function(i){ return i.id === id; });
         if (existing) existing.quantity++;
         else cart.push({ id: id, name: name, price: price, quantity: 1 });
+        renderCart();
+    }
+
+    function changeCartQty(idx, delta) {
+        if (!cart[idx]) return;
+        cart[idx].quantity += delta;
+        if (cart[idx].quantity < 1) cart.splice(idx, 1);
         renderCart();
     }
 
@@ -623,7 +1193,7 @@
             const response = await window.fetchWithAuth(`${API_BASE}/gettablesbyrestaurant/${restaurantId}`);
             if (!response.ok) throw new Error('Failed to load tables');
             const data = await response.json();
-            var base = '<option value="">-- انتخاب میز --</option>';
+            var base = '<option value="">انتخاب میز</option>';
             if (data.tables && data.tables.length) {
                 var opts = '';
                 data.tables.forEach(function(t) {
@@ -647,9 +1217,20 @@
     async function submitOrder(tableSelectId, descriptionId, btnElement) {
         if (isSubmittingOrder) return;
 
+        var orderType = getSelectedOrderType();
         var tableName = $(tableSelectId).val();
-        if (!tableName) {
+        if (orderType === 0 && !tableName) {
             showToast('لطفاً یک میز را انتخاب کنید.', 'error');
+            return;
+        }
+        if (orderType === 2 && !selectedCustomerId) {
+            showToast('برای سفارش ارسال، انتخاب مشتری الزامی است.', 'error');
+            return;
+        }
+        var addressId = selectedAddressId || null;
+        var addressText = (selectedAddressText || '').trim();
+        if (orderType === 2 && !addressId && !addressText) {
+            showToast('برای سفارش ارسال، آدرس را انتخاب کنید.', 'error');
             return;
         }
         if (!cart.length) {
@@ -657,23 +1238,31 @@
             return;
         }
 
+        if (orderType === 1 && !tableName) tableName = 'بیرون‌بر';
+        if (orderType === 2 && !tableName) tableName = 'پیک';
+
         isSubmittingOrder = true;
         var $btn = $(btnElement);
         var originalHtml = $btn.html();
         $btn.html('<span class="spinner-border spinner-border-sm me-1"></span> در حال ثبت...').prop('disabled', true);
 
         try {
+            var payload = {
+                restaurantId: restaurantId,
+                tableNumber:  tableName,
+                statusId:     3,
+                orderType:    orderType,
+                description:  $(descriptionId).val().trim(),
+                items:        cart.map(function(i){ return { foodItemId: i.id, quantity: i.quantity }; }),
+                customerId:   selectedCustomerId
+            };
+            if (addressId) payload.customerAddressId = parseInt(addressId, 10);
+            if (addressText) payload.addressText = addressText;
+
             const response = await window.fetchWithAuth(`${API_BASE}/createOrder`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    restaurantId: restaurantId,
-                    tableNumber:  tableName,
-                    statusId:     3,
-                    description:  $(descriptionId).val().trim(),
-                    items:        cart.map(function(i){ return { foodItemId: i.id, quantity: i.quantity }; }),
-                    customerId:   selectedCustomerId
-                })
+                body: JSON.stringify(payload)
             });
             const res = await response.json();
             if (res.success) {
@@ -687,6 +1276,9 @@
                 $('#tableSelect, #offcanvasTableSelect').val('');
                 $('#tableSeatsInfo, #offcanvasTableSeatsInfo').text('');
                 $('#orderDescription, #offcanvasOrderDescription').val('');
+                $('#orderTypeSelect, #offcanvasOrderTypeSelect').val('0');
+                setOrderTypeChipActive(0);
+                applyOrderTypeUi();
                 var oc = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
                 if (oc) oc.hide();
             } else {
@@ -804,21 +1396,37 @@
                 clearCustomerForContext($(this).data('context'));
             })
             .off('click.addOrder', '.add-to-cart-btn')
-            .on('click.addOrder', '.add-to-cart-btn', function() {
-                addToCart(parseInt($(this).data('id')), $(this).data('name'), parseFloat($(this).data('price')));
+            .on('click.addOrder', '.add-to-cart-btn', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                addToCart(parseInt($(this).data('id'), 10), $(this).data('name'), parseFloat($(this).data('price')));
             })
-            .off('change.addOrder', '.cart-qty')
-            .on('change.addOrder', '.cart-qty', function() {
-                var idx = parseInt($(this).data('idx'));
-                var val = parseInt($(this).val());
-                if (isNaN(val) || val < 1) cart.splice(idx, 1);
-                else cart[idx].quantity = val;
-                renderCart();
+            .off('click.addOrder', '.food-card:not(.is-unavailable)')
+            .on('click.addOrder', '.food-card:not(.is-unavailable)', function(e) {
+                if ($(e.target).closest('.add-to-cart-btn').length) return;
+                addToCart(parseInt($(this).data('id'), 10), $(this).data('name'), parseFloat($(this).data('price')));
+            })
+            .off('keydown.addOrder', '.food-card:not(.is-unavailable)')
+            .on('keydown.addOrder', '.food-card:not(.is-unavailable)', function(e) {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                addToCart(parseInt($(this).data('id'), 10), $(this).data('name'), parseFloat($(this).data('price')));
+            })
+            .off('click.addOrder', '.qty-plus')
+            .on('click.addOrder', '.qty-plus', function() {
+                changeCartQty(parseInt($(this).data('idx'), 10), 1);
+            })
+            .off('click.addOrder', '.qty-minus')
+            .on('click.addOrder', '.qty-minus', function() {
+                changeCartQty(parseInt($(this).data('idx'), 10), -1);
             })
             .off('click.addOrder', '.remove-item-btn')
             .on('click.addOrder', '.remove-item-btn', function() {
-                cart.splice(parseInt($(this).data('idx')), 1);
-                renderCart();
+                var idx = parseInt($(this).data('idx'), 10);
+                if (!isNaN(idx)) {
+                    cart.splice(idx, 1);
+                    renderCart();
+                }
             })
             .off('change.addOrder', '#tableSelect')
             .on('change.addOrder', '#tableSelect', function() {
@@ -829,6 +1437,50 @@
             .on('change.addOrder', '#offcanvasTableSelect', function() {
                 var seats = $(this).find(':selected').data('seats');
                 $('#offcanvasTableSeatsInfo').text(seats ? 'تعداد صندلی‌ها: ' + seats : '');
+            })
+            .off('change.addOrder', '#orderTypeSelect')
+            .on('change.addOrder', '#orderTypeSelect', function() { syncOrderTypeControls('#orderTypeSelect'); })
+            .off('change.addOrder', '#offcanvasOrderTypeSelect')
+            .on('change.addOrder', '#offcanvasOrderTypeSelect', function() { syncOrderTypeControls('#offcanvasOrderTypeSelect'); })
+            .off('click.addOrder', '.order-type-chip')
+            .on('click.addOrder', '.order-type-chip', function() {
+                if ($(this).hasClass('d-none')) return;
+                var type = String($(this).data('order-type'));
+                $('#orderTypeSelect, #offcanvasOrderTypeSelect').val(type);
+                setOrderTypeChipActive(type);
+                applyOrderTypeUi();
+            })
+            .off('change.addOrder', '#addressSelect')
+            .on('change.addOrder', '#addressSelect', function() {
+                var val = $(this).val();
+                $('#offcanvasAddressSelect').val(val);
+                if (val) applySelectedSavedAddress(val);
+                else clearSelectedAddress(false);
+            })
+            .off('change.addOrder', '#offcanvasAddressSelect')
+            .on('change.addOrder', '#offcanvasAddressSelect', function() {
+                var val = $(this).val();
+                $('#addressSelect').val(val);
+                if (val) applySelectedSavedAddress(val);
+                else clearSelectedAddress(false);
+            })
+            .off('click.addOrder', '#btnUseCustomAddress, #offcanvasBtnUseCustomAddress')
+            .on('click.addOrder', '#btnUseCustomAddress, #offcanvasBtnUseCustomAddress', function() {
+                var isOffcanvas = this.id === 'offcanvasBtnUseCustomAddress';
+                var text = (isOffcanvas ? $('#offcanvasAddressText').val() : $('#addressText').val() || '').trim();
+                applySelectedCustomAddress(text);
+            })
+            .off('click.addOrder', '#btnOpenAddressForm, #offcanvasBtnOpenAddressForm')
+            .on('click.addOrder', '#btnOpenAddressForm, #offcanvasBtnOpenAddressForm', function() {
+                openOrderAddressForm();
+            })
+            .off('click.addOrder', '#btnSaveOrderAddress')
+            .on('click.addOrder', '#btnSaveOrderAddress', function() {
+                saveOrderCustomerAddress();
+            })
+            .off('click.addOrder', '.btn-change-address')
+            .on('click.addOrder', '.btn-change-address', function() {
+                showAddressPicker();
             });
     }
 
@@ -837,6 +1489,11 @@
 
         cart = [];
         selectedCustomerId = null;
+        selectedCustomerMobile = null;
+        selectedCustomerName = null;
+        selectedAddressId = null;
+        selectedAddressText = null;
+        addressesCache = [];
         isSubmittingOrder = false;
         isSubmittingCustomer = false;
         hideOrderEstimate();
@@ -849,6 +1506,7 @@
         $('#offcanvasSubmitOrderBtn').off('click.addOrder').on('click.addOrder', function() { submitOrder('#offcanvasTableSelect', '#offcanvasOrderDescription', this); });
 
         bindAddOrderEvents();
+        initOrderTypeOptions();
         populateFilterCategories();
         loadTables();
         renderCart();

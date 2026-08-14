@@ -355,6 +355,9 @@ namespace resturanyar.Controllers.Api.V2
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
 
+            if (IsDeliveryOnlyStaff())
+                return StatusCode(403, new { success = false, message = "پیک مجاز به ثبت سفارش نیست." });
+
             if (request.CustomerId.HasValue)
             {
                 var customerExists = await _context.Customers
@@ -365,15 +368,32 @@ namespace resturanyar.Controllers.Api.V2
 
             TryGetStaffUserId(out int staffUserId);
 
+            var restaurant = await _context.Restaurants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId);
+            if (restaurant == null)
+                return NotFound(new { success = false, message = "رستوران یافت نشد." });
+
+            var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+            var prepared = await fulfillmentService.ValidateAndPrepareAsync(
+                request,
+                restaurant.EnableTakeaway,
+                restaurant.EnableDelivery);
+
+            if (!prepared.Success)
+            {
+                if (prepared.StatusCode == 403)
+                    return StatusCode(403, new { success = false, message = prepared.ErrorMessage });
+                return BadRequest(new { success = false, message = prepared.ErrorMessage });
+            }
+
             var order = new Order
             {
                 RestaurantId = request.RestaurantId,
-                TableNumber = request.TableNumber,
+                TableNumber = prepared.ResolvedTableNumber,
                 StatusId = request.StatusId,
                 CustomerId = request.CustomerId,
-                OrderType = request.OrderType.HasValue
-                    ? (OrderTypeKind)request.OrderType.Value
-                    : OrderTypeKind.DineIn,
+                OrderType = prepared.ResolvedOrderType,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 CreatedAtShamsi = DateHelper.ToShamsi(DateTime.Now),
@@ -402,6 +422,9 @@ namespace resturanyar.Controllers.Api.V2
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            if (prepared.Fulfillment != null)
+                await fulfillmentService.AttachFulfillmentAsync(order, prepared.Fulfillment);
+
             try
             {
                 var receiptService = HttpContext.RequestServices.GetRequiredService<IReceiptService>();
@@ -410,7 +433,7 @@ namespace resturanyar.Controllers.Api.V2
             }
             catch { /* best-effort */ }
 
-            int? nextRoleId = GetNextRoleId(request.StatusId);
+            int? nextRoleId = GetNextRoleId(request.StatusId, prepared.ResolvedOrderType);
             if (nextRoleId.HasValue)
             {
                 _context.OrderUpdates.Add(new OrderUpdate
@@ -441,17 +464,31 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("getordersbyrestaurant/{restaurantId}")]
-        public async Task<IActionResult> GetOrdersByRestaurant(int restaurantId)
+        public async Task<IActionResult> GetOrdersByRestaurant(int restaurantId, [FromQuery] bool assignedToMe = false)
         {
             var denied = EnsureRestaurantAccess(restaurantId);
             if (denied != null) return denied;
 
+            TryGetStaffUserId(out int staffUserId);
+
             var statusIds = new List<int> { 9, 10, 11 };
-            var orders = await _context.Orders
+            var query = _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.Fulfillment!)
+                    .ThenInclude(f => f.AssignedDriver)
                 .Include(o => o.OrderItems)
                 .Where(o => o.RestaurantId == restaurantId)
-                .Where(o => !statusIds.Contains(o.StatusId))
+                .Where(o => !statusIds.Contains(o.StatusId));
+
+            if (assignedToMe || IsDeliveryOnlyStaff())
+            {
+                query = query.Where(o =>
+                    o.OrderType == OrderTypeKind.Delivery
+                    && o.Fulfillment != null
+                    && o.Fulfillment.AssignedDriverUserId == staffUserId);
+            }
+
+            var orders = await query
                 .Select(o => new OrderDto
                 {
                     OrderId = o.OrderId,
@@ -466,6 +503,15 @@ namespace resturanyar.Controllers.Api.V2
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
+                    PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
+                    CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
+                    AssignedDriverUserId = o.Fulfillment != null ? o.Fulfillment.AssignedDriverUserId : null,
+                    AssignedDriverName = o.Fulfillment != null && o.Fulfillment.AssignedDriver != null
+                        ? o.Fulfillment.AssignedDriver.name
+                        : null,
+                    DeliveryFailureReason = o.Fulfillment != null ? o.Fulfillment.DeliveryFailureReason : null,
+                    DeliveryFailedAt = o.Fulfillment != null ? o.Fulfillment.DeliveryFailedAt : null,
                     OrderItems = o.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -497,6 +543,8 @@ namespace resturanyar.Controllers.Api.V2
         {
             var order = _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.Fulfillment!)
+                    .ThenInclude(f => f.AssignedDriver)
                 .Include(o => o.OrderItems)
                 .FirstOrDefault(o => o.OrderId == orderId);
 
@@ -505,6 +553,16 @@ namespace resturanyar.Controllers.Api.V2
 
             var denied = EnsureRestaurantAccess(order.RestaurantId);
             if (denied != null) return denied;
+
+            if (IsDeliveryOnlyStaff())
+            {
+                TryGetStaffUserId(out int staffUserId);
+                if (order.OrderType != OrderTypeKind.Delivery
+                    || order.Fulfillment?.AssignedDriverUserId != staffUserId)
+                {
+                    return StatusCode(403, new { success = false, message = "دسترسی به این سفارش مجاز نیست." });
+                }
+            }
 
             var orderDto = new OrderDto
             {
@@ -517,6 +575,14 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerFullName = order.Customer != null ? order.Customer.FullName : null,
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
+                OrderType = (byte)order.OrderType,
+                AddressSnapshot = order.Fulfillment?.AddressSnapshot,
+                PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
+                CustomerNameSnapshot = order.Fulfillment?.CustomerNameSnapshot,
+                AssignedDriverUserId = order.Fulfillment?.AssignedDriverUserId,
+                AssignedDriverName = order.Fulfillment?.AssignedDriver?.name,
+                DeliveryFailureReason = order.Fulfillment?.DeliveryFailureReason,
+                DeliveryFailedAt = order.Fulfillment?.DeliveryFailedAt,
                 OrderItems = order.OrderItems.Select(oi => new OrderItemDto
                 {
                     OrderItemId = oi.OrderItemId,
@@ -535,6 +601,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPut("UpdateOrder/{orderId}")]
         public async Task<IActionResult> UpdateOrder(int orderId, [FromBody] UpdateOrderRequest request)
         {
+            if (IsDeliveryOnlyStaff())
+                return StatusCode(403, new { success = false, message = "پیک مجاز به ویرایش سفارش نیست." });
+
             var order = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderItems)
@@ -563,6 +632,17 @@ namespace resturanyar.Controllers.Api.V2
             if (string.IsNullOrEmpty(order.CreatedAtShamsi))
                 order.CreatedAtShamsi = DateHelper.ToShamsi(order.CreatedAt);
 
+            if (request.CustomerAddressId.HasValue || !string.IsNullOrWhiteSpace(request.AddressText) || request.CustomerId.HasValue)
+            {
+                var fulfillmentService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+                await fulfillmentService.TryUpdateFulfillmentSnapshotsAsync(
+                    order.OrderId,
+                    order.RestaurantId,
+                    request.CustomerId,
+                    request.CustomerAddressId,
+                    request.AddressText);
+            }
+
             _context.OrderItems.RemoveRange(order.OrderItems);
             order.OrderItems = new List<OrderItem>();
             foreach (var item in request.Items)
@@ -582,7 +662,7 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
-            int? nextRoleId = GetNextRoleId(request.StatusId);
+            int? nextRoleId = GetNextRoleId(request.StatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = _context.OrderUpdates
@@ -602,6 +682,14 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             _context.SaveChanges();
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            if (await courierService.TryAutoAssignDefaultDriverAsync(
+                    order.OrderId, order.RestaurantId, oldStatusId, order.StatusId))
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId = order.OrderId, message = "driver assigned" });
+            }
 
             try
             {
@@ -634,6 +722,7 @@ namespace resturanyar.Controllers.Api.V2
                     UpdatedAt = order.UpdatedAt,
                     CustomerId = order.CustomerId,
                     Description = order.Description,
+                    OrderType = (byte)order.OrderType,
                     OrderItems = order.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,
@@ -651,7 +740,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("UpdateOrderStatusWithSignalar/{orderId}")]
         public async Task<IActionResult> UpdateOrderStatusWithSignalR(int orderId, [FromBody] UpdateOrderStatusDto dto)
         {
-            var order = _context.Orders.Find(orderId);
+            var order = _context.Orders
+                .Include(o => o.Fulfillment)
+                .FirstOrDefault(o => o.OrderId == orderId);
             if (order == null)
                 return NotFound(new { success = false, message = "Order not found." });
 
@@ -667,11 +758,25 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
+            TryGetStaffUserId(out int staffUserId);
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var courierCheck = await courierService.ValidateCourierStatusChangeAsync(
+                orderId, order.RestaurantId, staffUserId, IsDeliveryOnlyStaff(),
+                dto.CurrentStatusId, dto.NewStatusId);
+            if (!courierCheck.Allowed)
+                return StatusCode(403, new { success = false, message = courierCheck.Message });
+
             var previousStatusId = order.StatusId;
             order.StatusId = dto.NewStatusId;
             order.UpdatedAt = DateTime.Now;
 
-            int? nextRoleId = GetNextRoleId(dto.NewStatusId);
+            if (previousStatusId == 5 && dto.NewStatusId == 6 && order.Fulfillment != null)
+            {
+                courierService.ClearFailureFields(order.Fulfillment);
+                order.Fulfillment.UpdatedAt = DateTime.UtcNow;
+            }
+
+            int? nextRoleId = GetNextRoleId(dto.NewStatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = _context.OrderUpdates
@@ -691,6 +796,13 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             _context.SaveChanges();
+
+            if (await courierService.TryAutoAssignDefaultDriverAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId))
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId = order.OrderId, message = "driver assigned" });
+            }
 
             object? receiptData = null;
             try
@@ -731,7 +843,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("CheckOrderUpdates")]
-        public IActionResult CheckOrderUpdates(int restaurantId, int role2, int role3, int role4, long lastCheck)
+        public IActionResult CheckOrderUpdates(int restaurantId, int role2, int role3, int role4, long lastCheck, int role5 = 0)
         {
             var denied = EnsureRestaurantAccess(restaurantId);
             if (denied != null) return denied;
@@ -741,11 +853,124 @@ namespace resturanyar.Controllers.Api.V2
                 (
                     (role2 == 1 && u.TargetRoleId == 2) ||
                     (role3 == 1 && u.TargetRoleId == 3) ||
-                    (role4 == 1 && u.TargetRoleId == 4)
+                    (role4 == 1 && u.TargetRoleId == 4) ||
+                    (role5 == 1 && u.TargetRoleId == 5)
                 ) &&
                 u.UpdateTime > lastCheck);
 
             return Ok(new { success = true, hasUpdates });
+        }
+
+        [HttpGet("restaurants/{restaurantId}/drivers")]
+        public async Task<IActionResult> ListDrivers(int restaurantId)
+        {
+            var denied = EnsureRestaurantAccess(restaurantId);
+            if (denied != null) return denied;
+
+            if (User.FindFirst("order_permission")?.Value != "1")
+                return StatusCode(403, new { success = false, message = "دسترسی تخصیص پیک ندارید." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.ListDriversAsync(restaurantId);
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message, data = result.Drivers });
+        }
+
+        [HttpPost("orders/{orderId}/assign-driver")]
+        public async Task<IActionResult> AssignDriver(int orderId, [FromBody] resturanyar.Services.Fulfillment.AssignDriverRequest request)
+        {
+            if (User.FindFirst("order_permission")?.Value != "1")
+                return StatusCode(403, new { success = false, message = "دسترسی تخصیص پیک ندارید." });
+
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.AssignDriverAsync(orderId, order.RestaurantId, request.DriverUserId);
+            if (result.Ok)
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId, message = "driver assigned" });
+            }
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message });
+        }
+
+        [HttpPost("orders/{orderId}/unassign-driver")]
+        public async Task<IActionResult> UnassignDriver(int orderId)
+        {
+            if (User.FindFirst("order_permission")?.Value != "1")
+                return StatusCode(403, new { success = false, message = "دسترسی تخصیص پیک ندارید." });
+
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.UnassignDriverAsync(orderId, order.RestaurantId);
+            if (result.Ok)
+            {
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new { orderId, message = "driver unassigned" });
+            }
+            return StatusCode(result.StatusCode, new { success = result.Ok, message = result.Message });
+        }
+
+        [HttpPost("orders/{orderId}/delivery-failed")]
+        public async Task<IActionResult> ReportDeliveryFailed(int orderId, [FromBody] resturanyar.Services.Fulfillment.DeliveryFailedRequest request)
+        {
+            if (!IsDeliveryOnlyStaff() && User.FindFirst("delivery_permission")?.Value != "1")
+                return StatusCode(403, new { success = false, message = "فقط پیک می‌تواند تحویل ناموفق را گزارش کند." });
+
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            if (!TryGetStaffUserId(out int staffUserId))
+                return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+            var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
+            var result = await courierService.ReportDeliveryFailedAsync(
+                orderId, order.RestaurantId, staffUserId, request?.Reason ?? "", request?.ReasonCode);
+
+            if (result.Ok)
+            {
+                if (result.NewStatusId is 9 or 10)
+                {
+                    await _context.Orders
+                        .Where(o => o.OrderId == orderId && o.StatusId != result.NewStatusId)
+                        .ExecuteUpdateAsync(s => s
+                            .SetProperty(o => o.StatusId, result.NewStatusId)
+                            .SetProperty(o => o.UpdatedAt, DateTime.Now));
+                }
+
+                try
+                {
+                    var inventoryConsumption = HttpContext.RequestServices
+                        .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                    await inventoryConsumption.HandleStatusChangeAsync(
+                        orderId, order.RestaurantId, previousStatusId: 5, result.NewStatusId);
+                }
+                catch { /* best-effort */ }
+
+                await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                    .SendAsync("ReceiveOrderUpdate", new
+                    {
+                        orderId,
+                        message = "delivery failed",
+                        statusId = result.NewStatusId,
+                        newStatusId = result.NewStatusId
+                    });
+            }
+
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Ok,
+                message = result.Message,
+                newStatusId = result.NewStatusId
+            });
         }
 
         public class UpdateOrderStatusDto
@@ -850,6 +1075,107 @@ namespace resturanyar.Controllers.Api.V2
 
             var defs = await GetReceiptService().GetChargeDefinitionsAsync(restaurantId);
             return Ok(new { success = true, data = defs });
+        }
+
+        [HttpGet("getfulfillmentsettings/{restaurantId:int}")]
+        public async Task<IActionResult> GetFulfillmentSettings(int restaurantId)
+        {
+            var denied = EnsureRestaurantAccess(restaurantId);
+            if (denied != null) return denied;
+
+            var restaurant = await _context.Restaurants.AsNoTracking()
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
+            if (restaurant == null)
+                return NotFound(new { success = false, message = "رستوران یافت نشد." });
+
+            var fulfillment = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IOrderFulfillmentService>();
+            return Ok(new
+            {
+                success = true,
+                data = new resturanyar.Models.Fulfillment.FulfillmentSettingsDto
+                {
+                    EnableTakeaway = restaurant.EnableTakeaway,
+                    EnableDelivery = restaurant.EnableDelivery,
+                    GlobalEnabled = fulfillment.IsGlobalEnabled(),
+                    AutoAssignDeliveryDriver = restaurant.AutoAssignDeliveryDriver,
+                    DefaultDeliveryDriverUserId = restaurant.DefaultDeliveryDriverUserId
+                }
+            });
+        }
+
+        [HttpGet("getaddresses/{customerId:int}")]
+        public async Task<IActionResult> GetAddresses(int customerId)
+        {
+            var customer = await _context.Customers.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CustomerId == customerId && c.IsActive);
+            if (customer == null)
+                return NotFound(new { success = false, message = "مشتری یافت نشد." });
+
+            var denied = EnsureRestaurantAccess(customer.RestaurantId);
+            if (denied != null) return denied;
+
+            var addresses = await _context.CustomerAddresses.AsNoTracking()
+                .Where(a => a.CustomerId == customerId)
+                .OrderByDescending(a => a.IsDefault)
+                .ThenByDescending(a => a.UpdatedAt)
+                .Select(a => new
+                {
+                    a.AddressId,
+                    a.Title,
+                    a.AddressText,
+                    a.Unit,
+                    a.Floor,
+                    a.PlateNumber,
+                    a.Latitude,
+                    a.Longitude,
+                    a.IsDefault,
+                    a.Description,
+                    a.CreatedAt,
+                    a.UpdatedAt
+                })
+                .ToListAsync();
+
+            return Ok(new { success = true, data = addresses });
+        }
+
+        [HttpPost("addaddress")]
+        public async Task<IActionResult> AddAddress([FromBody] AddAddressRequest request)
+        {
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId && c.IsActive);
+            if (customer == null)
+                return NotFound(new { success = false, message = "مشتری یافت نشد." });
+
+            var denied = EnsureRestaurantAccess(customer.RestaurantId);
+            if (denied != null) return denied;
+
+            if (request.IsDefault)
+            {
+                var existingDefaults = _context.CustomerAddresses
+                    .Where(a => a.CustomerId == request.CustomerId && a.IsDefault);
+                foreach (var addr in existingDefaults)
+                    addr.IsDefault = false;
+            }
+
+            var address = new CustomerAddress
+            {
+                CustomerId = request.CustomerId,
+                Title = request.Title,
+                AddressText = request.AddressText,
+                Unit = request.Unit,
+                Floor = request.Floor,
+                PlateNumber = request.PlateNumber,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
+                IsDefault = request.IsDefault,
+                Description = request.Description,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.CustomerAddresses.Add(address);
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "آدرس با موفقیت اضافه شد", addressId = address.AddressId });
         }
 
         private IReceiptService GetReceiptService()

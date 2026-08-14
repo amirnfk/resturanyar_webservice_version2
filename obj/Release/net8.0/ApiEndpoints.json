@@ -3211,6 +3211,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "AddAddress",
+    "RelativePath": "api/v2/StaffApi/addaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.AddAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "AddCategory",
     "RelativePath": "api/v2/StaffApi/addcategory",
     "HttpMethod": "POST",
@@ -3334,6 +3350,11 @@
         "Name": "lastCheck",
         "Type": "System.Int64",
         "IsRequired": false
+      },
+      {
+        "Name": "role5",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -3364,6 +3385,22 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "GetAddresses",
+    "RelativePath": "api/v2/StaffApi/getaddresses/{customerId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "customerId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -3451,6 +3488,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "GetFulfillmentSettings",
+    "RelativePath": "api/v2/StaffApi/getfulfillmentsettings/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "GetOrderById",
     "RelativePath": "api/v2/StaffApi/getOrderById/{orderId}",
     "HttpMethod": "GET",
@@ -3477,6 +3530,11 @@
         "Name": "restaurantId",
         "Type": "System.Int32",
         "IsRequired": true
+      },
+      {
+        "Name": "assignedToMe",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -3524,6 +3582,48 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.AuthorizationModels.RefreshTokenRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "AssignDriver",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/assign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Services.Fulfillment.AssignDriverRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "ReportDeliveryFailed",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/delivery-failed",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Services.Fulfillment.DeliveryFailedRequest",
         "IsRequired": true
       }
     ],
@@ -3642,6 +3742,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "UnassignDriver",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/unassign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "Refresh",
     "RelativePath": "api/v2/StaffApi/refresh",
     "HttpMethod": "POST",
@@ -3660,6 +3776,22 @@
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "GetChargeDefinitions",
     "RelativePath": "api/v2/StaffApi/restaurants/{restaurantId}/charge-definitions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "ListDrivers",
+    "RelativePath": "api/v2/StaffApi/restaurants/{restaurantId}/drivers",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -3775,6 +3907,22 @@
       {
         "Name": "dto",
         "Type": "resturanyar.Controllers.Api.V2.StaffApiController\u002BUpdateOrderStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "AddAddressV2",
+    "RelativePath": "api/v2/UserApi/addaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.AddAddressRequest",
         "IsRequired": true
       }
     ],
@@ -4003,6 +4151,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "DeleteAddressV2",
+    "RelativePath": "api/v2/UserApi/deleteaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.DeleteAddressRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "DeleteCategory",
     "RelativePath": "api/v2/UserApi/deletecategory",
     "HttpMethod": "DELETE",
@@ -4081,6 +4245,22 @@
       {
         "Name": "userId",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "EditAddressV2",
+    "RelativePath": "api/v2/UserApi/editaddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerModels.EditAddressRequest",
         "IsRequired": true
       }
     ],
@@ -4193,6 +4373,22 @@
       {
         "Name": "request",
         "Type": "resturanyar.Models.AuthorizationModels.TokenRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetAddressesV2",
+    "RelativePath": "api/v2/UserApi/getaddresses/{customerId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "customerId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -4364,6 +4560,22 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetFulfillmentSettings",
+    "RelativePath": "api/v2/UserApi/getfulfillmentsettings/{restaurantId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -4664,6 +4876,27 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "AssignDriverOwner",
+    "RelativePath": "api/v2/UserApi/orders/{orderId}/assign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Services.Fulfillment.AssignDriverRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GetReceiptHtml",
     "RelativePath": "api/v2/UserApi/orders/{orderId}/receipt",
     "HttpMethod": "GET",
@@ -4791,6 +5024,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "UnassignDriverOwner",
+    "RelativePath": "api/v2/UserApi/orders/{orderId}/unassign-driver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "RequestOtp",
     "RelativePath": "api/v2/UserApi/otprequest",
     "HttpMethod": "POST",
@@ -4876,6 +5125,22 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "ListDriversOwner",
+    "RelativePath": "api/v2/UserApi/restaurants/{restaurantId}/drivers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "restaurantId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "SaveRestaurantSettings",
     "RelativePath": "api/v2/UserApi/saverestaurantsettings",
     "HttpMethod": "POST",
@@ -4906,6 +5171,22 @@
         "Name": "Logo",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "SetFulfillmentSettings",
+    "RelativePath": "api/v2/UserApi/setfulfillmentsettings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.Fulfillment.UpdateFulfillmentSettingsRequest",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

@@ -35,5 +35,8 @@ namespace Resturanyar.Data
         [Required]
         public bool payment_management_permission { get; set; } = false;
 
+        [Required]
+        public bool delivery_management_permission { get; set; } = false;
+
     }
 }

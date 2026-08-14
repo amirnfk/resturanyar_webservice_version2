@@ -859,3 +859,346 @@
         padding: 16px !important;
     }
 }
+
+/* ---------- تخصیص پیک + متای ارسال (Delivery) ---------- */
+.orders-page .delivery-meta {
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid #e8eef5;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fffaf5 0%, #ffffff 55%);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.orders-page .delivery-meta__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.orders-page .delivery-meta__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    min-width: 0;
+    padding: 0.55rem 0.65rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #f1e7dc;
+}
+
+.orders-page .delivery-meta__item--wide {
+    grid-column: 1 / -1;
+}
+
+.orders-page .delivery-meta__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #fff7ed;
+    color: #ea580c;
+    font-size: 0.82rem;
+}
+
+.orders-page .delivery-meta__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08rem;
+    min-width: 0;
+}
+
+.orders-page .delivery-meta__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.orders-page .delivery-meta__value {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.orders-page .delivery-meta__phone {
+    font-family: "IRANYekan", system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.orders-page .courier-panel {
+    width: 100%;
+    margin: 0;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid #e8eef5;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.orders-page .courier-panel.is-assigned {
+    border-color: #bbf7d0;
+    background: #f8fffb;
+}
+
+.orders-page .courier-panel.is-unassigned {
+    border-color: #fed7aa;
+    background: #fffaf5;
+}
+
+.orders-page .courier-panel.is-readonly {
+    border-color: #e2e8f0;
+    background: #f8fafc;
+}
+
+.orders-page .courier-panel.is-readonly .courier-panel__main {
+    margin-bottom: 0;
+}
+
+.orders-page .courier-panel__main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+}
+
+.orders-page .courier-panel__identity {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.orders-page .courier-panel__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #ea580c;
+    font-size: 0.9rem;
+    overflow: hidden;
+    padding: 4px;
+}
+
+.orders-page .courier-panel__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.orders-page .courier-panel.is-assigned .courier-panel__avatar {
+    color: #15803d;
+    border-color: #bbf7d0;
+    background: #ecfdf5;
+}
+
+.orders-page .courier-panel__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.orders-page .courier-panel__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.orders-page .courier-panel__name {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: min(280px, 55vw);
+}
+
+.orders-page .courier-panel__badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.28rem 0.6rem;
+    border-radius: 999px;
+    line-height: 1.2;
+}
+
+.orders-page .courier-panel__badge.is-assigned {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+}
+
+.orders-page .courier-panel__badge.is-unassigned {
+    color: #c2410c;
+    background: #ffedd5;
+    border: 1px solid #fed7aa;
+}
+
+.orders-page .courier-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.orders-page .courier-panel__select-wrap {
+    flex: 1 1 180px;
+    min-width: 140px;
+}
+
+.orders-page .courier-panel__select-wrap .courier-select {
+    width: 100%;
+    min-height: 36px;
+    border-radius: 10px;
+    border-color: #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #334155;
+    background-color: #fff;
+}
+
+.orders-page .courier-panel__select-wrap .courier-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.orders-page .courier-panel__assign {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 36px;
+    padding: 0.35rem 0.85rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #fff;
+    background: linear-gradient(180deg, #ff8a1a 0%, #ff7a00 100%);
+    box-shadow: 0 6px 14px rgba(255, 122, 0, 0.22);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.orders-page .courier-panel__assign:hover {
+    color: #fff;
+    filter: brightness(1.03);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(255, 122, 0, 0.28);
+}
+
+.orders-page .courier-panel__assign:active {
+    transform: translateY(0);
+}
+
+.orders-page .courier-panel__clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 36px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #475569;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.orders-page .courier-panel__clear:hover {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.orders-page .courier-failure {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    border-radius: 12px;
+    border: 1px solid #fde68a;
+    background: linear-gradient(180deg, #fffbeb 0%, #fefce8 100%);
+}
+
+.orders-page .courier-failure__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #fef3c7;
+    color: #b45309;
+    font-size: 0.85rem;
+}
+
+.orders-page .courier-failure__title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #92400e;
+    margin-bottom: 0.1rem;
+}
+
+.orders-page .courier-failure__reason {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #78350f;
+    line-height: 1.45;
+}
+
+.orders-page .courier-failure__time {
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    color: #a16207;
+}
+
+@media (max-width: 576px) {
+    .orders-page .delivery-meta__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .orders-page .courier-panel__main {
+        align-items: flex-start;
+    }
+
+    .orders-page .courier-panel__name {
+        max-width: 150px;
+        white-space: normal;
+    }
+
+    .orders-page .courier-panel__actions {
+        width: 100%;
+    }
+
+    .orders-page .courier-panel__select-wrap {
+        flex: 1 1 100%;
+    }
+
+    .orders-page .courier-panel__assign,
+    .orders-page .courier-panel__clear {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
