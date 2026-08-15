@@ -1241,6 +1241,11 @@ html, body {
     right: -2px;
 }
 
+.msg-badge.owner-msg-badge[hidden],
+.msg-badge.owner-msg-badge:empty {
+    display: none !important;
+}
+
 .owner-msg-popup-body {
     white-space: pre-wrap;
     text-align: right;

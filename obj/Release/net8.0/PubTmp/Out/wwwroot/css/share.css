@@ -1802,13 +1802,15 @@ body.bg-white {
     cursor: pointer;
 }
 
+/* Stay hidden until unread count is loaded (class display must not override [hidden]) */
+.owner-msg-badge[hidden],
+.owner-msg-badge:empty {
+    display: none !important;
+}
+
 .action-btn .owner-msg-badge {
     top: 4px;
     right: 4px;
-}
-
-.action-btn .owner-msg-badge[hidden] {
-    display: none !important;
 }
 
 .owner-msg-badge.is-single-digit {

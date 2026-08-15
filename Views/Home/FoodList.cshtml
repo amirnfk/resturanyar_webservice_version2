@@ -63,8 +63,8 @@
                      data-description="@item.Description"
                      data-category="@item.CategoryId"
                      data-categoryname="@item.CategoryName"
-                     data-price="@item.Price"
-                     data-discount="@((hasDiscount ? item.Price - item.DiscountPrice : 0))"
+                     data-price="@item.Price.ToString("0")"
+                     data-discount="@((hasDiscount ? item.Price - item.DiscountPrice : 0).ToString("0"))"
                      data-discountpercent="@discountPercent"
                      data-isavailable="@item.IsAvailable"
                      data-image="@(item.ImageUrl ?? "")">
@@ -284,7 +284,7 @@
 
     function formatPriceInput(value) {
         var digits = typeof value === "number"
-            ? String(Math.max(0, value))
+            ? String(Math.max(0, Math.round(value)))
             : normalizePriceDigits(value);
         return formatPriceDigits(digits);
     }
@@ -319,8 +319,16 @@
     }
 
     function setPriceInput(selector, value) {
-        var num = typeof value === "number" ? value : parsePriceInput(value);
-        $(selector).val(isNaN(num) || num <= 0 ? "" : formatPriceDigits(String(num)));
+        // Avoid treating decimal scale (e.g. "150000.00") as extra digits.
+        var num;
+        if (typeof value === "number" && isFinite(value)) {
+            num = Math.round(value);
+        } else {
+            var raw = String(value == null ? "" : value).trim();
+            raw = raw.replace(/[./٫].*$/, "");
+            num = parsePriceInput(raw);
+        }
+        $(selector).val(isNaN(num) || num <= 0 ? "" : formatPriceDigits(String(Math.round(num))));
     }
 
     function onFoodImageChange() {
@@ -521,9 +529,10 @@
         $("#foodId").val(id);
         $("#name").val(card.data("name") || "");
         $("#description").val(card.data("description") || "");
-        setPriceInput("#price", card.data("price"));
-        const discount = parseInt(card.data("discount")) || 0;
-        const price = parseInt(card.data("price")) || 0;
+        // Use attr() so values stay exact strings (avoids jQuery .data() coercion quirks).
+        setPriceInput("#price", card.attr("data-price"));
+        const discount = parseInt(card.attr("data-discount"), 10) || 0;
+        const price = parseInt(card.attr("data-price"), 10) || 0;
         setPriceInput("#discountPrice", discount ? price - discount : 0);
         $("#isAvailable").prop("checked",
             card.data("isavailable") === true ||
