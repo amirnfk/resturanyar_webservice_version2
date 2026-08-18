@@ -47,6 +47,10 @@ namespace resturanyar.Models.SupportChat
         public string? ImageUrl { get; set; }
         public Guid? ClientMessageId { get; set; }
         public DateTime CreatedAtUtc { get; set; }
+        public long? ReplyToMessageId { get; set; }
+        public byte? ReplyToSenderType { get; set; }
+        public string? ReplyToBody { get; set; }
+        public bool ReplyToHasImage { get; set; }
     }
 
     public class SupportSendMessageRequest
@@ -55,6 +59,7 @@ namespace resturanyar.Models.SupportChat
         public string? Body { get; set; }
         public string? ImageUrl { get; set; }
         public Guid? ClientMessageId { get; set; }
+        public long? ReplyToMessageId { get; set; }
         public string? GuestKey { get; set; }
         public int? RestaurantId { get; set; }
         public int? OwnerId { get; set; }

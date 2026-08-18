@@ -168,6 +168,7 @@ namespace Resturanyar.Hubs
                 request.Body,
                 request.ImageUrl,
                 request.ClientMessageId,
+                request.ReplyToMessageId,
                 Context.ConnectionAborted);
 
             await Clients.Group(ConversationGroup(result.Conversation.Id))

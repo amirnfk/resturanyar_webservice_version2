@@ -27,6 +27,8 @@ namespace resturanyar.Models.SupportChat
 
         public Guid? ClientMessageId { get; set; }
 
+        public long? ReplyToMessageId { get; set; }
+
         public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 
         [ForeignKey(nameof(ConversationId))]

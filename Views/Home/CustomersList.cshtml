@@ -745,9 +745,163 @@
         text-align: center;
         border: 1px dashed #e2e8f0;
     }
+
+    .customers-page #exportBtn {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        border-radius: var(--radius-sm);
+        box-shadow: 0 6px 18px rgba(46, 204, 113, 0.25);
+        transition: var(--transition);
+        padding: 10px 0;
+    }
+
+    .customers-page #exportBtn:hover {
+        background: linear-gradient(135deg, #27ae60, #219a52);
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px rgba(46, 204, 113, 0.32);
+    }
+
+    .customers-page #exportBtn:disabled,
+    .customers-page #exportBtn.disabled {
+        opacity: 0.65;
+        transform: none;
+        pointer-events: none;
+    }
+
+    .customers-page .export-loading-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(3px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .customers-page .export-loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--card-border);
+    }
+
+    .customers-page .export-loading-text {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .export-format-modal {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 18px 48px rgba(26, 26, 46, 0.16);
+    }
+
+    .export-format-modal .modal-title {
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .export-format-option {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        width: 100%;
+        text-align: right;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 14px;
+        padding: 0.95rem 1rem;
+        background: #fff;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .export-format-option:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(26, 26, 46, 0.08);
+    }
+
+    .export-format-option__icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        flex-shrink: 0;
+        color: #fff;
+    }
+
+    .export-format-option__text {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        min-width: 0;
+    }
+
+    .export-format-option__text strong {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .export-format-option__text small {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .export-format-option--excel {
+        border-color: rgba(46, 204, 113, 0.28);
+    }
+
+    .export-format-option--excel .export-format-option__icon {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    .export-format-option--excel:hover {
+        border-color: rgba(46, 204, 113, 0.55);
+    }
+
+    .export-format-option--pdf {
+        border-color: rgba(231, 76, 60, 0.28);
+    }
+
+    .export-format-option--pdf .export-format-option__icon {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .export-format-option--pdf:hover {
+        border-color: rgba(231, 76, 60, 0.55);
+    }
+
+    .export-format-cancel {
+        border-radius: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        margin-top: 0.15rem;
+    }
 </style>
 
 <div class="container customers-page py-4">
+    <div id="exportLoadingOverlay" class="export-loading-overlay" aria-hidden="true">
+        <div class="export-loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="export-loading-text mb-0">در حال آماده‌سازی گزارش...</p>
+        </div>
+    </div>
+
     <!-- هدر صفحه -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0 fw-black">   </h4>
@@ -891,7 +1045,7 @@
         </div>
         <hr class="my-4" style="opacity: 0.1;">
         <div class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label fw-bold text-dark small">بازه زمانی ثبت سفارش</label>
                 <select id="periodSelect" class="form-select">
                     <option value="all">همه زمان‌ها</option>
@@ -901,7 +1055,7 @@
                     <option value="year">سال گذشته</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label fw-bold text-dark small">مرتب‌سازی بر اساس</label>
                 <select id="sortBySelect" class="form-select">
                     <option value="TotalSpent">بیشترین مبلغ خرید</option>
@@ -909,10 +1063,17 @@
                     <option value="TotalDistinctDays">بیشترین روزهای حضور</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="form-label fw-bold text-dark small">&nbsp;</label>
                 <button id="btnApplyFilter" class="btn btn-dark w-100" style="padding: 10px 0; border-radius: var(--radius-sm); font-weight: 700;">
                     <i class="fas fa-sliders-h me-1"></i> اعمال فیلتر و رتبه‌بندی
+                </button>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-dark small">&nbsp;</label>
+                <button type="button" id="exportBtn" class="btn btn-success w-100">
+                    <i class="bi bi-download me-1"></i>
+                    دانلود گزارش
                 </button>
             </div>
         </div>
@@ -1097,6 +1258,54 @@
     </div>
 </div>
 
+<div class="modal fade" id="exportFormatModal" tabindex="-1" aria-labelledby="exportFormatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content export-format-modal" dir="rtl">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="exportFormatModalLabel">نوع گزارش</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <p class="text-center text-muted mb-3">فرمت دانلود گزارش را انتخاب کنید. مبالغ در هر دو فایل به تومان است.</p>
+                <div class="export-format-options d-grid gap-2">
+                    <button type="button" id="exportFormatExcel" class="export-format-option export-format-option--excel">
+                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-excel-fill"></i></span>
+                        <span class="export-format-option__text">
+                            <strong>اکسل</strong>
+                            <small>جدول کامل مشتریان به تومان (.xlsx)</small>
+                        </span>
+                    </button>
+                    <button type="button" id="exportFormatPdf" class="export-format-option export-format-option--pdf">
+                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                        <span class="export-format-option__text">
+                            <strong>PDF</strong>
+                            <small>گزارش چاپی مشتریان به تومان (.pdf)</small>
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-light export-format-cancel" data-bs-dismiss="modal">انصراف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exportNoOrdersModal" tabindex="-1" aria-labelledby="exportNoOrdersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" dir="rtl">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="exportNoOrdersModalLabel">توجه</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <p id="exportNoOrdersMessage" class="mb-0 text-center">هیچ مشتری‌ای با این فیلتر یافت نشد.</p>
+            </div>
+            <div class="modal-footer border-0 pt-0 justify-content-center">
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">متوجه شدم</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- مودال تأیید حذف آدرس -->
 <div class="modal fade" id="deleteAddressModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -1121,6 +1330,8 @@
 <script>
     var API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
+    var exportCustomersExcelUrl = "@Url.Action("ExportCustomersToExcel", "Home")";
+    var exportCustomersPdfUrl = "@Url.Action("ExportCustomersToPdf", "Home")";
     var currentPage = 1;
     var pageSize = 12;
     var currentSearch = "";
@@ -1144,6 +1355,7 @@
             trendChart.destroy();
             trendChart = null;
         }
+        hideCustomersExportLoading();
     }
     window.destroyCustomersListPage = destroyCustomersListPage;
 
@@ -2082,6 +2294,135 @@
             var page = $(this).data("page");
             if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy);
         });
+
+        $("#exportBtn").off('click' + ns).on('click' + ns, openCustomersExportFormatModal);
+        $("#exportFormatExcel").off('click' + ns).on('click' + ns, function (e) { handleCustomersExportClick(e, 'excel'); });
+        $("#exportFormatPdf").off('click' + ns).on('click' + ns, function (e) { handleCustomersExportClick(e, 'pdf'); });
+    }
+
+    function getCustomersExportQuery() {
+        var rawSearch = ($("#searchInput").val() || "").trim();
+        var params = new URLSearchParams({
+            search: toEnglishDigits(rawSearch),
+            period: $("#periodSelect").val() || "all",
+            sortBy: $("#sortBySelect").val() || "TotalSpent"
+        });
+        return params.toString();
+    }
+
+    function showCustomersExportLoading(format) {
+        var overlay = document.getElementById('exportLoadingOverlay');
+        if (!overlay) return;
+        var textEl = overlay.querySelector('.export-loading-text');
+        if (textEl) {
+            textEl.textContent = format === 'pdf'
+                ? 'در حال آماده‌سازی فایل PDF...'
+                : 'در حال آماده‌سازی فایل اکسل...';
+        }
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function hideCustomersExportLoading() {
+        var overlay = document.getElementById('exportLoadingOverlay');
+        if (!overlay) return;
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function openCustomersExportFormatModal(e) {
+        if (e) e.preventDefault();
+        var modalEl = document.getElementById('exportFormatModal');
+        if (!modalEl || typeof bootstrap === 'undefined') {
+            handleCustomersExportClick(e || { preventDefault: function () {} }, 'excel');
+            return;
+        }
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+
+    function showCustomersExportEmptyModal(message) {
+        var modalEl = document.getElementById('exportNoOrdersModal');
+        if (!modalEl || typeof bootstrap === 'undefined') {
+            showToast(message || 'هیچ مشتری‌ای با این فیلتر یافت نشد.', 'error');
+            return;
+        }
+        var msgEl = document.getElementById('exportNoOrdersMessage');
+        if (msgEl) {
+            msgEl.textContent = message || 'هیچ مشتری‌ای با این فیلتر یافت نشد.';
+        }
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+
+    function getExportFileName(contentDisposition, fallbackName) {
+        if (!contentDisposition) return fallbackName;
+        var utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+        if (utf8Match && utf8Match[1]) {
+            try {
+                return decodeURIComponent(utf8Match[1].trim());
+            } catch (err) {
+                return utf8Match[1].trim();
+            }
+        }
+        var match = contentDisposition.match(/filename="?([^";]+)"?/i);
+        return match && match[1] ? match[1].trim() : fallbackName;
+    }
+
+    async function handleCustomersExportClick(e, format) {
+        if (e) e.preventDefault();
+
+        var isPdf = format === 'pdf';
+        var baseUrl = isPdf ? exportCustomersPdfUrl : exportCustomersExcelUrl;
+        if (!baseUrl) return;
+
+        var formatModalEl = document.getElementById('exportFormatModal');
+        if (formatModalEl && typeof bootstrap !== 'undefined') {
+            var formatModal = bootstrap.Modal.getInstance(formatModalEl);
+            if (formatModal) formatModal.hide();
+        }
+
+        var exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.classList.add('disabled');
+            exportBtn.setAttribute('aria-disabled', 'true');
+            exportBtn.disabled = true;
+        }
+        showCustomersExportLoading(format);
+
+        try {
+            var res = await fetch(baseUrl + '?' + getCustomersExportQuery(), { credentials: 'same-origin' });
+            if (!res.ok) {
+                var message = (await res.text()).trim() || 'هیچ مشتری‌ای با این فیلتر یافت نشد.';
+                showCustomersExportEmptyModal(message);
+                return;
+            }
+
+            var blob = await res.blob();
+            var fileName = getExportFileName(
+                res.headers.get('Content-Disposition'),
+                isPdf ? 'CustomersReport.pdf' : 'CustomersReport.xlsx'
+            );
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            showCustomersExportEmptyModal(
+                isPdf
+                    ? 'خطا در دانلود فایل PDF. لطفا دوباره تلاش کنید.'
+                    : 'خطا در دانلود فایل اکسل. لطفا دوباره تلاش کنید.'
+            );
+        } finally {
+            hideCustomersExportLoading();
+            if (exportBtn) {
+                exportBtn.classList.remove('disabled');
+                exportBtn.removeAttribute('aria-disabled');
+                exportBtn.disabled = false;
+            }
+        }
     }
 
     function initCustomersListPage() {

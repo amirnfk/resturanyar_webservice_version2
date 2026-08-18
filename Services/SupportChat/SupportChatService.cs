@@ -22,6 +22,7 @@ namespace resturanyar.Services.SupportChat
             string? body,
             string? imageUrl,
             Guid? clientMessageId,
+            long? replyToMessageId = null,
             CancellationToken ct = default);
         Task<SupportUnreadDto> MarkConversationReadBySupportAsync(long conversationId, CancellationToken ct = default);
         Task MarkConversationReadByCustomerAsync(long conversationId, CancellationToken ct = default);
@@ -133,9 +134,25 @@ namespace resturanyar.Services.SupportChat
                 .Take(limit)
                 .ToListAsync(ct);
 
+            var parentIds = recent
+                .Where(m => m.ReplyToMessageId.HasValue)
+                .Select(m => m.ReplyToMessageId!.Value)
+                .Distinct()
+                .ToList();
+            var knownIds = recent.Select(m => m.Id).ToHashSet();
+            var missingIds = parentIds.Where(id => !knownIds.Contains(id)).ToList();
+            var extraParents = missingIds.Count == 0
+                ? new List<SupportMessage>()
+                : await _db.SupportMessages.AsNoTracking()
+                    .Where(m => m.ConversationId == conversationId && missingIds.Contains(m.Id))
+                    .ToListAsync(ct);
+
+            var parentMap = recent.Concat(extraParents).GroupBy(m => m.Id).ToDictionary(g => g.Key, g => g.First());
             var messages = recent
                 .OrderBy(m => m.CreatedAtUtc)
-                .Select(ToMessageDto)
+                .Select(m => ToMessageDto(
+                    m,
+                    m.ReplyToMessageId is long pid && parentMap.TryGetValue(pid, out var parent) ? parent : null))
                 .ToList();
 
             return new SupportConversationDetailDto
@@ -255,7 +272,7 @@ namespace resturanyar.Services.SupportChat
                 if (existing != null)
                 {
                     var total = await GetTotalUnreadBySupportAsync(ct);
-                    return (ToMessageDto(existing), conv, new SupportUnreadDto
+                    return (await ToMessageDtoAsync(existing, ct), conv, new SupportUnreadDto
                     {
                         ConversationId = conv.Id,
                         ConversationUnread = conv.UnreadBySupport,
@@ -264,6 +281,7 @@ namespace resturanyar.Services.SupportChat
                 }
             }
 
+            var replyParent = await ResolveReplyTargetAsync(conv.Id, request.ReplyToMessageId, ct);
             var message = new SupportMessage
             {
                 ConversationId = conv.Id,
@@ -271,6 +289,7 @@ namespace resturanyar.Services.SupportChat
                 Body = Truncate(request.Body?.Trim(), 2000),
                 ImageUrl = Truncate(request.ImageUrl, 500),
                 ClientMessageId = request.ClientMessageId,
+                ReplyToMessageId = replyParent?.Id,
                 CreatedAtUtc = DateTime.UtcNow
             };
 
@@ -304,7 +323,7 @@ namespace resturanyar.Services.SupportChat
                 smsQueued = true;
             }
 
-            return (ToMessageDto(message), conv, unread, smsQueued);
+            return (ToMessageDto(message, replyParent), conv, unread, smsQueued);
         }
 
         public async Task<(SupportMessageDto Message, SupportConversation Conversation, SupportUnreadDto Unread)> SendSupportMessageAsync(
@@ -312,6 +331,7 @@ namespace resturanyar.Services.SupportChat
             string? body,
             string? imageUrl,
             Guid? clientMessageId,
+            long? replyToMessageId = null,
             CancellationToken ct = default)
         {
             ValidateContent(body, imageUrl);
@@ -326,7 +346,7 @@ namespace resturanyar.Services.SupportChat
                         m.ConversationId == conversationId && m.ClientMessageId == clientMessageId, ct);
                 if (existing != null)
                 {
-                    return (ToMessageDto(existing), conv, new SupportUnreadDto
+                    return (await ToMessageDtoAsync(existing, ct), conv, new SupportUnreadDto
                     {
                         ConversationId = conv.Id,
                         ConversationUnread = conv.UnreadBySupport,
@@ -335,6 +355,7 @@ namespace resturanyar.Services.SupportChat
                 }
             }
 
+            var replyParent = await ResolveReplyTargetAsync(conversationId, replyToMessageId, ct);
             var message = new SupportMessage
             {
                 ConversationId = conversationId,
@@ -342,6 +363,7 @@ namespace resturanyar.Services.SupportChat
                 Body = Truncate(body?.Trim(), 2000),
                 ImageUrl = Truncate(imageUrl, 500),
                 ClientMessageId = clientMessageId,
+                ReplyToMessageId = replyParent?.Id,
                 CreatedAtUtc = DateTime.UtcNow
             };
 
@@ -352,7 +374,7 @@ namespace resturanyar.Services.SupportChat
             _db.SupportMessages.Add(message);
             await _db.SaveChangesAsync(ct);
 
-            return (ToMessageDto(message), conv, new SupportUnreadDto
+            return (ToMessageDto(message, replyParent), conv, new SupportUnreadDto
             {
                 ConversationId = conv.Id,
                 ConversationUnread = 0,
@@ -448,7 +470,7 @@ namespace resturanyar.Services.SupportChat
             IsSupportOnline = _presence.IsSupportOnline
         };
 
-        private static SupportMessageDto ToMessageDto(SupportMessage m) => new()
+        private static SupportMessageDto ToMessageDto(SupportMessage m, SupportMessage? replyTo = null) => new()
         {
             Id = m.Id,
             ConversationId = m.ConversationId,
@@ -456,8 +478,25 @@ namespace resturanyar.Services.SupportChat
             Body = m.Body,
             ImageUrl = m.ImageUrl,
             ClientMessageId = m.ClientMessageId,
-            CreatedAtUtc = m.CreatedAtUtc
+            CreatedAtUtc = m.CreatedAtUtc,
+            ReplyToMessageId = m.ReplyToMessageId,
+            ReplyToSenderType = replyTo != null ? (byte)replyTo.SenderType : null,
+            ReplyToBody = replyTo == null ? null : Truncate(replyTo.Body, 120),
+            ReplyToHasImage = replyTo != null && !string.IsNullOrWhiteSpace(replyTo.ImageUrl)
         };
+
+        private async Task<SupportMessageDto> ToMessageDtoAsync(SupportMessage m, CancellationToken ct)
+        {
+            var parent = await ResolveReplyTargetAsync(m.ConversationId, m.ReplyToMessageId, ct);
+            return ToMessageDto(m, parent);
+        }
+
+        private async Task<SupportMessage?> ResolveReplyTargetAsync(long conversationId, long? replyToMessageId, CancellationToken ct)
+        {
+            if (replyToMessageId is not > 0) return null;
+            return await _db.SupportMessages.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == replyToMessageId && m.ConversationId == conversationId, ct);
+        }
 
         private static void ApplyContext(SupportConversation conv, SupportOpenContextRequest context)
         {

@@ -48,7 +48,7 @@ wwwroot\css\fonts\iranyekan\iranyekanwebregularfanum.woff
 wwwroot\css\food-list.css
 wwwroot\css\home.css
 wwwroot\css\index-page.css
-wwwroot\css\inventory.css
+wwwroot\js\support-image-prep.js
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\js\site.js
 wwwroot\css\managerlogin.css
@@ -157,7 +157,7 @@ wwwroot\js\chooserestaurant.js
 wwwroot\js\confirm-modal.js
 wwwroot\js\dashboard.js
 wwwroot\js\home.js
-wwwroot\js\admin-support-badge.js
+wwwroot\js\support-chat-boot.js
 wwwroot\js\jalalidatepicker.min.js
 wwwroot\js\jquery_3.6.0.min.js
 wwwroot\css\support-chat.css
@@ -175,8 +175,8 @@ wwwroot\js\sidebar-nav.js
 wwwroot\js\invoice-print.js
 wwwroot\js\Sortable.min.js
 wwwroot\js\owner-messages.js
-wwwroot\js\support-chat-boot.js
-wwwroot\js\support-image-prep.js
+wwwroot\js\admin-support-badge.js
+wwwroot\css\inventory.css
 wwwroot\js\sweetalert2@11.js
 wwwroot\js\toastr.min.js
 wwwroot\js\upgrade.js

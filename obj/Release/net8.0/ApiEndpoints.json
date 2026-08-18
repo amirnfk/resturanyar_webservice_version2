@@ -5395,6 +5395,58 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ExportCustomersToExcel",
+    "RelativePath": "ExportCustomersToExcel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
+    "Method": "ExportCustomersToPdf",
+    "RelativePath": "ExportCustomersToPdf",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sortBy",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.HomeController",
     "Method": "ExportOrdersToExcel",
     "RelativePath": "ExportOrdersToExcel",
     "HttpMethod": "GET",

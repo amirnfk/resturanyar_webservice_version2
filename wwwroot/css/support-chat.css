@@ -40,9 +40,9 @@
   --sc-line: rgba(28, 25, 23, 0.08);
   --sc-surface: #ffffff;
   --sc-surface-2: #fafaf9;
-  --sc-accent: #ea580c;
-  --sc-accent-deep: #c2410c;
-  --sc-accent-soft: #fff7ed;
+  --sc-accent: #ff8a4c;
+  --sc-accent-deep: #ff7a38;
+  --sc-accent-soft: #fff4ec;
   --sc-online: #16a34a;
   --sc-offline: #a8a29e;
   --sc-danger: #dc2626;
@@ -80,10 +80,10 @@
   height: 60px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(145deg, #f97316 0%, #ea580c 55%, #c2410c 100%);
+  background: linear-gradient(145deg, var(--sc-accent) 0%, var(--sc-accent-deep) 100%);
   color: #fff;
   box-shadow:
-    0 8px 24px rgba(234, 88, 12, 0.38),
+    0 8px 24px rgba(255, 122, 56, 0.22),
     0 2px 6px rgba(28, 25, 23, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
   cursor: pointer;
@@ -98,7 +98,7 @@
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 2px solid rgba(234, 88, 12, 0.35);
+  border: 2px solid rgba(255, 122, 56, 0.28);
   animation: ryScPulse 2.4s ease-out infinite;
   pointer-events: none;
 }
@@ -106,7 +106,7 @@
 .ry-sc-fab:hover {
   transform: translateY(-3px) scale(1.04);
   box-shadow:
-    0 12px 32px rgba(234, 88, 12, 0.45),
+    0 12px 32px rgba(255, 122, 56, 0.45),
     0 4px 10px rgba(28, 25, 23, 0.12);
 }
 
@@ -216,10 +216,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #fb923c, #ea580c);
+  background: linear-gradient(145deg, var(--sc-accent), var(--sc-accent-deep));
   color: #fff;
   font-size: 1.05rem;
-  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+  box-shadow: 0 6px 16px rgba(255, 122, 56, 0.22);
 }
 
 .ry-sc-header-main {
@@ -309,7 +309,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 3px solid rgba(234, 88, 12, 0.18);
+  border: 3px solid rgba(255, 122, 56, 0.18);
   border-top-color: var(--sc-accent);
   animation: ryScSpin 0.75s linear infinite;
 }
@@ -370,7 +370,7 @@
   overflow-y: auto;
   padding: 18px 14px;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(234, 88, 12, 0.06), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 122, 56, 0.06), transparent 55%),
     var(--sc-surface-2);
   display: flex;
   flex-direction: column;
@@ -404,10 +404,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #fff7ed, #ffedd5);
+  background: linear-gradient(145deg, var(--sc-accent-soft), #ffe8d6);
   color: var(--sc-accent);
   font-size: 1.45rem;
-  box-shadow: inset 0 0 0 1px rgba(234, 88, 12, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 122, 56, 0.12);
 }
 
 .ry-sc-empty strong {
@@ -444,10 +444,10 @@
 
 .ry-sc-bubble.mine {
   align-self: flex-start;
-  background: linear-gradient(145deg, #f97316, #ea580c);
+  background: linear-gradient(145deg, var(--sc-accent), var(--sc-accent-deep));
   color: #fff;
   border-bottom-right-radius: 6px;
-  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.22);
+  box-shadow: 0 6px 16px rgba(255, 122, 56, 0.14);
 }
 
 .ry-sc-bubble.theirs {
@@ -484,6 +484,115 @@
   color: var(--sc-muted);
 }
 
+.ry-sc-quote {
+  display: block;
+  width: 100%;
+  text-align: right;
+  border: 0;
+  border-right: 3px solid currentColor;
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+}
+
+.ry-sc-quote strong {
+  display: block;
+  font-size: 0.72rem;
+  margin-bottom: 2px;
+}
+
+.ry-sc-quote span {
+  display: block;
+  font-size: 0.78rem;
+  opacity: 0.92;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ry-sc-bubble.mine .ry-sc-quote {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.ry-sc-bubble.theirs .ry-sc-quote {
+  background: var(--sc-accent-soft);
+  color: #c45e28;
+  border-right-color: var(--sc-accent);
+}
+
+.ry-sc-reply-btn {
+  margin-right: auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 0.72rem;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ry-sc-reply-btn:hover {
+  opacity: 1;
+}
+
+.ry-sc-bubble.is-flash {
+  outline: 2px solid var(--sc-accent);
+  outline-offset: 2px;
+}
+
+.ry-sc-reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--sc-accent-soft);
+  border: 1px solid rgba(255, 122, 56, 0.25);
+}
+
+.ry-sc-reply-bar[hidden] {
+  display: none !important;
+}
+
+.ry-sc-reply-bar-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.ry-sc-reply-bar-who {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--sc-accent-deep);
+}
+
+.ry-sc-reply-bar-text {
+  display: block;
+  font-size: 0.8rem;
+  color: #78716c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ry-sc-reply-bar-close {
+  border: none;
+  background: transparent;
+  color: #78716c;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .ry-sc-status-text.failed {
   color: #fecaca;
   cursor: pointer;
@@ -494,12 +603,20 @@
 /* Composer */
 .ry-sc-composer {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: stretch;
   gap: 8px;
   padding: 12px 12px 14px;
   border-top: 1px solid var(--sc-line);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
+}
+
+.ry-sc-composer-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
 }
 
 .ry-sc-input-wrap {
@@ -512,8 +629,8 @@
 }
 
 .ry-sc-input-wrap:focus-within {
-  border-color: rgba(234, 88, 12, 0.45);
-  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.12);
+  border-color: rgba(255, 122, 56, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 122, 56, 0.12);
   background: #fff;
 }
 
@@ -564,18 +681,18 @@
 .ry-sc-attach:hover {
   background: #fff;
   color: var(--sc-accent);
-  border-color: rgba(234, 88, 12, 0.25);
+  border-color: rgba(255, 122, 56, 0.25);
 }
 
 .ry-sc-send {
-  background: linear-gradient(145deg, #f97316, #ea580c);
+  background: linear-gradient(145deg, var(--sc-accent), var(--sc-accent-deep));
   color: #fff;
-  box-shadow: 0 6px 14px rgba(234, 88, 12, 0.28);
+  box-shadow: 0 6px 14px rgba(255, 122, 56, 0.18);
 }
 
 .ry-sc-send:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(234, 88, 12, 0.36);
+  box-shadow: 0 8px 18px rgba(255, 122, 56, 0.36);
 }
 
 .ry-sc-send:active {
@@ -627,7 +744,7 @@
 }
 
 #ry-support-root.is-embed .ry-sc-header {
-  background: #ea580c;
+  background: var(--sc-accent);
   padding: 12px 14px;
   padding-top: calc(12px + env(safe-area-inset-top, 0));
 }
@@ -757,7 +874,7 @@ body.ry-sc-noscroll {
 
   /* Orange solid header like Goftino */
   #ry-support-root:not(.is-embed) .ry-sc-panel.is-open .ry-sc-header {
-    background: #ea580c;
+    background: var(--sc-accent);
     padding: 12px 14px;
     padding-top: calc(12px + env(safe-area-inset-top, 0));
     min-height: 64px;

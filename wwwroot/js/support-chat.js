@@ -95,6 +95,7 @@
     this.statusEl = null;
     this.badgeEl = null;
     this.unreadCustomer = 0;
+    this.replyTo = null;
   }
 
   ResturanyarSupportChat.prototype.init = function () {
@@ -162,6 +163,7 @@
       this.loadingTextEl = this.root.querySelector('.ry-sc-loading-text');
       this.badgeEl = this.root.querySelector('.ry-sc-badge');
       this.composerEl = this.root.querySelector('.ry-sc-composer');
+      this.ensureReplyUi();
       return;
     }
 
@@ -197,11 +199,19 @@
       '<p>پیام خود را بنویسید؛ معمولاً ظرف حدود ۵ دقیقه پاسخ می‌دهیم.</p>' +
       '</div></div>' +
       '<div class="ry-sc-composer">' +
+      '<div class="ry-sc-reply-bar" hidden>' +
+      '<div class="ry-sc-reply-bar-main">' +
+      '<strong class="ry-sc-reply-bar-who"></strong>' +
+      '<span class="ry-sc-reply-bar-text"></span>' +
+      '</div>' +
+      '<button type="button" class="ry-sc-reply-bar-close" title="لغو پاسخ"><i class="fas fa-times"></i></button>' +
+      '</div>' +
+      '<div class="ry-sc-composer-row">' +
       '<button type="button" class="ry-sc-attach" title="ارسال تصویر"><i class="fas fa-image"></i></button>' +
       '<input type="file" class="ry-sc-file" accept="image/*" hidden />' +
       '<div class="ry-sc-input-wrap"><textarea class="ry-sc-input" rows="1" placeholder="پیام خود را بنویسید…"></textarea></div>' +
       '<button type="button" class="ry-sc-send" title="ارسال"><i class="fas fa-paper-plane"></i></button>' +
-      '</div></div></div>';
+      '</div></div></div></div>';
 
     document.body.appendChild(root);
     this.root = root;
@@ -213,6 +223,66 @@
     this.loadingTextEl = root.querySelector('.ry-sc-loading-text');
     this.badgeEl = root.querySelector('.ry-sc-badge');
     this.composerEl = root.querySelector('.ry-sc-composer');
+    this.ensureReplyUi();
+  };
+
+  ResturanyarSupportChat.prototype.ensureReplyUi = function () {
+    if (!this.composerEl) return;
+    if (!this.composerEl.querySelector('.ry-sc-composer-row')) {
+      var row = document.createElement('div');
+      row.className = 'ry-sc-composer-row';
+      while (this.composerEl.firstChild) row.appendChild(this.composerEl.firstChild);
+      this.composerEl.appendChild(row);
+    }
+    if (!this.composerEl.querySelector('.ry-sc-reply-bar')) {
+      var bar = document.createElement('div');
+      bar.className = 'ry-sc-reply-bar';
+      bar.hidden = true;
+      bar.innerHTML =
+        '<div class="ry-sc-reply-bar-main">' +
+        '<strong class="ry-sc-reply-bar-who"></strong>' +
+        '<span class="ry-sc-reply-bar-text"></span>' +
+        '</div>' +
+        '<button type="button" class="ry-sc-reply-bar-close" title="لغو پاسخ"><i class="fas fa-times"></i></button>';
+      this.composerEl.insertBefore(bar, this.composerEl.firstChild);
+    }
+    this.replyBarEl = this.composerEl.querySelector('.ry-sc-reply-bar');
+  };
+
+  ResturanyarSupportChat.prototype.replyWhoLabel = function (senderType) {
+    return Number(senderType) === 1 ? 'پشتیبانی' : 'شما';
+  };
+
+  ResturanyarSupportChat.prototype.setReplyTarget = function (msg) {
+    if (!msg || !msg.id) return;
+    this.replyTo = {
+      id: msg.id,
+      senderType: msg.senderType,
+      body: msg.body || '',
+      hasImage: !!msg.imageUrl || !!msg.replyToHasImage
+    };
+    this.renderReplyBar();
+    if (this.inputEl) this.inputEl.focus();
+  };
+
+  ResturanyarSupportChat.prototype.clearReplyTarget = function () {
+    this.replyTo = null;
+    this.renderReplyBar();
+  };
+
+  ResturanyarSupportChat.prototype.renderReplyBar = function () {
+    if (!this.replyBarEl) return;
+    if (!this.replyTo) {
+      this.replyBarEl.hidden = true;
+      return;
+    }
+    var who = this.replyBarEl.querySelector('.ry-sc-reply-bar-who');
+    var text = this.replyBarEl.querySelector('.ry-sc-reply-bar-text');
+    if (who) who.textContent = this.replyWhoLabel(this.replyTo.senderType);
+    if (text) text.textContent = this.replyTo.body
+      ? this.replyTo.body
+      : (this.replyTo.hasImage ? 'تصویر' : '');
+    this.replyBarEl.hidden = false;
   };
 
   ResturanyarSupportChat.prototype.bindUi = function () {
@@ -245,11 +315,39 @@
       }
     });
 
+    var replyClose = this.root.querySelector('.ry-sc-reply-bar-close');
+    if (replyClose) {
+      replyClose.addEventListener('click', function () { self.clearReplyTarget(); });
+    }
+
     this.messagesEl.addEventListener('click', function (e) {
-      var target = e.target.closest('.ry-sc-status-text.failed');
-      if (!target) return;
-      var clientId = target.getAttribute('data-client-id');
-      if (clientId && self.pending[clientId]) self.retry(clientId);
+      var failed = e.target.closest('.ry-sc-status-text.failed');
+      if (failed) {
+        var clientId = failed.getAttribute('data-client-id');
+        if (clientId && self.pending[clientId]) self.retry(clientId);
+        return;
+      }
+      var quote = e.target.closest('.ry-sc-quote');
+      if (quote) {
+        var gotoId = quote.getAttribute('data-goto');
+        var target = gotoId && self.messagesEl.querySelector('.ry-sc-bubble[data-id="' + gotoId + '"]');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.add('is-flash');
+          setTimeout(function () { target.classList.remove('is-flash'); }, 1200);
+        }
+        return;
+      }
+      var replyBtn = e.target.closest('.ry-sc-reply-btn');
+      if (!replyBtn) return;
+      var bubble = replyBtn.closest('.ry-sc-bubble');
+      if (!bubble || !bubble.getAttribute('data-id')) return;
+      self.setReplyTarget({
+        id: parseInt(bubble.getAttribute('data-id'), 10),
+        senderType: parseInt(bubble.getAttribute('data-sender') || '0', 10),
+        body: bubble.getAttribute('data-body') || '',
+        imageUrl: bubble.getAttribute('data-has-image') === '1' ? '1' : ''
+      });
     });
 
     document.querySelectorAll('#open_chat, #toggle_chat').forEach(function (el) {
@@ -476,8 +574,20 @@
     var el = document.createElement('div');
     el.className = 'ry-sc-bubble ' + (mine ? 'mine' : 'theirs');
     if (msg.clientMessageId) el.setAttribute('data-client-id', msg.clientMessageId);
+    if (msg.id) el.setAttribute('data-id', msg.id);
+    el.setAttribute('data-sender', String(msg.senderType == null ? 0 : msg.senderType));
+    el.setAttribute('data-body', (msg.body || '').slice(0, 200));
+    el.setAttribute('data-has-image', msg.imageUrl ? '1' : '0');
 
     var html = '';
+    if (msg.replyToMessageId) {
+      var who = this.replyWhoLabel(msg.replyToSenderType);
+      var preview = msg.replyToBody
+        ? escapeHtml(msg.replyToBody)
+        : (msg.replyToHasImage ? 'تصویر' : '');
+      html += '<button type="button" class="ry-sc-quote" data-goto="' + msg.replyToMessageId + '">' +
+        '<strong>' + escapeHtml(who) + '</strong><span>' + preview + '</span></button>';
+    }
     if (msg.imageUrl && isAllowedSupportImageUrl(msg.imageUrl)) {
       var safeUrl = escapeHtml(msg.imageUrl);
       html += '<a href="' + safeUrl + '" target="_blank" rel="noopener"><img src="' + safeUrl + '" alt="تصویر" /></a>';
@@ -488,6 +598,9 @@
       html += '<span class="ry-sc-status-text' + (status === 'failed' ? ' failed' : '') + '"' +
         (msg.clientMessageId ? ' data-client-id="' + msg.clientMessageId + '"' : '') + '>' +
         statusLabel(status) + '</span>';
+    }
+    if (msg.id) {
+      html += '<button type="button" class="ry-sc-reply-btn" title="پاسخ" aria-label="پاسخ"><i class="fas fa-reply"></i></button>';
     }
     html += '</div>';
     el.innerHTML = html;
@@ -539,7 +652,17 @@
       delete this.pending[msg.clientMessageId];
       this.updateLocalStatus(msg.clientMessageId, 'sent');
       var bubble = this.messagesEl.querySelector('.ry-sc-bubble[data-client-id="' + msg.clientMessageId + '"]');
-      if (bubble) return;
+      if (bubble) {
+        if (msg.id) {
+          bubble.setAttribute('data-id', msg.id);
+          var meta = bubble.querySelector('.ry-sc-meta');
+          if (meta && !meta.querySelector('.ry-sc-reply-btn')) {
+            meta.insertAdjacentHTML('beforeend',
+              '<button type="button" class="ry-sc-reply-btn" title="پاسخ" aria-label="پاسخ"><i class="fas fa-reply"></i></button>');
+          }
+        }
+        return;
+      }
     }
 
     var exists = msg.id && this.messagesEl.querySelector('.ry-sc-bubble[data-id="' + msg.id + '"]');
@@ -592,6 +715,7 @@
 
     var ctx = readBodyContext();
     var clientMessageId = uuid();
+    var replyTo = this.replyTo;
     var optimistic = {
       id: null,
       conversationId: this.conversationId,
@@ -599,16 +723,25 @@
       body: payload.body || null,
       imageUrl: payload.imageUrl || null,
       clientMessageId: clientMessageId,
-      createdAtUtc: new Date().toISOString()
+      createdAtUtc: new Date().toISOString(),
+      replyToMessageId: replyTo ? replyTo.id : null,
+      replyToSenderType: replyTo ? replyTo.senderType : null,
+      replyToBody: replyTo ? (replyTo.body || '').slice(0, 120) : null,
+      replyToHasImage: !!(replyTo && (replyTo.hasImage || replyTo.imageUrl))
     };
     this.appendMessage(optimistic, 'sending', true);
-    this.pending[clientMessageId] = Object.assign({}, payload, { clientMessageId: clientMessageId });
+    this.pending[clientMessageId] = Object.assign({}, payload, {
+      clientMessageId: clientMessageId,
+      replyToMessageId: replyTo ? replyTo.id : null
+    });
+    this.clearReplyTarget();
 
     var request = {
       conversationId: this.conversationId,
       body: payload.body || null,
       imageUrl: payload.imageUrl || null,
       clientMessageId: clientMessageId,
+      replyToMessageId: replyTo ? replyTo.id : null,
       guestKey: ctx.restaurantId ? null : getGuestKey(),
       restaurantId: ctx.restaurantId,
       ownerId: ctx.ownerId,
@@ -638,6 +771,7 @@
         body: payload.body || null,
         imageUrl: payload.imageUrl || null,
         clientMessageId: clientMessageId,
+        replyToMessageId: payload.replyToMessageId || null,
         guestKey: ctx.restaurantId ? null : getGuestKey(),
         restaurantId: ctx.restaurantId,
         ownerId: ctx.ownerId,

@@ -267,16 +267,125 @@
         opacity: 0.8;
         margin-top: 7px;
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .sc-composer {
         display: flex;
-        align-items: flex-end;
+        flex-direction: column;
+        align-items: stretch;
         gap: 8px;
         padding: 12px;
         border-top: 1px solid var(--sc-line);
         background: rgba(255, 255, 255, 0.95);
         flex-shrink: 0;
+    }
+
+    .sc-composer-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .sc-reply-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: #fff7ed;
+        border: 1px solid rgba(234, 88, 12, 0.25);
+    }
+
+    .sc-reply-bar[hidden] { display: none !important; }
+
+    .sc-reply-bar-main { min-width: 0; flex: 1; }
+
+    .sc-reply-bar-who {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #c2410c;
+    }
+
+    .sc-reply-bar-text {
+        display: block;
+        font-size: 0.8rem;
+        color: #78716c;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sc-reply-bar-close {
+        border: none;
+        background: transparent;
+        color: #78716c;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .sc-quote {
+        display: block;
+        width: 100%;
+        text-align: right;
+        border: 0;
+        border-right: 3px solid currentColor;
+        border-radius: 8px;
+        padding: 6px 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+    }
+
+    .sc-quote strong { display: block; font-size: 0.72rem; margin-bottom: 2px; }
+    .sc-quote span {
+        display: block;
+        font-size: 0.78rem;
+        opacity: 0.92;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sc-bubble.customer .sc-quote {
+        background: #fff7ed;
+        color: #9a3412;
+        border-right-color: #ea580c;
+    }
+
+    .sc-bubble.support .sc-quote {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    .sc-reply-btn {
+        margin-right: auto;
+        border: none;
+        background: transparent;
+        padding: 0;
+        width: 22px;
+        height: 22px;
+        font-size: 0.72rem;
+        color: inherit;
+        opacity: 0.55;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sc-reply-btn:hover {
+        opacity: 1;
+    }
+
+    .sc-bubble.is-flash {
+        outline: 2px solid #fb923c;
+        outline-offset: 2px;
     }
 
     .sc-composer .sc-input-wrap {
@@ -441,12 +550,21 @@
         <div class="sc-chat-header" id="scChatTitle"><i class="fas fa-headset" style="color:#ea580c"></i> یک گفتگو را انتخاب کنید</div>
         <div class="sc-messages" id="scMessages"><div class="sc-empty"><i class="fas fa-inbox"></i>برای شروع، یک گفتگو را از لیست انتخاب کنید.</div></div>
         <div class="sc-composer">
-            <button type="button" class="sc-attach" id="scAttach" title="تصویر"><i class="fas fa-image"></i></button>
-            <input type="file" id="scFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
-            <div class="sc-input-wrap">
-                <textarea id="scInput" placeholder="پاسخ خود را بنویسید…" disabled></textarea>
+            <div class="sc-reply-bar" id="scReplyBar" hidden>
+                <div class="sc-reply-bar-main">
+                    <strong class="sc-reply-bar-who" id="scReplyWho"></strong>
+                    <span class="sc-reply-bar-text" id="scReplyText"></span>
+                </div>
+                <button type="button" class="sc-reply-bar-close" id="scReplyCancel" title="لغو پاسخ"><i class="fas fa-times"></i></button>
             </div>
-            <button type="button" id="scSend" disabled title="ارسال"><i class="fas fa-paper-plane"></i></button>
+            <div class="sc-composer-row">
+                <button type="button" class="sc-attach" id="scAttach" title="تصویر"><i class="fas fa-image"></i></button>
+                <input type="file" id="scFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+                <div class="sc-input-wrap">
+                    <textarea id="scInput" placeholder="پاسخ خود را بنویسید…" disabled></textarea>
+                </div>
+                <button type="button" id="scSend" disabled title="ارسال"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
     <div class="sc-admin-card sc-ctx-card">
@@ -469,6 +587,7 @@
     let connection = null;
     let activeId = null;
     let conversations = [];
+    let replyTo = null;
     const notifyAudio = document.getElementById('scNotifyAudio');
 
     function escapeHtml(str) {
@@ -582,20 +701,65 @@
             <div class="sc-ctx-row"><strong>مرورگر</strong><span>${escapeHtml(detail.userAgent || '—')}</span></div>`;
     }
 
+    function replyWhoLabel(senderType) {
+        return Number(senderType) === 0 ? 'کاربر' : 'شما';
+    }
+
+    function quotePreview(m) {
+        if (m.replyToBody) return escapeHtml(m.replyToBody);
+        return m.replyToHasImage ? 'تصویر' : '';
+    }
+
+    function quoteHtml(m) {
+        if (!m.replyToMessageId) return '';
+        return `<button type="button" class="sc-quote" data-goto="${m.replyToMessageId}">
+            <strong>${escapeHtml(replyWhoLabel(m.replyToSenderType))}</strong>
+            <span>${quotePreview(m)}</span>
+        </button>`;
+    }
+
+    function bubbleHtml(m) {
+        const mine = m.senderType === 1;
+        const replyBtn = m.id
+            ? `<button type="button" class="sc-reply-btn" data-reply="1" title="پاسخ" aria-label="پاسخ"><i class="fas fa-reply"></i></button>`
+            : '';
+        return `<div class="sc-bubble ${mine ? 'support' : 'customer'}"
+                ${m.id ? `data-mid="${m.id}"` : ''}
+                ${m.clientMessageId ? `data-cid="${m.clientMessageId}"` : ''}
+                data-sender="${m.senderType == null ? 0 : m.senderType}"
+                data-body="${escapeHtml((m.body || '').slice(0, 200).replace(/\n/g, ' '))}"
+                data-has-image="${m.imageUrl ? '1' : '0'}">
+                ${quoteHtml(m)}
+                ${imageHtml(m.imageUrl)}
+                ${m.body ? `<div>${escapeHtml(m.body)}</div>` : ''}
+                <div class="sc-meta">${formatTime(m.createdAtUtc)}${replyBtn}</div>
+            </div>`;
+    }
+
+    function setReplyTarget(msg) {
+        if (!msg || !msg.id) return;
+        replyTo = msg;
+        const bar = document.getElementById('scReplyBar');
+        document.getElementById('scReplyWho').textContent = replyWhoLabel(msg.senderType);
+        document.getElementById('scReplyText').textContent = msg.body || (msg.hasImage ? 'تصویر' : '');
+        if (bar) bar.hidden = false;
+        const input = document.getElementById('scInput');
+        if (input && !input.disabled) input.focus();
+    }
+
+    function clearReplyTarget() {
+        replyTo = null;
+        const bar = document.getElementById('scReplyBar');
+        if (bar) bar.hidden = true;
+    }
+
     function renderMessages(messages) {
         const box = document.getElementById('scMessages');
         if (!messages || !messages.length) {
             box.innerHTML = '<div class="sc-empty"><i class="fas fa-comment-dots"></i>پیامی نیست. اولین پاسخ را بنویسید.</div>';
             return;
         }
-        box.innerHTML = messages.map(m => {
-            const mine = m.senderType === 1;
-            return `<div class="sc-bubble ${mine ? 'support' : 'customer'}" ${m.id ? `data-mid="${m.id}"` : ''} ${m.clientMessageId ? `data-cid="${m.clientMessageId}"` : ''}>
-                ${imageHtml(m.imageUrl)}
-                ${m.body ? `<div>${escapeHtml(m.body)}</div>` : ''}
-                <div class="sc-meta">${formatTime(m.createdAtUtc)}</div>
-            </div>`;
-        }).join('');
+        box.innerHTML = messages.map(bubbleHtml).join('');
         box.scrollTop = box.scrollHeight;
     }
 
@@ -618,6 +782,7 @@
         const detail = json.data;
         const title = detail.restaurantName || detail.ownerName || (detail.guestKey ? 'مهمان' : 'گفتگو');
         document.getElementById('scChatTitle').innerHTML = `<i class="fas fa-headset" style="color:#ea580c"></i> ${escapeHtml(title)}`;
+        clearReplyTarget();
         renderMessages(detail.messages || []);
         renderContext(detail);
 
@@ -640,7 +805,8 @@
             conversationId: activeId,
             body: payload.body || null,
             imageUrl: payload.imageUrl || null,
-            clientMessageId: clientMessageId
+            clientMessageId: clientMessageId,
+            replyToMessageId: payload.replyToMessageId || null
         });
     }
 
@@ -687,13 +853,7 @@
                 const box = document.getElementById('scMessages');
                 const empty = box.querySelector('.sc-empty');
                 if (empty) empty.remove();
-                const mine = msg.senderType === 1;
-                const div = document.createElement('div');
-                div.className = 'sc-bubble ' + (mine ? 'support' : 'customer');
-                if (msg.id) div.setAttribute('data-mid', msg.id);
-                if (msg.clientMessageId) div.setAttribute('data-cid', msg.clientMessageId);
-                div.innerHTML = `${imageHtml(msg.imageUrl)}${msg.body ? `<div>${escapeHtml(msg.body)}</div>` : ''}<div class="sc-meta">${formatTime(msg.createdAtUtc)}</div>`;
-                box.appendChild(div);
+                box.insertAdjacentHTML('beforeend', bubbleHtml(msg));
                 box.scrollTop = box.scrollHeight;
                 if (msg.senderType === 0) {
                     await connection.invoke('MarkConversationRead', activeId);
@@ -762,7 +922,9 @@
         const text = (input.value || '').trim();
         if (!text) return;
         input.value = '';
-        await sendSupport({ body: text });
+        const replyId = replyTo ? replyTo.id : null;
+        clearReplyTarget();
+        await sendSupport({ body: text, replyToMessageId: replyId });
     });
     document.getElementById('scAttach').addEventListener('click', () => document.getElementById('scFile').click());
     document.getElementById('scFile').addEventListener('change', async (e) => {
@@ -787,7 +949,9 @@
             if (!json.success) { alert(json.message || 'آپلود ناموفق'); return; }
             const caption = (input.value || '').trim();
             input.value = '';
-            await sendSupport({ body: caption || null, imageUrl: json.data.imageUrl });
+            const replyId = replyTo ? replyTo.id : null;
+            clearReplyTarget();
+            await sendSupport({ body: caption || null, imageUrl: json.data.imageUrl, replyToMessageId: replyId });
         } catch (err) {
             alert('ارسال تصویر ناموفق بود.');
         } finally {
@@ -796,6 +960,31 @@
             if (input) input.disabled = false;
         }
     });
+    document.getElementById('scReplyCancel').addEventListener('click', clearReplyTarget);
+    document.getElementById('scMessages').addEventListener('click', (e) => {
+        const quote = e.target.closest('.sc-quote');
+        if (quote) {
+            const gotoId = quote.getAttribute('data-goto');
+            const target = gotoId && document.querySelector('#scMessages .sc-bubble[data-mid="' + gotoId + '"]');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('is-flash');
+                setTimeout(() => target.classList.remove('is-flash'), 1200);
+            }
+            return;
+        }
+        const replyBtn = e.target.closest('.sc-reply-btn');
+        if (!replyBtn) return;
+        const bubble = replyBtn.closest('.sc-bubble');
+        if (!bubble || !bubble.getAttribute('data-mid')) return;
+        setReplyTarget({
+            id: parseInt(bubble.getAttribute('data-mid'), 10),
+            senderType: parseInt(bubble.getAttribute('data-sender') || '0', 10),
+            body: bubble.getAttribute('data-body') || '',
+            hasImage: bubble.getAttribute('data-has-image') === '1'
+        });
+    });
+
     document.getElementById('scInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();

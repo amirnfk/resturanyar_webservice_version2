@@ -798,6 +798,10 @@ namespace Resturanyar.Data
                     .WithMany(c => c.Messages)
                     .HasForeignKey(m => m.ConversationId)
                     .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne<SupportMessage>()
+                    .WithMany()
+                    .HasForeignKey(m => m.ReplyToMessageId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

@@ -1917,8 +1917,186 @@ namespace resturanyar.Controllers
             return View(customers);
         }
 
+        [HttpGet("ExportCustomersToExcel")]
+        public async Task<IActionResult> ExportCustomersToExcel(
+            string search = "",
+            string sortBy = "TotalSpent",
+            string period = "all")
+        {
+            try
+            {
+                int? restaurantId = User.GetRestaurantId();
+                if (restaurantId == null)
+                    return BadRequest("شناسه رستوران مشخص نیست.");
 
+                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period);
+                if (customers.Count == 0)
+                    return BadRequest("هیچ مشتری‌ای با این فیلتر یافت نشد.");
 
+                var content = resturanyar.Services.CustomersExcelExportService.BuildWorkbook(
+                    customers,
+                    GetCustomerPeriodLabel(period),
+                    GetCustomerSortLabel(sortBy),
+                    search);
+
+                string fileName = $"CustomersReport_{restaurantId}_{DateTime.Now:yyyyMMdd}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"خطا در تولید گزارش: {ex.Message}");
+            }
+        }
+
+        [HttpGet("ExportCustomersToPdf")]
+        public async Task<IActionResult> ExportCustomersToPdf(
+            string search = "",
+            string sortBy = "TotalSpent",
+            string period = "all")
+        {
+            try
+            {
+                int? restaurantId = User.GetRestaurantId();
+                if (restaurantId == null)
+                    return BadRequest("شناسه رستوران مشخص نیست.");
+
+                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period);
+                if (customers.Count == 0)
+                    return BadRequest("هیچ مشتری‌ای با این فیلتر یافت نشد.");
+
+                var content = resturanyar.Services.CustomersPdfExportService.BuildPdf(
+                    customers,
+                    GetCustomerPeriodLabel(period),
+                    GetCustomerSortLabel(sortBy),
+                    search,
+                    _env.WebRootPath);
+
+                string fileName = $"CustomersReport_{restaurantId}_{DateTime.Now:yyyyMMdd}.pdf";
+                return File(content, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"خطا در تولید گزارش PDF: {ex.Message}");
+            }
+        }
+
+        private async Task<List<CustomerStatsViewModel>> LoadCustomerStatsForExportAsync(
+            int restaurantId,
+            string search,
+            string sortBy,
+            string period)
+        {
+            DateTime startDate, endDate;
+            var now = DateTime.Now;
+            if (string.Equals(period, "today", StringComparison.OrdinalIgnoreCase))
+            {
+                startDate = now.Date;
+                endDate = now.Date.AddDays(1).AddTicks(-1);
+            }
+            else if (string.Equals(period, "week", StringComparison.OrdinalIgnoreCase))
+            {
+                startDate = now.Date.AddDays(-7);
+                endDate = now;
+            }
+            else if (string.Equals(period, "month", StringComparison.OrdinalIgnoreCase))
+            {
+                startDate = new DateTime(now.Year, now.Month, 1);
+                endDate = now;
+            }
+            else if (string.Equals(period, "year", StringComparison.OrdinalIgnoreCase))
+            {
+                startDate = now.Date.AddYears(-1);
+                endDate = now;
+            }
+            else
+            {
+                startDate = DateTime.MinValue;
+                endDate = DateTime.MaxValue;
+            }
+
+            var customersQuery = _context.Customers
+                .Where(c => c.RestaurantId == restaurantId && c.IsActive)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                customersQuery = customersQuery.Where(c =>
+                    (c.FullName != null && c.FullName.ToLower().Contains(searchLower)) ||
+                    c.Mobile.Contains(search) ||
+                    (c.Description != null && c.Description.ToLower().Contains(searchLower)));
+            }
+
+            var customers = await customersQuery.ToListAsync();
+            var customerIds = customers.Select(c => c.CustomerId).ToList();
+
+            var orders = await _context.Orders
+                .Where(o => o.CustomerId != null &&
+                            customerIds.Contains(o.CustomerId.Value) &&
+                            o.RestaurantId == restaurantId &&
+                            o.CreatedAt >= startDate && o.CreatedAt <= endDate &&
+                            o.StatusId == 11)
+                .Include(o => o.OrderItems)
+                .ToListAsync();
+
+            var stats = customers.Select(c => new CustomerStatsViewModel
+            {
+                CustomerId = c.CustomerId,
+                FullName = c.FullName,
+                Mobile = c.Mobile,
+                Description = c.Description,
+                IsActive = c.IsActive,
+                CreatedAt = c.CreatedAt,
+                CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
+                TotalOrders = orders.Count(o => o.CustomerId == c.CustomerId),
+                TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
+                    .Select(o => o.CreatedAt.Date).Distinct().Count(),
+                TotalSpent = orders.Where(o => o.CustomerId == c.CustomerId)
+                    .Sum(o => o.OrderItems.Sum(oi =>
+                        (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity)),
+                LastOrderDate = orders.Where(o => o.CustomerId == c.CustomerId)
+                    .Max(o => (DateTime?)o.CreatedAt),
+                LastOrderAmount = orders.Where(o => o.CustomerId == c.CustomerId)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Take(1)
+                    .Select(o => o.OrderItems.Sum(oi =>
+                        (oi.UnitPriceWithDiscount ?? oi.UnitPrice) * oi.Quantity))
+                    .FirstOrDefault()
+            }).ToList();
+
+            foreach (var s in stats)
+            {
+                s.AverageOrderValue = s.TotalOrders > 0 ? s.TotalSpent / s.TotalOrders : 0;
+                s.LastOrderDateShamsi = s.LastOrderDate.HasValue ? DateHelper.ToShamsi(s.LastOrderDate.Value) : "-";
+            }
+
+            return (sortBy switch
+            {
+                "TotalOrders" => stats.OrderByDescending(x => x.TotalOrders),
+                "TotalDistinctDays" => stats.OrderByDescending(x => x.TotalDistinctDays),
+                "LastOrderAmount" => stats.OrderByDescending(x => x.LastOrderAmount),
+                _ => stats.OrderByDescending(x => x.TotalSpent)
+            }).ToList();
+        }
+
+        private static string GetCustomerPeriodLabel(string? period) =>
+            period?.ToLowerInvariant() switch
+            {
+                "today" => "امروز",
+                "week" => "هفته گذشته",
+                "month" => "ماه جاری",
+                "year" => "سال گذشته",
+                _ => "همه زمان‌ها"
+            };
+
+        private static string GetCustomerSortLabel(string? sortBy) =>
+            sortBy switch
+            {
+                "TotalOrders" => "بیشترین تعداد سفارش",
+                "TotalDistinctDays" => "بیشترین روزهای حضور",
+                "LastOrderAmount" => "مبلغ آخرین سفارش",
+                _ => "بیشترین مبلغ خرید"
+            };
 
         [HttpGet]
         public async Task<IActionResult> ManagerOrderList(
