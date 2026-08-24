@@ -494,7 +494,7 @@ body:has(.order-page) #ry-support-root {
     top: 84px;
     background: var(--card-bg);
     border-radius: 18px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     border: 1px solid var(--card-border);
     padding: 0;
     overflow: hidden;
@@ -505,10 +505,31 @@ body:has(.order-page) #ry-support-root {
     align-items: flex-start;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 1rem 1.1rem 0.85rem;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 1.05rem 1.15rem 0.95rem;
+    border-bottom: 1px solid #eef2f7;
     background:
-        linear-gradient(180deg, rgba(255, 122, 0, 0.06), transparent 70%);
+        linear-gradient(135deg, rgba(255, 122, 0, 0.08), rgba(255, 247, 237, 0.35) 45%, #fff 100%);
+}
+
+.order-page .cart-sidebar__head-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    min-width: 0;
+}
+
+.order-page .cart-sidebar__icon {
+    flex-shrink: 0;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary), #f97316);
+    color: #fff;
+    font-size: 0.95rem;
+    box-shadow: 0 6px 14px rgba(255, 122, 0, 0.28);
 }
 
 .order-page .cart-title {
@@ -526,63 +547,177 @@ body:has(.order-page) #ry-support-root {
 }
 
 .order-page .cart-count-pill {
-    min-width: 1.75rem;
-    height: 1.75rem;
-    padding: 0 0.45rem;
+    min-width: 1.85rem;
+    height: 1.85rem;
+    padding: 0 0.5rem;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary), #f97316);
     color: #fff;
     font-size: 0.78rem;
     font-weight: 800;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255, 122, 0, 0.28);
 }
 
 .order-page .cart-items-panel {
-    padding: 0.65rem 1rem;
+    padding: 0.75rem 1rem;
     max-height: none;
+    background: #fff;
 }
 
 .order-page .cart-checkout {
-    padding: 0.85rem 1.1rem 0.35rem;
-    border-top: 1px solid #f1f5f9;
-    background: #fcfdff;
+    padding: 0.95rem 1.1rem 0.55rem;
+    border-top: 1px solid #eef2f7;
+    background:
+        linear-gradient(180deg, #f8fafc 0%, #fcfdff 40%, #fff 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
 }
 
 .order-page .cart-checkout__title {
-    font-size: 0.72rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
     font-weight: 800;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-    margin-bottom: 0.75rem;
+    color: #334155;
+    letter-spacing: 0.01em;
+    margin: 0;
 }
 
-.order-page .cart-checkout .form-label {
+.order-page .cart-checkout__title i {
+    color: var(--primary);
+    font-size: 0.82rem;
+}
+
+.order-page .cart-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.75rem 0.8rem;
+    border: 1px solid #e8eef5;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.order-page .cart-field__label {
     font-size: 0.78rem;
-    font-weight: 700;
-    margin-bottom: 0.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.order-page .cart-field__hint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    min-height: 0;
+}
+
+.order-page .cart-field__hint:empty {
+    display: none;
+}
+
+.order-page .cart-field__feedback {
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.45;
+    min-height: 0;
+}
+
+.order-page .cart-field__feedback:empty {
+    display: none;
 }
 
 .order-page .cart-checkout .form-select,
 .order-page .cart-checkout .form-control,
 .order-page .cart-checkout textarea {
-    font-size: 0.82rem;
-    border-radius: 10px;
+    font-size: 0.84rem;
+    border-radius: 11px;
+    border-color: #e2e8f0;
+    min-height: 42px;
+    box-shadow: none;
+}
+
+.order-page .cart-checkout .form-select:focus,
+.order-page .cart-checkout .form-control:focus,
+.order-page .cart-checkout textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.order-page .cart-checkout textarea {
+    min-height: 68px;
+    resize: vertical;
+}
+
+.order-page .cart-input-group .form-control {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.order-page .cart-discount-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.45rem;
+}
+
+.order-page .cart-discount-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    letter-spacing: 0.05em;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-family: ui-monospace, "IRANYekan", monospace;
+}
+
+.order-page .cart-discount-btn {
+    flex: 0 0 auto;
+    border-radius: 11px !important;
+    font-weight: 800;
+    min-height: 42px;
+    padding: 0.45rem 0.95rem;
+    background: linear-gradient(135deg, var(--primary), #f97316);
+    border: none;
+    box-shadow: 0 4px 12px rgba(255, 122, 0, 0.22);
+}
+
+.order-page .cart-discount-btn:hover {
+    background: linear-gradient(135deg, #f97316, var(--primary-hover));
+}
+
+.order-page .cart-field--discount .cart-field__feedback .text-success {
+    color: #15803d !important;
+}
+
+.order-page .cart-field--discount .cart-field__feedback .text-danger {
+    color: #b91c1c !important;
 }
 
 .order-page .cart-sidebar__footer {
-    padding: 0.85rem 1.1rem 1.1rem;
-    border-top: 1px solid #f1f5f9;
+    padding: 0.9rem 1.1rem 1.15rem;
+    border-top: 1px solid #eef2f7;
     background: #fff;
 }
 
 .order-page .btn-submit-order {
-    min-height: 46px;
+    min-height: 48px;
     font-size: 0.95rem;
     font-weight: 800;
     border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), #f97316);
+    border: none;
+    box-shadow: 0 8px 20px rgba(255, 122, 0, 0.28);
+}
+
+.order-page .btn-submit-order:hover {
+    background: linear-gradient(135deg, #f97316, var(--primary-hover));
+    transform: translateY(-1px);
 }
 
 /* Single-page scroll: sticky toolbar + sticky cart (no nested scroll panes) */
@@ -671,11 +806,19 @@ body:has(.order-page) #ry-support-root {
     grid-template-areas:
         "info actions"
         "total actions";
-    gap: 0.2rem 0.65rem;
+    gap: 0.25rem 0.7rem;
     align-items: center;
     font-size: 0.85rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 0.75rem 0.7rem;
+    margin-bottom: 0.45rem;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    background: #fcfdff;
+}
+
+.order-page .cart-item:last-of-type,
+#cartOffcanvas .cart-item:last-of-type {
+    margin-bottom: 0.35rem;
 }
 
 .order-page .cart-item-info,

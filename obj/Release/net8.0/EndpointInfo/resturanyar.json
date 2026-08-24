@@ -5526,6 +5526,10 @@
           "addressText": {
             "type": "string",
             "nullable": true
+          },
+          "discountCode": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -6219,6 +6223,14 @@
           },
           "addressText": {
             "type": "string",
+            "nullable": true
+          },
+          "discountCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "updateDiscountCode": {
+            "type": "boolean",
             "nullable": true
           }
         },

@@ -4,6 +4,7 @@ using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.Copoun;
 using resturanyar.Models.CustomerModels;
+using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Inventory;
 using resturanyar.Models.Receipt;
 using resturanyar.Models.SupportChat;
@@ -60,6 +61,8 @@ namespace Resturanyar.Data
         public DbSet<SupportChatSettings> SupportChatSettings { get; set; }
         public DbSet<SupportConversation> SupportConversations { get; set; }
         public DbSet<SupportMessage> SupportMessages { get; set; }
+        public DbSet<RestaurantDiscountCode> RestaurantDiscountCodes { get; set; }
+        public DbSet<OrderDiscountCodeUsage> OrderDiscountCodeUsages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -132,10 +135,69 @@ namespace Resturanyar.Data
                 .HasDefaultValue(OrderTypeKind.DineIn);
 
             modelBuilder.Entity<Order>()
+                .HasOne(o => o.DiscountCode)
+                .WithMany()
+                .HasForeignKey(o => o.DiscountCodeId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.DiscountCodeId)
+                .HasDatabaseName("IX_Orders_DiscountCodeId")
+                .HasFilter("[DiscountCodeId] IS NOT NULL");
+
+            modelBuilder.Entity<Order>()
                 .HasOne(o => o.Fulfillment)
                 .WithOne(f => f.Order!)
                 .HasForeignKey<OrderFulfillment>(f => f.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RestaurantDiscountCode>(entity =>
+            {
+                entity.ToTable("RestaurantDiscountCodes");
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.Code).HasMaxLength(50);
+                entity.Property(c => c.Title).HasMaxLength(100);
+                entity.Property(c => c.DiscountType).HasMaxLength(20);
+                entity.Property(c => c.DiscountValue).HasColumnType("decimal(18,2)");
+                entity.Property(c => c.MinOrderAmount).HasColumnType("decimal(18,2)");
+                entity.Property(c => c.MaxDiscountAmount).HasColumnType("decimal(18,2)");
+                entity.Property(c => c.UsedCount).HasDefaultValue(0);
+                entity.Property(c => c.IsActive).HasDefaultValue(true);
+                entity.HasIndex(c => c.RestaurantId);
+                entity.HasIndex(c => new { c.RestaurantId, c.Code }).IsUnique();
+                entity.HasIndex(c => c.SpecificCustomerId);
+                entity.HasOne(c => c.SpecificCustomer)
+                    .WithMany()
+                    .HasForeignKey(c => c.SpecificCustomerId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne<Restaurant>()
+                    .WithMany()
+                    .HasForeignKey(c => c.RestaurantId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OrderDiscountCodeUsage>(entity =>
+            {
+                entity.ToTable("OrderDiscountCodeUsages");
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.DiscountAmount).HasColumnType("decimal(18,2)");
+                entity.Property(u => u.ItemsSubtotalAtApply).HasColumnType("decimal(18,2)");
+                entity.HasIndex(u => u.OrderId).IsUnique();
+                entity.HasIndex(u => u.DiscountCodeId);
+                entity.HasIndex(u => new { u.DiscountCodeId, u.CustomerId });
+                entity.HasOne(u => u.DiscountCode)
+                    .WithMany(c => c.Usages)
+                    .HasForeignKey(u => u.DiscountCodeId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(u => u.Order)
+                    .WithMany()
+                    .HasForeignKey(u => u.OrderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne<Restaurant>()
+                    .WithMany()
+                    .HasForeignKey(u => u.RestaurantId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<OrderFulfillment>(entity =>
             {

@@ -202,7 +202,7 @@ namespace resturanyar.Services.Receipt
                 }
                 .charges-table tr:last-child td { border-bottom: none; }
                 .charges-table td.title { text-align: right; color: #334155; }
-                .charges-table td.amount { text-align: left; font-weight: 700; white-space: nowrap; }
+                .charges-table td.amount { text-align: left; font-weight: 700; white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
                 .charges-table td.amount.is-discount { color: #047857; }
                 .totals-card .rows { padding: 8px 0; }
                 .summary-row {
@@ -214,6 +214,8 @@ namespace resturanyar.Services.Receipt
                     font-size: 13px;
                 }
                 .summary-row strong { color: var(--ink); font-weight: 700; }
+                .summary-row strong.is-amount { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+                .summary-row strong.is-discount { color: #047857; }
                 .grand-total {
                     margin-top: 4px;
                     padding: 14px;
@@ -304,17 +306,18 @@ namespace resturanyar.Services.Receipt
             }).ToList();
 
             var chargeRows = receipt.ChargeLines
-                .Where(c => c.CalculatedAmount != 0 && c.Category != ChargeCategory.Discount)
+                .Where(c => c.CalculatedAmount != 0)
                 .OrderBy(c => c.DisplayOrder)
                 .Select(c => $"""
                         <tr>
                             <td class="title">{Escape(c.Title)}</td>
-                            <td class="amount">{FormatSignedMoney(c.Category, c.CalculatedAmount)}</td>
+                            <td class="amount {(c.Category == ChargeCategory.Discount ? "is-discount" : "")}" dir="ltr">{FormatSignedMoney(c.Category, c.CalculatedAmount)}</td>
                         </tr>
                         """)
                 .ToList();
 
             var hasChargeDetails = chargeRows.Count > 0
+                || receipt.DiscountTotal > 0
                 || receipt.FeesTotal > 0
                 || receipt.TaxTotal > 0;
 
@@ -327,9 +330,10 @@ namespace resturanyar.Services.Receipt
                                 {(chargeRows.Count > 0
                                     ? string.Join("", chargeRows)
                                     : $"""
-                                        <tr><td class="title">جمع اقلام</td><td class="amount">{FormatMoney(receipt.ItemsSubtotal)} تومان</td></tr>
-                                        {(receipt.FeesTotal > 0 ? $"<tr><td class=\"title\">کارمزدها</td><td class=\"amount\">{FormatMoney(receipt.FeesTotal)} تومان</td></tr>" : "")}
-                                        {(receipt.TaxTotal > 0 ? $"<tr><td class=\"title\">مالیات</td><td class=\"amount\">{FormatMoney(receipt.TaxTotal)} تومان</td></tr>" : "")}
+                                        <tr><td class="title">جمع اقلام</td><td class="amount" dir="ltr">{FormatMoney(receipt.ItemsSubtotal)} تومان</td></tr>
+                                        {(receipt.DiscountTotal > 0 ? $"<tr><td class=\"title\">تخفیف</td><td class=\"amount is-discount\" dir=\"ltr\">- {FormatMoney(receipt.DiscountTotal)} تومان</td></tr>" : "")}
+                                        {(receipt.FeesTotal > 0 ? $"<tr><td class=\"title\">کارمزدها</td><td class=\"amount\" dir=\"ltr\">{FormatMoney(receipt.FeesTotal)} تومان</td></tr>" : "")}
+                                        {(receipt.TaxTotal > 0 ? $"<tr><td class=\"title\">مالیات</td><td class=\"amount\" dir=\"ltr\">{FormatMoney(receipt.TaxTotal)} تومان</td></tr>" : "")}
                                       """)}
                             </tbody>
                         </table>
@@ -434,9 +438,10 @@ namespace resturanyar.Services.Receipt
                                 <div class="totals-card">
                                     <div class="card-head">خلاصه مبلغ</div>
                                     <div class="rows">
-                                        <div class="summary-row"><span>جمع اقلام</span><strong>{FormatMoney(receipt.ItemsSubtotal)} تومان</strong></div>
-                                        {(receipt.FeesTotal > 0 ? $"<div class=\"summary-row\"><span>کارمزدها</span><strong>{FormatMoney(receipt.FeesTotal)} تومان</strong></div>" : "")}
-                                        {(receipt.TaxTotal > 0 ? $"<div class=\"summary-row\"><span>مالیات</span><strong>{FormatMoney(receipt.TaxTotal)} تومان</strong></div>" : "")}
+                                        <div class="summary-row"><span>جمع اقلام</span><strong class="is-amount" dir="ltr">{FormatMoney(receipt.ItemsSubtotal)} تومان</strong></div>
+                                        {(receipt.DiscountTotal > 0 ? $"<div class=\"summary-row\"><span>تخفیف</span><strong class=\"is-amount is-discount\" dir=\"ltr\">- {FormatMoney(receipt.DiscountTotal)} تومان</strong></div>" : "")}
+                                        {(receipt.FeesTotal > 0 ? $"<div class=\"summary-row\"><span>کارمزدها</span><strong class=\"is-amount\" dir=\"ltr\">{FormatMoney(receipt.FeesTotal)} تومان</strong></div>" : "")}
+                                        {(receipt.TaxTotal > 0 ? $"<div class=\"summary-row\"><span>مالیات</span><strong class=\"is-amount\" dir=\"ltr\">{FormatMoney(receipt.TaxTotal)} تومان</strong></div>" : "")}
                                     </div>
                                     <div class="grand-total">
                                         <span>جمع کل</span>
@@ -492,7 +497,7 @@ namespace resturanyar.Services.Receipt
         private static string FormatSignedMoney(ChargeCategory category, decimal value)
         {
             var formatted = FormatMoney(Math.Abs(value));
-            return category == ChargeCategory.Discount ? $"-{formatted} تومان" : $"{formatted} تومان";
+            return category == ChargeCategory.Discount ? $"- {formatted} تومان" : $"{formatted} تومان";
         }
     }
 }

@@ -79,6 +79,33 @@ namespace resturanyar.Controllers.Api.V2
             });
         }
 
+        [HttpPost("orders/{orderId}/receipt/discount-code")]
+        public async Task<IActionResult> SetReceiptDiscountCode(int orderId, [FromBody] SetReceiptDiscountCodeRequest? request)
+        {
+            var ownerId = GetOwnerIdFromToken();
+            if (ownerId == null)
+                return Unauthorized(new { success = false, message = "احراز هویت نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            if (!await OwnsRestaurant(ownerId.Value, order.RestaurantId))
+                return Forbid();
+
+            var result = await GetReceiptService().SetOrderDiscountCodeAsync(
+                orderId,
+                order.RestaurantId,
+                request?.Code);
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt
+            });
+        }
+
         [HttpPost("orders/{orderId}/receipt/issue")]
         public async Task<IActionResult> IssueReceipt(int orderId, [FromBody] ReceiptPreviewRequest? request)
         {

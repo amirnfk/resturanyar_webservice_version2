@@ -201,6 +201,9 @@
 
 .receipt-issue-modal__body {
     padding: 1.15rem 1.25rem 1rem;
+    max-height: min(62vh, 560px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .receipt-issue-modal__footer {
@@ -286,6 +289,223 @@
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
+}
+
+.receipt-discount-section {
+    margin-bottom: 1rem;
+    border: 1px solid #e8eef5;
+    border-radius: 14px;
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+.receipt-discount-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 0.95rem;
+    border: none;
+    background: transparent;
+    text-align: right;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.receipt-discount-header:hover {
+    background: rgba(255, 122, 0, 0.06);
+}
+
+.receipt-discount-header__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.receipt-discount-header__title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #0f172a;
+}
+
+.receipt-discount-header__hint {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.receipt-discount-header__hint.is-applied {
+    color: #15803d;
+}
+
+.receipt-discount-header__chip {
+    flex: 0 0 auto;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: #fff1e8;
+    border: 1px solid #ffd0b5;
+    color: #c2410c;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.receipt-discount-header__chevron {
+    flex: 0 0 auto;
+    color: #64748b;
+    font-size: 0.78rem;
+    transition: transform 0.2s ease;
+}
+
+.receipt-discount-section.is-expanded .receipt-discount-header__chevron {
+    transform: rotate(180deg);
+}
+
+.receipt-discount-body {
+    padding: 0 0.95rem 0.95rem;
+}
+
+.receipt-discount-code-entry {
+    display: block;
+}
+
+.receipt-discount-code-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.receipt-discount-code-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0;
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+    letter-spacing: 0.06em;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-family: ui-monospace, "IRANYekan", monospace;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.receipt-discount-code-input:focus {
+    border-color: #ff7a00;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.16);
+    outline: none;
+}
+
+.receipt-discount-code-apply,
+.receipt-discount-code-clear {
+    flex: 0 0 auto;
+    border-radius: 12px !important;
+    font-weight: 800;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+}
+
+.receipt-discount-code-apply {
+    background: linear-gradient(135deg, #ff7a00, #f97316);
+    border: none;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(255, 122, 0, 0.22);
+}
+
+.receipt-discount-code-apply:hover {
+    background: linear-gradient(135deg, #f97316, #e66900);
+    color: #fff;
+}
+
+.receipt-discount-code-applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: 12px;
+    background: #e8f8ec;
+    border: 1px solid #b7e6c1;
+}
+
+.receipt-discount-code-applied__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.receipt-discount-code-applied__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #15803d;
+}
+
+.receipt-discount-code-applied__chip {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: #fff1e8;
+    border: 1px solid #ffd0b5;
+    color: #c2410c;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.receipt-discount-code-clear {
+    border-color: #fdba74;
+    color: #c2410c;
+}
+
+.receipt-discount-code-clear:hover {
+    background: #fff7ed;
+    border-color: #ff7a00;
+    color: #9a3412;
+}
+
+.receipt-discount-code-feedback {
+    margin-top: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.receipt-discount-code-feedback.is-ok {
+    color: #15803d;
+    background: #ecfdf3;
+}
+
+.receipt-discount-code-feedback.is-error {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+.receipt-discount-code-feedback[hidden],
+.receipt-discount-body[hidden],
+.receipt-discount-code-entry[hidden],
+.receipt-discount-code-applied[hidden],
+.receipt-discount-header__chip[hidden] {
+    display: none !important;
+}
+
+.receipt-charge-row.is-locked {
+    opacity: 0.72;
+    background: #f8fafc;
+}
+
+.receipt-charge-row__lock-hint {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #b45309;
 }
 
 .receipt-charge-row {
@@ -396,6 +616,18 @@
     font-size: 1rem;
     font-weight: 800;
     color: #0f172a;
+}
+
+/* Keep numeric amounts (and leading minus for discounts) LTR inside RTL modal */
+.receipt-summary__amount {
+    direction: ltr;
+    unicode-bidi: isolate;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.receipt-summary__amount.is-discount {
+    color: #047857;
 }
 
 .receipt-summary__placeholder {

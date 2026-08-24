@@ -419,8 +419,46 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            var hasDiscountCode = !string.IsNullOrWhiteSpace(request.DiscountCode);
+            if (hasDiscountCode)
+            {
+                var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
+                var subtotal = resturanyar.Services.DiscountCodes.DiscountCodeService.ComputeItemsSubtotal(order);
+                var validation = await discountService.ValidateAsync(new resturanyar.Models.DiscountCodes.ValidateDiscountCodeRequest
+                {
+                    RestaurantId = request.RestaurantId,
+                    Code = request.DiscountCode!,
+                    ItemsSubtotal = subtotal,
+                    CustomerId = request.CustomerId
+                });
+                if (!validation.Success)
+                    return BadRequest(new { success = false, message = validation.Message });
+            }
+
+            await using var orderTx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                if (hasDiscountCode)
+                {
+                    var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
+                    var attach = await discountService.AttachToOrderAsync(order, request.DiscountCode!);
+                    if (!attach.Success)
+                    {
+                        await orderTx.RollbackAsync();
+                        return BadRequest(new { success = false, message = attach.Message });
+                    }
+                }
+
+                await orderTx.CommitAsync();
+            }
+            catch
+            {
+                await orderTx.RollbackAsync();
+                throw;
+            }
 
             if (prepared.Fulfillment != null)
                 await fulfillmentService.AttachFulfillmentAsync(order, prepared.Fulfillment);
@@ -1023,6 +1061,26 @@ namespace resturanyar.Controllers.Api.V2
                 data = result.Receipt == null && !result.Success
                     ? null
                     : new { receipt = result.Receipt, appliedCharges = result.AppliedCharges }
+            });
+        }
+
+        [HttpPost("orders/{orderId}/receipt/discount-code")]
+        public async Task<IActionResult> SetReceiptDiscountCode(int orderId, [FromBody] SetReceiptDiscountCodeRequest? request)
+        {
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            var result = await GetReceiptService().SetOrderDiscountCodeAsync(
+                orderId,
+                order.RestaurantId,
+                request?.Code);
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt
             });
         }
 

@@ -437,10 +437,39 @@ else
 
                 <section class="receipt-section">
                     <div class="receipt-section__label">هزینه‌ها و تخفیف‌ها</div>
-                    <p class="receipt-section__hint mb-2">فقط موارد مرتبط با نوع سفارش انتخاب‌شده نمایش داده می‌شود</p>
                     <div id="receiptChargeList" class="receipt-charge-list"></div>
                     <div id="receiptChargeEmpty" class="receipt-charge-empty" hidden>
                         برای این نوع سفارش هزینه‌ای تعریف نشده است.
+                    </div>
+                </section>
+
+                <section class="receipt-section receipt-discount-section" id="receiptDiscountSection">
+                    <button type="button" class="receipt-discount-header" id="receiptDiscountHeader"
+                            aria-expanded="false" aria-controls="receiptDiscountBody">
+                        <div class="receipt-discount-header__text">
+                            <span class="receipt-discount-header__title">کد تخفیف سفارش</span>
+                            <span class="receipt-discount-header__hint" id="receiptDiscountHeaderHint">اختیاری — برای افزودن کلیک کنید</span>
+                        </div>
+                        <span class="receipt-discount-header__chip" id="receiptDiscountHeaderChip" hidden></span>
+                        <i class="fa-solid fa-chevron-down receipt-discount-header__chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="receipt-discount-body" id="receiptDiscountBody" hidden>
+                        <div class="receipt-discount-code-entry" id="receiptDiscountCodeEntry">
+                            <div class="receipt-discount-code-row">
+                                <input type="text" id="receiptDiscountCodeInput" class="form-control receipt-discount-code-input"
+                                       placeholder="مثلاً NOWROZ" maxlength="50" autocomplete="off"
+                                       inputmode="latin" />
+                                <button type="button" class="btn btn-primary receipt-discount-code-apply" id="receiptDiscountCodeApply">اعمال</button>
+                            </div>
+                        </div>
+                        <div class="receipt-discount-code-applied" id="receiptDiscountCodeApplied" hidden>
+                            <div class="receipt-discount-code-applied__info">
+                                <span class="receipt-discount-code-applied__label">کد اعمال‌شده</span>
+                                <span class="receipt-discount-code-applied__chip" id="receiptAppliedDiscountCode"></span>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary receipt-discount-code-clear" id="receiptDiscountCodeClear">حذف</button>
+                        </div>
+                        <div id="receiptDiscountCodeFeedback" class="receipt-discount-code-feedback" hidden></div>
                     </div>
                 </section>
 

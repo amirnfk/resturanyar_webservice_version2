@@ -123,9 +123,14 @@
         <div class="col-lg-4 order-cart-col d-none d-lg-block">
             <aside class="cart-sidebar">
                 <div class="cart-sidebar__head">
-                    <div>
-                        <h4 class="cart-title">سفارش جاری</h4>
-                        <p class="cart-subtitle">آیتم‌ها را انتخاب کنید و ثبت کنید</p>
+                    <div class="cart-sidebar__head-main">
+                        <span class="cart-sidebar__icon" aria-hidden="true">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </span>
+                        <div>
+                            <h4 class="cart-title">سفارش جاری</h4>
+                            <p class="cart-subtitle">آیتم‌ها را انتخاب کنید و ثبت کنید</p>
+                        </div>
                     </div>
                     <span class="cart-count-pill" id="desktopCartCount">۰</span>
                 </div>
@@ -139,10 +144,13 @@
                 </div>
 
                 <div class="cart-checkout">
-                    <div class="cart-checkout__title">جزئیات سفارش</div>
+                    <div class="cart-checkout__title">
+                        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                        <span>جزئیات سفارش</span>
+                    </div>
 
-                    <div class="mb-3" id="orderTypeSection">
-                        <label class="form-label">نوع سفارش</label>
+                    <div class="cart-field" id="orderTypeSection">
+                        <label class="cart-field__label">نوع سفارش</label>
                         <div class="order-type-chips" id="orderTypeChips" role="radiogroup" aria-label="نوع سفارش">
                             <button type="button" class="order-type-chip is-active" data-order-type="0" aria-pressed="true">
                                 <span class="order-type-chip__icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>
@@ -162,18 +170,18 @@
                         </select>
                     </div>
 
-                    <div class="mb-3" id="tableSelectSection">
-                        <label class="form-label">میز <span class="text-danger" id="tableRequiredMark">*</span></label>
+                    <div class="cart-field" id="tableSelectSection">
+                        <label class="cart-field__label" for="tableSelect">میز <span class="text-danger" id="tableRequiredMark">*</span></label>
                         <select id="tableSelect" class="form-select" required>
                             <option value="">انتخاب میز</option>
                         </select>
-                        <small class="text-muted" id="tableSeatsInfo"></small>
+                        <small class="cart-field__hint" id="tableSeatsInfo"></small>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">مشتری <span class="text-danger d-none" id="customerRequiredMark">*</span></label>
+                    <div class="cart-field">
+                        <label class="cart-field__label">مشتری <span class="text-danger d-none" id="customerRequiredMark">*</span></label>
                         <div class="customer-search-wrapper">
-                            <div class="input-group">
+                            <div class="input-group cart-input-group">
                                 <input type="text" id="desktopCustomerSearch" class="form-control"
                                        placeholder="موبایل یا نام..." autocomplete="off">
                                 <button class="btn btn-new-customer" type="button"
@@ -189,8 +197,8 @@
                         <div id="desktopSelectedCustomerInfo" class="mt-2"></div>
                     </div>
 
-                    <div class="mb-3 d-none" id="addressSection">
-                        <label class="form-label">آدرس ارسال <span class="text-danger">*</span></label>
+                    <div class="cart-field d-none" id="addressSection">
+                        <label class="cart-field__label">آدرس ارسال <span class="text-danger">*</span></label>
                         <div id="selectedAddressInfo" class="d-none"></div>
                         <div id="addressPickerPanel">
                             <select id="addressSelect" class="form-select mb-2">
@@ -207,8 +215,8 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">توضیحات</label>
+                    <div class="cart-field">
+                        <label class="cart-field__label" for="orderDescription">توضیحات</label>
                         <textarea id="orderDescription" class="form-control" rows="2" placeholder="اختیاری..."></textarea>
                     </div>
                 </div>

@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Helpers;
 using resturanyar.Models;
+using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Receipt;
+using resturanyar.Services.DiscountCodes;
 using Resturanyar.Data;
 using System.Text.Json;
 
@@ -37,6 +39,8 @@ namespace resturanyar.Services.Receipt
         Task<List<ChargeDefinitionDto>> GetChargeDefinitionsAsync(int restaurantId);
         Task<List<ChargeDefinitionDto>> EnsureChargeDefinitionsAsync(int restaurantId);
         Task<bool> SaveChargeDefinitionsAsync(int restaurantId, List<ChargeDefinitionDto> definitions);
+        /// <summary>Soft-bind or clear an order discount code from the receipt dialog (usage commits on issue).</summary>
+        Task<ReceiptServiceResult> SetOrderDiscountCodeAsync(int orderId, int restaurantId, string? code);
         string RenderHtml(ReceiptDto receipt);
         bool IsSettlementStatus(int statusId);
         bool IsOrderEligibleForChargeDefaults(Restaurant restaurant, DateTime orderCreatedAt);
@@ -52,15 +56,18 @@ namespace resturanyar.Services.Receipt
         private readonly AppDbContext _context;
         private readonly IReceiptCalculationEngine _engine;
         private readonly IReceiptRenderer _renderer;
+        private readonly IDiscountCodeService _discountCodes;
 
         public ReceiptService(
             AppDbContext context,
             IReceiptCalculationEngine engine,
-            IReceiptRenderer renderer)
+            IReceiptRenderer renderer,
+            IDiscountCodeService discountCodes)
         {
             _context = context;
             _engine = engine;
             _renderer = renderer;
+            _discountCodes = discountCodes;
         }
 
         public async Task<ReceiptServiceResult> GetStatusAsync(int orderId, int restaurantId)
@@ -72,16 +79,20 @@ namespace resturanyar.Services.Receipt
             if (restaurant == null)
                 return Fail("رستوران یافت نشد.", 404);
 
-            var orderExists = await _context.Orders
+            var order = await _context.Orders
                 .AsNoTracking()
-                .AnyAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
+                .Where(o => o.OrderId == orderId && o.RestaurantId == restaurantId)
+                .Select(o => new { o.OrderId, o.DiscountCodeId })
+                .FirstOrDefaultAsync();
 
-            if (!orderExists)
+            if (order == null)
                 return Fail("سفارش یافت نشد.", 404);
 
             var snapshot = await _context.OrderReceiptSnapshots
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.OrderId == orderId);
+
+            var usesCharges = restaurant.ReceiptChargesEnabled || order.DiscountCodeId.HasValue;
 
             return new ReceiptServiceResult
             {
@@ -91,7 +102,7 @@ namespace resturanyar.Services.Receipt
                     OrderId = orderId,
                     IsIssued = snapshot != null,
                     IssuedAt = snapshot?.IssuedAt,
-                    UsesCharges = restaurant.ReceiptChargesEnabled
+                    UsesCharges = usesCharges
                 }
             };
         }
@@ -122,7 +133,7 @@ namespace resturanyar.Services.Receipt
                 };
             }
 
-            if (!restaurant.ReceiptChargesEnabled)
+            if (!restaurant.ReceiptChargesEnabled && !order.DiscountCodeId.HasValue)
             {
                 var legacy = await PreviewAsync(orderId, restaurantId, new ReceiptPreviewRequest { OrderType = order.OrderType });
                 return new ReceiptPreviewDefaultsResult
@@ -132,6 +143,19 @@ namespace resturanyar.Services.Receipt
                     Receipt = legacy.Receipt,
                     AppliedCharges = new List<ReceiptChargeSelectionDto>(),
                     StatusCode = legacy.StatusCode
+                };
+            }
+
+            if (!restaurant.ReceiptChargesEnabled && order.DiscountCodeId.HasValue)
+            {
+                var codeOnly = await PreviewAsync(orderId, restaurantId, new ReceiptPreviewRequest { OrderType = order.OrderType });
+                return new ReceiptPreviewDefaultsResult
+                {
+                    Success = codeOnly.Success,
+                    Message = codeOnly.Message,
+                    Receipt = codeOnly.Receipt,
+                    AppliedCharges = new List<ReceiptChargeSelectionDto>(),
+                    StatusCode = codeOnly.StatusCode
                 };
             }
 
@@ -159,6 +183,7 @@ namespace resturanyar.Services.Receipt
 
             var flag = OrderTypeToFlag(order.OrderType);
             var applicableDefs = definitions
+                .Where(d => !IsLegacyInvoiceDiscount(d.Code))
                 .Where(d => (d.AppliesToOrderTypes & flag) != 0)
                 .ToList();
 
@@ -211,10 +236,11 @@ namespace resturanyar.Services.Receipt
             if (!load.Success)
                 return ToFailResult(load);
 
-            if (!load.Restaurant!.ReceiptChargesEnabled)
+            if (!load.Restaurant!.ReceiptChargesEnabled && !load.Order!.DiscountCodeId.HasValue)
                 return Success(BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!));
 
             // Always calculate live so staff can preview/edit charges even after a snapshot exists.
+            // When charges are off but a discount code is attached, only the code line is applied.
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
             return Success(receipt);
         }
@@ -329,6 +355,7 @@ namespace resturanyar.Services.Receipt
 
             var flag = OrderTypeToFlag(orderType);
             var charges = definitions
+                .Where(d => !IsLegacyInvoiceDiscount(d.Code))
                 .Where(d => (d.AppliesToOrderTypes & flag) != 0)
                 .Select(d => new ReceiptChargeSelectionDto
                 {
@@ -359,7 +386,7 @@ namespace resturanyar.Services.Receipt
             if (!load.Success)
                 return ToFailResult(load);
 
-            if (!load.Restaurant!.ReceiptChargesEnabled)
+            if (!load.Restaurant!.ReceiptChargesEnabled && !load.Order!.DiscountCodeId.HasValue)
                 return Fail("قابلیت فاکتور با کارمزد برای این رستوران فعال نیست.", 400);
 
             var existing = await _context.OrderReceiptSnapshots
@@ -372,6 +399,15 @@ namespace resturanyar.Services.Receipt
                 return Fail("فاکتور این سفارش هنوز صادر نشده است.", 404);
 
             request ??= new ReceiptPreviewRequest();
+
+            // Soft-attached codes only consume usage when the receipt is actually issued.
+            if (load.Order!.DiscountCodeId.HasValue)
+            {
+                var commit = await _discountCodes.CommitUsageForOrderAsync(load.Order);
+                if (!commit.Success)
+                    return Fail(commit.Message ?? "امکان ثبت مصرف کد تخفیف وجود ندارد.", 400);
+            }
+
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
             receipt.IsIssued = true;
             receipt.IssuedAt = DateTime.UtcNow;
@@ -417,7 +453,7 @@ namespace resturanyar.Services.Receipt
 
             ReceiptDto receipt;
 
-            if (!load.Restaurant!.ReceiptChargesEnabled)
+            if (!load.Restaurant!.ReceiptChargesEnabled && !load.Order!.DiscountCodeId.HasValue)
             {
                 receipt = BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!);
             }
@@ -428,15 +464,36 @@ namespace resturanyar.Services.Receipt
                     .FirstOrDefaultAsync(s => s.OrderId == orderId);
 
                 if (snapshot == null)
-                    return Fail("فاکتور این سفارش هنوز صادر نشده است.", 404);
+                {
+                    if (!load.Restaurant.ReceiptChargesEnabled && load.Order.DiscountCodeId.HasValue)
+                    {
+                        // Discount-code-only restaurants: allow live print preview before issue.
+                        receipt = await BuildCalculatedReceiptAsync(
+                            load.Order!,
+                            load.Restaurant,
+                            load.StatusName!,
+                            new ReceiptPreviewRequest { OrderType = load.Order.OrderType });
+                    }
+                    else
+                    {
+                        return Fail("فاکتور این سفارش هنوز صادر نشده است.", 404);
+                    }
+                }
+                else
+                {
+                    receipt = DeserializeReceipt(snapshot.ReceiptPayloadJson)
+                        ?? BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!);
 
-                receipt = DeserializeReceipt(snapshot.ReceiptPayloadJson)
-                    ?? BuildLegacyReceipt(load.Order!, load.Restaurant, load.StatusName!);
+                    // Financial snapshot stays frozen; workflow status is always live on reprint.
+                    if (!string.IsNullOrWhiteSpace(load.StatusName))
+                        receipt.OrderStatus = load.StatusName!;
 
-                EnrichOriginalUnitPricesFromOrder(receipt, load.Order!);
+                    EnrichOriginalUnitPricesFromOrder(receipt, load.Order!);
+                    EnrichDiscountCodeMeta(receipt, load.Order!);
 
-                if (recordPrintHistory)
-                    await AddPrintHistory(orderId, snapshot.Id, userId, channel, receipt);
+                    if (recordPrintHistory)
+                        await AddPrintHistory(orderId, snapshot.Id, userId, channel, receipt);
+                }
             }
 
             return Success(receipt);
@@ -457,24 +514,34 @@ namespace resturanyar.Services.Receipt
                 .OrderBy(d => d.DisplayOrder)
                 .ToListAsync();
 
-            return defs.Select(MapDefinition).ToList();
+            return defs
+                .Where(d => !IsLegacyInvoiceDiscount(d.Code))
+                .Select(MapDefinition)
+                .ToList();
         }
+
+        private static bool IsLegacyInvoiceDiscount(string? code) =>
+            string.Equals(code, LegacyInvoiceDiscountCode, StringComparison.OrdinalIgnoreCase);
+
+        private const string LegacyInvoiceDiscountCode = "invoice_discount";
 
         public async Task<List<ChargeDefinitionDto>> EnsureChargeDefinitionsAsync(int restaurantId)
         {
-            var defs = await GetChargeDefinitionsAsync(restaurantId);
-            if (defs.Count > 0)
-                return defs;
-
             var restaurant = await _context.Restaurants
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
 
             if (restaurant == null || !restaurant.ReceiptChargesEnabled)
-                return defs;
+                return new List<ChargeDefinitionDto>();
 
-            await SaveChargeDefinitionsAsync(restaurantId, CreateDefaultChargeTemplates());
-            return await GetChargeDefinitionsAsync(restaurantId);
+            var defs = await GetChargeDefinitionsAsync(restaurantId);
+            if (defs.Count == 0)
+            {
+                await SaveChargeDefinitionsAsync(restaurantId, CreateDefaultChargeTemplates());
+                return await GetChargeDefinitionsAsync(restaurantId);
+            }
+
+            return defs;
         }
 
         private static List<ChargeDefinitionDto> CreateDefaultChargeTemplates() => new()
@@ -544,9 +611,17 @@ namespace resturanyar.Services.Receipt
             if (definitions == null || definitions.Count == 0)
                 return false;
 
+            definitions = definitions
+                .Where(d => !IsLegacyInvoiceDiscount(d.Code))
+                .ToList();
+
             var existing = await _context.RestaurantChargeDefinitions
                 .Where(d => d.RestaurantId == restaurantId)
                 .ToListAsync();
+
+            var legacyRows = existing.Where(e => IsLegacyInvoiceDiscount(e.Code)).ToList();
+            if (legacyRows.Count > 0)
+                _context.RestaurantChargeDefinitions.RemoveRange(legacyRows);
 
             foreach (var dto in definitions)
             {
@@ -584,6 +659,41 @@ namespace resturanyar.Services.Receipt
             return true;
         }
 
+        public async Task<ReceiptServiceResult> SetOrderDiscountCodeAsync(int orderId, int restaurantId, string? code)
+        {
+            var load = await LoadOrderContext(orderId, restaurantId);
+            if (!load.Success)
+                return ToFailResult(load);
+
+            string okMessage;
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                var detach = await _discountCodes.DetachFromOrderAsync(load.Order!);
+                if (!detach.Success)
+                    return Fail(detach.Message, 400);
+                okMessage = detach.Message;
+            }
+            else
+            {
+                var attach = await _discountCodes.AttachToOrderAsync(load.Order!, code);
+                if (!attach.Success)
+                    return Fail(attach.Message, 400);
+                okMessage = attach.Message;
+            }
+
+            var preview = await PreviewAsync(
+                orderId,
+                restaurantId,
+                new ReceiptPreviewRequest { OrderType = load.Order!.OrderType });
+            if (!preview.Success || preview.Receipt == null)
+                return preview.Success
+                    ? Fail("پیش‌نمایش فاکتور در دسترس نیست.", 400)
+                    : preview;
+
+            preview.Message = okMessage;
+            return preview;
+        }
+
         public string RenderHtml(ReceiptDto receipt) => _renderer.RenderHtml(receipt);
 
         private async Task<OrderLoadResult> LoadOrderContext(int orderId, int restaurantId)
@@ -592,6 +702,7 @@ namespace resturanyar.Services.Receipt
                 .Include(o => o.OrderItems)
                 .Include(o => o.Customer)
                 .Include(o => o.Fulfillment)
+                .Include(o => o.DiscountCode)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
 
             if (order == null)
@@ -647,13 +758,29 @@ namespace resturanyar.Services.Receipt
             var items = order.OrderItems?.Select(MapItem).ToList() ?? new List<ReceiptItemDto>();
             var subtotal = items.Sum(i => i.LineTotal);
 
-            var definitions = await _context.RestaurantChargeDefinitions
-                .AsNoTracking()
-                .Where(d => d.RestaurantId == order.RestaurantId)
-                .OrderBy(d => d.DisplayOrder)
-                .ToListAsync();
+            List<ChargeCalculationInput> chargeInputs;
 
-            var chargeInputs = BuildChargeInputs(definitions, orderType, request.Charges);
+            if (!restaurant.ReceiptChargesEnabled)
+            {
+                // Discount-code-only path: no restaurant fee/tax templates.
+                chargeInputs = new List<ChargeCalculationInput>();
+            }
+            else
+            {
+                var definitions = await _context.RestaurantChargeDefinitions
+                    .AsNoTracking()
+                    .Where(d => d.RestaurantId == order.RestaurantId)
+                    .OrderBy(d => d.DisplayOrder)
+                    .ToListAsync();
+
+                chargeInputs = BuildChargeInputs(definitions, orderType, request.Charges);
+            }
+
+            var discountMeta = await ApplyOrderDiscountCodeAsync(
+                order,
+                subtotal,
+                chargeInputs);
+
             var calculation = _engine.Calculate(subtotal, chargeInputs);
 
             return new ReceiptDto
@@ -680,8 +807,51 @@ namespace resturanyar.Services.Receipt
                 TaxTotal = calculation.TaxTotal,
                 GrandTotal = calculation.GrandTotal,
                 UsesCharges = true,
-                IsIssued = false
+                IsIssued = false,
+                HasOrderDiscountCode = discountMeta.HasCode,
+                OrderDiscountCode = discountMeta.Code
             };
+        }
+
+        private async Task<(bool HasCode, string? Code)> ApplyOrderDiscountCodeAsync(
+            Order order,
+            decimal itemsSubtotal,
+            List<ChargeCalculationInput> chargeInputs)
+        {
+            if (!order.DiscountCodeId.HasValue)
+                return (false, null);
+
+            var code = await _discountCodes.GetAttachedDefinitionAsync(order.DiscountCodeId);
+            if (code == null)
+                return (true, null);
+
+            var codeAmount = _discountCodes.CalculateAmount(code, itemsSubtotal);
+
+            chargeInputs.RemoveAll(c =>
+                string.Equals(c.Code, DiscountCodeService.ChargeLineCode, StringComparison.OrdinalIgnoreCase));
+
+            if (codeAmount <= 0)
+                return (true, code.Code);
+
+            var title = string.IsNullOrWhiteSpace(code.Title)
+                ? $"تخفیف {code.Code}"
+                : $"{code.Title} ({code.Code})";
+
+            chargeInputs.Add(new ChargeCalculationInput
+            {
+                DefinitionId = null,
+                Code = DiscountCodeService.ChargeLineCode,
+                Title = title,
+                Category = ChargeCategory.Discount,
+                CalculationType = ChargeCalculationType.Fixed,
+                Value = codeAmount,
+                IsEnabled = true,
+                IsTaxable = true,
+                PercentageBase = PercentageBaseKind.ItemsNet,
+                DisplayOrder = 1
+            });
+
+            return (true, code.Code);
         }
 
         private ReceiptDto BuildLegacyReceipt(Order order, Restaurant restaurant, string statusName)
@@ -720,6 +890,7 @@ namespace resturanyar.Services.Receipt
         {
             var flag = OrderTypeToFlag(orderType);
             var applicable = definitions
+                .Where(d => !IsLegacyInvoiceDiscount(d.Code))
                 .Where(d => (d.AppliesToOrderTypes & flag) != 0)
                 .ToList();
 
@@ -804,6 +975,37 @@ namespace resturanyar.Services.Receipt
         /// Older issued snapshots only store effective unit price. Backfill list price from live order items
         /// so HTML/Android print can show original + discounted unit price.
         /// </summary>
+        private static void EnrichDiscountCodeMeta(ReceiptDto receipt, Order order)
+        {
+            if (receipt == null || order == null)
+                return;
+
+            if (!order.DiscountCodeId.HasValue)
+                return;
+
+            receipt.HasOrderDiscountCode = true;
+            if (string.IsNullOrWhiteSpace(receipt.OrderDiscountCode)
+                && order.DiscountCode != null
+                && !string.IsNullOrWhiteSpace(order.DiscountCode.Code))
+            {
+                receipt.OrderDiscountCode = order.DiscountCode.Code.Trim().ToUpperInvariant();
+            }
+
+            // Ensure printed charge line title still carries the code when snapshots are incomplete.
+            if (!string.IsNullOrWhiteSpace(receipt.OrderDiscountCode)
+                && receipt.ChargeLines != null)
+            {
+                var codeLine = receipt.ChargeLines.FirstOrDefault(c =>
+                    string.Equals(c.Code, DiscountCodeService.ChargeLineCode, StringComparison.OrdinalIgnoreCase));
+                if (codeLine != null
+                    && !string.IsNullOrWhiteSpace(codeLine.Title)
+                    && codeLine.Title.IndexOf(receipt.OrderDiscountCode, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    codeLine.Title = $"{codeLine.Title.Trim()} ({receipt.OrderDiscountCode})";
+                }
+            }
+        }
+
         private static void EnrichOriginalUnitPricesFromOrder(ReceiptDto receipt, Order order)
         {
             if (receipt?.Items == null || order?.OrderItems == null || order.OrderItems.Count == 0)

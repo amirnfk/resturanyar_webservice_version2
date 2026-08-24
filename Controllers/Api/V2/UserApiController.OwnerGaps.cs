@@ -197,6 +197,32 @@ namespace resturanyar.Controllers.Api.V2
 
             await _context.SaveChangesAsync();
 
+            var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
+            if (request.UpdateDiscountCode == true)
+            {
+                if (string.IsNullOrWhiteSpace(request.DiscountCode))
+                {
+                    var detach = await discountService.DetachFromOrderAsync(order);
+                    if (!detach.Success)
+                        return BadRequest(new { success = false, message = detach.Message });
+                }
+                else
+                {
+                    var attach = await discountService.AttachToOrderAsync(order, request.DiscountCode);
+                    if (!attach.Success)
+                        return BadRequest(new { success = false, message = attach.Message });
+                }
+            }
+            else if (order.DiscountCodeId.HasValue)
+            {
+                var refresh = await discountService.RefreshAttachedUsageAsync(order);
+                if (!refresh.Success)
+                {
+                    // Items changed under the code (e.g. below min order): release usage rather than leave an invalid attach.
+                    await discountService.DetachFromOrderAsync(order);
+                }
+            }
+
             var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
             if (await courierService.TryAutoAssignDefaultDriverAsync(
                     order.OrderId, order.RestaurantId, oldStatusId, order.StatusId))

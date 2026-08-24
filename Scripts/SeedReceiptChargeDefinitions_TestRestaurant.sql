@@ -14,10 +14,10 @@ END;
 
 MERGE dbo.RestaurantChargeDefinitions AS target
 USING (VALUES
-    (@RestaurantId, N'service',   N'حق سرویس',       1, 0, 10,   0, 1, 0, 10, 7),
-    (@RestaurantId, N'vat',       N'مالیات بر ارزش افزوده', 2, 0, 9,    0, 0, 0, 20, 7),
-    (@RestaurantId, N'packaging', N'هزینه بسته‌بندی', 1, 1, 20000, 0, 0, 0, 30, 6),
-    (@RestaurantId, N'delivery',  N'هزینه ارسال',    1, 1, 30000, 0, 0, 0, 40, 4)
+    (@RestaurantId, N'service',          N'حق سرویس',              1, 0, 10,    0, 1, 0, 10, 7),
+    (@RestaurantId, N'vat',              N'مالیات بر ارزش افزوده', 2, 0, 9,     0, 0, 0, 20, 7),
+    (@RestaurantId, N'packaging',        N'هزینه بسته‌بندی',       1, 1, 20000, 0, 0, 0, 30, 6),
+    (@RestaurantId, N'delivery',         N'هزینه ارسال',           1, 1, 30000, 0, 0, 0, 40, 4)
 ) AS source (RestaurantId, Code, Title, ChargeCategory, CalculationType, Value, IsEnabled, IsTaxable, PercentageBase, DisplayOrder, AppliesToOrderTypes)
 ON target.RestaurantId = source.RestaurantId AND target.Code = source.Code
 WHEN NOT MATCHED THEN

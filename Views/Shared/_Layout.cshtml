@@ -82,14 +82,24 @@
                     <i class="fas fa-receipt"></i>
                     <span>لیست سفارشات</span>
                 </a>
+                @if (layoutReceiptChargesEnabled)
+                {
+                    <a href="@Url.Action("ChargeSettings", "Receipt")" class="nav-item @(currentController == "Receipt" ? "active" : "")">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>تنظیمات فاکتور</span>
+                    </a>
+                }
                 <a href="@Url.Action("TableList", "Home")" class="nav-item @(currentAction == "TableList" ? "active" : "")">
                     <i class="fas fa-chair"></i>
                     <span>مدیریت میزها</span>
                 </a>
-
                 <a href="@Url.Action("CategoryList", "Home")" class="nav-item @(currentAction == "CategoryList" ? "active" : "")">
                     <i class="fas fa-layer-group"></i>
-                    <span>مدیریت دسته بندی ها</span>
+                    <span>مدیریت دسته‌بندی‌ها</span>
+                </a>
+                <a href="@Url.Action("DiscountCodeList", "Home")" class="nav-item @(currentAction == "DiscountCodeList" ? "active" : "")">
+                    <i class="fas fa-percent"></i>
+                    <span>کدهای تخفیف</span>
                 </a>
                 <a href="@Url.Action("FoodList", "Home")" class="nav-item @(currentAction == "FoodList" ? "active" : "")">
                     <i class="fas fa-utensils"></i>
@@ -103,16 +113,14 @@
                     <i class="fas fa-clock-rotate-left"></i>
                     <span>گردش موجودی</span>
                 </a>
-
                 <a href="@Url.Action("CustomersList", "Home")" class="nav-item @(currentAction == "CustomersList" ? "active" : "")">
                     <i class="fas fa-user-group"></i>
-                    <span>مدیریت و آنالیز مشتریان</span>
+                    <span>مدیریت مشتریان</span>
                 </a>
                 <a href="@Url.Action("ManageStaff", "Home")" class="nav-item @(currentAction == "ManageStaff" ? "active" : "")">
                     <i class="fas fa-user-gear"></i>
                     <span>مدیریت کارکنان</span>
                 </a>
-
                 <a href="@Url.Action("RestaurantSetting", "Home")" class="nav-item @(currentAction == "RestaurantSetting" ? "active" : "")">
                     <i class="fas fa-store"></i>
                     <span>تنظیمات رستوران</span>
@@ -121,24 +129,14 @@
                     <i class="fas fa-qrcode"></i>
                     <span>تنظیمات منو</span>
                 </a>
-
-                @if (layoutReceiptChargesEnabled)
-                {
-                    <a href="@Url.Action("ChargeSettings", "Receipt")" class="nav-item @(currentController == "Receipt" ? "active" : "")">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <span>تنظیمات فاکتور</span>
-                    </a>
-                }
-
                 <a href="@Url.Action("ManagerReports", "Home", new { period = "month" })" class="nav-item @(currentAction == "ManagerReports" ? "active" : "")">
                     <i class="fas fa-chart-pie"></i>
-                    <span>گزارش گیری</span>
+                    <span>گزارش‌گیری</span>
                 </a>
                 <a href="@Url.Action("RestaurantSubscription", "Home")" class="nav-item @(currentAction == "RestaurantSubscription" ? "active" : "")">
                     <i class="fas fa-crown"></i>
                     <span>اشتراک رستوران</span>
                 </a>
-
                 <a href="@Url.Action("Messages", "Home")"
                    class="nav-item @(currentAction == "Messages" ? "active" : "")"
                    id="navMessages">

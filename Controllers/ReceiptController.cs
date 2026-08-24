@@ -203,6 +203,26 @@ namespace resturanyar.Controllers
             return Json(new { success = true, data = defs });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SetDiscountCode(int orderId, [FromBody] SetReceiptDiscountCodeRequest? request)
+        {
+            var restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "شناسه رستوران مشخص نیست." });
+
+            var result = await _receiptService.SetOrderDiscountCodeAsync(
+                orderId,
+                restaurantId.Value,
+                request?.Code);
+
+            return StatusCode(result.StatusCode, new
+            {
+                success = result.Success,
+                message = result.Message,
+                data = result.Receipt
+            });
+        }
+
         [HttpGet]
         public async Task<IActionResult> PreviewDefaults(int orderId)
         {

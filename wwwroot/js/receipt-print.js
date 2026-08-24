@@ -2,9 +2,223 @@
     var allDefinitions = [];
     var recalcTimer = null;
     var modalMode = 'issue'; // issue | edit
+    var orderHasDiscountCode = false;
+    var appliedDiscountCode = null;
+    var discountSectionExpanded = false;
 
     function isReceiptChargesEnabled() {
         return window.receiptChargesEnabled === true;
+    }
+
+    function updateDiscountCodeState(previewData) {
+        var code = (previewData && (previewData.orderDiscountCode || previewData.OrderDiscountCode)) || '';
+        code = code ? String(code).trim().toUpperCase() : '';
+        if (!code && previewData) {
+            var lines = previewData.chargeLines || previewData.ChargeLines || [];
+            for (var i = 0; i < lines.length; i++) {
+                var lineCode = String(lines[i].code || lines[i].Code || '').toLowerCase();
+                if (lineCode !== 'discount_code') continue;
+                var title = String(lines[i].title || lines[i].Title || '');
+                var open = title.lastIndexOf('(');
+                var close = title.lastIndexOf(')');
+                if (open >= 0 && close > open + 1) {
+                    code = title.substring(open + 1, close).trim().toUpperCase();
+                }
+                break;
+            }
+        }
+        // Code string is the source of truth for the applied UI state.
+        appliedDiscountCode = code || null;
+        orderHasDiscountCode = !!appliedDiscountCode
+            || !!(previewData && (previewData.hasOrderDiscountCode || previewData.HasOrderDiscountCode));
+    }
+
+    function setDiscountCodeFeedback(message, isOk) {
+        var el = document.getElementById('receiptDiscountCodeFeedback');
+        if (!el) return;
+        if (!message) {
+            el.hidden = true;
+            el.textContent = '';
+            el.classList.remove('is-ok', 'is-error');
+            return;
+        }
+        el.hidden = false;
+        el.textContent = message;
+        el.classList.toggle('is-ok', !!isOk);
+        el.classList.toggle('is-error', !isOk);
+    }
+
+    function setDiscountSectionExpanded(expanded) {
+        discountSectionExpanded = !!expanded;
+        var section = document.getElementById('receiptDiscountSection');
+        var header = document.getElementById('receiptDiscountHeader');
+        var body = document.getElementById('receiptDiscountBody');
+        if (section) section.classList.toggle('is-expanded', discountSectionExpanded);
+        if (header) header.setAttribute('aria-expanded', discountSectionExpanded ? 'true' : 'false');
+        if (body) body.hidden = !discountSectionExpanded;
+        renderDiscountCodeUi();
+        if (discountSectionExpanded && !appliedDiscountCode) {
+            var input = document.getElementById('receiptDiscountCodeInput');
+            if (input) {
+                setTimeout(function () { input.focus(); }, 0);
+            }
+        }
+    }
+
+    function renderDiscountCodeUi() {
+        var applied = !!(appliedDiscountCode && appliedDiscountCode.length);
+        var entry = document.getElementById('receiptDiscountCodeEntry');
+        var appliedBox = document.getElementById('receiptDiscountCodeApplied');
+        var input = document.getElementById('receiptDiscountCodeInput');
+        var appliedChip = document.getElementById('receiptAppliedDiscountCode');
+        var headerChip = document.getElementById('receiptDiscountHeaderChip');
+        var headerHint = document.getElementById('receiptDiscountHeaderHint');
+
+        if (entry) entry.hidden = !(discountSectionExpanded && !applied);
+        if (appliedBox) appliedBox.hidden = !(discountSectionExpanded && applied);
+
+        if (applied) {
+            if (appliedChip) appliedChip.textContent = appliedDiscountCode;
+            if (input) input.value = appliedDiscountCode;
+        }
+
+        if (headerChip) {
+            if (applied && !discountSectionExpanded) {
+                headerChip.hidden = false;
+                headerChip.textContent = appliedDiscountCode;
+            } else {
+                headerChip.hidden = true;
+                headerChip.textContent = '';
+            }
+        }
+
+        if (headerHint) {
+            headerHint.classList.toggle('is-applied', applied);
+            if (applied) {
+                if (discountSectionExpanded) {
+                    headerHint.hidden = true;
+                    headerHint.textContent = '';
+                } else {
+                    headerHint.hidden = false;
+                    headerHint.textContent = 'کد فعال است — برای جزئیات کلیک کنید';
+                }
+            } else {
+                headerHint.hidden = false;
+                headerHint.textContent = discountSectionExpanded
+                    ? 'کد را وارد کنید و اعمال کنید'
+                    : 'اختیاری — برای افزودن کلیک کنید';
+            }
+        }
+    }
+
+    function syncDiscountCodeInput(previewData) {
+        updateDiscountCodeState(previewData);
+        if (appliedDiscountCode && !discountSectionExpanded) {
+            setDiscountSectionExpanded(true);
+            return;
+        }
+        renderDiscountCodeUi();
+    }
+
+    function sanitizeReceiptDiscountCode(raw) {
+        return String(raw || '')
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '');
+    }
+
+    async function refreshModalAfterDiscountCodeChange(previewData) {
+        const modal = document.getElementById('receiptChargeModal');
+        if (!modal) return;
+
+        updateDiscountCodeState(previewData);
+        if (!discountSectionExpanded) {
+            setDiscountSectionExpanded(true);
+        } else {
+            renderDiscountCodeUi();
+        }
+
+        // Keep current charge selections; refresh totals from a live preview.
+        // Do NOT reload PreviewDefaults — that resets charge rows and may return a stale issued snapshot.
+        try {
+            await recalculateModal(false);
+        } catch (err) {
+            console.error('refreshModalAfterDiscountCodeChange error:', err);
+            renderPreviewBox(modal, previewData);
+        }
+    }
+
+    async function applyReceiptDiscountCode() {
+        const modal = document.getElementById('receiptChargeModal');
+        if (!modal) return;
+        const orderId = parseInt(modal.dataset.orderId, 10);
+        if (!orderId) return;
+
+        const input = document.getElementById('receiptDiscountCodeInput');
+        const code = sanitizeReceiptDiscountCode(input && input.value);
+        if (input) input.value = code;
+        if (!code) {
+            setDiscountCodeFeedback('کد تخفیف را وارد کنید.', false);
+            return;
+        }
+
+        setModalBusy(true, 'در حال اعمال کد تخفیف...');
+        try {
+            const { data } = await fetchJson(`/Receipt/SetDiscountCode?orderId=${orderId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: code })
+            });
+            if (!data?.success) {
+                setDiscountCodeFeedback(data?.message || 'اعمال کد ناموفق بود.', false);
+                if (typeof showToast === 'function') showToast(data?.message || 'اعمال کد ناموفق بود.', 'error');
+                return;
+            }
+            appliedDiscountCode = code;
+            orderHasDiscountCode = true;
+            setDiscountSectionExpanded(true);
+            setDiscountCodeFeedback(data.message || 'کد روی سفارش ثبت شد.', true);
+            if (typeof showToast === 'function') showToast(data.message || 'کد تخفیف ثبت شد.', 'success');
+            await refreshModalAfterDiscountCodeChange(data.data);
+        } catch (err) {
+            console.error('applyReceiptDiscountCode error:', err);
+            setDiscountCodeFeedback('خطا در اعمال کد تخفیف', false);
+        } finally {
+            setModalBusy(false);
+        }
+    }
+
+    async function clearReceiptDiscountCode() {
+        const modal = document.getElementById('receiptChargeModal');
+        if (!modal) return;
+        const orderId = parseInt(modal.dataset.orderId, 10);
+        if (!orderId) return;
+
+        setModalBusy(true, 'در حال حذف کد تخفیف...');
+        try {
+            const { data } = await fetchJson(`/Receipt/SetDiscountCode?orderId=${orderId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: null })
+            });
+            if (!data?.success) {
+                setDiscountCodeFeedback(data?.message || 'حذف کد ناموفق بود.', false);
+                if (typeof showToast === 'function') showToast(data?.message || 'حذف کد ناموفق بود.', 'error');
+                return;
+            }
+            appliedDiscountCode = null;
+            orderHasDiscountCode = false;
+            var input = document.getElementById('receiptDiscountCodeInput');
+            if (input) input.value = '';
+            setDiscountSectionExpanded(true);
+            setDiscountCodeFeedback('کد تخفیف از سفارش حذف شد.', true);
+            if (typeof showToast === 'function') showToast(data.message || 'کد حذف شد.', 'success');
+            await refreshModalAfterDiscountCodeChange(data.data || { hasOrderDiscountCode: false, orderDiscountCode: null });
+        } catch (err) {
+            console.error('clearReceiptDiscountCode error:', err);
+            setDiscountCodeFeedback('خطا در حذف کد تخفیف', false);
+        } finally {
+            setModalBusy(false);
+        }
     }
 
     async function fetchJson(url, options) {
@@ -185,7 +399,8 @@
         row.innerHTML = `
             <div class="receipt-charge-row__main">
                 <input type="checkbox" class="form-check-input charge-enabled m-0"
-                       data-id="${def.id}" data-code="${def.code || ''}" ${checked} />
+                       data-id="${def.id}" data-code="${def.code || ''}"
+                       ${checked} />
                 <div>
                     <div class="receipt-charge-row__title">${def.title || 'بدون عنوان'}</div>
                     <span class="receipt-charge-row__badge ${meta.className}">${meta.label}</span>
@@ -240,23 +455,32 @@
         let linesHtml = '';
         lines.forEach(function (line) {
             const title = line.title || line.Title || 'هزینه';
-            const amount = line.calculatedAmount ?? line.CalculatedAmount ?? 0;
+            const amount = Number(line.calculatedAmount ?? line.CalculatedAmount ?? 0);
+            const category = Number(line.category ?? line.Category ?? -1);
+            const isDiscount = category === 0;
+            const money = formatMoney(Math.abs(amount));
+            const amountInner = isDiscount
+                ? ('- ' + money + ' تومان')
+                : (money + ' تومان');
+            const amountClass = isDiscount
+                ? 'receipt-summary__amount is-discount'
+                : 'receipt-summary__amount';
             linesHtml += `
                 <div class="receipt-summary__row is-line">
                     <span>${title}</span>
-                    <span>${formatMoney(amount)} تومان</span>
+                    <span class="${amountClass}" dir="ltr">${amountInner}</span>
                 </div>`;
         });
 
         previewBox.innerHTML = `
             <div class="receipt-summary__row">
                 <span>جمع اقلام</span>
-                <span>${formatMoney(itemsSubtotal)} تومان</span>
+                <span class="receipt-summary__amount" dir="ltr">${formatMoney(itemsSubtotal)} تومان</span>
             </div>
             ${linesHtml}
             <div class="receipt-summary__row is-total">
                 <span>جمع کل</span>
-                <span>${formatMoney(grandTotal)} تومان</span>
+                <span class="receipt-summary__amount" dir="ltr">${formatMoney(grandTotal)} تومان</span>
             </div>`;
     }
 
@@ -414,6 +638,8 @@
                 return;
             }
             renderPreviewBox(modal, preview.data);
+            updateDiscountCodeState(preview.data);
+            syncDiscountCodeInput(preview.data);
         } catch (err) {
             console.error('recalculateModal error:', err);
             if (typeof showToast === 'function') showToast('خطا در محاسبه', 'error');
@@ -434,12 +660,16 @@
         if (!modal) return;
 
         modalMode = mode === 'edit' ? 'edit' : 'issue';
+        updateDiscountCodeState(previewData);
+        setDiscountCodeFeedback('', true);
         allDefinitions = Array.isArray(definitions) ? definitions.slice() : [];
         modal.dataset.orderId = orderId;
         modal.dataset.mode = modalMode;
         setSelectedOrderType(modal, orderType);
         renderChargeList(modal, orderType);
         renderPreviewBox(modal, previewData);
+        // Collapsed by default; expand when a code is already on the order.
+        setDiscountSectionExpanded(!!appliedDiscountCode);
 
         const title = modal.querySelector('#receiptModalTitle');
         const subtitle = modal.querySelector('#receiptModalSubtitle');
@@ -550,7 +780,6 @@
         return definitions.map(function (def) {
             var line = byId[def.id];
             if (!line) {
-                // Keep non-applicable defs; mark applicable-but-absent as disabled for edit.
                 if (orderType != null && definitionApplies(def, orderType)) {
                     return Object.assign({}, def, { isEnabled: false });
                 }
@@ -603,7 +832,9 @@
                     `/Receipt/Data?orderId=${orderId}&recordPrintHistory=false`);
                 if (existing?.success && existing.data) {
                     orderType = existing.data.orderType ?? existing.data.OrderType ?? orderType;
+                    updateDiscountCodeState(existing.data);
                     definitions = mergeDefinitionsWithIssuedReceipt(definitions, existing.data);
+                    previewData = existing.data;
                 }
             } else {
                 const { data: defaultsRes } = await fetchJson(`/Receipt/PreviewDefaults?orderId=${orderId}`);
@@ -618,6 +849,7 @@
                 const receipt = defaults.receipt ?? defaults.Receipt;
                 const appliedCharges = defaults.appliedCharges ?? defaults.AppliedCharges ?? [];
                 orderType = receipt?.orderType ?? receipt?.OrderType ?? orderType;
+                updateDiscountCodeState(receipt);
                 definitions = mergeDefinitionsWithAppliedCharges(definitions, appliedCharges, orderType);
                 previewData = receipt;
             }
@@ -644,6 +876,7 @@
                     return;
                 }
                 previewData = preview.data;
+                updateDiscountCodeState(previewData);
             }
 
             showReceiptModal(orderId, orderType, definitions, previewData, mode);
@@ -716,6 +949,27 @@
             setSelectedOrderType(modal, nextType);
             renderChargeList(modal, nextType);
             recalculateModal(true);
+            return;
+        }
+
+        if (e.target.closest('#receiptDiscountHeader')) {
+            const modal = document.getElementById('receiptChargeModal');
+            if (!modal || modal.dataset.busy === '1' || modal.style.display === 'none') return;
+            setDiscountSectionExpanded(!discountSectionExpanded);
+            return;
+        }
+
+        if (e.target.closest('#receiptDiscountCodeApply')) {
+            const modal = document.getElementById('receiptChargeModal');
+            if (!modal || modal.dataset.busy === '1' || modal.style.display === 'none') return;
+            applyReceiptDiscountCode();
+            return;
+        }
+
+        if (e.target.closest('#receiptDiscountCodeClear')) {
+            const modal = document.getElementById('receiptChargeModal');
+            if (!modal || modal.dataset.busy === '1' || modal.style.display === 'none') return;
+            clearReceiptDiscountCode();
             return;
         }
 
@@ -838,6 +1092,21 @@
             e.target.dataset.rawValue = String(raw);
             scheduleRecalculate();
         }
+
+        if (e.target.id === 'receiptDiscountCodeInput') {
+            var cleaned = sanitizeReceiptDiscountCode(e.target.value);
+            if (e.target.value !== cleaned) e.target.value = cleaned;
+            setDiscountCodeFeedback('', true);
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+        if (!e.target || e.target.id !== 'receiptDiscountCodeInput') return;
+        const modal = document.getElementById('receiptChargeModal');
+        if (!modal || modal.style.display === 'none' || modal.dataset.busy === '1') return;
+        e.preventDefault();
+        applyReceiptDiscountCode();
     });
 
     window.handleReceiptPrint = handlePrintInvoice;

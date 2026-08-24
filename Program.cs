@@ -98,6 +98,7 @@ builder.Services.AddScoped<resturanyar.Utility.MessageService>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptCalculationEngine, resturanyar.Services.Receipt.ReceiptCalculationEngine>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptRenderer, resturanyar.Services.Receipt.HtmlReceiptRenderer>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptService, resturanyar.Services.Receipt.ReceiptService>();
+builder.Services.AddScoped<resturanyar.Services.DiscountCodes.IDiscountCodeService, resturanyar.Services.DiscountCodes.DiscountCodeService>();
 builder.Services.AddScoped<resturanyar.Services.Fulfillment.IOrderFulfillmentService, resturanyar.Services.Fulfillment.OrderFulfillmentService>();
 builder.Services.AddScoped<resturanyar.Services.Fulfillment.IDeliveryCourierService, resturanyar.Services.Fulfillment.DeliveryCourierService>();
 builder.Services.AddScoped<resturanyar.Services.Inventory.IInventoryService, resturanyar.Services.Inventory.InventoryService>();

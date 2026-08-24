@@ -65,6 +65,10 @@ namespace resturanyar.Services.Receipt
             foreach (var discount in discounts)
             {
                 var amount = CalculateAmount(discount, result.ItemsSubtotal, 0);
+                var remaining = result.ItemsSubtotal - discountTotal;
+                if (amount > remaining)
+                    amount = remaining < 0 ? 0 : remaining;
+
                 discountTotal += amount;
                 if (discount.IsTaxable)
                     taxableDiscountTotal += amount;
@@ -92,6 +96,9 @@ namespace resturanyar.Services.Receipt
             }
 
             var taxableBase = Round(result.ItemsSubtotal - taxableDiscountTotal + taxableFeesTotal);
+            if (taxableBase < 0)
+                taxableBase = 0;
+
             decimal taxTotal = 0;
 
             foreach (var tax in taxes)
@@ -107,7 +114,8 @@ namespace resturanyar.Services.Receipt
             result.DiscountTotal = Round(discountTotal);
             result.FeesTotal = Round(feesTotal);
             result.TaxTotal = Round(taxTotal);
-            result.GrandTotal = Round(result.ItemsSubtotal - result.DiscountTotal + result.FeesTotal + result.TaxTotal);
+            var grand = Round(result.ItemsSubtotal - result.DiscountTotal + result.FeesTotal + result.TaxTotal);
+            result.GrandTotal = grand < 0 ? 0 : grand;
 
             return result;
         }

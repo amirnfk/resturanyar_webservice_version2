@@ -1,0 +1,1417 @@
+@{
+    ViewData["Title"] = "کدهای تخفیف";
+    var restaurantId = (int)ViewBag.RestaurantId;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/jalalidatepicker.min.css" />
+    <link rel="stylesheet" href="~/css/discount-code-list.css" asp-append-version="true" />
+}
+
+<div class="container discount-page mt-4 mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <button type="button" class="btn btn-primary dc-btn-add" id="btnAddDiscountCode">
+            <i class="fa-solid fa-plus"></i>
+            <span>افزودن کد تخفیف</span>
+        </button>
+    </div>
+
+    <div class="dc-toolbar">
+        <div class="dc-toolbar__search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input id="dcSearchBox" type="text" class="form-control"
+                   placeholder="جستجو در کد، عنوان، نام یا موبایل مشتری..." />
+        </div>
+        <select id="dcFilterStatus" class="form-select dc-toolbar__select">
+            <option value="">همه وضعیت‌ها</option>
+            <option value="active">فعال</option>
+            <option value="inactive">غیرفعال</option>
+        </select>
+        <select id="dcFilterAudience" class="form-select dc-toolbar__select">
+            <option value="">همه مخاطب‌ها</option>
+            <option value="all">عمومی</option>
+            <option value="one">مخصوص یک مشتری</option>
+        </select>
+    </div>
+
+    <div id="listEmpty" class="dc-empty d-none">
+        <div class="dc-empty__icon"><i class="fa-solid fa-ticket"></i></div>
+        <strong>هنوز کد تخفیفی ثبت نشده</strong>
+        <p>اولین کد را بسازید تا در صدور فاکتور قابل استفاده باشد.</p>
+    </div>
+    <div id="listFilteredEmpty" class="dc-empty d-none">
+        <div class="dc-empty__icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <strong>موردی پیدا نشد</strong>
+        <p>فیلتر یا عبارت جستجو را تغییر دهید.</p>
+    </div>
+
+    <div class="row g-3" id="discountCodesList"></div>
+    <nav id="dcPagination" class="dc-pagination d-none" aria-label="صفحه‌بندی کدهای تخفیف"></nav>
+</div>
+
+<div class="modal fade" id="discountCodeModal" tabindex="-1" aria-labelledby="discountModalTitle" aria-hidden="true" data-bs-focus="false">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="dc-modal-heading">
+                    <div class="dc-modal-heading__icon" aria-hidden="true">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title" id="discountModalTitle">افزودن کد تخفیف</h5>
+                        <p class="dc-modal-heading__sub" id="discountModalKicker">جزئیات کد را مشخص کنید</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="discountCodeForm" autocomplete="off">
+                    <input type="hidden" id="dcId" value="0" />
+                    <input type="hidden" id="dcSpecificCustomerId" value="" />
+                    <input type="hidden" id="dcType" value="Percentage" />
+
+                    <section class="dc-section">
+                        <div class="dc-section__head">
+                            <div class="dc-section__icon"><i class="fa-solid fa-ticket"></i></div>
+                            <div>
+                                <h6 class="dc-section__title">شناسه کد</h6>
+                                <p class="dc-section__hint">کدی که در سفارش وارد می‌شود و عنوانی که روی فاکتور دیده می‌شود.</p>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="dc-label" for="dcCode">کد قابل وارد کردن</label>
+                                <input type="text" id="dcCode" class="form-control dc-code-input" maxlength="50" required
+                                       placeholder="مثلاً NOWROZ" autocomplete="off" />
+                                <span class="dc-help" id="dcCodeHelp">فقط حروف انگلیسی و اعداد قابل ثبت هستند</span>
+                                <span class="dc-field-error" id="dcCodeError" hidden>فقط حروف انگلیسی و اعداد قابل ثبت هستند</span>
+                            </div>
+                            <div class="col-md-7">
+                                <label class="dc-label" for="dcTitle">عنوان نمایشی</label>
+                                <input type="text" id="dcTitle" class="form-control" maxlength="100" required placeholder="مثلاً تخفیف ویژه نوروز" />
+                                <span class="dc-help">این عنوان برای شما و روی فاکتور خواناتر است</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dc-section">
+                        <div class="dc-section__head">
+                            <div class="dc-section__icon"><i class="fa-solid fa-percent"></i></div>
+                            <div>
+                                <h6 class="dc-section__title">مقدار تخفیف</h6>
+                                <p class="dc-section__hint">درصدی از مبلغ غذاها، یا یک مبلغ ثابت به تومان.</p>
+                            </div>
+                        </div>
+
+                        <div class="dc-segment mb-3" role="group" aria-label="نوع تخفیف">
+                            <button type="button" class="dc-segment__btn is-active" data-dc-type="Percentage" id="dcTypePercentage">
+                                <strong>درصدی</strong>
+                                <span>مثلاً ۲۰٪ از مبلغ سفارش</span>
+                            </button>
+                            <button type="button" class="dc-segment__btn" data-dc-type="FixedAmount" id="dcTypeFixed">
+                                <strong>مبلغ ثابت</strong>
+                                <span>مثلاً ۵۰٬۰۰۰ تومان کم شود</span>
+                            </button>
+                        </div>
+
+                        <div class="dc-value-row">
+                            <div>
+                                <label class="dc-label" for="dcValue" id="dcValueLabel">مقدار درصد</label>
+                                <div class="dc-input-affix">
+                                    <input type="text" id="dcValue" class="form-control" inputmode="decimal"
+                                           required placeholder="مثلاً ۲۰" autocomplete="off" />
+                                    <span class="dc-input-affix__unit" id="dcValueUnit">درصد</span>
+                                </div>
+                            </div>
+                            <div id="dcMaxWrap">
+                                <label class="dc-label" for="dcMax">سقف تخفیف (اختیاری)</label>
+                                <div class="dc-input-affix">
+                                    <input type="text" id="dcMax" class="form-control dc-money-input" inputmode="numeric"
+                                           placeholder="مثلاً ۱۰۰,۰۰۰" autocomplete="off" />
+                                    <span class="dc-input-affix__unit">تومان</span>
+                                </div>
+                                <span class="dc-help">برای تخفیف درصدی؛ بیش از این مبلغ کم نمی‌شود</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="dc-label" for="dcMinOrder">حداقل مبلغ سفارش (اختیاری)</label>
+                            <div class="dc-input-affix">
+                                <input type="text" id="dcMinOrder" class="form-control dc-money-input" inputmode="numeric"
+                                       placeholder="مثلاً ۲۰۰,۰۰۰" autocomplete="off" />
+                                <span class="dc-input-affix__unit">تومان</span>
+                            </div>
+                            <span class="dc-help">اگر سفارش کمتر از این باشد، کد اعمال نمی‌شود</span>
+                        </div>
+                    </section>
+
+                    <section class="dc-section">
+                        <div class="dc-section__head">
+                            <div class="dc-section__icon"><i class="fa-solid fa-calendar-days"></i></div>
+                            <div>
+                                <h6 class="dc-section__title">بازه اعتبار</h6>
+                                <p class="dc-section__hint">تاریخ‌ها با تقویم شمسی انتخاب می‌شوند.</p>
+                            </div>
+                        </div>
+                        <div class="dc-dates">
+                            <div>
+                                <label class="dc-label" for="dcStartFa">از تاریخ</label>
+                                <input data-jdp id="dcStartFa" class="form-control bg-white" placeholder="انتخاب تاریخ شروع" readonly />
+                                <input type="hidden" id="dcStartIso" />
+                            </div>
+                            <div class="dc-dates__sep" aria-hidden="true">تا</div>
+                            <div>
+                                <label class="dc-label" for="dcEndFa">تا تاریخ</label>
+                                <input data-jdp id="dcEndFa" class="form-control bg-white" placeholder="انتخاب تاریخ پایان" readonly />
+                                <input type="hidden" id="dcEndIso" />
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="dc-section">
+                        <div class="dc-section__head">
+                            <div class="dc-section__icon"><i class="fa-solid fa-user-tag"></i></div>
+                            <div>
+                                <h6 class="dc-section__title">چه کسی می‌تواند استفاده کند؟</h6>
+                                <p class="dc-section__hint">کد عمومی برای همه، یا اختصاصی برای یک مشتری.</p>
+                            </div>
+                        </div>
+
+                        <div class="dc-audience" role="group" aria-label="مخاطب کد">
+                            <button type="button" class="dc-segment__btn is-active" data-dc-audience="all" id="dcAudienceAll">
+                                <strong>همه مشتریان</strong>
+                                <span>هر کسی که کد را بداند</span>
+                            </button>
+                            <button type="button" class="dc-segment__btn" data-dc-audience="one" id="dcAudienceOne">
+                                <strong>فقط یک مشتری</strong>
+                                <span>مخصوص یک نفر از لیست مشتریان</span>
+                            </button>
+                        </div>
+
+                        <div class="dc-customer-panel" id="dcCustomerPanel">
+                            <label class="dc-label" for="dcCustomerSearch">جستجوی مشتری</label>
+                            <div class="dc-customer-wrap">
+                                <input type="text" id="dcCustomerSearch" class="form-control" placeholder="نام یا شماره موبایل را بنویسید..." />
+                                <div id="dcCustomerResults" class="dc-customer-results"></div>
+                            </div>
+                            <div id="dcSelectedCustomer" class="dc-selected-customer d-none">
+                                <div class="d-flex justify-content-between align-items-center gap-2">
+                                    <div>
+                                        <div class="small text-muted mb-1">این کد فقط برای</div>
+                                        <strong id="dcSelectedCustomerName"></strong>
+                                        <div class="small text-muted" id="dcSelectedCustomerMobile"></div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-danger dc-btn-clear-customer" id="dcClearCustomer">حذف</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dc-limits-box" id="dcLimitsBox">
+                            <div class="row g-3" id="dcLimitsPublic">
+                                <div class="col-md-6">
+                                    <label class="dc-label" for="dcUsageLimitPublic">سقف کل استفاده</label>
+                                    <input type="number" id="dcUsageLimitPublic" class="form-control" min="1" step="1" placeholder="خالی = نامحدود" />
+                                    <span class="dc-help">چند بار در کل رستوران می‌توان از این کد استفاده کرد</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="dc-label" for="dcPerCustomer">سقف استفاده هر مشتری</label>
+                                    <input type="number" id="dcPerCustomer" class="form-control" min="1" step="1" value="1" placeholder="مثلاً ۱" />
+                                    <span class="dc-help">هر مشتری حداکثر چند بار می‌تواند این کد را بزند</span>
+                                </div>
+                            </div>
+                            <div class="row g-3 d-none" id="dcLimitsPrivate">
+                                <div class="col-12">
+                                    <label class="dc-label" for="dcUsageLimitPrivate">سقف استفاده این مشتری</label>
+                                    <input type="number" id="dcUsageLimitPrivate" class="form-control" min="1" step="1" placeholder="خالی = نامحدود" />
+                                    <span class="dc-help">این مشتری حداکثر چند بار می‌تواند از کد اختصاصی استفاده کند</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <input type="checkbox" id="dcActive" checked hidden aria-hidden="true" />
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" id="btnSaveDiscountCode">
+                    <i class="fa-solid fa-check"></i>
+                    <span id="dcSaveLabel">ثبت کد تخفیف</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/js/jalalidatepicker.min.js"></script>
+<script>
+(function () {
+    var restaurantId = @restaurantId;
+    var API_BASE = "/api/v2/UserApi";
+    var modalEl = document.getElementById("discountCodeModal");
+    var modal = modalEl ? new bootstrap.Modal(modalEl, { focus: false }) : null;
+    var editingId = 0;
+    var searchTimer = null;
+    var listRows = [];
+    var currentPage = 1;
+    var pageSize = 12;
+    var CODE_PATTERN = /^[A-Za-z0-9]+$/;
+
+    function normalizeCodeForSave(raw) {
+        return String(raw || "").trim().toUpperCase();
+    }
+
+    function isValidDiscountCode(raw) {
+        var code = String(raw || "").trim();
+        return code.length > 0 && CODE_PATTERN.test(code);
+    }
+
+    function setCodeFieldError(show) {
+        var input = document.getElementById("dcCode");
+        var help = document.getElementById("dcCodeHelp");
+        var err = document.getElementById("dcCodeError");
+        if (input) input.classList.toggle("is-invalid", !!show);
+        if (help) help.hidden = !!show;
+        if (err) err.hidden = !show;
+    }
+
+    function validateCodeFieldLive() {
+        var raw = document.getElementById("dcCode").value || "";
+        if (!raw.trim()) {
+            setCodeFieldError(false);
+            return true;
+        }
+        var ok = isValidDiscountCode(raw);
+        setCodeFieldError(!ok);
+        return ok;
+    }
+
+    var appShowToast = window.showToast;
+    function notify(msg, type) {
+        if (typeof appShowToast === "function") {
+            appShowToast(msg, type || "success");
+            return;
+        }
+        alert(msg);
+    }
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function jalali_to_gregorian(jy, jm, jd) {
+        jy -= 979; jm -= 1; jd -= 1;
+        var j_day_no = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4);
+        var j_days = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+        for (var i = 0; i < jm; ++i) j_day_no += j_days[i];
+        j_day_no += jd;
+        var g_day_no = j_day_no + 79;
+        var gy = 1600 + 400 * Math.floor(g_day_no / 146097); g_day_no %= 146097;
+        var leap = true;
+        if (g_day_no >= 36525) {
+            g_day_no--; gy += 100 * Math.floor(g_day_no / 36524); g_day_no %= 36524;
+            if (g_day_no >= 365) g_day_no++; else leap = false;
+        }
+        gy += 4 * Math.floor(g_day_no / 1461); g_day_no %= 1461;
+        if (g_day_no >= 366) { leap = false; g_day_no--; gy += Math.floor(g_day_no / 365); g_day_no %= 365; }
+        var g_days = [31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var gm; for (gm = 0; g_day_no >= g_days[gm]; gm++) g_day_no -= g_days[gm];
+        return [gy, gm + 1, g_day_no + 1];
+    }
+
+    function gregorian_to_jalali(gy, gm, gd) {
+        var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+        var gy2 = (gm > 2) ? (gy + 1) : gy;
+        var days = 355666 + (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100)
+            + Math.floor((gy2 + 399) / 400) + gd + g_d_m[gm - 1];
+        var jy = -1595 + (33 * Math.floor(days / 12053));
+        days %= 12053;
+        jy += 4 * Math.floor(days / 1461);
+        days %= 1461;
+        if (days > 365) {
+            jy += Math.floor((days - 1) / 365);
+            days = (days - 1) % 365;
+        }
+        var jm, jd;
+        if (days < 186) {
+            jm = 1 + Math.floor(days / 31);
+            jd = 1 + (days % 31);
+        } else {
+            jm = 7 + Math.floor((days - 186) / 30);
+            jd = 1 + ((days - 186) % 30);
+        }
+        return [jy, jm, jd];
+    }
+
+    function toEnglishDigits(str) {
+        return String(str || "")
+            .replace(/[۰-۹]/g, function (d) { return String(d.charCodeAt(0) - 1728); })
+            .replace(/[٠-٩]/g, function (d) { return String(d.charCodeAt(0) - 1632); });
+    }
+
+    function parseMoneyDigits(raw) {
+        var cleaned = toEnglishDigits(raw).replace(/[^\d]/g, "");
+        if (!cleaned) return null;
+        var n = parseInt(cleaned, 10);
+        return isNaN(n) ? null : n;
+    }
+
+    function formatThousand(value) {
+        if (value == null || value === "") return "";
+        var n = typeof value === "number" ? value : parseMoneyDigits(value);
+        if (n == null) return "";
+        return Math.round(n).toLocaleString("en-US");
+    }
+
+    function isFixedAmountType() {
+        return document.getElementById("dcType").value === "FixedAmount";
+    }
+
+    function setMoneyInputValue(id, value) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (value == null || value === "") {
+            el.value = "";
+            return;
+        }
+        el.value = formatThousand(value);
+    }
+
+    function formatMoneyFieldLive(el) {
+        if (!el) return;
+        var digits = toEnglishDigits(el.value).replace(/[^\d]/g, "");
+        if (!digits) {
+            el.value = "";
+            return;
+        }
+        el.value = formatThousand(digits);
+    }
+
+    function formatValueFieldLive() {
+        var el = document.getElementById("dcValue");
+        if (!el) return;
+        var digits = toEnglishDigits(el.value).replace(/[^\d]/g, "");
+        if (!digits) {
+            el.value = "";
+            return;
+        }
+        var n = parseInt(digits, 10);
+        if (isNaN(n)) {
+            el.value = "";
+            return;
+        }
+        if (!isFixedAmountType()) {
+            if (n > 100) n = 100;
+            el.value = String(n);
+            return;
+        }
+        el.value = formatThousand(n);
+    }
+
+    function readDiscountValue() {
+        var n = parseMoneyDigits(document.getElementById("dcValue").value);
+        if (n == null) return 0;
+        if (!isFixedAmountType() && n > 100) n = 100;
+        return n;
+    }
+
+    function jalaliFaToIso(faDate) {
+        if (!faDate) return "";
+        var parts = toEnglishDigits(faDate).split("/").map(Number);
+        if (parts.length !== 3 || parts.some(function (n) { return !n && n !== 0; })) return "";
+        var g = jalali_to_gregorian(parts[0], parts[1], parts[2]);
+        return g[0] + "-" + pad(g[1]) + "-" + pad(g[2]);
+    }
+
+    function isoToJalaliFa(iso) {
+        if (!iso) return "";
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) {
+            var m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (!m) return "";
+            d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+        }
+        var j = gregorian_to_jalali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+        return j[0] + "/" + pad(j[1]) + "/" + pad(j[2]);
+    }
+
+    function syncJalaliHidden(faInputId, isoInputId) {
+        var fa = document.getElementById(faInputId);
+        var iso = document.getElementById(isoInputId);
+        if (!fa || !iso) return;
+        iso.value = jalaliFaToIso((fa.value || "").trim());
+    }
+
+    function initializeDatepickers() {
+        if (typeof jalaliDatepicker === "undefined") return;
+
+        // Preserve live values — cloneNode does not always keep JS-assigned .value
+        var preserved = {};
+        document.querySelectorAll("#discountCodeModal input[data-jdp]").forEach(function (input) {
+            preserved[input.id] = input.value;
+            var clone = input.cloneNode(true);
+            input.parentNode.replaceChild(clone, input);
+        });
+        Object.keys(preserved).forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.value = preserved[id] || "";
+        });
+        syncJalaliHidden("dcStartFa", "dcStartIso");
+        syncJalaliHidden("dcEndFa", "dcEndIso");
+
+        jalaliDatepicker.startWatch({
+            time: false,
+            zIndex: 2000
+        });
+
+        ["dcStartFa", "dcEndFa"].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener("change", function () {
+                if (id === "dcStartFa") syncJalaliHidden("dcStartFa", "dcStartIso");
+                else syncJalaliHidden("dcEndFa", "dcEndIso");
+                updatePreview();
+            });
+            el.addEventListener("input", function () {
+                if (id === "dcStartFa") syncJalaliHidden("dcStartFa", "dcStartIso");
+                else syncJalaliHidden("dcEndFa", "dcEndIso");
+                updatePreview();
+            });
+        });
+    }
+
+    function setJalaliField(faId, isoId, isoValue) {
+        var fa = document.getElementById(faId);
+        var iso = document.getElementById(isoId);
+        var faVal = isoToJalaliFa(isoValue);
+        if (fa) fa.value = faVal;
+        if (iso) iso.value = jalaliFaToIso(faVal) || (isoValue ? String(isoValue).substring(0, 10) : "");
+    }
+
+    async function waitForFetchWithAuth(timeoutMs) {
+        timeoutMs = timeoutMs || 10000;
+        if (typeof window.fetchWithAuth === "function") return window.fetchWithAuth;
+        return new Promise(function (resolve, reject) {
+            var start = Date.now();
+            var timer = setInterval(function () {
+                if (typeof window.fetchWithAuth === "function") {
+                    clearInterval(timer);
+                    resolve(window.fetchWithAuth);
+                } else if (Date.now() - start > timeoutMs) {
+                    clearInterval(timer);
+                    reject(new Error("احراز هویت هنوز آماده نیست. صفحه را تازه کنید."));
+                }
+            }, 40);
+        });
+    }
+
+    async function apiFetch(url, options) {
+        var fetchAuth = await waitForFetchWithAuth();
+        return fetchAuth(url, options || {});
+    }
+
+    function escapeHtml(s) {
+        return String(s == null ? "" : s)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function typeLabel(t) { return t === "FixedAmount" ? "مبلغ ثابت" : "درصدی"; }
+
+    function valueLabel(row) {
+        if (row.discountType === "FixedAmount")
+            return Number(row.discountValue).toLocaleString("fa-IR") + " تومان";
+        return Number(row.discountValue).toLocaleString("fa-IR") + "٪";
+    }
+
+    function usageLabel(row) {
+        var used = row.usedCount || 0;
+        if (row.usageLimit == null) return used + " / ∞";
+        return used + " / " + row.usageLimit;
+    }
+
+    function customerLabel(row) {
+        if (!row.specificCustomerId) return 'عمومی';
+        var name = row.specificCustomerName || 'مشتری';
+        var mobile = row.specificCustomerMobile || '';
+        return escapeHtml(name) + (mobile ? ' — ' + escapeHtml(mobile) : '');
+    }
+
+    function fmtDate(iso) {
+        try { return isoToJalaliFa(iso) || '-'; }
+        catch (e) { return '-'; }
+    }
+
+    function getRestaurantName() {
+        var fromBody = (document.body && document.body.getAttribute("data-restaurant-name")) || "";
+        var name = String(fromBody || "").trim();
+        return name || "مجموعه ما";
+    }
+
+    function formatShareValue(row) {
+        var n = Number(row.discountValue);
+        var num = isNaN(n) ? String(row.discountValue || "") : Math.round(n).toLocaleString("en-US");
+        if (row.discountType === "FixedAmount") return num + " تومان";
+        return num + "٪";
+    }
+
+    function buildShareMessage(row) {
+        if (!row) return "";
+        var restaurant = getRestaurantName();
+        var code = String(row.code || "").trim().toUpperCase();
+        var value = formatShareValue(row);
+        var endFa = fmtDate(row.endDate);
+        var lines = [];
+        lines.push("تخفیف ویژه برای شما");
+        lines.push("کد تخفیف: " + code);
+        if (value) lines.push("مقدار تخفیف: " + value);
+        if (endFa && endFa !== "-") lines.push("معتبر تا: " + endFa);
+        lines.push(restaurant);
+        return lines.join("\n").trim();
+    }
+
+    function copyTextToClipboard(text) {
+        if (!text) return Promise.reject(new Error("empty"));
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+            try {
+                var ta = document.createElement("textarea");
+                ta.value = text;
+                ta.setAttribute("readonly", "");
+                ta.style.position = "fixed";
+                ta.style.top = "-9999px";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var ok = document.execCommand("copy");
+                document.body.removeChild(ta);
+                if (ok) resolve();
+                else reject(new Error("copy failed"));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    function copyShareMessage(row) {
+        var message = buildShareMessage(row);
+        if (!message) {
+            notify("متنی برای کپی آماده نشد.", "error");
+            return;
+        }
+        copyTextToClipboard(message)
+            .then(function () { notify("متن تخفیف با نام مجموعه کپی شد", "success"); })
+            .catch(function () { notify("کپی انجام نشد. دوباره تلاش کنید.", "error"); });
+    }
+
+    function copyCodeOnly(row) {
+        var code = String((row && row.code) || "").trim().toUpperCase();
+        if (!code) {
+            notify("کدی برای کپی وجود ندارد.", "error");
+            return;
+        }
+        copyTextToClipboard(code)
+            .then(function () { notify("کد «" + code + "» کپی شد", "success"); })
+            .catch(function () { notify("کپی انجام نشد. دوباره تلاش کنید.", "error"); });
+    }
+
+    function shareDiscountCode(row) {
+        var message = buildShareMessage(row);
+        if (!message) {
+            notify("متنی برای اشتراک‌گذاری آماده نشد.", "error");
+            return;
+        }
+        var restaurant = getRestaurantName();
+        var title = "کد تخفیف " + restaurant;
+
+        if (navigator.share) {
+            navigator.share({ title: title, text: message })
+                .catch(function (err) {
+                    if (err && err.name === "AbortError") return;
+                    copyTextToClipboard(message)
+                        .then(function () { notify("متن کپی شد؛ می‌توانید در پیام‌رسان بچسبانید.", "success"); })
+                        .catch(function () { notify("اشتراک‌گذاری ممکن نشد.", "error"); });
+                });
+            return;
+        }
+
+        copyTextToClipboard(message)
+            .then(function () { notify("متن کپی شد؛ می‌توانید در پیام‌رسان بچسبانید.", "success"); })
+            .catch(function () { notify("اشتراک‌گذاری ممکن نشد.", "error"); });
+    }
+
+    function renderCards(rows) {
+        var list = document.getElementById('discountCodesList');
+        var empty = document.getElementById('listEmpty');
+        var filteredEmpty = document.getElementById('listFilteredEmpty');
+        var pager = document.getElementById('dcPagination');
+        list.innerHTML = '';
+        empty.classList.add('d-none');
+        filteredEmpty.classList.add('d-none');
+        if (pager) {
+            pager.classList.add('d-none');
+            pager.innerHTML = '';
+        }
+
+        if (!listRows.length) {
+            empty.classList.remove('d-none');
+            return;
+        }
+        if (!rows.length) {
+            filteredEmpty.classList.remove('d-none');
+            return;
+        }
+
+        var totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+        var start = (currentPage - 1) * pageSize;
+        var pageRows = rows.slice(start, start + pageSize);
+
+        list.innerHTML = pageRows.map(function (r) {
+            var used = isCodeUsed(r);
+            var status = r.isActive
+                ? "<span class='badge badge-active'>فعال</span>"
+                : "<span class='badge badge-inactive'>غیرفعال</span>";
+            var primaryAction = used
+                ? (r.isActive
+                    ? "<button type='button' class='btn btn-sm dc-btn-toggle' data-toggle-active='" + r.id + "' title='کد استفاده‌شده قابل ویرایش نیست'><i class='fa-solid fa-ban'></i> غیرفعال‌سازی</button>"
+                    : "<button type='button' class='btn btn-sm dc-btn-toggle is-activate' data-toggle-active='" + r.id + "' title='کد استفاده‌شده قابل ویرایش نیست'><i class='fa-solid fa-check'></i> فعال‌سازی</button>")
+                : "<button type='button' class='btn btn-sm dc-btn-edit' data-edit='" + r.id + "'><i class='fa-solid fa-pen'></i> ویرایش</button>";
+            var deleteAction = used
+                ? "<button type='button' class='btn btn-sm dc-btn-delete' disabled title='این کد قبلاً استفاده شده و قابل حذف نیست'><i class='fa-solid fa-trash'></i> حذف</button>"
+                : "<button type='button' class='btn btn-sm dc-btn-delete' data-del='" + r.id + "'><i class='fa-solid fa-trash'></i> حذف</button>";
+            return ""
+                + "<div class='col-12 col-md-6 col-xl-4'>"
+                + "<article class='dc-card" + (used ? " is-used" : "") + "'>"
+                + "<div class='dc-card__body'>"
+                + "<div class='dc-card__top'>"
+                + "<span class='code-pill' data-copy-code='" + r.id + "' title='کلیک برای کپی فقط کد'>" + escapeHtml(r.code) + "</span>"
+                + status
+                + "</div>"
+                + "<h5 class='dc-card__title'>" + escapeHtml(r.title) + "</h5>"
+                + "<div class='dc-meta'>"
+                + "<span class='dc-chip'>" + typeLabel(r.discountType) + "</span>"
+                + "<span class='dc-chip is-value'>" + valueLabel(r) + "</span>"
+                + (used ? "<span class='dc-chip is-used'>استفاده‌شده</span>" : "")
+                + "</div>"
+                + "<div class='dc-card__rows'>"
+                + "<div class='dc-card__row'><span>بازه</span><strong>" + fmtDate(r.startDate) + " تا " + fmtDate(r.endDate) + "</strong></div>"
+                + "<div class='dc-card__row'><span>مخاطب</span><strong>" + customerLabel(r) + "</strong></div>"
+                + "<div class='dc-card__row'><span>استفاده</span><strong>" + usageLabel(r) + "</strong></div>"
+                + "</div>"
+                + "<div class='dc-share-actions'>"
+                + "<button type='button' class='dc-share-btn' data-copy='" + r.id + "' title='کپی متن تخفیف'><i class='fa-solid fa-copy'></i><span>کپی کد</span></button>"
+                + "<button type='button' class='dc-share-btn' data-share='" + r.id + "' title='اشتراک‌گذاری'><i class='fa-solid fa-share-nodes'></i><span>اشتراک‌گذاری</span></button>"
+                + "</div>"
+                + "</div>"
+                + "<div class='dc-card__footer'>"
+                + primaryAction
+                + deleteAction
+                + "</div></article></div>";
+        }).join('');
+
+        list.querySelectorAll('[data-edit]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = parseInt(btn.getAttribute('data-edit'), 10);
+                var row = listRows.find(function (x) { return x.id === id; });
+                if (row) openEdit(row);
+            });
+        });
+        list.querySelectorAll('[data-toggle-active]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = parseInt(btn.getAttribute('data-toggle-active'), 10);
+                toggleActive(id);
+            });
+        });
+        list.querySelectorAll('[data-del]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                deleteCode(parseInt(btn.getAttribute('data-del'), 10));
+            });
+        });
+        list.querySelectorAll('[data-copy]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = parseInt(btn.getAttribute('data-copy'), 10);
+                var row = listRows.find(function (x) { return x.id === id; });
+                if (row) copyShareMessage(row);
+            });
+        });
+        list.querySelectorAll('[data-share]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = parseInt(btn.getAttribute('data-share'), 10);
+                var row = listRows.find(function (x) { return x.id === id; });
+                if (row) shareDiscountCode(row);
+            });
+        });
+        list.querySelectorAll('.code-pill[data-copy-code]').forEach(function (el) {
+            el.addEventListener('click', function () {
+                var id = parseInt(el.getAttribute('data-copy-code'), 10);
+                var row = listRows.find(function (x) { return x.id === id; });
+                if (row) copyCodeOnly(row);
+            });
+        });
+
+        renderPagination(rows.length, totalPages);
+    }
+
+    function toPersianDigits(n) {
+        return String(n).replace(/\d/g, function (d) {
+            return "۰۱۲۳۴۵۶۷۸۹"[Number(d)];
+        });
+    }
+
+    function renderPagination(totalItems, totalPages) {
+        var pager = document.getElementById("dcPagination");
+        if (!pager) return;
+        if (totalPages <= 1) {
+            pager.classList.add("d-none");
+            pager.innerHTML = "";
+            return;
+        }
+
+        var startPage = Math.max(1, currentPage - 2);
+        var endPage = Math.min(totalPages, currentPage + 2);
+        var html = '<ul class="pagination dc-pager shadow-sm mb-0">';
+
+        if (currentPage > 1) {
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-solid fa-chevron-right"></i> قبلی</a></li>';
+        } else {
+            html += '<li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-right"></i> قبلی</span></li>';
+        }
+
+        if (startPage > 1) {
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="1">' + toPersianDigits(1) + '</a></li>';
+            if (startPage > 2) {
+                html += '<li class="page-item disabled"><span class="page-link">…</span></li>';
+            }
+        }
+
+        for (var i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                html += '<li class="page-item active"><span class="page-link">' + toPersianDigits(i) + '</span></li>';
+            } else {
+                html += '<li class="page-item"><a class="page-link" href="#" data-page="' + i + '">' + toPersianDigits(i) + '</a></li>';
+            }
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += '<li class="page-item disabled"><span class="page-link">…</span></li>';
+            }
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">' + toPersianDigits(totalPages) + '</a></li>';
+        }
+
+        if (currentPage < totalPages) {
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '">بعدی <i class="fa-solid fa-chevron-left"></i></a></li>';
+        } else {
+            html += '<li class="page-item disabled"><span class="page-link">بعدی <i class="fa-solid fa-chevron-left"></i></span></li>';
+        }
+
+        html += '</ul>';
+        html += '<div class="dc-pagination__meta">صفحه ' + toPersianDigits(currentPage)
+            + ' از ' + toPersianDigits(totalPages)
+            + ' · ' + toPersianDigits(totalItems) + ' کد</div>';
+
+        pager.innerHTML = html;
+        pager.classList.remove("d-none");
+        pager.querySelectorAll("a[data-page]").forEach(function (a) {
+            a.addEventListener("click", function (e) {
+                e.preventDefault();
+                var page = parseInt(a.getAttribute("data-page"), 10);
+                if (!page || page === currentPage) return;
+                currentPage = page;
+                applyListFilters(false);
+                try {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } catch (err) {
+                    window.scrollTo(0, 0);
+                }
+            });
+        });
+    }
+
+    function isCodeUsed(row) {
+        return (row && (row.usedCount || 0) > 0);
+    }
+
+    function normalizeSearchText(str) {
+        return toEnglishDigits(String(str || ""))
+            .replace(/\u200c/g, " ") // ZWNJ
+            .replace(/[\u200f\u202a-\u202e]/g, "")
+            .replace(/ي/g, "ی")
+            .replace(/ك/g, "ک")
+            .replace(/\s+/g, " ")
+            .toLowerCase()
+            .trim();
+    }
+
+    function normalizePhoneDigits(str) {
+        return toEnglishDigits(String(str || "")).replace(/[^\d]/g, "");
+    }
+
+    /** Normalize Iranian mobiles so 0912 / 912 / 98912 compare equally. */
+    function normalizeIranMobile(str) {
+        var d = normalizePhoneDigits(str);
+        if (!d) return "";
+        if (d.indexOf("98") === 0 && d.length >= 12) d = "0" + d.slice(2);
+        if (d.length === 10 && d.charAt(0) === "9") d = "0" + d;
+        return d;
+    }
+
+    function phonesMatch(queryRaw, mobileRaw) {
+        var qDigits = normalizePhoneDigits(queryRaw);
+        if (qDigits.length < 3) return false;
+
+        var mobileDigits = normalizePhoneDigits(mobileRaw);
+        if (!mobileDigits) return false;
+        if (mobileDigits.indexOf(qDigits) >= 0) return true;
+
+        var qNorm = normalizeIranMobile(queryRaw);
+        var mNorm = normalizeIranMobile(mobileRaw);
+        if (!qNorm || !mNorm) return false;
+        return mNorm.indexOf(qNorm) >= 0 || qNorm.indexOf(mNorm) >= 0;
+    }
+
+    function customerNameOf(r) {
+        return r.specificCustomerName || r.SpecificCustomerName || "";
+    }
+
+    function customerMobileOf(r) {
+        return r.specificCustomerMobile || r.SpecificCustomerMobile || "";
+    }
+
+    function rowMatchesSearch(r, qRaw) {
+        var q = normalizeSearchText(qRaw);
+        if (!q) return true;
+
+        var name = customerNameOf(r);
+        var mobile = customerMobileOf(r);
+        var hay = normalizeSearchText([
+            r.code || r.Code || "",
+            r.title || r.Title || "",
+            name,
+            mobile
+        ].join(" "));
+
+        // All tokens must appear (order-independent) — better for «نام نام‌خانوادگی»
+        var tokens = q.split(" ").filter(Boolean);
+        var tokensOk = tokens.length > 0 && tokens.every(function (t) {
+            return hay.indexOf(t) >= 0;
+        });
+        if (tokensOk) return true;
+
+        if (phonesMatch(qRaw, mobile)) return true;
+        return false;
+    }
+
+    function getFilteredRows() {
+        var q = (document.getElementById('dcSearchBox').value || '').trim();
+        var status = document.getElementById('dcFilterStatus').value;
+        var audience = document.getElementById('dcFilterAudience').value;
+        var hasSearch = !!q;
+
+        return listRows.filter(function (r) {
+            if (status === 'active' && !r.isActive) return false;
+            if (status === 'inactive' && r.isActive) return false;
+
+            // While searching, do not hide specific-customer codes behind «عمومی»
+            // (name/phone search would otherwise look broken).
+            if (hasSearch) {
+                if (audience === 'one' && !r.specificCustomerId) return false;
+            } else {
+                if (audience === 'all' && r.specificCustomerId) return false;
+                if (audience === 'one' && !r.specificCustomerId) return false;
+            }
+
+            return rowMatchesSearch(r, q);
+        });
+    }
+
+    function applyListFilters(resetPage) {
+        if (resetPage !== false) currentPage = 1;
+        renderCards(getFilteredRows());
+    }
+
+    async function loadList() {
+        var list = document.getElementById('discountCodesList');
+        var empty = document.getElementById('listEmpty');
+        var filteredEmpty = document.getElementById('listFilteredEmpty');
+        var pager = document.getElementById('dcPagination');
+        list.innerHTML = "<div class='col-12'><div class='dc-loading'>در حال بارگذاری...</div></div>";
+        empty.classList.add('d-none');
+        filteredEmpty.classList.add('d-none');
+        if (pager) {
+            pager.classList.add('d-none');
+            pager.innerHTML = '';
+        }
+
+        try {
+            var res = await apiFetch(API_BASE + '/discountCodes/' + restaurantId);
+            var json = await res.json();
+            if (!json.success) throw new Error(json.message || 'خطا');
+            listRows = json.data || [];
+            currentPage = 1;
+            applyListFilters(false);
+        } catch (e) {
+            list.innerHTML = '';
+            listRows = [];
+            empty.classList.add('d-none');
+            filteredEmpty.classList.add('d-none');
+            if (pager) {
+                pager.classList.add('d-none');
+                pager.innerHTML = '';
+            }
+            notify(e.message || 'خطا در دریافت لیست', 'error');
+        }
+    }
+
+    function clearSelectedCustomer() {
+        document.getElementById("dcSpecificCustomerId").value = "";
+        document.getElementById("dcCustomerSearch").value = "";
+        document.getElementById("dcSelectedCustomer").classList.add("d-none");
+        document.getElementById("dcCustomerResults").style.display = "none";
+        document.getElementById("dcCustomerResults").innerHTML = "";
+        updatePreview();
+    }
+
+    function setSelectedCustomer(id, name, mobile) {
+        document.getElementById("dcSpecificCustomerId").value = String(id);
+        document.getElementById("dcSelectedCustomerName").textContent = name || "مشتری";
+        document.getElementById("dcSelectedCustomerMobile").textContent = mobile || "";
+        document.getElementById("dcSelectedCustomer").classList.remove("d-none");
+        document.getElementById("dcCustomerSearch").value = "";
+        document.getElementById("dcCustomerResults").style.display = "none";
+        setAudienceMode("one");
+        updatePreview();
+    }
+
+    function setDiscountType(type) {
+        var isPct = type !== "FixedAmount";
+        document.getElementById("dcType").value = isPct ? "Percentage" : "FixedAmount";
+        document.getElementById("dcTypePercentage").classList.toggle("is-active", isPct);
+        document.getElementById("dcTypeFixed").classList.toggle("is-active", !isPct);
+        document.getElementById("dcValueLabel").textContent = isPct ? "مقدار درصد" : "مبلغ تخفیف";
+        document.getElementById("dcValueUnit").textContent = isPct ? "درصد" : "تومان";
+        document.getElementById("dcValue").placeholder = isPct ? "مثلاً ۲۰" : "مثلاً ۵۰,۰۰۰";
+        document.getElementById("dcValue").setAttribute("inputmode", isPct ? "decimal" : "numeric");
+        document.getElementById("dcMaxWrap").style.display = isPct ? "" : "none";
+        if (!isPct) document.getElementById("dcMax").value = "";
+        formatValueFieldLive();
+        updatePreview();
+    }
+
+    function setAudienceMode(mode) {
+        var isOne = mode === "one";
+        document.getElementById("dcAudienceAll").classList.toggle("is-active", !isOne);
+        document.getElementById("dcAudienceOne").classList.toggle("is-active", isOne);
+        document.getElementById("dcCustomerPanel").classList.toggle("is-open", isOne);
+        document.getElementById("dcLimitsPublic").classList.toggle("d-none", isOne);
+        document.getElementById("dcLimitsPrivate").classList.toggle("d-none", !isOne);
+
+        if (!isOne) {
+            document.getElementById("dcSpecificCustomerId").value = "";
+            document.getElementById("dcSelectedCustomer").classList.add("d-none");
+            document.getElementById("dcCustomerSearch").value = "";
+            document.getElementById("dcCustomerResults").style.display = "none";
+            // Carry over private limit into public total if public is empty
+            if (!document.getElementById("dcUsageLimitPublic").value
+                && document.getElementById("dcUsageLimitPrivate").value) {
+                document.getElementById("dcUsageLimitPublic").value =
+                    document.getElementById("dcUsageLimitPrivate").value;
+            }
+            if (!document.getElementById("dcPerCustomer").value) {
+                document.getElementById("dcPerCustomer").value = "1";
+            }
+        } else {
+            if (!document.getElementById("dcUsageLimitPrivate").value
+                && document.getElementById("dcUsageLimitPublic").value) {
+                document.getElementById("dcUsageLimitPrivate").value =
+                    document.getElementById("dcUsageLimitPublic").value;
+            }
+            document.getElementById("dcPerCustomer").value = "";
+        }
+        updatePreview();
+    }
+
+    function getUsageLimitForSave() {
+        return readLimitValue();
+    }
+
+    function getPerCustomerLimitForSave() {
+        return readPerCustomerLimitValue();
+    }
+
+    function updatePreview() { /* preview removed */ }
+
+    async function searchCustomers(query) {
+        var box = document.getElementById("dcCustomerResults");
+        if (!query || query.length < 2) {
+            box.style.display = "none";
+            box.innerHTML = "";
+            return;
+        }
+        try {
+            var res = await apiFetch(API_BASE + "/getcustomers/" + restaurantId
+                + "?search=" + encodeURIComponent(query) + "&page=1&pageSize=8");
+            var json = await res.json();
+            var rows = (json && json.data) ? json.data : [];
+            if (!rows.length) {
+                box.innerHTML = "<div class='item text-muted'>موردی یافت نشد</div>";
+                box.style.display = "block";
+                return;
+            }
+            box.innerHTML = rows.map(function (c) {
+                var id = c.customerId || c.CustomerId;
+                var name = c.fullName || c.FullName || "بدون نام";
+                var mobile = c.mobile || c.Mobile || "";
+                return "<div class='item' data-id='" + id + "' data-name='" + escapeHtml(name)
+                    + "' data-mobile='" + escapeHtml(mobile) + "'>"
+                    + "<strong>" + escapeHtml(name) + "</strong>"
+                    + "<div class='small text-muted'>" + escapeHtml(mobile) + "</div></div>";
+            }).join("");
+            box.style.display = "block";
+            box.querySelectorAll(".item[data-id]").forEach(function (el) {
+                el.addEventListener("click", function () {
+                    setSelectedCustomer(
+                        el.getAttribute("data-id"),
+                        el.getAttribute("data-name"),
+                        el.getAttribute("data-mobile")
+                    );
+                });
+            });
+        } catch (e) {
+            box.innerHTML = "<div class='item text-danger'>خطا در جستجو</div>";
+            box.style.display = "block";
+        }
+    }
+
+    function optionalDec(id) {
+        return parseMoneyDigits(document.getElementById(id) && document.getElementById(id).value);
+    }
+
+    function optionalInt(id) {
+        return parseMoneyDigits(document.getElementById(id) && document.getElementById(id).value);
+    }
+
+    function readLimitValue() {
+        var isOne = document.getElementById("dcAudienceOne")
+            && document.getElementById("dcAudienceOne").classList.contains("is-active");
+        var primaryId = isOne ? "dcUsageLimitPrivate" : "dcUsageLimitPublic";
+        // Fallbacks for older markup / cached pages
+        return optionalInt(primaryId)
+            ?? optionalInt("dcUsageLimit")
+            ?? null;
+    }
+
+    function readPerCustomerLimitValue() {
+        var isOne = document.getElementById("dcAudienceOne")
+            && document.getElementById("dcAudienceOne").classList.contains("is-active");
+        if (isOne) return null;
+        return optionalInt("dcPerCustomer");
+    }
+
+    function defaultDateRange() {
+        var now = new Date();
+        var end = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        setJalaliField("dcStartFa", "dcStartIso", now.toISOString());
+        setJalaliField("dcEndFa", "dcEndIso", end.toISOString());
+    }
+
+    function resetForm() {
+        editingId = 0;
+        document.getElementById("dcId").value = "0";
+        document.getElementById("dcCode").value = "";
+        setCodeFieldError(false);
+        document.getElementById("dcTitle").value = "";
+        document.getElementById("dcValue").value = "20";
+        setMoneyInputValue("dcMax", "");
+        setMoneyInputValue("dcMinOrder", "");
+        document.getElementById("dcUsageLimitPublic").value = "";
+        document.getElementById("dcUsageLimitPrivate").value = "";
+        document.getElementById("dcPerCustomer").value = "1";
+        document.getElementById("dcActive").checked = true;
+        setDiscountType("Percentage");
+        setAudienceMode("all");
+        clearSelectedCustomer();
+        defaultDateRange();
+        document.getElementById("discountModalTitle").textContent = "افزودن کد تخفیف";
+        var kicker = document.getElementById("discountModalKicker");
+        if (kicker) kicker.textContent = "جزئیات کد جدید را مشخص کنید";
+        document.getElementById("dcSaveLabel").textContent = "ثبت کد تخفیف";
+        initializeDatepickers();
+        updatePreview();
+    }
+
+    function openEdit(row) {
+        if (isCodeUsed(row)) {
+            notify("این کد قبلاً استفاده شده و قابل ویرایش نیست. فقط می‌توانید آن را فعال یا غیرفعال کنید.", "error");
+            return;
+        }
+        editingId = row.id;
+        document.getElementById("dcId").value = String(row.id);
+        document.getElementById("dcCode").value = row.code || "";
+        setCodeFieldError(false);
+        document.getElementById("dcTitle").value = row.title || "";
+        setDiscountType(row.discountType || "Percentage");
+        if ((row.discountType || "Percentage") === "FixedAmount") {
+            setMoneyInputValue("dcValue", row.discountValue);
+        } else {
+            document.getElementById("dcValue").value = row.discountValue != null ? String(row.discountValue) : "";
+        }
+        setMoneyInputValue("dcMax", row.maxDiscountAmount != null ? row.maxDiscountAmount : "");
+        setMoneyInputValue("dcMinOrder", row.minOrderAmount != null ? row.minOrderAmount : "");
+        document.getElementById("dcUsageLimitPublic").value = row.usageLimit != null ? row.usageLimit : "";
+        document.getElementById("dcUsageLimitPrivate").value = row.usageLimit != null ? row.usageLimit : "";
+        document.getElementById("dcPerCustomer").value = row.perCustomerUsageLimit != null ? row.perCustomerUsageLimit : "";
+        document.getElementById("dcActive").checked = !!row.isActive;
+        setJalaliField("dcStartFa", "dcStartIso", row.startDate);
+        setJalaliField("dcEndFa", "dcEndIso", row.endDate);
+        if (row.specificCustomerId) {
+            setAudienceMode("one");
+            setSelectedCustomer(row.specificCustomerId, row.specificCustomerName, row.specificCustomerMobile);
+            document.getElementById("dcPerCustomer").value = "";
+        } else {
+            setAudienceMode("all");
+            clearSelectedCustomer();
+        }
+        document.getElementById("discountModalTitle").textContent = "ویرایش کد تخفیف";
+        var kicker = document.getElementById("discountModalKicker");
+        if (kicker) kicker.textContent = "تغییرات روی کد «" + (row.code || "") + "»";
+        document.getElementById("dcSaveLabel").textContent = "ذخیره تغییرات";
+        initializeDatepickers();
+        updatePreview();
+        modal.show();
+    }
+
+    async function saveCode() {
+        syncJalaliHidden("dcStartFa", "dcStartIso");
+        syncJalaliHidden("dcEndFa", "dcEndIso");
+
+        var startIso = document.getElementById("dcStartIso").value;
+        var endIso = document.getElementById("dcEndIso").value;
+        if (!startIso || !endIso) {
+            notify("تاریخ شروع و پایان را از تقویم شمسی انتخاب کنید.", "error");
+            return;
+        }
+
+        var code = normalizeCodeForSave(document.getElementById("dcCode").value);
+        if (!isValidDiscountCode(document.getElementById("dcCode").value)) {
+            setCodeFieldError(true);
+            notify("فقط حروف انگلیسی و اعداد قابل ثبت هستند.", "error");
+            document.getElementById("dcCode").focus();
+            return;
+        }
+        document.getElementById("dcCode").value = code;
+        setCodeFieldError(false);
+
+        var specificCustomerId = null;
+        if (document.getElementById("dcAudienceOne").classList.contains("is-active")) {
+            specificCustomerId = optionalInt("dcSpecificCustomerId");
+            if (!specificCustomerId) {
+                notify("برای کد مخصوص یک نفر، مشتری را از لیست انتخاب کنید.", "error");
+                return;
+            }
+        }
+        var payload = {
+            restaurantId: restaurantId,
+            code: code,
+            title: document.getElementById("dcTitle").value.trim(),
+            discountType: document.getElementById("dcType").value || "Percentage",
+            discountValue: readDiscountValue(),
+            startDate: startIso,
+            endDate: endIso,
+            isActive: document.getElementById("dcActive").checked
+        };
+        var maxDiscountAmount = optionalDec("dcMax");
+        var minOrderAmount = optionalDec("dcMinOrder");
+        var usageLimit = getUsageLimitForSave();
+        var perCustomerUsageLimit = getPerCustomerLimitForSave();
+        if (maxDiscountAmount != null) payload.maxDiscountAmount = maxDiscountAmount;
+        if (minOrderAmount != null) payload.minOrderAmount = minOrderAmount;
+        if (usageLimit != null) payload.usageLimit = usageLimit;
+        if (perCustomerUsageLimit != null) payload.perCustomerUsageLimit = perCustomerUsageLimit;
+        if (specificCustomerId != null) payload.specificCustomerId = specificCustomerId;
+
+        if (!payload.title) {
+            notify("عنوان الزامی است.", "error");
+            return;
+        }
+        if (!(payload.discountValue > 0)) {
+            notify("مقدار تخفیف باید بزرگ‌تر از صفر باشد.", "error");
+            return;
+        }
+
+        try {
+            var url = editingId > 0
+                ? API_BASE + "/discountCodes/" + editingId
+                : API_BASE + "/discountCodes";
+            var method = editingId > 0 ? "PUT" : "POST";
+            var res = await apiFetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            var json = await res.json().catch(function () { return {}; });
+            if (!res.ok || !json.success) {
+                var serverMsg = json.message
+                    || (json.errors ? Object.values(json.errors).flat().join(" ") : null)
+                    || json.title
+                    || ("خطا در ذخیره" + (res.status ? (" (" + res.status + ")") : ""));
+                notify(serverMsg, "error");
+                return;
+            }
+            modal.hide();
+            notify(json.message || "ذخیره شد", "success");
+            await loadList();
+        } catch (e) {
+            notify(e.message || "خطای ارتباط", "error");
+        }
+    }
+
+    function buildUpsertPayloadFromRow(row, isActive) {
+        var payload = {
+            restaurantId: restaurantId,
+            code: row.code || "",
+            title: row.title || "",
+            discountType: row.discountType || "Percentage",
+            discountValue: row.discountValue,
+            startDate: row.startDate,
+            endDate: row.endDate,
+            isActive: !!isActive
+        };
+        if (row.maxDiscountAmount != null) payload.maxDiscountAmount = row.maxDiscountAmount;
+        if (row.minOrderAmount != null) payload.minOrderAmount = row.minOrderAmount;
+        if (row.usageLimit != null) payload.usageLimit = row.usageLimit;
+        if (row.perCustomerUsageLimit != null) payload.perCustomerUsageLimit = row.perCustomerUsageLimit;
+        if (row.specificCustomerId != null) payload.specificCustomerId = row.specificCustomerId;
+        return payload;
+    }
+
+    async function toggleActive(id) {
+        var row = listRows.find(function (x) { return x.id === id; });
+        if (!row) return;
+        var nextActive = !row.isActive;
+        var label = nextActive ? "فعال" : "غیرفعال";
+        if (!confirm("این کد " + label + " شود؟ (کد استفاده‌شده قابل ویرایش جزئیات نیست)")) return;
+        try {
+            var res = await apiFetch(API_BASE + "/discountCodes/" + id, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(buildUpsertPayloadFromRow(row, nextActive))
+            });
+            var json = await res.json().catch(function () { return {}; });
+            if (!res.ok || !json.success) {
+                notify(json.message || "وضعیت تغییر نکرد", "error");
+                return;
+            }
+            notify(json.message || ("کد " + label + " شد"), "success");
+            await loadList();
+        } catch (e) {
+            notify(e.message || "خطای ارتباط", "error");
+        }
+    }
+
+    async function deleteCode(id) {
+        var row = listRows.find(function (x) { return x.id === id; });
+        if (row && isCodeUsed(row)) {
+            notify("این کد قبلاً استفاده شده و قابل حذف نیست. آن را غیرفعال کنید.", "error");
+            return;
+        }
+        if (!confirm("این کد حذف شود؟ در صورت استفاده قبلی فقط می‌توانید آن را غیرفعال کنید.")) return;
+        try {
+            var res = await apiFetch(API_BASE + "/discountCodes/" + restaurantId + "/" + id, {
+                method: "DELETE"
+            });
+            var json = await res.json();
+            if (!json.success) {
+                notify(json.message || "حذف نشد", "error");
+                return;
+            }
+            notify(json.message || "حذف شد", "success");
+            await loadList();
+        } catch (e) {
+            notify(e.message || "خطا", "error");
+        }
+    }
+
+    ["dcSearchBox", "dcFilterStatus", "dcFilterAudience"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener(id === "dcSearchBox" ? "input" : "change", applyListFilters);
+    });
+
+    document.getElementById("btnAddDiscountCode").addEventListener("click", function () {
+        resetForm();
+        modal.show();
+    });
+    document.getElementById("btnSaveDiscountCode").addEventListener("click", saveCode);
+    document.getElementById("dcClearCustomer").addEventListener("click", function () {
+        clearSelectedCustomer();
+        setAudienceMode("one");
+    });
+    document.getElementById("dcCustomerSearch").addEventListener("input", function () {
+        var q = this.value.trim();
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () { searchCustomers(q); }, 300);
+    });
+
+    document.querySelectorAll("[data-dc-type]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            setDiscountType(btn.getAttribute("data-dc-type"));
+        });
+    });
+    document.querySelectorAll("[data-dc-audience]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            setAudienceMode(btn.getAttribute("data-dc-audience"));
+        });
+    });
+
+    ["dcTitle"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener("input", updatePreview);
+    });
+    document.getElementById("dcActive").addEventListener("change", updatePreview);
+    document.getElementById("dcValue").addEventListener("input", function () {
+        formatValueFieldLive();
+        updatePreview();
+    });
+    ["dcMax", "dcMinOrder"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("input", function () {
+            formatMoneyFieldLive(el);
+            updatePreview();
+        });
+    });
+    document.getElementById("dcCode").addEventListener("input", function () {
+        validateCodeFieldLive();
+        updatePreview();
+    });
+    document.getElementById("dcCode").addEventListener("blur", function () {
+        validateCodeFieldLive();
+        updatePreview();
+    });
+
+    if (modalEl) {
+        modalEl.addEventListener("shown.bs.modal", function () {
+            // Re-bind after modal is visible so the calendar can open above the dialog.
+            initializeDatepickers();
+            updatePreview();
+        });
+        modalEl.addEventListener("hide.bs.modal", function () {
+            try {
+                if (typeof jalaliDatepicker !== "undefined" && typeof jalaliDatepicker.hide === "function") {
+                    jalaliDatepicker.hide();
+                }
+            } catch (e) { /* ignore */ }
+        });
+    }
+
+    loadList();
+})();
+</script>
+}

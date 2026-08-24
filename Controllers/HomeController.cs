@@ -2732,6 +2732,19 @@ namespace resturanyar.Controllers
             ViewBag.RestaurantId = restaurantId.Value;
             return View(categories);
         }
+
+        // GET: /Home/DiscountCodeList
+        public IActionResult DiscountCodeList()
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            var restaurant = _context.Restaurants.Find(restaurantId.Value);
+            ViewBag.RestaurantName = restaurant?.name;
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateCategoriesOrder([FromBody] List<CategoryOrderDto> items)

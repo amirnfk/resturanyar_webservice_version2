@@ -17,5 +17,8 @@
 
         /// <summary>Free-text / override address; required for Delivery when no CustomerAddressId.</summary>
         public string? AddressText { get; set; }
+
+        /// <summary>Optional restaurant-owned order discount code. Omitted/null = no code.</summary>
+        public string? DiscountCode { get; set; }
     }
 }

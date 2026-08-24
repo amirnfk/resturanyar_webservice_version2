@@ -29,6 +29,10 @@ namespace resturanyar.Models.Receipt
         public bool IsIssued { get; set; }
         public DateTime? IssuedAt { get; set; }
         public bool UsesCharges { get; set; }
+
+        /// <summary>True when this order has an attached restaurant discount code.</summary>
+        public bool HasOrderDiscountCode { get; set; }
+        public string? OrderDiscountCode { get; set; }
     }
 
     public class ReceiptItemDto
@@ -59,6 +63,12 @@ namespace resturanyar.Models.Receipt
     {
         public OrderTypeKind OrderType { get; set; } = OrderTypeKind.DineIn;
         public List<ReceiptChargeSelectionDto> Charges { get; set; } = new();
+    }
+
+    public class SetReceiptDiscountCodeRequest
+    {
+        /// <summary>Null/empty clears the soft-bound code. Non-empty soft-attaches it.</summary>
+        public string? Code { get; set; }
     }
 
     public class ReceiptChargeSelectionDto

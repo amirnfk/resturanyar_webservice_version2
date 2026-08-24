@@ -1,4 +1,5 @@
 ﻿using resturanyar.Models.CustomerModels;
+using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Receipt;
 using Resturanyar.Data;
 using System.ComponentModel.DataAnnotations;
@@ -24,11 +25,17 @@ namespace resturanyar.Models
 
         public OrderTypeKind OrderType { get; set; } = OrderTypeKind.DineIn;
 
+        /// <summary>Optional restaurant-owned order discount code (invoice-level).</summary>
+        public int? DiscountCodeId { get; set; }
+
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
 
         [ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
+
+        [ForeignKey(nameof(DiscountCodeId))]
+        public RestaurantDiscountCode? DiscountCode { get; set; }
 
         public OrderFulfillment? Fulfillment { get; set; }
     }

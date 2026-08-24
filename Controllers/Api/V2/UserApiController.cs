@@ -1187,8 +1187,46 @@ namespace resturanyar.Controllers.Api.V2
                     });
                 }
 
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
+                var hasDiscountCode = !string.IsNullOrWhiteSpace(request.DiscountCode);
+                if (hasDiscountCode)
+                {
+                    var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
+                    var subtotal = resturanyar.Services.DiscountCodes.DiscountCodeService.ComputeItemsSubtotal(order);
+                    var validation = await discountService.ValidateAsync(new resturanyar.Models.DiscountCodes.ValidateDiscountCodeRequest
+                    {
+                        RestaurantId = request.RestaurantId,
+                        Code = request.DiscountCode!,
+                        ItemsSubtotal = subtotal,
+                        CustomerId = request.CustomerId
+                    });
+                    if (!validation.Success)
+                        return BadRequest(new { success = false, message = validation.Message });
+                }
+
+                await using var orderTx = await _context.Database.BeginTransactionAsync();
+                try
+                {
+                    _context.Orders.Add(order);
+                    await _context.SaveChangesAsync();
+
+                    if (hasDiscountCode)
+                    {
+                        var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
+                        var attach = await discountService.AttachToOrderAsync(order, request.DiscountCode!);
+                        if (!attach.Success)
+                        {
+                            await orderTx.RollbackAsync();
+                            return BadRequest(new { success = false, message = attach.Message });
+                        }
+                    }
+
+                    await orderTx.CommitAsync();
+                }
+                catch
+                {
+                    await orderTx.RollbackAsync();
+                    throw;
+                }
 
                 if (prepared.Fulfillment != null)
                     await fulfillmentService.AttachFulfillmentAsync(order, prepared.Fulfillment);
