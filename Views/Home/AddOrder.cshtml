@@ -1154,7 +1154,19 @@
                     <div class="cart-item-actions">
                         <div class="qty-stepper" role="group" aria-label="تعداد">
                             <button type="button" class="qty-btn qty-minus" data-idx="${idx}" aria-label="کاهش">−</button>
-                            <span class="qty-value">${item.quantity}</span>
+                            <input type="text"
+                                   class="qty-value qty-input"
+                                   inputmode="numeric"
+                                   pattern="[0-9]*"
+                                   enterkeyhint="done"
+                                   autocomplete="off"
+                                   maxlength="3"
+                                   dir="ltr"
+                                   data-idx="${idx}"
+                                   data-prev="${item.quantity}"
+                                   value="${item.quantity}"
+                                   aria-label="تعداد ${escapeHtml(item.name)}"
+                                   title="برای ورود مستقیم تعداد، اینجا کلیک کنید" />
                             <button type="button" class="qty-btn qty-plus" data-idx="${idx}" aria-label="افزایش">+</button>
                         </div>
                         <button type="button" class="remove-item-btn" data-idx="${idx}" aria-label="حذف"><i class="fa-solid fa-trash-can"></i></button>
@@ -1190,6 +1202,60 @@
         cart[idx].quantity += delta;
         if (cart[idx].quantity < 1) cart.splice(idx, 1);
         renderCart();
+    }
+
+    var MAX_CART_QTY = 999;
+
+    function normalizeQtyDigits(value) {
+        var persian = '۰۱۲۳۴۵۶۷۸۹';
+        var arabic = '٠١٢٣٤٥٦٧٨٩';
+        return String(value == null ? '' : value)
+            .replace(/[۰-۹]/g, function (d) { return String(persian.indexOf(d)); })
+            .replace(/[٠-٩]/g, function (d) { return String(arabic.indexOf(d)); })
+            .replace(/[^\d]/g, '');
+    }
+
+    function parseCartQty(value) {
+        var digits = normalizeQtyDigits(value);
+        if (!digits) return null;
+        var n = parseInt(digits, 10);
+        if (isNaN(n)) return null;
+        return Math.min(n, MAX_CART_QTY);
+    }
+
+    function setCartQty(idx, qty) {
+        if (!cart[idx]) return;
+        if (qty == null || qty < 1) {
+            cart.splice(idx, 1);
+        } else {
+            cart[idx].quantity = Math.min(qty, MAX_CART_QTY);
+        }
+        renderCart();
+    }
+
+    function commitCartQtyInput($input) {
+        if (!$input || !$input.length) return;
+        var idx = parseInt($input.data('idx'), 10);
+        if (isNaN(idx) || !cart[idx]) return;
+        var raw = String($input.val() || '').trim();
+        if (!raw) {
+            setCartQty(idx, null);
+            return;
+        }
+        var qty = parseCartQty(raw);
+        if (qty == null) {
+            $input.val(cart[idx].quantity);
+            return;
+        }
+        if (qty < 1) {
+            setCartQty(idx, null);
+            return;
+        }
+        if (qty === cart[idx].quantity) {
+            $input.val(qty).data('prev', qty);
+            return;
+        }
+        setCartQty(idx, qty);
     }
 
     // ══════════════════════════════════════════════════════════
@@ -1427,6 +1493,42 @@
             .off('click.addOrder', '.qty-minus')
             .on('click.addOrder', '.qty-minus', function() {
                 changeCartQty(parseInt($(this).data('idx'), 10), -1);
+            })
+            .off('focus.addOrder', '.qty-input')
+            .on('focus.addOrder', '.qty-input', function() {
+                var el = this;
+                $(el).data('prev', cart[parseInt($(el).data('idx'), 10)]
+                    ? cart[parseInt($(el).data('idx'), 10)].quantity
+                    : $(el).val());
+                setTimeout(function() { el.select(); }, 0);
+            })
+            .off('click.addOrder', '.qty-input')
+            .on('click.addOrder', '.qty-input', function(e) {
+                e.stopPropagation();
+                this.select();
+            })
+            .off('input.addOrder', '.qty-input')
+            .on('input.addOrder', '.qty-input', function() {
+                var cleaned = normalizeQtyDigits(this.value);
+                if (cleaned !== this.value) this.value = cleaned;
+            })
+            .off('keydown.addOrder', '.qty-input')
+            .on('keydown.addOrder', '.qty-input', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $(this).blur();
+                    return;
+                }
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    var prev = $(this).data('prev');
+                    this.value = prev != null ? prev : '';
+                    $(this).blur();
+                }
+            })
+            .off('blur.addOrder', '.qty-input')
+            .on('blur.addOrder', '.qty-input', function() {
+                commitCartQtyInput($(this));
             })
             .off('click.addOrder', '.remove-item-btn')
             .on('click.addOrder', '.remove-item-btn', function() {

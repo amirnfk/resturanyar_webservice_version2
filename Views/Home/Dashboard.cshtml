@@ -282,15 +282,6 @@
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
 
-            <a class="tile fade-up tilt" href="@Url.Action("DiscountCodeList", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-percent"></i></div>
-                <div class="tile__body">
-                    <h3 class="tile__title">کدهای تخفیف</h3>
-                    <p class="tile__desc">ایجاد و مدیریت کد تخفیف سفارش</p>
-                </div>
-                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
-            </a>
-
             <a class="tile fade-up tilt" href="@Url.Action("FoodList", "Home")" role="button" tabindex="0">
                 <div class="tile__icon"><i class="fa-solid fa-utensils"></i></div>
                 <div class="tile__body">
@@ -337,10 +328,19 @@
             </a>
 
             <a class="tile fade-up tilt" href="@Url.Action("CustomersList", "Home", new { restaurantName = restaurant })" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-user-group"></i></div>
+                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
                 <div class="tile__body">
-                    <h3 class="tile__title">مدیریت مشتریان</h3>
+                    <h3 class="tile__title">باشگاه مشتریان</h3>
                     <p class="tile__desc">مدیریت و آنالیز مشتریان</p>
+                </div>
+                <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
+            </a>
+
+            <a class="tile fade-up tilt" href="@Url.Action("DiscountCodeList", "Home")" role="button" tabindex="0">
+                <div class="tile__icon"><i class="fa-solid fa-percent"></i></div>
+                <div class="tile__body">
+                    <h3 class="tile__title">کدهای تخفیف</h3>
+                    <p class="tile__desc">ایجاد و مدیریت کد تخفیف سفارش</p>
                 </div>
                 <span class="tile__arrow"><i class="fa-solid fa-arrow-left-long"></i></span>
             </a>
@@ -382,7 +382,7 @@
             </a>
 
             <a class="tile fade-up tilt" href="@Url.Action("RestaurantSubscription", "Home")" role="button" tabindex="0">
-                <div class="tile__icon"><i class="fa-solid fa-crown"></i></div>
+                <div class="tile__icon"><i class="fa-solid fa-gem"></i></div>
                 <div class="tile__body">
                     <h3 class="tile__title">اشتراک رستوران</h3>
                     <p class="tile__desc">مدیریت پلن‌ها، تمدید و وضعیت اشتراک</p>
