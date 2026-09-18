@@ -1,1052 +1,174 @@
 ﻿@{
     ViewData["Title"] = "باشگاه مشتریان";
-    var placeholder = Url.Content("~/images/customer_placeholder.png");
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/brand-scrollbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/customers-list.css" asp-append-version="true" />
 }
 
-<style>
-    :root {
-        --primary: #ff7a00;
-        --primary-hover: #e66900;
-        --primary-light: rgba(255, 122, 0, 0.08);
-        --bg-page: #f4f6fa;
-        --card-bg: #ffffff;
-        --card-border: #eef2f6;
-        --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.03);
-        --shadow-md: 0 10px 25px rgba(15, 23, 42, 0.05);
-        --shadow-lg: 0 20px 35px rgba(15, 23, 41, 0.08);
-        --text-dark: #0f172a;
-        --text-muted: #64748b;
-        --radius-sm: 12px;
-        --radius-md: 18px;
-        --radius-lg: 24px;
-        --radius-pill: 999px;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .customers-page {
-        direction: rtl;
-        font-family: "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        color: var(--text-dark);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* استایل‌های کارت‌های بالایی */
-    .insights-card {
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        overflow: hidden;
-    }
-
-        .insights-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-    .insights-card-header {
-        font-weight: 800;
-        font-size: 0.95rem;
-        color: var(--text-dark);
-        border-bottom: 1px solid #f1f5f9;
-        padding: 16px 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .icon-box-primary {
-        width: 48px;
-        height: 48px;
-        border-radius: var(--radius-sm);
-        background: var(--primary-light);
-        color: var(--primary);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        transition: var(--transition);
-    }
-
-    .insights-card:hover .icon-box-primary {
-        background: var(--primary);
-        color: white;
-    }
-
-    .icon-box-warning {
-        width: 48px;
-        height: 48px;
-        border-radius: var(--radius-sm);
-        background: rgba(245, 158, 11, 0.1);
-        color: #f59e0b;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        transition: var(--transition);
-    }
-
-    .insights-card:hover .icon-box-warning {
-        background: #f59e0b;
-        color: white;
-    }
-
-    /* لیست‌های داخل کارتها */
-    .scrollable-list {
-        max-height: 210px;
-        overflow-y: auto;
-        padding: 8px 16px 16px 16px;
-    }
-
-    .list-item-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #f1f5f9;
-        transition: var(--transition);
-        gap: 8px;
-    }
-
-        .list-item-row:last-child {
-            border-bottom: none;
-        }
-
-    /* رشد جدید — فشرده و خوانا در موبایل */
-    #growthCustomersList {
-        padding: 4px 12px 10px;
-    }
-
-    .growth-item {
-        align-items: center;
-        padding: 6px 0;
-        min-width: 0;
-    }
-
-    .growth-item__main {
-        min-width: 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-    }
-
-    .growth-item__name {
-        font-size: 0.8rem;
-        font-weight: 800;
-        color: var(--text-dark);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.3;
-    }
-
-    .growth-item__meta {
-        font-size: 0.68rem;
-        color: var(--text-muted);
-        line-height: 1.2;
-    }
-
-    .growth-item__amount {
-        flex-shrink: 0;
-        font-size: 0.72rem;
-        font-weight: 800;
-        color: var(--primary);
-        white-space: nowrap;
-        direction: ltr;
-        unicode-bidi: isolate;
-    }
-
-    @@media (max-width: 991.98px) {
-        #growthCustomersList {
-            max-height: 168px;
-            padding: 2px 10px 8px;
-        }
-
-        .insights-card:has(#growthCustomersList) .insights-card-header {
-            padding: 10px 12px;
-            font-size: 0.8rem;
-            gap: 6px;
-        }
-
-        .growth-item {
-            padding: 5px 0;
-        }
-
-        .growth-item__name {
-            font-size: 0.76rem;
-        }
-
-        .growth-item__meta {
-            font-size: 0.64rem;
-        }
-
-        .growth-item__amount {
-            font-size: 0.68rem;
-        }
-    }
-
-    @@media (max-width: 575.98px) {
-        #growthCustomersList {
-            max-height: 148px;
-        }
-
-        .growth-item {
-            padding: 4px 0;
-            gap: 6px;
-        }
-
-        .growth-item__name {
-            font-size: 0.74rem;
-            max-width: 9.5rem;
-        }
-
-        .growth-item__amount {
-            font-size: 0.66rem;
-            letter-spacing: -0.01em;
-        }
-    }
-
-    /* پیشرفت بار سفارشی در نرخ بازگشت */
-    .progress-wrapper {
-        padding: 10px 0;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-        .progress-wrapper:last-child {
-            border-bottom: none;
-        }
-
-    .progress-item-label {
-        font-size: 0.82rem;
-        color: var(--text-muted);
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-
-    .progress {
-        height: 8px;
-        background-color: #f1f5f9;
-        border-radius: var(--radius-pill);
-    }
-
-    .progress-bar {
-        border-radius: var(--radius-pill);
-        background: linear-gradient(90deg, #ff9e43, var(--primary));
-    }
-
-    /* نمودار پرمیوم */
-    .premium-chart-card {
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        padding: 24px;
-        transition: var(--transition);
-    }
-
-        .premium-chart-card:hover {
-            box-shadow: var(--shadow-md);
-        }
-
-    .chart-legend-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        font-weight: 600;
-    }
-
-    .legend-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-    }
-
-    /* نوار ابزار */
-    .customers-toolbar {
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        padding: 24px;
-        margin-bottom: 28px;
-    }
-
-        .customers-toolbar .form-control,
-        .customers-toolbar .form-select {
-            border-radius: var(--radius-sm);
-            border: 1px solid #e2e8f0;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-            .customers-toolbar .form-control:focus,
-            .customers-toolbar .form-select:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(255,122,0,0.12);
-            }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #ff9100);
-        border: none;
-        border-radius: var(--radius-sm);
-        font-weight: 700;
-        padding: 10px 24px;
-        box-shadow: 0 8px 20px rgba(255, 122, 0, 0.2);
-        transition: var(--transition);
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #ff9100, var(--primary-hover));
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(255, 122, 0, 0.3);
-        }
-
-    .btn-outline-primary {
-        border-color: var(--primary);
-        color: var(--primary);
-        border-radius: var(--radius-sm);
-        transition: var(--transition);
-    }
-
-        .btn-outline-primary:hover {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-    /* کارت‌های تکی مشتریان */
-    .customer-card {
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-md);
-        background: var(--card-bg);
-        box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-        .customer-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-    .customer-header {
-        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-        padding: 24px 20px 16px 20px;
-        text-align: center;
-        border-bottom: 1px solid var(--card-border);
-    }
-
-    .avatar-icon {
-        width: 76px;
-        height: 76px;
-        background: linear-gradient(135deg, var(--primary-light), rgba(255,122,0,0.2));
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 12px;
-        font-size: 2.2rem;
-        color: var(--primary);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-    }
-
-    .customer-name {
-        font-weight: 900;
-        font-size: 1.15rem;
-        margin-bottom: 6px;
-        color: var(--text-dark);
-    }
-
-    .customer-mobile {
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        direction: ltr;
-        letter-spacing: 0.5px;
-        display: inline-block;
-    }
-
-    .customer-body {
-        padding: 16px 20px;
-        flex: 1;
-    }
-
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-        font-size: 0.85rem;
-        border-bottom: 1px dashed #f1f5f9;
-        padding-bottom: 8px;
-    }
-
-        .info-row:last-child {
-            margin-bottom: 0;
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-    .info-label {
-        font-weight: 600;
-        color: var(--text-muted);
-    }
-
-    .info-value {
-        font-weight: 700;
-        color: var(--text-dark);
-    }
-
-    .customer-footer {
-        padding: 16px 20px;
-        background: #fafdff;
-        border-top: 1px solid var(--card-border);
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-        .customer-footer .btn {
-            flex: 1 1 calc(50% - 4px);
-            min-width: 0;
-            font-size: 0.8rem;
-            padding: 8px 6px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-        }
-
-        .customer-footer .btn-addresses {
-            flex: 1 1 100%;
-            background: var(--primary-light);
-            border-color: rgba(255, 122, 0, 0.25);
-            color: var(--primary);
-        }
-
-            .customer-footer .btn-addresses:hover {
-                background: var(--primary);
-                border-color: var(--primary);
-                color: #fff;
-            }
-
-    /* پنل مدیریت آدرس */
-    .addr-offcanvas {
-        width: min(520px, 100vw) !important;
-        height: 100% !important;
-        max-height: 100vh !important;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .addr-offcanvas .offcanvas-header {
-        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 70%);
-        border-bottom: 1px solid var(--card-border);
-        padding: 1.25rem 1.5rem;
-        align-items: flex-start;
-        gap: 0.75rem;
-        flex-shrink: 0;
-    }
-
-    .addr-offcanvas-heading {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .addr-offcanvas .offcanvas-header .btn-close {
-        flex-shrink: 0;
-        margin-top: 0.15rem;
-        z-index: 2;
-    }
-
-    .addr-offcanvas-body {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
-        min-height: 0;
-        height: 100%;
-        overflow: hidden;
-        padding: 1rem 1.25rem 1.25rem !important;
-    }
-
-    .addr-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 12px;
-        flex-shrink: 0;
-    }
-
-    .addr-list-scroll {
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-left: 2px;
-        margin: 0 -2px 0 0;
-    }
-
-    .addr-customer-chip {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-top: 8px;
-    }
-
-    .addr-customer-chip .chip-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--primary-light);
-        color: var(--primary);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-        flex-shrink: 0;
-    }
-
-    .addr-customer-chip .chip-name {
-        font-weight: 800;
-        font-size: 0.95rem;
-        color: var(--text-dark);
-        line-height: 1.2;
-    }
-
-    .addr-customer-chip .chip-mobile {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        direction: ltr;
-        display: inline-block;
-    }
-
-    .addr-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-bottom: 0;
-        max-height: none;
-        overflow: visible;
-        padding-left: 0;
-        padding-bottom: 8px;
-    }
-
-    .addr-card {
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius-sm);
-        background: #fff;
-        padding: 14px 16px;
-        transition: var(--transition);
-        position: relative;
-    }
-
-        .addr-card:hover {
-            border-color: rgba(255, 122, 0, 0.35);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .addr-card.is-default {
-            border-color: rgba(255, 122, 0, 0.4);
-            background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
-        }
-
-    .addr-card-top {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 8px;
-    }
-
-    .addr-title {
-        font-weight: 800;
-        font-size: 0.92rem;
-        color: var(--text-dark);
-        margin: 0;
-    }
-
-    .addr-default-badge {
-        font-size: 0.7rem;
-        font-weight: 700;
-        background: var(--primary);
-        color: #fff;
-        border-radius: var(--radius-pill);
-        padding: 3px 10px;
-        white-space: nowrap;
-    }
-
-    .addr-text {
-        font-size: 0.86rem;
-        color: var(--text-muted);
-        line-height: 1.6;
-        margin-bottom: 8px;
-    }
-
-    .addr-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
-
-    .addr-meta-chip {
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #475569;
-        background: #f1f5f9;
-        border-radius: var(--radius-pill);
-        padding: 3px 10px;
-    }
-
-    .addr-actions {
-        display: flex;
-        gap: 8px;
-    }
-
-        .addr-actions .btn {
-            font-size: 0.78rem;
-            font-weight: 600;
-            border-radius: var(--radius-sm);
-            padding: 5px 12px;
-        }
-
-    .addr-empty {
-        text-align: center;
-        padding: 2.5rem 1rem;
-        color: var(--text-muted);
-        background: #f8fafc;
-        border: 1px dashed #e2e8f0;
-        border-radius: var(--radius-sm);
-        margin: 0;
-        min-height: 220px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-        .addr-empty i {
-            font-size: 1.8rem;
-            color: var(--primary);
-            opacity: 0.7;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-    .addr-form-panel {
-        border: 0;
-        border-radius: 0;
-        background: transparent;
-        padding: 0;
-        box-shadow: none;
-    }
-
-    .addr-form-panel .form-label {
-        font-weight: 700;
-        font-size: 0.82rem;
-        color: var(--text-dark);
-        margin-bottom: 6px;
-    }
-
-    .addr-form-panel .form-control,
-    .addr-form-panel .form-select {
-        border-radius: var(--radius-sm);
-        border-color: #e2e8f0;
-        font-size: 0.9rem;
-    }
-
-        .addr-form-panel .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.2rem rgba(255, 122, 0, 0.15);
-        }
-
-    #addressFormModal {
-        z-index: 1065;
-    }
-
-    .modal-backdrop.address-form-backdrop {
-        z-index: 1060;
-    }
-
-    #addressFormModal .modal-content {
-        border: 0;
-        border-radius: var(--radius-md);
-        overflow: hidden;
-    }
-
-    #addressFormModal .modal-header {
-        background: linear-gradient(135deg, #fff7ed 0%, #ffffff 80%);
-        border-bottom: 1px solid var(--card-border);
-    }
-
-    #addressFormModal .modal-body {
-        max-height: min(70vh, 640px);
-        overflow-y: auto;
-    }
-
-    .addr-form-title {
-        font-weight: 800;
-        font-size: 0.95rem;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-        .addr-form-title i {
-            color: var(--primary);
-        }
-
-    .addr-coords-hint {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-top: 4px;
-    }
-
-    .stats-hint {
-        background: var(--primary-light);
-        border: 1px solid rgba(255, 122, 0, 0.15);
-        border-radius: var(--radius-sm);
-        padding: 12px 16px;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
-
-        .stats-hint i {
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-
-    .no-closed-orders-hint {
-        font-size: 0.78rem;
-        color: var(--text-muted);
-        background: #f8fafc;
-        border-radius: var(--radius-sm);
-        padding: 8px 10px;
-        margin-top: 4px;
-        text-align: center;
-        border: 1px dashed #e2e8f0;
-    }
-
-    .customers-page #exportBtn {
-        background: linear-gradient(135deg, #2ecc71, #27ae60);
-        border: none;
-        color: #fff;
-        font-weight: 700;
-        border-radius: var(--radius-sm);
-        box-shadow: 0 6px 18px rgba(46, 204, 113, 0.25);
-        transition: var(--transition);
-        padding: 10px 0;
-    }
-
-    .customers-page #exportBtn:hover {
-        background: linear-gradient(135deg, #27ae60, #219a52);
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 8px 22px rgba(46, 204, 113, 0.32);
-    }
-
-    .customers-page #exportBtn:disabled,
-    .customers-page #exportBtn.disabled {
-        opacity: 0.65;
-        transform: none;
-        pointer-events: none;
-    }
-
-    .customers-page .export-loading-overlay {
-        position: fixed;
-        inset: 0;
-        background-color: rgba(255, 255, 255, 0.78);
-        backdrop-filter: blur(3px);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-    }
-
-    .customers-page .export-loading-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.5rem 2rem;
-        border-radius: 16px;
-        background: #fff;
-        box-shadow: var(--shadow-lg);
-        border: 1px solid var(--card-border);
-    }
-
-    .customers-page .export-loading-text {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text-muted);
-    }
-
-    .export-format-modal {
-        border: none;
-        border-radius: 18px;
-        box-shadow: 0 18px 48px rgba(26, 26, 46, 0.16);
-    }
-
-    .export-format-modal .modal-title {
-        font-weight: 800;
-        color: var(--text-dark);
-    }
-
-    .export-format-option {
-        display: flex;
-        align-items: center;
-        gap: 0.9rem;
-        width: 100%;
-        text-align: right;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 14px;
-        padding: 0.95rem 1rem;
-        background: #fff;
-        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    }
-
-    .export-format-option:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 10px 24px rgba(26, 26, 46, 0.08);
-    }
-
-    .export-format-option__icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.35rem;
-        flex-shrink: 0;
-        color: #fff;
-    }
-
-    .export-format-option__text {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-        min-width: 0;
-    }
-
-    .export-format-option__text strong {
-        font-size: 1rem;
-        font-weight: 800;
-        color: var(--text-dark);
-    }
-
-    .export-format-option__text small {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-    }
-
-    .export-format-option--excel {
-        border-color: rgba(46, 204, 113, 0.28);
-    }
-
-    .export-format-option--excel .export-format-option__icon {
-        background: linear-gradient(135deg, #2ecc71, #27ae60);
-    }
-
-    .export-format-option--excel:hover {
-        border-color: rgba(46, 204, 113, 0.55);
-    }
-
-    .export-format-option--pdf {
-        border-color: rgba(231, 76, 60, 0.28);
-    }
-
-    .export-format-option--pdf .export-format-option__icon {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-    }
-
-    .export-format-option--pdf:hover {
-        border-color: rgba(231, 76, 60, 0.55);
-    }
-
-    .export-format-cancel {
-        border-radius: 12px;
-        font-weight: 600;
-        color: var(--text-muted);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        margin-top: 0.15rem;
-    }
-</style>
-
 <div class="container customers-page py-4">
-    <div id="exportLoadingOverlay" class="export-loading-overlay" aria-hidden="true">
-        <div class="export-loading-content">
+    <div id="exportLoadingOverlay" class="cl-overlay" aria-hidden="true">
+        <div class="cl-overlay__box">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">در حال بارگذاری...</span>
             </div>
-            <p class="export-loading-text mb-0">در حال آماده‌سازی گزارش...</p>
+            <p class="cl-overlay__text">در حال آماده‌سازی گزارش...</p>
         </div>
     </div>
 
-    <!-- هدر صفحه -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="mb-0 fw-black">   </h4>
-        <button class="btn btn-primary" id="btnAddCustomer">
-            <i class="fas fa-plus me-1"></i> مشتری جدید
-        </button>
-    </div>
+    <!-- ========== نوار عنوان و اقدام اصلی ========== -->
+    <header class="cl-actionbar">
+        <div class="cl-actionbar__text">
+            <span class="cl-actionbar__badge" aria-hidden="true"><i class="fas fa-crown"></i></span>
+            <div>
+                <h1 class="cl-actionbar__title">باشگاه مشتریان</h1>
+                <p class="cl-actionbar__sub">پروفایل مشتریان، آدرس‌ها و تحلیل رفتار خرید در یک نگاه</p>
+            </div>
+        </div>
+        <div class="cl-actionbar__actions">
+            <button type="button" class="cl-btn cl-btn--primary" id="btnAddCustomer">
+                <i class="fas fa-plus"></i>
+                <span>مشتری جدید</span>
+            </button>
+        </div>
+    </header>
 
-    <!-- ========== بخش اینفوگرافیک پرمیوم ========== -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4 mb-4" id="infographicsRow">
-        <!-- کارت ۱: کل مشتریان فعال -->
-        <div class="col">
-            <div class="insights-card h-100 d-flex flex-column justify-content-between p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <span class="text-muted small fw-semibold">کل مشتریان فعال</span>
-                        <h1 class="mb-0 fw-black mt-2 text-dark" id="totalCustomers">0</h1>
-                    </div>
-                    <div class="icon-box-primary">
-                        <i class="fas fa-users"></i>
-                    </div>
+    <!-- ========== شاخص‌های کلیدی ========== -->
+    <section class="cl-hero" aria-label="شاخص‌های کلیدی مشتریان">
+        <div class="cl-total">
+            <div class="cl-total__top">
+                <span class="cl-total__label"><i class="fas fa-users"></i> کل مشتریان فعال</span>
+                <span class="cl-total__chip">پروفایل‌های ثبت‌شده</span>
+            </div>
+            <p class="cl-total__value">
+                <span id="totalCustomers">0</span><span class="cl-total__unit">نفر</span>
+            </p>
+            <div class="cl-total__breakdown">
+                <div class="cl-total__cell">
+                    <span>امروز</span>
+                    <strong id="newToday">0</strong>
                 </div>
-                <div>
-                    <hr class="my-2" style="opacity: 0.08;">
-                    <div class="d-flex justify-content-between small text-muted">
-                        <span>امروز: <strong class="text-dark" id="newToday">0</strong></span>
-                        <span>این هفته: <strong class="text-dark" id="newWeek">0</strong></span>
-                        <span>این ماه: <strong class="text-dark" id="newMonth">0</strong></span>
-                    </div>
+                <div class="cl-total__cell">
+                    <span>این هفته</span>
+                    <strong id="newWeek">0</strong>
+                </div>
+                <div class="cl-total__cell">
+                    <span>این ماه</span>
+                    <strong id="newMonth">0</strong>
                 </div>
             </div>
         </div>
 
-        <!-- کارت ۲: مشتری ویژه ماه -->
-        <div class="col">
-            <div class="insights-card h-100 d-flex flex-column justify-content-between p-4">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                        <span class="text-muted small fw-semibold">مشتری ویژه ماه</span>
-                        <h6 class="mb-0 fw-bold mt-2 text-truncate" id="topCustomerName" style="max-width: 130px;">-</h6>
-                        <span class="small fw-black text-primary mt-1 d-block" id="topCustomerAmount">0 تومان</span>
-                    </div>
-                    <div class="icon-box-warning">
-                        <i class="fas fa-crown"></i>
-                    </div>
+        <article class="cl-panel cl-top">
+            <header class="cl-panel__head">
+                <span class="cl-panel__icon cl-panel__icon--top" aria-hidden="true"><i class="fas fa-crown"></i></span>
+                <div class="cl-panel__heading">
+                    <h2 class="cl-panel__title">مشتری ویژه ماه</h2>
+                    <p class="cl-panel__hint">بیشترین مبلغ خرید در ماه جاری</p>
                 </div>
-                <div>
-                    <hr class="my-2" style="opacity: 0.08;">
-                    <div class="small text-muted d-flex justify-content-between">
-                        <span>تعداد سفارش:</span>
-                        <strong class="text-dark" id="topCustomerOrders">0</strong>
-                    </div>
+            </header>
+            <div class="cl-top__body">
+                <h3 class="cl-top__name" id="topCustomerName">-</h3>
+                <span class="cl-top__amount cl-money" id="topCustomerAmount">0 تومان</span>
+                <div class="cl-top__foot">
+                    <span>تعداد سفارش</span>
+                    <strong id="topCustomerOrders">0</strong>
                 </div>
             </div>
-        </div>
+        </article>
+    </section>
 
-        <!-- کارت ۳: رشد مشتریان ۷ روزه -->
-        <div class="col">
-            <div class="insights-card h-100">
-                <div class="insights-card-header">
-                    <i class="fas fa-chart-line text-success"></i> رشد جدید (۷ روز اخیر)
+    <!-- ========== کارت‌های تحلیلی ========== -->
+    <section class="cl-insights" aria-label="تحلیل رفتار مشتریان">
+        <article class="cl-panel">
+            <header class="cl-panel__head">
+                <span class="cl-panel__icon cl-panel__icon--growth" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+                <div class="cl-panel__heading">
+                    <h2 class="cl-panel__title">رشد جدید</h2>
+                    <p class="cl-panel__hint">پرخریدترین‌های ۷ روز اخیر</p>
                 </div>
-                <div class="scrollable-list" id="growthCustomersList">
-                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
-                </div>
+            </header>
+            <div class="cl-panel__body cl-panel__body--scroll scrollable-list" id="growthCustomersList">
+                <div class="cl-panel__loading"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
             </div>
-        </div>
+        </article>
 
-        <!-- کارت ۴: نرخ بازگشت مشتری -->
-        <div class="col">
-            <div class="insights-card h-100">
-                <div class="insights-card-header">
-                    <i class="fas fa-history text-info"></i> نرخ بازگشت مشتری
+        <article class="cl-panel">
+            <header class="cl-panel__head">
+                <span class="cl-panel__icon cl-panel__icon--return" aria-hidden="true"><i class="fas fa-repeat"></i></span>
+                <div class="cl-panel__heading">
+                    <h2 class="cl-panel__title">نرخ بازگشت مشتری</h2>
+                    <p class="cl-panel__hint">سهم مشتریان تکرارشونده</p>
                 </div>
-                <div class="scrollable-list" id="returnRatesList" style="padding: 12px 16px;">
-                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
-                </div>
+            </header>
+            <div class="cl-panel__body cl-panel__body--scroll scrollable-list" id="returnRatesList">
+                <div class="cl-panel__loading"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
             </div>
-        </div>
+        </article>
 
-        <!-- کارت ۵: بهترین مشتریان -->
-        <div class="col">
-            <div class="insights-card h-100">
-                <div class="insights-card-header">
-                    <i class="fas fa-award text-warning"></i> بهترین مشتریان 
+        <article class="cl-panel">
+            <header class="cl-panel__head">
+                <span class="cl-panel__icon cl-panel__icon--best" aria-hidden="true"><i class="fas fa-award"></i></span>
+                <div class="cl-panel__heading">
+                    <h2 class="cl-panel__title">بهترین مشتریان</h2>
+                    <p class="cl-panel__hint">بیشترین خرید کل</p>
                 </div>
-                <div class="scrollable-list" id="bestCustomersList">
-                    <div class="text-center py-5 text-muted small"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
-                </div>
+            </header>
+            <div class="cl-panel__body cl-panel__body--scroll scrollable-list" id="bestCustomersList">
+                <div class="cl-panel__loading"><i class="fas fa-spinner fa-spin"></i> بارگذاری...</div>
             </div>
-        </div>
-    </div>
+        </article>
+    </section>
 
-    <!-- ========== نمودار روند جدید پرمیوم ========== -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="premium-chart-card">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h6 class="mb-1 fw-bold text-dark"><i class="far fa-chart-bar text-primary me-1"></i> روند هفتگی فروش و جذب جذب مشتری</h6>
-                        <span class="text-muted small">فروش رستوران و مشتریان جدید در ۷ روز اخیر</span>
+    <!-- ========== نمودار روند هفتگی ========== -->
+    <section class="cl-panel cl-chart" aria-label="روند هفتگی فروش و جذب مشتری">
+        <header class="cl-chart__head">
+            <div class="cl-panel__heading">
+                <h2 class="cl-panel__title">روند هفتگی فروش و جذب مشتری</h2>
+                <p class="cl-panel__hint">فروش رستوران و مشتریان جدید در ۷ روز اخیر</p>
+            </div>
+            <div class="cl-chart__legend">
+                <span class="cl-legend">
+                    <span class="cl-legend__dot cl-legend__dot--customers" aria-hidden="true"></span> مشتریان جدید
+                </span>
+                <span class="cl-legend">
+                    <span class="cl-legend__dot cl-legend__dot--revenue" aria-hidden="true"></span> مجموع فروش (هزار تومان)
+                </span>
+            </div>
+        </header>
+        <div class="cl-chart__canvas">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </section>
+
+    <!-- ========== فهرست مشتریان ========== -->
+    <section class="cl-directory" aria-label="فهرست مشتریان">
+        <header class="cl-directory__head">
+            <div class="cl-panel__heading">
+                <h2 class="cl-panel__title">فهرست مشتریان</h2>
+                <p class="cl-panel__hint">جستجو، فیلتر بازه و مرتب‌سازی بر اساس خرید</p>
+            </div>
+            <div id="totalRecordsInfo" class="cl-count d-none" aria-live="polite"></div>
+        </header>
+
+        <div class="cl-toolbar" aria-label="جستجو و فیلتر مشتریان">
+            <div class="cl-field cl-field--search">
+                <label class="cl-label" for="searchInput">جستجو در مشتریان</label>
+                <div class="cl-search">
+                    <div class="cl-search__field">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="text" id="searchInput" class="form-control" placeholder="نام، شماره موبایل، توضیحات..." autocomplete="off" />
                     </div>
-                    <div class="d-flex gap-3">
-                        <span class="chart-minimal-card chart-legend-indicator">
-                            <span class="legend-dot" style="background: #ff7a00;"></span> مشتریان جدید
-                        </span>
-                        <span class="chart-minimal-card chart-legend-indicator">
-                            <span class="legend-dot" style="background: #10b981;"></span> مجموع فروش (هزار تومان)
-                        </span>
-                    </div>
-                </div>
-                <div style="position: relative; width: 100%;">
-                    <canvas id="trendChart" height="90" style="max-height: 220px; width: 100%;"></canvas>
+                    <button type="button" id="btnSearch" class="cl-btn cl-btn--primary cl-search__btn">
+                        <i class="fas fa-search"></i>
+                        <span>جستجو</span>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- نوار ابزار جستجو و فیلتر -->
-    <div class="customers-toolbar">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label fw-bold text-dark small">جستجو عمومی</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" id="searchInput" class="form-control border-start-0" placeholder="نام، شماره موبایل، توضیحات..." />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">&nbsp;</label>
-                <button id="btnSearch" class="btn btn-primary w-100">
-                    اعمال فیلتر جستجو
-                </button>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">&nbsp;</label>
-                <button id="btnResetSearch" class="btn btn-outline-secondary w-100" style="padding: 10px 0; border-radius: var(--radius-sm);">
-                    <i class="fas fa-undo-alt me-1"></i> بازنشانی کامل
-                </button>
-            </div>
-        </div>
-        <hr class="my-4" style="opacity: 0.1;">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">بازه زمانی ثبت سفارش</label>
+            <div class="cl-field">
+                <label class="cl-label" for="periodSelect">بازه زمانی سفارش‌ها</label>
                 <select id="periodSelect" class="form-select">
                     <option value="all">همه زمان‌ها</option>
                     <option value="today">امروز</option>
@@ -1055,202 +177,235 @@
                     <option value="year">سال گذشته</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">مرتب‌سازی بر اساس</label>
+
+            <div class="cl-field">
+                <label class="cl-label" for="sortBySelect">مرتب‌سازی بر اساس</label>
                 <select id="sortBySelect" class="form-select">
                     <option value="TotalSpent">بیشترین مبلغ خرید</option>
                     <option value="TotalOrders">بیشترین تعداد سفارش</option>
                     <option value="TotalDistinctDays">بیشترین روزهای حضور</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">&nbsp;</label>
-                <button id="btnApplyFilter" class="btn btn-dark w-100" style="padding: 10px 0; border-radius: var(--radius-sm); font-weight: 700;">
-                    <i class="fas fa-sliders-h me-1"></i> اعمال فیلتر و رتبه‌بندی
+
+            <div class="cl-toolbar__actions">
+                <button type="button" id="btnApplyFilter" class="cl-btn cl-btn--dark">
+                    <i class="fas fa-sliders"></i>
+                    <span>اعمال فیلتر</span>
                 </button>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-bold text-dark small">&nbsp;</label>
-                <button type="button" id="exportBtn" class="btn btn-success w-100">
-                    <i class="bi bi-download me-1"></i>
-                    دانلود گزارش
+                <button type="button" id="btnResetSearch" class="cl-btn cl-btn--ghost">
+                    <i class="fas fa-rotate-left"></i>
+                    <span>بازنشانی</span>
+                </button>
+                <button type="button" id="exportBtn" class="cl-btn">
+                    <i class="bi bi-download"></i>
+                    <span>دانلود گزارش</span>
                 </button>
             </div>
         </div>
-    </div>
 
-    <div class="stats-hint">
-        <i class="fas fa-info-circle"></i>
-        <span>آمار خرید فقط بر اساس سفارش‌های بسته‌شده محاسبه می‌شود.</span>
-    </div>
+        <p class="cl-note">
+            <i class="fas fa-circle-info" aria-hidden="true"></i>
+            <span>آمار خرید فقط بر اساس سفارش‌های بسته‌شده محاسبه می‌شود.</span>
+        </p>
 
-    <!-- بارگذاری و نشانگر لودینگ -->
-    <div id="loadingSpinner" class="text-center py-5 d-none">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">در حال بارگذاری...</span>
+        <div id="loadingSpinner" class="d-none" role="status" aria-live="polite">
+            <span class="visually-hidden">در حال بارگذاری لیست مشتریان...</span>
+            <div class="cl-skeleton" aria-hidden="true">
+                @for (var i = 0; i < 6; i++)
+                {
+                    <div class="cl-skeleton__row">
+                        <div class="cl-skeleton__avatar"></div>
+                        <div class="cl-skeleton__body">
+                            <div class="cl-skeleton__line cl-skeleton__line--title"></div>
+                            <div class="cl-skeleton__line cl-skeleton__line--sub"></div>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
-    </div>
 
-    <!-- لیست مشتریان -->
-    <div id="customersList"></div>
-    <div id="totalRecordsInfo" class="text-muted text-center mt-3 mb-2" style="display: none; font-weight: 600;"></div>
-
-    <!-- صفحه‌بندی -->
-    <div id="paginationContainer" class="d-flex justify-content-center mt-5"></div>
+        <div id="customersList"></div>
+        <nav id="paginationContainer" class="cl-pagination" aria-label="صفحه‌بندی مشتریان"></nav>
+    </section>
 </div>
 
 <!-- مودال افزودن/ویرایش مشتری -->
-<div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="modalTitle">افزودن مشتری جدید</h5>
+                <div class="cl-modal-heading">
+                    <span class="cl-modal-heading__icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="modalTitle">افزودن مشتری جدید</h5>
+                        <p class="cl-modal-heading__sub">اطلاعات پایه مشتری را ثبت کنید</p>
+                    </div>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body p-4">
-                <form id="customerForm">
+            <div class="modal-body">
+                <form id="customerForm" autocomplete="off">
                     <input type="hidden" id="customerId" value="0" />
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">نام کامل</label>
+                        <label class="cl-label" for="fullName">نام کامل</label>
                         <input type="text" id="fullName" class="form-control" placeholder="مثال: علیرضا شایان" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">شماره موبایل</label>
-                        <input type="tel" id="mobile" class="form-control" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required dir="ltr" />
+                        <label class="cl-label" for="mobile">شماره موبایل</label>
+                        <input type="tel" id="mobile" class="form-control cl-num" placeholder="09123456789" inputmode="numeric" required dir="ltr" />
+                        <span class="cl-help">۱۱ رقم و با ۰۹ شروع شود. برای مشتری جدید اگر خالی بماند، شماره موقت ساخته می‌شود.</span>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">توضیحات (اختیاری)</label>
+                    <div>
+                        <label class="cl-label" for="description">توضیحات (اختیاری)</label>
                         <textarea id="description" class="form-control" placeholder="یادداشت در خصوص ترجیحات مشتری..." rows="3"></textarea>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer" style="background: #f8fafc;">
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: var(--radius-sm);">انصراف</button>
-                <button type="button" id="btnSaveCustomer" class="btn btn-primary px-4">ذخیره اطلاعات</button>
+            <div class="modal-footer">
+                <button type="button" class="btn cl-btn-cancel" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" id="btnSaveCustomer" class="btn btn-primary">
+                    <i class="fas fa-check me-1"></i> ذخیره اطلاعات
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- مودال تأیید حذف -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> حذف مشتری</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<!-- مودال تأیید حذف مشتری -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="cl-modal-heading">
+                    <span class="cl-modal-heading__icon" aria-hidden="true"><i class="fas fa-triangle-exclamation"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="deleteModalTitle">حذف مشتری</h5>
+                        <p class="cl-modal-heading__sub">این عملیات قابل بازگشت نیست</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body p-4 text-center">
+            <div class="modal-body">
                 آیا از حذف این مشتری و کل تاریخچه اطلاعات او اطمینان دارید؟
+                <p class="cl-warning">
+                    <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                    <span>آدرس‌ها و سابقه حساب این مشتری هم از دسترس خارج می‌شود.</span>
+                </p>
             </div>
-            <div class="modal-footer justify-content-center border-0 pt-0" style="background: #ffffff;">
-                <button type="button" class="btn btn-light px-3" data-bs-dismiss="modal" style="border-radius: var(--radius-sm);">لغو عملیات</button>
-                <button type="button" id="confirmDelete" class="btn btn-danger px-4" style="border-radius: var(--radius-sm);">بله، حذف شود</button>
+            <div class="modal-footer">
+                <button type="button" class="btn cl-btn-cancel" data-bs-dismiss="modal">لغو عملیات</button>
+                <button type="button" id="confirmDelete" class="btn btn-danger">بله، حذف شود</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- پنل مدیریت آدرس‌های مشتری -->
-<div class="offcanvas offcanvas-end addr-offcanvas" tabindex="-1" id="addressesOffcanvas" aria-labelledby="addressesOffcanvasLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="addressesOffcanvas" aria-labelledby="addressesOffcanvasLabel">
     <div class="offcanvas-header">
-        <div class="addr-offcanvas-heading">
-            <h5 class="offcanvas-title fw-bold mb-0" id="addressesOffcanvasLabel">
-                <i class="fas fa-map-location-dot text-primary me-1"></i> مدیریت آدرس‌ها
+        <div class="cl-addr__heading">
+            <h5 class="offcanvas-title" id="addressesOffcanvasLabel">
+                <i class="fas fa-map-location-dot" aria-hidden="true"></i> مدیریت آدرس‌ها
             </h5>
-            <div class="addr-customer-chip">
-                <div class="chip-avatar"><i class="fas fa-user"></i></div>
+            <div class="cl-addr__chip">
+                <span class="cl-addr__avatar" aria-hidden="true"><i class="fas fa-user"></i></span>
                 <div>
-                    <div class="chip-name" id="addrCustomerName">—</div>
-                    <div class="chip-mobile" id="addrCustomerMobile">—</div>
+                    <div class="cl-addr__name" id="addrCustomerName">—</div>
+                    <span class="cl-addr__mobile cl-num" id="addrCustomerMobile">—</span>
                 </div>
             </div>
         </div>
         <button type="button" class="btn-close" id="btnCloseAddressesOffcanvas" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
     </div>
-    <div class="offcanvas-body addr-offcanvas-body">
-        <div class="addr-toolbar">
-            <span class="fw-bold" style="font-size:0.9rem;">آدرس‌های ذخیره‌شده</span>
-            <button type="button" class="btn btn-sm btn-primary" id="btnNewAddress" style="border-radius:var(--radius-sm);">
-                <i class="fas fa-plus me-1"></i> آدرس جدید
+    <div class="offcanvas-body">
+        <div class="cl-addr__toolbar">
+            <span class="cl-addr__toolbar-title">آدرس‌های ذخیره‌شده</span>
+            <button type="button" class="cl-addr__add" id="btnNewAddress">
+                <i class="fas fa-plus"></i> آدرس جدید
             </button>
         </div>
 
-        <div id="addrListLoading" class="text-center py-4 text-muted flex-shrink-0" style="display:none;">
-            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+        <div id="addrListLoading" class="cl-addr__loading" style="display:none;" role="status">
+            <div class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></div>
             در حال دریافت آدرس‌ها...
         </div>
-        <div id="addrListContainer" class="addr-list-scroll"></div>
+        <div id="addrListContainer" class="cl-addr__scroll"></div>
     </div>
 </div>
 
 <!-- مودال افزودن / ویرایش آدرس -->
 <div class="modal fade" id="addressFormModal" tabindex="-1" aria-labelledby="addrFormHeading" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content shadow-lg">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="addrFormHeading">
-                    <i class="fas fa-pen-to-square text-primary me-1"></i> ثبت آدرس جدید
-                </h5>
+                <div class="cl-modal-heading">
+                    <span class="cl-modal-heading__icon" aria-hidden="true"><i class="fas fa-map-pin"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="addrFormHeading">ثبت آدرس جدید</h5>
+                        <p class="cl-modal-heading__sub">آدرس دقیق برای ارسال سفارش</p>
+                    </div>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body p-4">
-                <div class="addr-form-panel">
-                    <form id="addressForm" autocomplete="off">
-                        <input type="hidden" id="addrId" value="0" />
-                        <input type="hidden" id="addrCustomerId" value="0" />
+            <div class="modal-body">
+                <form id="addressForm" autocomplete="off">
+                    <input type="hidden" id="addrId" value="0" />
+                    <input type="hidden" id="addrCustomerId" value="0" />
 
-                        <div class="mb-3">
-                            <label class="form-label" for="addrTitle">عنوان آدرس</label>
-                            <input type="text" id="addrTitle" class="form-control" placeholder="مثلاً خانه، محل کار، شعبه شمال" maxlength="100" />
-                        </div>
+                    <div class="mb-3">
+                        <label class="cl-label" for="addrTitle">عنوان آدرس</label>
+                        <input type="text" id="addrTitle" class="form-control" placeholder="مثلاً خانه، محل کار، شعبه شمال" maxlength="100" />
+                        <span class="cl-help">اگر خالی بماند، عنوان «آدرس» ثبت می‌شود.</span>
+                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="addrText">متن آدرس <span class="text-danger">*</span></label>
-                            <textarea id="addrText" class="form-control" rows="3" placeholder="خیابان، کوچه، پلاک و جزئیات کامل..." required></textarea>
-                        </div>
+                    <div class="mb-3">
+                        <label class="cl-label" for="addrText">متن آدرس <span class="text-danger">*</span></label>
+                        <textarea id="addrText" class="form-control" rows="3" placeholder="خیابان، کوچه، پلاک و جزئیات کامل..." required></textarea>
+                    </div>
 
-                        <div class="row g-2 mb-3">
-                            <div class="col-4">
-                                <label class="form-label" for="addrPlate">پلاک</label>
-                                <input type="text" id="addrPlate" class="form-control" placeholder="—" maxlength="10" />
-                            </div>
-                            <div class="col-4">
-                                <label class="form-label" for="addrFloor">طبقه</label>
-                                <input type="text" id="addrFloor" class="form-control" placeholder="—" maxlength="10" />
-                            </div>
-                            <div class="col-4">
-                                <label class="form-label" for="addrUnit">واحد</label>
-                                <input type="text" id="addrUnit" class="form-control" placeholder="—" maxlength="10" />
-                            </div>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <label class="cl-label" for="addrPlate">پلاک</label>
+                            <input type="text" id="addrPlate" class="form-control" placeholder="—" maxlength="10" />
                         </div>
+                        <div class="col-4">
+                            <label class="cl-label" for="addrFloor">طبقه</label>
+                            <input type="text" id="addrFloor" class="form-control" placeholder="—" maxlength="10" />
+                        </div>
+                        <div class="col-4">
+                            <label class="cl-label" for="addrUnit">واحد</label>
+                            <input type="text" id="addrUnit" class="form-control" placeholder="—" maxlength="10" />
+                        </div>
+                    </div>
 
-                        <div class="row g-2 mb-2 d-none" aria-hidden="true">
-                            <div class="col-6">
-                                <label class="form-label" for="addrLat">عرض جغرافیایی</label>
-                                <input type="number" step="any" id="addrLat" class="form-control" placeholder="اختیاری" dir="ltr" />
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label" for="addrLng">طول جغرافیایی</label>
-                                <input type="number" step="any" id="addrLng" class="form-control" placeholder="اختیاری" dir="ltr" />
-                            </div>
+                    <div class="row g-2 mt-2 d-none" aria-hidden="true">
+                        <div class="col-6">
+                            <label class="cl-label" for="addrLat">عرض جغرافیایی</label>
+                            <input type="number" step="any" id="addrLat" class="form-control" placeholder="اختیاری" dir="ltr" />
                         </div>
+                        <div class="col-6">
+                            <label class="cl-label" for="addrLng">طول جغرافیایی</label>
+                            <input type="number" step="any" id="addrLng" class="form-control" placeholder="اختیاری" dir="ltr" />
+                        </div>
+                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" for="addrDescription">یادداشت (اختیاری)</label>
-                            <input type="text" id="addrDescription" class="form-control" placeholder="مثلاً زنگ طبقه ۲ را بزنید" maxlength="200" />
-                        </div>
+                    <div class="cl-form-section">
+                        <label class="cl-label" for="addrDescription">یادداشت (اختیاری)</label>
+                        <input type="text" id="addrDescription" class="form-control" placeholder="مثلاً زنگ طبقه ۲ را بزنید" maxlength="200" />
+                    </div>
 
-                        <div class="form-check form-switch mb-1">
-                            <input class="form-check-input" type="checkbox" id="addrIsDefault" />
-                            <label class="form-check-label fw-semibold" for="addrIsDefault">آدرس پیش‌فرض مشتری</label>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-check form-switch cl-switch mt-3">
+                        <input class="form-check-input" type="checkbox" id="addrIsDefault" role="switch" />
+                        <span class="cl-switch__text">
+                            <label class="cl-switch__title" for="addrIsDefault">آدرس پیش‌فرض مشتری</label>
+                            <span class="cl-switch__hint">در ثبت سفارش به‌صورت خودکار انتخاب می‌شود.</span>
+                        </span>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer" style="background:#f8fafc;">
-                <button type="button" class="btn btn-light" id="btnCancelAddressForm" data-bs-dismiss="modal" style="border-radius:var(--radius-sm);">انصراف</button>
-                <button type="button" class="btn btn-primary" id="btnSaveAddress" style="border-radius:var(--radius-sm);">
+            <div class="modal-footer">
+                <button type="button" class="btn cl-btn-cancel" id="btnCancelAddressForm" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" id="btnSaveAddress">
                     <i class="fas fa-check me-1"></i> ذخیره آدرس
                 </button>
             </div>
@@ -1258,48 +413,53 @@
     </div>
 </div>
 
+<!-- مودال انتخاب فرمت گزارش -->
 <div class="modal fade" id="exportFormatModal" tabindex="-1" aria-labelledby="exportFormatModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content export-format-modal" dir="rtl">
-            <div class="modal-header border-0 pb-0">
+        <div class="modal-content" dir="rtl">
+            <div class="modal-header">
                 <h5 class="modal-title" id="exportFormatModalLabel">نوع گزارش</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body pt-2">
-                <p class="text-center text-muted mb-3">فرمت دانلود گزارش را انتخاب کنید. مبالغ در هر دو فایل به تومان است.</p>
-                <div class="export-format-options d-grid gap-2">
-                    <button type="button" id="exportFormatExcel" class="export-format-option export-format-option--excel">
-                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-excel-fill"></i></span>
-                        <span class="export-format-option__text">
+            <div class="modal-body">
+                <p class="cl-export-lead">فرمت دانلود گزارش را انتخاب کنید. مبالغ در هر دو فایل به تومان است.</p>
+                <div class="cl-export-options">
+                    <button type="button" id="exportFormatExcel" class="cl-export-option cl-export-option--excel">
+                        <span class="cl-export-option__icon" aria-hidden="true"><i class="bi bi-file-earmark-excel-fill"></i></span>
+                        <span class="cl-export-option__text">
                             <strong>اکسل</strong>
                             <small>جدول کامل مشتریان به تومان (.xlsx)</small>
                         </span>
                     </button>
-                    <button type="button" id="exportFormatPdf" class="export-format-option export-format-option--pdf">
-                        <span class="export-format-option__icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
-                        <span class="export-format-option__text">
+                    <button type="button" id="exportFormatPdf" class="cl-export-option cl-export-option--pdf">
+                        <span class="cl-export-option__icon" aria-hidden="true"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                        <span class="cl-export-option__text">
                             <strong>PDF</strong>
                             <small>گزارش چاپی مشتریان به تومان (.pdf)</small>
                         </span>
                     </button>
-                    <button type="button" class="btn btn-light export-format-cancel" data-bs-dismiss="modal">انصراف</button>
+                    <button type="button" class="btn cl-export-cancel" data-bs-dismiss="modal">انصراف</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- مودال نتیجه خالی گزارش -->
 <div class="modal fade" id="exportNoOrdersModal" tabindex="-1" aria-labelledby="exportNoOrdersModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" dir="rtl">
-            <div class="modal-header border-0 pb-0">
+            <div class="modal-header">
                 <h5 class="modal-title" id="exportNoOrdersModalLabel">توجه</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body pt-2">
-                <p id="exportNoOrdersMessage" class="mb-0 text-center">هیچ مشتری‌ای با این فیلتر یافت نشد.</p>
+            <div class="modal-body">
+                <div class="cl-notice">
+                    <span class="cl-notice__icon" aria-hidden="true"><i class="fas fa-circle-exclamation"></i></span>
+                    <p id="exportNoOrdersMessage">هیچ مشتری‌ای با این فیلتر یافت نشد.</p>
+                </div>
             </div>
-            <div class="modal-footer border-0 pt-0 justify-content-center">
+            <div class="modal-footer">
                 <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">متوجه شدم</button>
             </div>
         </div>
@@ -1307,19 +467,25 @@
 </div>
 
 <!-- مودال تأیید حذف آدرس -->
-<div class="modal fade" id="deleteAddressModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold"><i class="fas fa-trash text-danger me-1"></i> حذف آدرس</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="deleteAddressModal" tabindex="-1" aria-labelledby="deleteAddressTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="cl-modal-heading">
+                    <span class="cl-modal-heading__icon" aria-hidden="true"><i class="fas fa-trash"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="deleteAddressTitle">حذف آدرس</h5>
+                        <p class="cl-modal-heading__sub">حذف از پروفایل مشتری</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
             </div>
-            <div class="modal-body pt-2">
+            <div class="modal-body">
                 این آدرس از پروفایل مشتری حذف می‌شود. ادامه می‌دهید؟
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius:var(--radius-sm);">لغو</button>
-                <button type="button" class="btn btn-danger" id="btnConfirmDeleteAddress" style="border-radius:var(--radius-sm);">حذف آدرس</button>
+            <div class="modal-footer">
+                <button type="button" class="btn cl-btn-cancel" data-bs-dismiss="modal">لغو</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDeleteAddress">حذف آدرس</button>
             </div>
         </div>
     </div>
@@ -1370,74 +536,77 @@
             if (responseData.success) {
                 const data = responseData.data;
 
-                    // ۱. رشد مشتریان جدید (۷ روز اخیر)
-                    let growthHtml = '';
-                    data.growthCustomers.forEach(c => {
-                        growthHtml += `
-                            <div class="list-item-row growth-item">
-                                <div class="growth-item__main">
-                                    <span class="growth-item__name">${escapeHtml(c.name)}</span>
-                                    <span class="growth-item__meta">${c.orderCount} سفارش</span>
-                                </div>
-                                <span class="growth-item__amount">${c.amount.toLocaleString('fa-IR')} ت</span>
+                // ۱. رشد مشتریان جدید (۷ روز اخیر)
+                let growthHtml = '';
+                data.growthCustomers.forEach(c => {
+                    growthHtml += `
+                        <div class="cl-mini">
+                            <div class="cl-mini__main">
+                                <span class="cl-mini__name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
+                                <span class="cl-mini__meta">${c.orderCount} سفارش</span>
                             </div>
-                        `;
-                    });
-                    if (growthHtml === '') growthHtml = '<div class="text-center py-4 text-muted small">خریدی در ۷ روز اخیر ثبت نشده</div>';
-                    $("#growthCustomersList").html(growthHtml);
+                            <span class="cl-mini__value">${c.amount.toLocaleString('fa-IR')} ت</span>
+                        </div>
+                    `;
+                });
+                if (growthHtml === '') growthHtml = '<div class="cl-panel__empty">خریدی در ۷ روز اخیر ثبت نشده</div>';
+                $("#growthCustomersList").html(growthHtml);
 
-                    // ۲. نرخ بازگشت (پیاده‌سازی نوارهای زیبا و مدرن پیشرفت)
-                    const rates = data.returnRates;
-                    const returnHtml = `
-                        <div class="progress-wrapper">
-                            <div class="progress-item-label">
-                                <span>حداقل ۲ بار خرید</span>
-                                <span class="fw-black text-dark">${Math.round(rates.rate2)}%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate2}%" aria-valuenow="${rates.rate2}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                // ۲. نرخ بازگشت مشتریان
+                const rates = data.returnRates;
+                const returnHtml = `
+                    <div class="cl-rate">
+                        <div class="cl-rate__top">
+                            <span>حداقل ۲ بار خرید</span>
+                            <span class="cl-rate__pct">${Math.round(rates.rate2)}%</span>
                         </div>
-                        <div class="progress-wrapper">
-                            <div class="progress-item-label">
-                                <span>حداقل ۳ بار خرید</span>
-                                <span class="fw-black text-dark">${Math.round(rates.rate3)}%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate3}%; background: linear-gradient(90deg, #10b981, #34d399);" aria-valuenow="${rates.rate3}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                        <div class="cl-rate__track" role="progressbar" aria-label="حداقل ۲ بار خرید" aria-valuenow="${Math.round(rates.rate2)}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="cl-rate__fill" style="width: ${rates.rate2}%"></span>
                         </div>
-                        <div class="progress-wrapper">
-                            <div class="progress-item-label">
-                                <span>خرید وفادار (حداقل ۵ بار)</span>
-                                <span class="fw-black text-dark">${Math.round(rates.rate5)}%</span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: ${rates.rate5}%; background: linear-gradient(90deg, #6366f1, #818cf8);" aria-valuenow="${rates.rate5}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="cl-rate">
+                        <div class="cl-rate__top">
+                            <span>حداقل ۳ بار خرید</span>
+                            <span class="cl-rate__pct">${Math.round(rates.rate3)}%</span>
+                        </div>
+                        <div class="cl-rate__track" role="progressbar" aria-label="حداقل ۳ بار خرید" aria-valuenow="${Math.round(rates.rate3)}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="cl-rate__fill cl-rate__fill--3" style="width: ${rates.rate3}%"></span>
+                        </div>
+                    </div>
+                    <div class="cl-rate">
+                        <div class="cl-rate__top">
+                            <span>خرید وفادار (حداقل ۵ بار)</span>
+                            <span class="cl-rate__pct">${Math.round(rates.rate5)}%</span>
+                        </div>
+                        <div class="cl-rate__track" role="progressbar" aria-label="خرید وفادار" aria-valuenow="${Math.round(rates.rate5)}" aria-valuemin="0" aria-valuemax="100">
+                            <span class="cl-rate__fill cl-rate__fill--5" style="width: ${rates.rate5}%"></span>
+                        </div>
+                    </div>
+                `;
+                $("#returnRatesList").html(returnHtml);
+
+                // ۳. بهترین مشتریان کل
+                let bestHtml = '';
+                data.bestCustomers.forEach((c, index) => {
+                    bestHtml += `
+                        <div class="cl-mini">
+                            <span class="cl-mini__rank cl-mini__rank--${index + 1}">${(index + 1).toLocaleString('fa-IR')}</span>
+                            <div class="cl-mini__main">
+                                <span class="cl-mini__name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
+                                <span class="cl-mini__amount">${c.amount.toLocaleString('fa-IR')} تومان</span>
                             </div>
                         </div>
                     `;
-                    $("#returnRatesList").html(returnHtml);
-
-                    // ۳. بهترین مشتریان کل
-                    let bestHtml = '';
-                    data.bestCustomers.forEach(c => {
-                        bestHtml += `
-                            <div class="list-item-row">
-                                <strong style="font-size:0.87rem;">${escapeHtml(c.name)}</strong>
-                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1 fw-bold" style="background:#e6fbf4">${c.amount.toLocaleString('fa-IR')} تومان</span>
-                            </div>
-                        `;
-                    });
-                    if (bestHtml === '') bestHtml = '<div class="text-center py-5 text-muted small">مشتری دارای سفارش یافت نشد</div>';
-                    $("#bestCustomersList").html(bestHtml);
-                } else {
-                    showToast(responseData.message, 'error');
-                }
-            } catch (error) {
-                if (!isCustomersListPageCurrent(pageId)) return;
-                showToast("خطا در دریافت اطلاعات کارت‌ها", 'error');
+                });
+                if (bestHtml === '') bestHtml = '<div class="cl-panel__empty">مشتری دارای سفارش یافت نشد</div>';
+                $("#bestCustomersList").html(bestHtml);
+            } else {
+                showToast(responseData.message, 'error');
             }
+        } catch (error) {
+            if (!isCustomersListPageCurrent(pageId)) return;
+            showToast("خطا در دریافت اطلاعات کارت‌ها", 'error');
+        }
     }
 
     async function loadCustomers(page, search, period, sortBy) {
@@ -1466,10 +635,16 @@
                 if (responseData.data && responseData.data.length > 0) {
                     renderCustomersWithStats(responseData.data);
                     renderPagination(responseData.currentPage, responseData.totalPages);
+                    renderTotalRecords(responseData.totalCount, responseData.data.length);
                 } else {
-                    $("#customersList").html(`<div class="alert alert-info border-0 text-center py-4" style="border-radius:var(--radius-sm)"><i class="fas fa-info-circle me-1"></i> مشتری با شرایط فیلتر در بازه انتخابی یافت نشد.</div>`);
+                    $("#customersList").html(`
+                        <div class="cl-empty">
+                            <div class="cl-empty__icon"><i class="fas fa-user-slash"></i></div>
+                            <strong>مشتری‌ای یافت نشد</strong>
+                            <p>با این جستجو و بازه زمانی نتیجه‌ای وجود ندارد. فیلترها را تغییر دهید یا بازنشانی کنید.</p>
+                        </div>`);
                     $("#paginationContainer").empty();
-                    $("#totalRecordsInfo").hide();
+                    $("#totalRecordsInfo").addClass("d-none");
                 }
             } else {
                 showToast(responseData.message, 'error');
@@ -1494,178 +669,210 @@
             if (!isCustomersListPageCurrent(pageId)) return;
             if (responseData.success) {
                 const s = responseData.data;
-                    $("#totalCustomers").text(s.totalActiveCustomers.toLocaleString('fa-IR'));
-                    $("#newToday").text(s.newCustomersToday.toLocaleString('fa-IR'));
-                    $("#newWeek").text(s.newCustomersThisWeek.toLocaleString('fa-IR'));
-                    $("#newMonth").text(s.newCustomersThisMonth.toLocaleString('fa-IR'));
-                    $("#topCustomerName").text(s.topCustomerName || "ثبت نشده");
-                    $("#topCustomerAmount").text(s.topCustomerTotalSpent.toLocaleString('fa-IR') + " تومان");
-                    $("#topCustomerOrders").text(s.topCustomerOrders.toLocaleString('fa-IR'));
+                $("#totalCustomers").text(s.totalActiveCustomers.toLocaleString('fa-IR'));
+                $("#newToday").text(s.newCustomersToday.toLocaleString('fa-IR'));
+                $("#newWeek").text(s.newCustomersThisWeek.toLocaleString('fa-IR'));
+                $("#newMonth").text(s.newCustomersThisMonth.toLocaleString('fa-IR'));
+                $("#topCustomerName").text(s.topCustomerName || "ثبت نشده");
+                $("#topCustomerAmount").text(s.topCustomerTotalSpent.toLocaleString('fa-IR') + " تومان");
+                $("#topCustomerOrders").text(s.topCustomerOrders.toLocaleString('fa-IR'));
 
-                    const chartCanvas = document.getElementById('trendChart');
-                    if (!chartCanvas) return;
+                const chartCanvas = document.getElementById('trendChart');
+                if (!chartCanvas) return;
 
-                    if (trendChart) trendChart.destroy();
-                    const ctx = chartCanvas.getContext('2d');
+                if (trendChart) trendChart.destroy();
+                const ctx = chartCanvas.getContext('2d');
 
-                    // ایجاد گرادینت زیر خطوط نمودار برای زیبایی دوچندان محیط گراف
-                    const orangeGradient = ctx.createLinearGradient(0, 0, 0, 200);
-                    orangeGradient.addColorStop(0, 'rgba(255, 122, 0, 0.25)');
-                    orangeGradient.addColorStop(1, 'rgba(255, 122, 0, 0.00)');
+                // ایجاد گرادینت زیر خطوط نمودار برای زیبایی دوچندان محیط گراف
+                const orangeGradient = ctx.createLinearGradient(0, 0, 0, 200);
+                orangeGradient.addColorStop(0, 'rgba(255, 122, 0, 0.25)');
+                orangeGradient.addColorStop(1, 'rgba(255, 122, 0, 0.00)');
 
-                    const emeraldGradient = ctx.createLinearGradient(0, 0, 0, 200);
-                    emeraldGradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
-                    emeraldGradient.addColorStop(1, 'rgba(16, 185, 129, 0.00)');
+                const emeraldGradient = ctx.createLinearGradient(0, 0, 0, 200);
+                emeraldGradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+                emeraldGradient.addColorStop(1, 'rgba(16, 185, 129, 0.00)');
 
-                    trendChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: s.last7DaysStats.map(d => d.persianDate),
-                            datasets: [
-                                {
-                                    label: 'مشتریان جدید',
-                                    data: s.last7DaysStats.map(d => d.newCustomers),
-                                    borderColor: '#ff7a00',
-                                    backgroundColor: orangeGradient,
-                                    borderWidth: 3,
-                                    pointRadius: 4,
-                                    pointHoverRadius: 6,
-                                    pointBackgroundColor: '#ff7a00',
-                                    pointBorderColor: '#ffffff',
-                                    pointBorderWidth: 1.5,
-                                    tension: 0.4, // خمیدگی سافت و زیبا
-                                    fill: true,
-                                    yAxisID: 'y'
-                                },
-                                {
-                                    label: 'فروش (هزار تومان)',
-                                    data: s.last7DaysStats.map(d => d.revenue / 1000),
-                                    borderColor: '#10b981',
-                                    backgroundColor: emeraldGradient,
-                                    borderWidth: 3,
-                                    pointRadius: 4,
-                                    pointHoverRadius: 6,
-                                    pointBackgroundColor: '#10b981',
-                                    pointBorderColor: '#ffffff',
-                                    pointBorderWidth: 1.5,
-                                    tension: 0.4,
-                                    fill: true,
-                                    yAxisID: 'y1'
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: {
-                                    backgroundColor: '#1e293b',
-                                    titleColor: '#ffffff',
-                                    bodyColor: '#e2e8f0',
-                                    padding: 12,
-                                    cornerRadius: 8,
-                                    rtl: true,
-                                    callbacks: {
-                                        label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toLocaleString('fa-IR')}`
-                                    }
-                                }
+                trendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: s.last7DaysStats.map(d => d.persianDate),
+                        datasets: [
+                            {
+                                label: 'مشتریان جدید',
+                                data: s.last7DaysStats.map(d => d.newCustomers),
+                                borderColor: '#ff7a00',
+                                backgroundColor: orangeGradient,
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#ff7a00',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 1.5,
+                                tension: 0.4, // خمیدگی سافت و زیبا
+                                fill: true,
+                                yAxisID: 'y'
                             },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: { color: 'rgba(226, 232, 240, 0.4)' },
-                                    ticks: { color: '#94a3b8', font: { size: 10 } }
-                                },
-                                y1: {
-                                    position: 'right',
-                                    beginAtZero: true,
-                                    grid: { display: false },
-                                    ticks: { color: '#94a3b8', callback: (val) => val.toLocaleString('fa-IR'), font: { size: 10 } }
-                                },
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { color: '#94a3b8', font: { size: 11 } }
+                            {
+                                label: 'فروش (هزار تومان)',
+                                data: s.last7DaysStats.map(d => d.revenue / 1000),
+                                borderColor: '#10b981',
+                                backgroundColor: emeraldGradient,
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#10b981',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 1.5,
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                titleColor: '#ffffff',
+                                bodyColor: '#e2e8f0',
+                                padding: 12,
+                                cornerRadius: 8,
+                                rtl: true,
+                                callbacks: {
+                                    label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toLocaleString('fa-IR')}`
                                 }
                             }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(226, 232, 240, 0.4)' },
+                                ticks: { color: '#94a3b8', font: { size: 10 } }
+                            },
+                            y1: {
+                                position: 'right',
+                                beginAtZero: true,
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', callback: (val) => val.toLocaleString('fa-IR'), font: { size: 10 } }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { size: 11 } }
+                            }
                         }
-                    });
-                } else {
-                    showToast(responseData.message, 'error');
-                }
-            } catch (error) {
-                if (!isCustomersListPageCurrent(pageId)) return;
-                showToast("خطا در دریافت اطلاعات داشبورد", 'error');
+                    }
+                });
+            } else {
+                showToast(responseData.message, 'error');
             }
+        } catch (error) {
+            if (!isCustomersListPageCurrent(pageId)) return;
+            showToast("خطا در دریافت اطلاعات داشبورد", 'error');
+        }
+    }
+
+    function renderTotalRecords(totalCount, shownCount) {
+        var $info = $("#totalRecordsInfo");
+        if (typeof totalCount !== "number") {
+            $info.addClass("d-none").empty();
+            return;
+        }
+        $info
+            .html(`<i class="fas fa-user-group" aria-hidden="true"></i>
+                   <span>نمایش ${shownCount.toLocaleString('fa-IR')} مشتری از مجموع <strong>${totalCount.toLocaleString('fa-IR')}</strong></span>`)
+            .removeClass("d-none");
     }
 
     function renderCustomersWithStats(customers) {
-        let html = '<div class="row g-4">';
+        let html = `<div class="cl-table-wrap">
+            <table class="cl-table">
+                <thead>
+                    <tr>
+                        <th>مشتری</th>
+                        <th>سفارش‌ها</th>
+                        <th>مجموع خرید</th>
+                        <th>میانگین خرید</th>
+                        <th>روزهای حضور</th>
+                        <th>عضویت</th>
+                        <th>آخرین تراکنش</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>`;
         customers.forEach(c => {
             const noOrdersHint = c.totalOrders === 0
-                ? '<div class="no-closed-orders-hint"><i class="fas fa-exclamation-circle me-1"></i>سفارش بسته‌شده‌ای ثبت نشده</div>'
+                ? `<span class="cl-card__hint"><i class="fas fa-circle-exclamation" aria-hidden="true"></i> بدون سفارش بسته</span>`
                 : '';
-            const descriptionRow = c.description
-                ? `<div class="info-row">
-                        <span class="info-label">توضیحات:</span>
-                        <span class="info-value text-muted small text-truncate" title="${escapeHtml(c.description)}">${escapeHtml(c.description)}</span>
-                   </div>`
+            const descriptionNote = c.description
+                ? `<span class="cl-card__note" title="${escapeHtml(c.description)}">
+                        <i class="fas fa-note-sticky" aria-hidden="true"></i>
+                        <span>${escapeHtml(c.description)}</span>
+                   </span>`
                 : '';
             html += `
-                <div class="col-md-6 col-lg-4 col-xl-3">
-                    <div class="customer-card">
-                        <div class="customer-header">
-                            <div class="avatar-icon"><i class="fas fa-user-circle"></i></div>
-                            <div class="customer-name text-truncate">${escapeHtml(c.fullName)}</div>
-                            <span class="customer-mobile">${escapeHtml(c.mobile)}</span>
+                <tr>
+                    <td data-label="مشتری">
+                        <div class="cl-card__head">
+                            <span class="cl-card__avatar" aria-hidden="true">${escapeHtml(getNameInitial(c.fullName))}</span>
+                            <div class="cl-card__ident">
+                                <h3 class="cl-card__name" title="${escapeHtml(c.fullName)}">${escapeHtml(c.fullName)}</h3>
+                                <span class="cl-card__mobile cl-num">${escapeHtml(c.mobile)}</span>
+                                ${descriptionNote}
+                                ${noOrdersHint}
+                            </div>
                         </div>
-                        <div class="customer-body">
-                            <div class="info-row">
-                                <span class="info-label">عضویت:</span>
-                                <span class="info-value">${c.createdAtShamsi}</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">سفارش‌ها:</span>
-                                <span class="info-value text-primary font-bold">${c.totalOrders} بار</span>
-                            </div>
-                            ${noOrdersHint}
-                            <div class="info-row">
-                                <span class="info-label">تعداد روز حضور:</span>
-                                <span class="info-value">${c.totalDistinctDays} روز</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">مجموع خرید:</span>
-                                <span class="info-value text-success">${c.totalSpent.toLocaleString('fa-IR')} ت</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">میانگین خرید:</span>
-                                <span class="info-value">${Math.round(c.averageOrderValue).toLocaleString('fa-IR')} ت</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">آخرین تراکنش:</span>
-                                <span class="info-value text-muted small">${c.lastOrderDateShamsi}</span>
-                            </div>
-                            ${descriptionRow}
-                        </div>
-                        <div class="customer-footer">
-                            <button type="button" class="btn btn-addresses manage-addresses"
+                    </td>
+                    <td data-label="سفارش‌ها">
+                        <span class="cl-statbox__value cl-statbox--orders">${c.totalOrders.toLocaleString('fa-IR')} بار</span>
+                    </td>
+                    <td data-label="مجموع خرید">
+                        <span class="cl-statbox__value cl-statbox--money">${c.totalSpent.toLocaleString('fa-IR')} ت</span>
+                    </td>
+                    <td data-label="میانگین خرید">
+                        <span class="cl-statbox__value">${Math.round(c.averageOrderValue).toLocaleString('fa-IR')} ت</span>
+                    </td>
+                    <td data-label="روزهای حضور">
+                        <span class="cl-statbox__value">${c.totalDistinctDays.toLocaleString('fa-IR')} روز</span>
+                    </td>
+                    <td data-label="عضویت">
+                        <span class="cl-num">${escapeHtml(c.createdAtShamsi)}</span>
+                    </td>
+                    <td data-label="آخرین تراکنش">
+                        <span class="cl-num">${escapeHtml(c.lastOrderDateShamsi)}</span>
+                    </td>
+                    <td data-label="">
+                        <div class="cl-card__actions">
+                            <button type="button" class="cl-act cl-act--account open-customer-account" data-id="${c.customerId}" title="گردش حساب">
+                                <i class="fas fa-wallet"></i> <span>گردش حساب</span>
+                            </button>
+                            <button type="button" class="cl-act cl-act--address manage-addresses"
                                     data-id="${c.customerId}"
                                     data-name="${escapeHtml(c.fullName)}"
-                                    data-mobile="${escapeHtml(c.mobile)}">
-                                <i class="fas fa-map-location-dot me-1"></i> آدرس‌ها
+                                    data-mobile="${escapeHtml(c.mobile)}"
+                                    title="آدرس‌ها">
+                                <i class="fas fa-map-location-dot"></i> <span>آدرس‌ها</span>
                             </button>
-                            <button class="btn btn-outline-primary edit-customer" data-id="${c.customerId}" data-name="${escapeHtml(c.fullName)}" data-mobile="${escapeHtml(c.mobile)}" data-desc="${escapeHtml(c.description || '')}">
-                                <i class="fas fa-edit me-1"></i> ویرایش
+                            <button type="button" class="cl-act cl-act--edit edit-customer"
+                                    data-id="${c.customerId}"
+                                    data-name="${escapeHtml(c.fullName)}"
+                                    data-mobile="${escapeHtml(c.mobile)}"
+                                    data-desc="${escapeHtml(c.description || '')}"
+                                    title="ویرایش">
+                                <i class="fas fa-pen"></i> <span>ویرایش</span>
                             </button>
-                            <button class="btn btn-outline-danger delete-customer" data-id="${c.customerId}">
-                                <i class="fas fa-trash me-1"></i> حذف
+                            <button type="button" class="cl-act cl-act--delete delete-customer" data-id="${c.customerId}" title="حذف">
+                                <i class="fas fa-trash"></i> <span>حذف</span>
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </td>
+                </tr>
             `;
         });
-        html += '</div>';
+        html += '</tbody></table></div>';
         $("#customersList").html(html);
     }
 
@@ -1674,7 +881,7 @@
             $("#paginationContainer").empty();
             return;
         }
-        let html = '<ul class="pagination shadow-sm">';
+        let html = '<ul class="pagination">';
 
         // دکمه قبلی
         if (current > 1) {
@@ -1682,14 +889,14 @@
                         <a class="page-link" href="#" data-page="${current - 1}"><i class="fas fa-chevron-right me-1"></i> قبلی</a>
                      </li>`;
         } else {
-            html += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-chevron-right me-1"></i> قبلی</a></li>`;
+            html += `<li class="page-item disabled"><span class="page-link"><i class="fas fa-chevron-right me-1"></i> قبلی</span></li>`;
         }
 
         let startPage = Math.max(1, current - 2);
         let endPage = Math.min(total, current + 2);
 
         if (startPage > 1) {
-            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">${(1).toLocaleString('fa-IR')}</a></li>`;
             if (startPage > 2) {
                 html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
             }
@@ -1697,9 +904,9 @@
 
         for (let i = startPage; i <= endPage; i++) {
             if (i === current) {
-                html += `<li class="page-item active"><a class="page-link" href="#">${i}</a></li>`;
+                html += `<li class="page-item active" aria-current="page"><span class="page-link">${i.toLocaleString('fa-IR')}</span></li>`;
             } else {
-                html += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                html += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i.toLocaleString('fa-IR')}</a></li>`;
             }
         }
 
@@ -1707,7 +914,7 @@
             if (endPage < total - 1) {
                 html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
             }
-            html += `<li class="page-item"><a class="page-link" href="#" data-page="${total}">${total}</a></li>`;
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${total}">${total.toLocaleString('fa-IR')}</a></li>`;
         }
 
         if (current < total) {
@@ -1715,7 +922,7 @@
                         <a class="page-link" href="#" data-page="${current + 1}">بعدی <i class="fas fa-chevron-left ms-1"></i></a>
                      </li>`;
         } else {
-            html += `<li class="page-item disabled"><a class="page-link" href="#">بعدی <i class="fas fa-chevron-left ms-1"></i></a></li>`;
+            html += `<li class="page-item disabled"><span class="page-link">بعدی <i class="fas fa-chevron-left ms-1"></i></span></li>`;
         }
 
         html += '</ul>';
@@ -1734,12 +941,19 @@
 
     function escapeHtml(str) {
         if (!str) return "";
-        return str.replace(/[&<>]/g, function (m) {
+        return String(str).replace(/[&<>"']/g, function (m) {
             if (m === "&") return "&amp;";
             if (m === "<") return "&lt;";
             if (m === ">") return "&gt;";
+            if (m === '"') return "&quot;";
+            if (m === "'") return "&#39;";
             return m;
         });
+    }
+
+    function getNameInitial(name) {
+        var trimmed = (name || "").trim();
+        return trimmed ? trimmed.charAt(0) : "؟";
     }
 
     function parseOptionalNumber(val) {
@@ -1763,8 +977,7 @@
     }
 
     function setAddressFormTitle(isEdit) {
-        var title = isEdit ? "ویرایش آدرس" : "ثبت آدرس جدید";
-        $("#addrFormHeading").html('<i class="fas fa-pen-to-square text-primary me-1"></i> ' + title);
+        $("#addrFormHeading").text(isEdit ? "ویرایش آدرس" : "ثبت آدرس جدید");
     }
 
     function getAddressFormModal() {
@@ -1790,15 +1003,15 @@
         addressesCache = Array.isArray(addresses) ? addresses : [];
         if (!addressesCache.length) {
             $("#addrListContainer").html(`
-                <div class="addr-empty">
-                    <i class="fas fa-location-dot"></i>
-                    هنوز آدرسی برای این مشتری ثبت نشده است.
-                    <div class="mt-2 small">با دکمه «آدرس جدید» اولین آدرس را اضافه کنید.</div>
+                <div class="cl-addr__empty">
+                    <span class="cl-addr__empty-icon"><i class="fas fa-location-dot"></i></span>
+                    <strong>هنوز آدرسی ثبت نشده است</strong>
+                    <p>با دکمه «آدرس جدید» اولین آدرس این مشتری را اضافه کنید.</p>
                 </div>`);
             return;
         }
 
-        let html = '<div class="addr-list">';
+        let html = '<div class="cl-addr__list">';
         addressesCache.forEach(a => {
             const id = a.addressId ?? a.AddressId;
             const title = a.title ?? a.Title ?? "آدرس";
@@ -1810,25 +1023,28 @@
             const desc = a.description ?? a.Description;
 
             let meta = "";
-            if (unit) meta += `<span class="addr-meta-chip">واحد ${escapeHtml(unit)}</span>`;
-            if (floor) meta += `<span class="addr-meta-chip">طبقه ${escapeHtml(floor)}</span>`;
-            if (plate) meta += `<span class="addr-meta-chip">پلاک ${escapeHtml(plate)}</span>`;
-            if (desc) meta += `<span class="addr-meta-chip" title="${escapeHtml(desc)}"><i class="fas fa-sticky-note me-1"></i>یادداشت</span>`;
+            if (unit) meta += `<span class="cl-addr-chip">واحد ${escapeHtml(unit)}</span>`;
+            if (floor) meta += `<span class="cl-addr-chip">طبقه ${escapeHtml(floor)}</span>`;
+            if (plate) meta += `<span class="cl-addr-chip">پلاک ${escapeHtml(plate)}</span>`;
+            if (desc) meta += `<span class="cl-addr-chip" title="${escapeHtml(desc)}"><i class="fas fa-sticky-note"></i> یادداشت</span>`;
 
             html += `
                 <div class="addr-card ${isDefault ? "is-default" : ""}" data-address-id="${id}">
-                    <div class="addr-card-top">
-                        <h6 class="addr-title">${escapeHtml(title)}</h6>
-                        ${isDefault ? '<span class="addr-default-badge">پیش‌فرض</span>' : ""}
+                    <div class="cl-addr-card__top">
+                        <h6 class="cl-addr-card__title">
+                            <i class="fas fa-location-dot" aria-hidden="true"></i>
+                            <span>${escapeHtml(title)}</span>
+                        </h6>
+                        ${isDefault ? '<span class="cl-addr-card__badge">پیش‌فرض</span>' : ""}
                     </div>
-                    <div class="addr-text">${escapeHtml(text)}</div>
-                    ${meta ? `<div class="addr-meta">${meta}</div>` : ""}
-                    <div class="addr-actions">
-                        <button type="button" class="btn btn-outline-primary btn-edit-address" data-id="${id}">
-                            <i class="fas fa-pen me-1"></i>ویرایش
+                    <div class="cl-addr-card__text">${escapeHtml(text)}</div>
+                    ${meta ? `<div class="cl-addr-card__meta">${meta}</div>` : ""}
+                    <div class="cl-addr-card__actions">
+                        <button type="button" class="cl-addr-btn cl-addr-btn--edit btn-edit-address" data-id="${id}">
+                            <i class="fas fa-pen"></i> ویرایش
                         </button>
-                        <button type="button" class="btn btn-outline-danger btn-delete-address" data-id="${id}">
-                            <i class="fas fa-trash me-1"></i>حذف
+                        <button type="button" class="cl-addr-btn cl-addr-btn--delete btn-delete-address" data-id="${id}">
+                            <i class="fas fa-trash"></i> حذف
                         </button>
                     </div>
                 </div>`;
@@ -2039,6 +1255,22 @@
             $("#mobile").val($(this).data("mobile"));
             $("#description").val($(this).data("desc"));
             $("#customerModal").modal("show");
+        });
+
+        $(document).off('click' + ns, '.open-customer-account').on('click' + ns, '.open-customer-account', function () {
+            var id = parseInt($(this).data('id'), 10) || 0;
+            if (!id) return;
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Home/CustomerAccount';
+            form.style.display = 'none';
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'customerId';
+            input.value = String(id);
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         });
 
         $("#btnSaveCustomer").off('click' + ns).on('click' + ns, async function () {
@@ -2313,7 +1545,7 @@
     function showCustomersExportLoading(format) {
         var overlay = document.getElementById('exportLoadingOverlay');
         if (!overlay) return;
-        var textEl = overlay.querySelector('.export-loading-text');
+        var textEl = overlay.querySelector('.cl-overlay__text');
         if (textEl) {
             textEl.textContent = format === 'pdf'
                 ? 'در حال آماده‌سازی فایل PDF...'
@@ -2458,7 +1690,12 @@
             loadDashboardStats();
             loadInsightsCards();
         } else {
-            $("#customersList").html('<div class="alert alert-danger text-center">شناسه رستوران نامعتبر است</div>');
+            $("#customersList").html(`
+                <div class="cl-empty">
+                    <div class="cl-empty__icon"><i class="fas fa-triangle-exclamation"></i></div>
+                    <strong>شناسه رستوران نامعتبر است</strong>
+                    <p>برای مشاهده باشگاه مشتریان، ابتدا رستوران خود را انتخاب کنید.</p>
+                </div>`);
         }
     }
 

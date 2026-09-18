@@ -20,6 +20,8 @@
 
     <link rel="stylesheet" href="~/css/brand-scrollbar.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="~/css/manager-order-edit.css" asp-append-version="true" />
+
 }
 
 
@@ -168,7 +170,252 @@
 
 </div>
 
+<!-- Order edit drawer (outside #ordersContainer so AJAX/SignalR reloads do not destroy it) -->
+<div class="offcanvas offcanvas-end moe" tabindex="-1" id="orderEditOffcanvas"
+     aria-labelledby="moeDrawerTitle" data-restaurant-id="@(ViewBag.RestaurantId)">
 
+    <header class="moe-head">
+        <div class="moe-head__identity">
+            <span class="moe-head__icon" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></span>
+            <div class="moe-head__text">
+                <h2 class="moe-head__title" id="moeDrawerTitle">ویرایش سفارش</h2>
+                <div class="moe-head__chips">
+                    <span class="moe-chip moe-chip--type" title="نوع سفارش پس از ثبت قابل تغییر نیست">
+                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        <span id="moeOrderTypeBadge">حضوری</span>
+                    </span>
+                    <span class="moe-chip moe-chip--status" id="moeOrderStatusChip" hidden>
+                        <i class="fa-solid fa-circle-dot" aria-hidden="true"></i>
+                        <span id="moeOrderStatusBadge"></span>
+                    </span>
+                    <span class="moe-chip moe-chip--dirty" id="moeDirtyBadge" hidden>
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                        <span>تغییرات ذخیره نشده</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="moe-head__close" data-bs-dismiss="offcanvas" aria-label="بستن ویرایش">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+    </header>
+
+    <nav class="moe-tabs" role="tablist" aria-label="بخش‌های ویرایش سفارش">
+        <button type="button" class="moe-tab is-active" role="tab" aria-selected="true" data-moe-tab="catalog">
+            <i class="fa-solid fa-burger" aria-hidden="true"></i> منوی غذا
+        </button>
+        <button type="button" class="moe-tab" role="tab" aria-selected="false" data-moe-tab="summary">
+            <i class="fa-solid fa-receipt" aria-hidden="true"></i> جزئیات سفارش
+            <span class="moe-tab__badge" id="moeTabItemCount">۰</span>
+        </button>
+    </nav>
+
+    <div class="offcanvas-body moe-body">
+        <div class="moe-loading" id="moeLoading" hidden aria-live="polite" aria-busy="true">
+            <div class="moe-loading__box">
+                <span class="moe-spinner" aria-hidden="true"></span>
+                <span class="moe-loading__text">در حال بارگذاری سفارش...</span>
+            </div>
+        </div>
+
+        <div class="moe-layout">
+            <section class="moe-pane moe-pane--catalog is-active" data-moe-pane="catalog" aria-label="منوی غذا">
+                <div class="moe-toolbar">
+                    <div class="moe-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                        <input type="text" id="moeFoodSearch" class="form-control" placeholder="جستجوی نام غذا..." autocomplete="off" aria-label="جستجوی غذا" />
+                    </div>
+                    <select id="moeFoodCategory" class="form-select moe-toolbar__select" aria-label="فیلتر دسته‌بندی">
+                        <option value="">همه دسته‌ها</option>
+                    </select>
+                    <span class="moe-toolbar__count" id="moeFoodResultCount" aria-live="polite"></span>
+                </div>
+                <div class="moe-food-grid" id="moeFoodGrid">
+                    <div class="moe-empty">
+                        <span class="moe-empty__icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>
+                        <span class="moe-empty__title">در حال بارگذاری غذاها...</span>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="moe-pane moe-pane--summary" data-moe-pane="summary" aria-label="جزئیات سفارش">
+                <div class="moe-card">
+                    <div class="moe-card__head">
+                        <span class="moe-card__title"><i class="fa-solid fa-receipt" aria-hidden="true"></i> اقلام سفارش</span>
+                        <span class="moe-badge"><span id="moeItemCount">۰</span> عدد</span>
+                    </div>
+                    <div class="moe-items" id="moeItems">
+                        <div class="moe-empty moe-empty--sm">
+                            <span class="moe-empty__icon"><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i></span>
+                            <span class="moe-empty__title">هنوز آیتمی به سفارش اضافه نشده است.</span>
+                            <span class="moe-empty__hint">از منوی غذا روی یک آیتم بزنید.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moe-card">
+                    <div class="moe-card__head">
+                        <span class="moe-card__title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> اطلاعات سفارش</span>
+                    </div>
+
+                    <div class="moe-field d-none" id="moeTableSection">
+                        <label class="moe-label" for="moeTableSelect">میز <span class="moe-req">*</span></label>
+                        <select id="moeTableSelect" class="form-select">
+                            <option value="">انتخاب میز</option>
+                        </select>
+                    </div>
+
+                    <div class="moe-field">
+                        <label class="moe-label" for="moeCustomerSearch">
+                            مشتری
+                            <span class="moe-req d-none" id="moeCustomerRequired">*</span>
+                        </label>
+                        <div id="moeCustomerSearchWrap" class="moe-customer-search">
+                            <div class="moe-inline-group">
+                                <div class="moe-inline-group__field">
+                                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                                    <input type="text" id="moeCustomerSearch" class="form-control" placeholder="جستجو با موبایل یا نام..." autocomplete="off" />
+                                </div>
+                                <button type="button" class="moe-icon-btn moe-icon-btn--primary" id="moeNewCustomerBtn" title="ثبت مشتری جدید" aria-label="ثبت مشتری جدید">
+                                    <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="moe-icon-btn" id="moeClearCustomerBtn" title="ثبت به‌عنوان مهمان">
+                                    مهمان
+                                </button>
+                            </div>
+                            <div id="moeCustomerResults" class="moe-customer-results d-none" role="listbox"></div>
+                        </div>
+                        <div id="moeSelectedCustomer" class="moe-entity d-none"></div>
+                    </div>
+
+                    <div class="moe-field d-none" id="moeAddressSection">
+                        <label class="moe-label">آدرس ارسال <span class="moe-req">*</span></label>
+                        <div id="moeAddressPicker">
+                            <select id="moeAddressSelect" class="form-select mb-2" aria-label="انتخاب آدرس ذخیره‌شده">
+                                <option value="">انتخاب آدرس...</option>
+                            </select>
+                            <div class="moe-inline-group mb-2">
+                                <div class="moe-inline-group__field">
+                                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                    <input type="text" id="moeCustomAddressText" class="form-control" placeholder="یا آدرس را دستی وارد کنید..." />
+                                </div>
+                                <button type="button" class="moe-icon-btn" id="moeUseCustomAddressBtn">اعمال</button>
+                            </div>
+                            <button type="button" class="moe-ghost-btn" id="moeOpenAddressFormBtn">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i> ثبت آدرس جدید برای مشتری
+                            </button>
+                        </div>
+                        <div id="moeSelectedAddress" class="moe-entity d-none"></div>
+                    </div>
+
+                    <div class="moe-field mb-0">
+                        <label class="moe-label" for="moeDescription">توضیحات</label>
+                        <textarea id="moeDescription" class="form-control" rows="2" placeholder="توضیحات سفارش (اختیاری)..."></textarea>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="moe-foot">
+        <div class="moe-foot__summary">
+            <span class="moe-foot__label">جمع اقلام</span>
+            <strong class="moe-foot__total"><span id="moeTotalAmount">۰</span> <small>تومان</small></strong>
+        </div>
+        <div class="moe-foot__actions">
+            <button type="button" class="moe-btn moe-btn--ghost" id="moeCancelBtn">انصراف</button>
+            <button type="button" class="moe-btn moe-btn--primary" id="moeSaveBtn">
+                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> ذخیره تغییرات
+            </button>
+        </div>
+    </footer>
+</div>
+
+<!-- New customer modal for order edit -->
+<div class="modal fade moe-modal" id="moeNewCustomerModal" tabindex="-1" aria-labelledby="moeNewCustomerModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="moeNewCustomerModalTitle">
+                    <span class="moe-modal__icon"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></span>
+                    ثبت مشتری جدید
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div class="moe-field">
+                    <label class="moe-label" for="moeNewCustomerMobile">شماره موبایل</label>
+                    <input type="tel" id="moeNewCustomerMobile" class="form-control" dir="ltr" placeholder="09xxxxxxxxx" />
+                </div>
+                <div class="moe-field">
+                    <label class="moe-label" for="moeNewCustomerName">نام کامل</label>
+                    <input type="text" id="moeNewCustomerName" class="form-control" placeholder="نام و نام خانوادگی" />
+                </div>
+                <div class="moe-field mb-0">
+                    <label class="moe-label" for="moeNewCustomerDesc">توضیحات</label>
+                    <textarea id="moeNewCustomerDesc" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="moe-btn moe-btn--ghost" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="moe-btn moe-btn--primary" id="moeSaveCustomerBtn">ذخیره و انتخاب</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New address modal for order edit -->
+<div class="modal fade moe-modal" id="moeNewAddressModal" tabindex="-1" aria-labelledby="moeNewAddressModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="moeNewAddressModalTitle">
+                    <span class="moe-modal__icon"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></span>
+                    ثبت آدرس جدید
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div class="moe-field">
+                    <label class="moe-label" for="moeNewAddrTitle">عنوان آدرس</label>
+                    <input type="text" id="moeNewAddrTitle" class="form-control" maxlength="100" placeholder="خانه، محل کار، ..." />
+                </div>
+                <div class="moe-field">
+                    <label class="moe-label" for="moeNewAddrText">متن آدرس <span class="moe-req">*</span></label>
+                    <textarea id="moeNewAddrText" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="row g-2">
+                    <div class="col-4 moe-field">
+                        <label class="moe-label" for="moeNewAddrPlate">پلاک</label>
+                        <input type="text" id="moeNewAddrPlate" class="form-control" maxlength="10" />
+                    </div>
+                    <div class="col-4 moe-field">
+                        <label class="moe-label" for="moeNewAddrFloor">طبقه</label>
+                        <input type="text" id="moeNewAddrFloor" class="form-control" maxlength="10" />
+                    </div>
+                    <div class="col-4 moe-field">
+                        <label class="moe-label" for="moeNewAddrUnit">واحد</label>
+                        <input type="text" id="moeNewAddrUnit" class="form-control" maxlength="10" />
+                    </div>
+                </div>
+                <div class="moe-field">
+                    <label class="moe-label" for="moeNewAddrDesc">توضیحات</label>
+                    <textarea id="moeNewAddrDesc" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-check mb-0">
+                    <input class="form-check-input" type="checkbox" id="moeNewAddrDefault" />
+                    <label class="form-check-label" for="moeNewAddrDefault">این آدرس پیش‌فرض باشد</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="moe-btn moe-btn--ghost" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="moe-btn moe-btn--primary" id="moeSaveAddressBtn">ذخیره آدرس</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/manager-order-edit.js" asp-append-version="true"></script>
 
 @section Scripts {
 
@@ -330,9 +577,26 @@
 
             }
 
+            window.reloadManagerOrdersList = function () {
+                loadOrders(currentOrdersUrl);
+            };
+
             function isBlockingUiOpen() {
                 var receipt = document.getElementById('receiptChargeModal');
                 if (receipt && receipt.style.display && receipt.style.display !== 'none') {
+                    return true;
+                }
+                if (typeof window.isManagerOrderEditOpen === 'function' && window.isManagerOrderEditOpen()) {
+                    return true;
+                }
+                var editDrawer = document.getElementById('orderEditOffcanvas');
+                if (editDrawer && editDrawer.classList.contains('show')) {
+                    return true;
+                }
+                if (document.getElementById('moeNewCustomerModal')?.classList.contains('show')) {
+                    return true;
+                }
+                if (document.getElementById('moeNewAddressModal')?.classList.contains('show')) {
                     return true;
                 }
                 return !!document.querySelector('.modal.show');
@@ -493,11 +757,33 @@
 
             connectOrderHub();
 
+            if (typeof window.initManagerOrderEdit === 'function') {
+                window.initManagerOrderEdit();
+            }
+
         }
 
-
+        function destroyManagerOrderListPage() {
+            if (window._managerOrderListAbortController) {
+                window._managerOrderListAbortController.abort();
+                window._managerOrderListAbortController = null;
+            }
+            if (window._managerOrderHubReloadTimer) {
+                clearTimeout(window._managerOrderHubReloadTimer);
+                window._managerOrderHubReloadTimer = null;
+            }
+            if (window._managerOrderHub) {
+                try { window._managerOrderHub.stop(); } catch (e) { /* ignore */ }
+                window._managerOrderHub = null;
+            }
+            if (typeof window.destroyManagerOrderEdit === 'function') {
+                window.destroyManagerOrderEdit();
+            }
+            window.reloadManagerOrdersList = null;
+        }
 
         window.initManagerOrderListPage = initManagerOrderListPage;
+        window.destroyManagerOrderListPage = destroyManagerOrderListPage;
 
     </script>
 

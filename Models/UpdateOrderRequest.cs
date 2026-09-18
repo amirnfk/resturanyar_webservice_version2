@@ -27,4 +27,9 @@ public class UpdateOrderRequest
 
     /// <summary>When true, apply DiscountCode semantics (including clear on empty). When false/null, ignore DiscountCode.</summary>
     public bool? UpdateDiscountCode { get; set; }
+
+    /// <summary>
+    /// Optional optimistic concurrency token: if set and differs from the order's current StatusId, update is rejected with 409.
+    /// </summary>
+    public int? ExpectedStatusId { get; set; }
 }

@@ -86,6 +86,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("addfood")]
         public async Task<IActionResult> AddFood([FromForm] FoodItemCreateRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به مدیریت منو نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
 
@@ -134,6 +137,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPut("updateFood/{id}")]
         public async Task<IActionResult> UpdateFood(int id, [FromForm] FoodItemCreateRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به مدیریت منو نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var food = await _context.FoodItems.FirstOrDefaultAsync(f => f.FoodItemId == id);
             if (food == null)
                 return NotFound(new { success = false, message = "غذا یافت نشد." });
@@ -178,6 +184,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpDelete("deleteFood/{id}")]
         public async Task<IActionResult> DeleteFood(int id)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به مدیریت منو نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var food = await _context.FoodItems.FirstOrDefaultAsync(f => f.FoodItemId == id);
             if (food == null)
                 return NotFound(new { success = false, message = "غذا یافت نشد." });
@@ -215,6 +224,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("addcategory")]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به مدیریت منو نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
 
@@ -300,6 +312,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("addcustomer")]
         public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به ثبت مشتری نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
 
@@ -354,6 +369,9 @@ namespace resturanyar.Controllers.Api.V2
         {
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
+
+            var baristaDenied = ForbidBarista("باریستا مجاز به ثبت سفارش نیست.");
+            if (baristaDenied != null) return baristaDenied;
 
             if (IsDeliveryOnlyStaff())
                 return StatusCode(403, new { success = false, message = "پیک مجاز به ثبت سفارش نیست." });
@@ -525,6 +543,10 @@ namespace resturanyar.Controllers.Api.V2
                     && o.Fulfillment != null
                     && o.Fulfillment.AssignedDriverUserId == staffUserId);
             }
+            else if (IsBaristaOnlyStaff())
+            {
+                query = query.Where(o => o.StatusId == 3 || o.StatusId == 4);
+            }
 
             var orders = await query
                 .Select(o => new OrderDto
@@ -601,6 +623,10 @@ namespace resturanyar.Controllers.Api.V2
                     return StatusCode(403, new { success = false, message = "دسترسی به این سفارش مجاز نیست." });
                 }
             }
+            else if (IsBaristaOnlyStaff() && order.StatusId is not (3 or 4 or 5))
+            {
+                return StatusCode(403, new { success = false, message = "باریستا فقط به سفارش‌های آشپزخانه دسترسی دارد." });
+            }
 
             var orderDto = new OrderDto
             {
@@ -614,6 +640,7 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
                 OrderType = (byte)order.OrderType,
+                CustomerAddressId = order.Fulfillment?.CustomerAddressId,
                 AddressSnapshot = order.Fulfillment?.AddressSnapshot,
                 PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
                 CustomerNameSnapshot = order.Fulfillment?.CustomerNameSnapshot,
@@ -639,6 +666,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPut("UpdateOrder/{orderId}")]
         public async Task<IActionResult> UpdateOrder(int orderId, [FromBody] UpdateOrderRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به ویرایش سفارش نیست. فقط تغییر وضعیت آشپزخانه مجاز است.");
+            if (baristaDenied != null) return baristaDenied;
+
             if (IsDeliveryOnlyStaff())
                 return StatusCode(403, new { success = false, message = "پیک مجاز به ویرایش سفارش نیست." });
 
@@ -653,16 +683,41 @@ namespace resturanyar.Controllers.Api.V2
             var denied = EnsureRestaurantAccess(order.RestaurantId);
             if (denied != null) return denied;
 
-            if (request.RestaurantId != order.RestaurantId)
+            if (request == null)
+                return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
+
+            if (request.RestaurantId != 0 && request.RestaurantId != order.RestaurantId)
             {
                 var denied2 = EnsureRestaurantAccess(request.RestaurantId);
                 if (denied2 != null) return denied2;
             }
 
+            var validation = await OrderEditGuard.ValidateAsync(_context, order, request);
+            if (!validation.Success)
+                return validation.Error!;
+
             var oldStatusId = order.StatusId;
-            order.TableNumber = request.TableNumber;
-            order.RestaurantId = request.RestaurantId;
-            order.StatusId = request.StatusId;
+            var inventoryConsumption = HttpContext.RequestServices
+                .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+            var hadActiveInventoryDeduction = false;
+            try
+            {
+                hadActiveInventoryDeduction = await _context.InventoryOrderConsumptions
+                    .AsNoTracking()
+                    .AnyAsync(c => c.OrderId == order.OrderId && c.RestaurantId == order.RestaurantId && !c.IsReversed);
+
+                if (hadActiveInventoryDeduction)
+                    await inventoryConsumption.TryReverseForOrderAsync(order.OrderId, order.RestaurantId);
+            }
+            catch
+            {
+                hadActiveInventoryDeduction = false;
+            }
+
+            order.TableNumber = string.IsNullOrWhiteSpace(request.TableNumber)
+                ? order.TableNumber
+                : request.TableNumber.Trim();
+            order.StatusId = validation.ResolvedStatusId;
             order.UpdatedAt = DateTime.Now;
             order.Description = request.Description;
             order.CustomerId = request.CustomerId;
@@ -683,7 +738,7 @@ namespace resturanyar.Controllers.Api.V2
 
             _context.OrderItems.RemoveRange(order.OrderItems);
             order.OrderItems = new List<OrderItem>();
-            foreach (var item in request.Items)
+            foreach (var item in validation.NormalizedItems)
             {
                 var food = _context.FoodItems.Find(item.FoodItemId);
                 if (food == null)
@@ -700,7 +755,7 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
-            int? nextRoleId = GetNextRoleId(request.StatusId, order.OrderType);
+            int? nextRoleId = GetNextRoleId(order.StatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = _context.OrderUpdates
@@ -720,6 +775,12 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             _context.SaveChanges();
+
+            if (hadActiveInventoryDeduction)
+            {
+                try { await inventoryConsumption.TryDeductForOrderAsync(order.OrderId, order.RestaurantId); }
+                catch { /* best-effort inventory re-sync */ }
+            }
 
             var courierService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Fulfillment.IDeliveryCourierService>();
             if (await courierService.TryAutoAssignDefaultDriverAsync(
@@ -750,7 +811,7 @@ namespace resturanyar.Controllers.Api.V2
             return Ok(new
             {
                 success = true,
-                message = "Order updated.",
+                message = "سفارش با موفقیت ویرایش شد.",
                 orderData = new OrderDto
                 {
                     OrderId = order.OrderId,
@@ -794,6 +855,11 @@ namespace resturanyar.Controllers.Api.V2
                     success = false,
                     message = "وضعیت سفارش توسط کاربر دیگری تغییر کرده است."
                 });
+            }
+
+            if (IsBaristaOnlyStaff() && !IsBaristaKitchenTransition(dto.CurrentStatusId, dto.NewStatusId))
+            {
+                return StatusCode(403, new { success = false, message = "باریستا فقط می‌تواند وضعیت آشپزخانه را ۳→۴→۵ کند." });
             }
 
             TryGetStaffUserId(out int staffUserId);
@@ -916,6 +982,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/assign-driver")]
         public async Task<IActionResult> AssignDriver(int orderId, [FromBody] resturanyar.Services.Fulfillment.AssignDriverRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به تخصیص پیک نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             if (User.FindFirst("order_permission")?.Value != "1")
                 return StatusCode(403, new { success = false, message = "دسترسی تخصیص پیک ندارید." });
 
@@ -937,6 +1006,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/unassign-driver")]
         public async Task<IActionResult> UnassignDriver(int orderId)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به تخصیص پیک نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             if (User.FindFirst("order_permission")?.Value != "1")
                 return StatusCode(403, new { success = false, message = "دسترسی تخصیص پیک ندارید." });
 
@@ -958,6 +1030,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/delivery-failed")]
         public async Task<IActionResult> ReportDeliveryFailed(int orderId, [FromBody] resturanyar.Services.Fulfillment.DeliveryFailedRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به گزارش تحویل نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             if (!IsDeliveryOnlyStaff() && User.FindFirst("delivery_permission")?.Value != "1")
                 return StatusCode(403, new { success = false, message = "فقط پیک می‌تواند تحویل ناموفق را گزارش کند." });
 
@@ -1067,6 +1142,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/receipt/discount-code")]
         public async Task<IActionResult> SetReceiptDiscountCode(int orderId, [FromBody] SetReceiptDiscountCodeRequest? request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به عملیات پرداخت نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
             var denied = EnsureRestaurantAccess(order.RestaurantId);
@@ -1087,6 +1165,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/receipt/issue")]
         public async Task<IActionResult> IssueReceipt(int orderId, [FromBody] ReceiptPreviewRequest? request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به عملیات پرداخت نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
             var denied = EnsureRestaurantAccess(order.RestaurantId);
@@ -1101,6 +1182,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("orders/{orderId}/receipt/reissue")]
         public async Task<IActionResult> ReissueReceipt(int orderId, [FromBody] ReceiptPreviewRequest? request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به عملیات پرداخت نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
             var denied = EnsureRestaurantAccess(order.RestaurantId);
@@ -1199,6 +1283,9 @@ namespace resturanyar.Controllers.Api.V2
         [HttpPost("addaddress")]
         public async Task<IActionResult> AddAddress([FromBody] AddAddressRequest request)
         {
+            var baristaDenied = ForbidBarista("باریستا مجاز به ثبت آدرس نیست.");
+            if (baristaDenied != null) return baristaDenied;
+
             var customer = await _context.Customers
                 .FirstOrDefaultAsync(c => c.CustomerId == request.CustomerId && c.IsActive);
             if (customer == null)

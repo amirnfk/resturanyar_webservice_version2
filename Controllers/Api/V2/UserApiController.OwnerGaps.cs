@@ -94,6 +94,7 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
                 OrderType = (byte)order.OrderType,
+                CustomerAddressId = order.Fulfillment?.CustomerAddressId,
                 AddressSnapshot = order.Fulfillment?.AddressSnapshot,
                 PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
                 CustomerNameSnapshot = order.Fulfillment?.CustomerNameSnapshot,
@@ -129,16 +130,41 @@ namespace resturanyar.Controllers.Api.V2
             if (await GetOwnedRestaurantAsync(order.RestaurantId, ownerId) == null)
                 return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
 
-            if (request.RestaurantId != order.RestaurantId &&
+            if (request == null)
+                return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
+
+            if (request.RestaurantId != 0 && request.RestaurantId != order.RestaurantId &&
                 await GetOwnedRestaurantAsync(request.RestaurantId, ownerId) == null)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
             }
 
+            var validation = await OrderEditGuard.ValidateAsync(_context, order, request);
+            if (!validation.Success)
+                return validation.Error!;
+
             var oldStatusId = order.StatusId;
-            order.TableNumber = request.TableNumber;
-            order.RestaurantId = request.RestaurantId;
-            order.StatusId = request.StatusId;
+            var inventoryConsumption = HttpContext.RequestServices
+                .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+            var hadActiveInventoryDeduction = false;
+            try
+            {
+                hadActiveInventoryDeduction = await _context.InventoryOrderConsumptions
+                    .AsNoTracking()
+                    .AnyAsync(c => c.OrderId == order.OrderId && c.RestaurantId == order.RestaurantId && !c.IsReversed);
+
+                if (hadActiveInventoryDeduction)
+                    await inventoryConsumption.TryReverseForOrderAsync(order.OrderId, order.RestaurantId);
+            }
+            catch
+            {
+                hadActiveInventoryDeduction = false;
+            }
+
+            order.TableNumber = string.IsNullOrWhiteSpace(request.TableNumber)
+                ? order.TableNumber
+                : request.TableNumber.Trim();
+            order.StatusId = validation.ResolvedStatusId;
             order.UpdatedAt = DateTime.Now;
             order.Description = request.Description;
             order.CustomerId = request.CustomerId;
@@ -159,7 +185,7 @@ namespace resturanyar.Controllers.Api.V2
 
             _context.OrderItems.RemoveRange(order.OrderItems);
             order.OrderItems = new List<OrderItem>();
-            foreach (var item in request.Items ?? new List<OrderItemDto>())
+            foreach (var item in validation.NormalizedItems)
             {
                 var food = await _context.FoodItems.FindAsync(item.FoodItemId);
                 if (food == null)
@@ -176,7 +202,7 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
-            int? nextRoleId = GetNextRoleId(request.StatusId, order.OrderType);
+            int? nextRoleId = GetNextRoleId(order.StatusId, order.OrderType);
             if (nextRoleId.HasValue)
             {
                 var existingUpdate = await _context.OrderUpdates
@@ -196,6 +222,12 @@ namespace resturanyar.Controllers.Api.V2
             }
 
             await _context.SaveChangesAsync();
+
+            if (hadActiveInventoryDeduction)
+            {
+                try { await inventoryConsumption.TryDeductForOrderAsync(order.OrderId, order.RestaurantId); }
+                catch { /* best-effort inventory re-sync */ }
+            }
 
             var discountService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.DiscountCodes.IDiscountCodeService>();
             if (request.UpdateDiscountCode == true)
@@ -252,7 +284,7 @@ namespace resturanyar.Controllers.Api.V2
             return Ok(new
             {
                 success = true,
-                message = "Order updated.",
+                message = "سفارش با موفقیت ویرایش شد.",
                 orderData = new OrderDto
                 {
                     OrderId = order.OrderId,
@@ -262,6 +294,7 @@ namespace resturanyar.Controllers.Api.V2
                     UpdatedAt = order.UpdatedAt,
                     CustomerId = order.CustomerId,
                     Description = order.Description,
+                    OrderType = (byte)order.OrderType,
                     OrderItems = order.OrderItems.Select(oi => new OrderItemDto
                     {
                         OrderItemId = oi.OrderItemId,

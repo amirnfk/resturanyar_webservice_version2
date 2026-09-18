@@ -864,10 +864,10 @@ namespace resturanyar.Controllers
                     HttpContext.Session.SetInt32("RestaurantId", restaurantId);
                     return RedirectToAction("CashierDashboard", "Home");
                 }
-                else if (roleName == "آشپز" || roleName == "گارسون")
+                else if (roleName == "آشپز" || roleName == "گارسون" || roleName == "باریستا")
                 {
                     ViewBag.RoleMessage =
-                        "این قسمت فقط برای صندوقدار رستوران قابل استفاده است. گارسون و آشپز می توانند از نسخه‌ی اندروید استفاده کنند.";
+                        "این قسمت فقط برای صندوقدار رستوران قابل استفاده است. گارسون، آشپز و باریستا می‌توانند از نسخه‌ی اندروید استفاده کنند.";
                     return View(request);
                 }
                 else
@@ -930,6 +930,12 @@ namespace resturanyar.Controllers
                     return RedirectToAction("AddUser");
                 }
 
+                if (!StaffRolePermissions.IsSettableStaffRole(role_id))
+                {
+                    TempData["Error"] = "نقش انتخاب‌شده معتبر نیست.";
+                    return RedirectToAction("AddUser");
+                }
+
                 // ساخت یوزر جدید
                 var user = new User
                 {
@@ -938,10 +944,11 @@ namespace resturanyar.Controllers
                     role_id = role_id,
                     restaurant_id = restaurantId.Value,
                     order_management_permission = role_id == 2,
-                    kitchen_management_permission = role_id == 3,
+                    kitchen_management_permission = role_id == 3 || role_id == 6,
                     payment_management_permission = role_id == 4,
                     delivery_management_permission = role_id == 5
                 };
+                StaffRolePermissions.ApplyExclusiveLocks(user);
 
                 _context.Users.Add(user);
                 _context.SaveChanges();
@@ -1917,6 +1924,44 @@ namespace resturanyar.Controllers
             return View(customers);
         }
 
+        [Authorize]
+        [HttpGet]
+        public IActionResult CustomerAccount()
+        {
+            // Never accept customerId via URL/query; entry is POST-only.
+            return RedirectToAction(nameof(CustomersList));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CustomerAccount([FromForm] int customerId)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            if (customerId <= 0)
+                return RedirectToAction(nameof(CustomersList));
+
+            var customer = await _context.Customers.AsNoTracking()
+                .FirstOrDefaultAsync(c =>
+                    c.CustomerId == customerId &&
+                    c.RestaurantId == restaurantId.Value &&
+                    c.IsActive);
+
+            if (customer == null)
+            {
+                TempData["Error"] = "مشتری یافت نشد.";
+                return RedirectToAction(nameof(CustomersList));
+            }
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.CustomerId = customer.CustomerId;
+            ViewBag.CustomerFullName = customer.FullName;
+            ViewBag.CustomerMobile = customer.Mobile;
+            return View();
+        }
+
         [HttpGet("ExportCustomersToExcel")]
         public async Task<IActionResult> ExportCustomersToExcel(
             string search = "",
@@ -2197,6 +2242,15 @@ namespace resturanyar.Controllers
                     from = today.AddYears(-1);
                     to = DateTime.Now;
                 }
+            }
+
+            if (string.IsNullOrEmpty(period) && (from.HasValue || to.HasValue))
+            {
+                if (from.HasValue)
+                    from = from.Value.Date;
+
+                if (to.HasValue)
+                    to = to.Value.Date.AddDays(1).AddTicks(-1);
             }
 
             if (from.HasValue)

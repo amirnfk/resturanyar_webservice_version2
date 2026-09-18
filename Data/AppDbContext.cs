@@ -3,6 +3,7 @@ using resturanyar.Models;
 using resturanyar.Models.AdminMessage;
 using resturanyar.Models.AuthorizationModels;
 using resturanyar.Models.Copoun;
+using resturanyar.Models.CustomerAccounts;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Inventory;
@@ -40,6 +41,8 @@ namespace Resturanyar.Data
         public DbSet<CouponUsage> CouponUsages { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public DbSet<CustomerAccount> CustomerAccounts { get; set; }
+        public DbSet<CustomerAccountTransaction> CustomerAccountTransactions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<StaffRefreshToken> StaffRefreshTokens { get; set; }
         public DbSet<AdminMessage> AdminMessages { get; set; }

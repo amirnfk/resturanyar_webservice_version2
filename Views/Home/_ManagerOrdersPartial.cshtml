@@ -65,6 +65,22 @@
                         ویرایش فاکتور
                     </button>
                 }
+                @{
+                    var canEditOrder = !order.ReceiptGrandTotal.HasValue
+                        && order.StatusId is 1 or 2 or 3 or 4 or 5 or 12;
+                }
+                @if (canEditOrder)
+                {
+                    <button class="btn btn-sm btn-outline-warning order-edit-btn"
+                            type="button"
+                            data-order-id="@order.OrderId"
+                            data-order-type="@order.OrderType"
+                            data-status-id="@order.StatusId"
+                            onclick="window.openManagerOrderEdit && window.openManagerOrderEdit(@order.OrderId)">
+                        <i class="fa-solid fa-pen-to-square ms-1" aria-hidden="true"></i>
+                        ویرایش سفارش
+                    </button>
+                }
 
                 <div>
                     <select class="form-select form-select-sm"

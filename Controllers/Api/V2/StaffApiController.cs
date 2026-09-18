@@ -242,6 +242,34 @@ namespace resturanyar.Controllers.Api.V2
             return delivery && !order && !kitchen && !payment;
         }
 
+        private bool IsBaristaOnlyStaff()
+        {
+            var roleId = User.FindFirst("role_id")?.Value;
+            if (roleId != StaffRolePermissions.BaristaRoleId.ToString())
+                return false;
+            var kitchen = User.FindFirst("kitchen_permission")?.Value == "1";
+            var order = User.FindFirst("order_permission")?.Value == "1";
+            var payment = User.FindFirst("payment_permission")?.Value == "1";
+            var delivery = User.FindFirst("delivery_permission")?.Value == "1";
+            return kitchen && !order && !payment && !delivery;
+        }
+
+        private IActionResult? ForbidBarista(string? message = null)
+        {
+            if (!IsBaristaOnlyStaff())
+                return null;
+            return StatusCode(StatusCodes.Status403Forbidden, new
+            {
+                success = false,
+                message = message ?? "باریستا مجاز به این عملیات نیست."
+            });
+        }
+
+        private static bool IsBaristaKitchenTransition(int currentStatusId, int newStatusId)
+        {
+            return currentStatusId is 3 or 4 && newStatusId is 3 or 4 or 5;
+        }
+
         private bool HasOrderOrDeliveryPermission()
         {
             return User.FindFirst("order_permission")?.Value == "1"

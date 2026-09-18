@@ -1,0 +1,1006 @@
+@{
+    ViewData["Title"] = "گردش حساب مشتری";
+    var restaurantId = (int)ViewBag.RestaurantId;
+    var customerId = (int)ViewBag.CustomerId;
+    var rawCustomerName = (string?)ViewBag.CustomerFullName;
+    var customerName = string.IsNullOrWhiteSpace(rawCustomerName) ? "مشتری بدون نام" : rawCustomerName!;
+    var customerMobile = (string?)ViewBag.CustomerMobile ?? "";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/brand-scrollbar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/customer-account.css" asp-append-version="true" />
+}
+
+<div class="container ca-page mt-4 mb-5"
+     id="customerAccountPage"
+     data-restaurant-id="@restaurantId"
+     data-customer-id="@customerId">
+
+    <header class="ca-header">
+        <div class="ca-header__text">
+            <div class="ca-header__avatar" id="caAvatar" aria-hidden="true">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="ca-header__info">
+                <h1 class="ca-header__title" id="caCustomerName">@customerName</h1>
+                <div class="ca-header__meta">
+                    <span class="ca-chip-meta">
+                        <i class="fa-solid fa-phone"></i>
+                        <span class="ca-num" id="caCustomerMobile">@customerMobile</span>
+                    </span>
+                    <span class="ca-chip-meta">
+                        <i class="fa-solid fa-hashtag"></i>
+                        <span>شماره حساب</span>
+                        <span class="ca-num" id="caAccountId">—</span>
+                    </span>
+                    <span class="ca-chip-meta" id="caLastUpdateChip" hidden>
+                        <i class="fa-regular fa-clock"></i>
+                        <span>آخرین تراکنش</span>
+                        <span id="caLastUpdate">—</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="ca-header__actions">
+            <a href="@Url.Action("CustomersList", "Home")" class="btn ca-btn-ghost" data-sidebar-nav>
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>باشگاه مشتریان</span>
+            </a>
+            <button type="button" class="btn ca-btn-ghost" id="caRefreshBtn" title="به‌روزرسانی اطلاعات">
+                <i class="fa-solid fa-rotate"></i>
+                <span>به‌روزرسانی</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="caNewTxBtn">
+                <i class="fa-solid fa-plus"></i>
+                <span>ثبت تراکنش</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="caAlert" class="alert alert-danger d-none" role="alert"></div>
+
+    <section class="ca-hero">
+        <article class="ca-balance ca-balance--settled" id="caBalanceCard">
+            <div class="ca-balance__top">
+                <span class="ca-balance__label">
+                    <i class="fa-solid fa-wallet"></i>
+                    مانده حساب
+                </span>
+                <span class="ca-balance__chip" id="caBalanceChip">در حال دریافت…</span>
+            </div>
+            <div class="ca-balance__value ca-money" id="caBalanceValue">
+                —<span class="ca-balance__unit">تومان</span>
+            </div>
+            <p class="ca-balance__hint" id="caBalanceHint">اطلاعات حساب مشتری در حال بارگذاری است…</p>
+            <div class="ca-balance__actions">
+                <button type="button" class="ca-balance__btn" data-ca-quick="Debt">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    ثبت بدهی
+                </button>
+                <button type="button" class="ca-balance__btn ca-balance__btn--solid" data-ca-quick="Payment">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    ثبت پرداخت
+                </button>
+            </div>
+        </article>
+
+        <div class="ca-stats">
+            <div class="ca-stat ca-stat--debt">
+                <span class="ca-stat__icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                <div class="ca-stat__body">
+                    <span class="ca-stat__label">مجموع بدهی ثبت‌شده</span>
+                    <span class="ca-stat__value ca-money" id="caStatDebt">—</span>
+                </div>
+            </div>
+            <div class="ca-stat ca-stat--paid">
+                <span class="ca-stat__icon"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                <div class="ca-stat__body">
+                    <span class="ca-stat__label">مجموع پرداخت‌ها</span>
+                    <span class="ca-stat__value ca-money" id="caStatPayment">—</span>
+                </div>
+            </div>
+            <div class="ca-stat ca-stat--orders">
+                <span class="ca-stat__icon"><i class="fa-solid fa-receipt"></i></span>
+                <div class="ca-stat__body">
+                    <span class="ca-stat__label">سفارش‌های بسته‌شده</span>
+                    <span class="ca-stat__value ca-num" id="caStatOrders">—</span>
+                </div>
+            </div>
+            <div class="ca-stat">
+                <span class="ca-stat__icon"><i class="fa-solid fa-basket-shopping"></i></span>
+                <div class="ca-stat__body">
+                    <span class="ca-stat__label">مجموع خرید</span>
+                    <span class="ca-stat__value ca-money" id="caStatSpent">—</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="ca-tabs" role="tablist" aria-label="بخش‌های حساب مشتری">
+        <button type="button" class="ca-tab is-active" data-ca-tab="ledger" id="caLedgerTab"
+                role="tab" aria-selected="true" aria-controls="caLedgerPanel">
+            <i class="fa-solid fa-right-left"></i>
+            <span>گردش حساب</span>
+            <span class="ca-tab__count" id="caLedgerCount">—</span>
+        </button>
+        <button type="button" class="ca-tab" data-ca-tab="purchases" id="caPurchaseTab"
+                role="tab" aria-selected="false" aria-controls="caPurchasePanel">
+            <i class="fa-solid fa-receipt"></i>
+            <span>تاریخچه خرید</span>
+            <span class="ca-tab__count" id="caPurchaseCount">—</span>
+        </button>
+    </div>
+
+    <section class="ca-panel" id="caLedgerPanel" data-ca-panel="ledger" role="tabpanel" aria-labelledby="caLedgerTab">
+        <div class="ca-panel__head">
+            <div>
+                <h2 class="ca-panel__title">
+                    <i class="fa-solid fa-right-left"></i>
+                    گردش حساب
+                </h2>
+                <p class="ca-panel__hint">
+                    تراکنش‌ها فقط افزودنی هستند؛ حذف و ویرایش ندارند و برای رفع اشتباه از نوع «اصلاح» استفاده کنید.
+                </p>
+            </div>
+        </div>
+
+        <div class="ca-panel__body">
+            <div class="ca-skeleton" id="caLedgerSkeleton">
+                <div class="ca-skeleton__row"></div>
+                <div class="ca-skeleton__row"></div>
+                <div class="ca-skeleton__row"></div>
+            </div>
+
+            <div class="ca-empty d-none" id="caLedgerEmpty">
+                <div class="ca-empty__icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <strong>هنوز تراکنشی ثبت نشده</strong>
+                <p>با «ثبت تراکنش» اولین بدهی یا پرداخت این مشتری را وارد کنید.</p>
+            </div>
+
+            <div class="ca-table-wrap d-none" id="caLedgerTableWrap">
+                <table class="ca-table" id="caLedgerTable">
+                    <thead>
+                        <tr>
+                            <th>تاریخ</th>
+                            <th>نوع</th>
+                            <th>مبلغ</th>
+                            <th>اثر بر حساب</th>
+                            <th>مانده پس از تراکنش</th>
+                            <th>یادداشت</th>
+                        </tr>
+                    </thead>
+                    <tbody id="caLedgerBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="ca-loadmore d-none" id="caLedgerLoadMoreWrap">
+            <span class="ca-loadmore__meta" id="caLedgerLoadMoreMeta"></span>
+            <button type="button" class="btn ca-btn-ghost btn-sm" id="caLedgerLoadMoreBtn">
+                <i class="fa-solid fa-chevron-down"></i>
+                <span>بارگذاری بیشتر</span>
+            </button>
+        </div>
+    </section>
+
+    <section class="ca-panel d-none" id="caPurchasePanel" data-ca-panel="purchases" role="tabpanel" aria-labelledby="caPurchaseTab">
+        <div class="ca-panel__head">
+            <div>
+                <h2 class="ca-panel__title">
+                    <i class="fa-solid fa-receipt"></i>
+                    تاریخچه خرید
+                </h2>
+                <p class="ca-panel__hint" id="caPurchaseHint">
+                    سفارش‌های بسته‌شده این مشتری؛ این بخش صرفاً گزارشی است و روی مانده حساب اثر ندارد.
+                </p>
+            </div>
+        </div>
+
+        <div class="ca-panel__body">
+            <div class="ca-skeleton" id="caPurchaseSkeleton">
+                <div class="ca-skeleton__row"></div>
+                <div class="ca-skeleton__row"></div>
+                <div class="ca-skeleton__row"></div>
+            </div>
+
+            <div class="ca-empty d-none" id="caPurchaseEmpty">
+                <div class="ca-empty__icon"><i class="fa-solid fa-basket-shopping"></i></div>
+                <strong>سفارش بسته‌شده‌ای ثبت نشده</strong>
+                <p>پس از بسته شدن اولین سفارش این مشتری، خریدها اینجا نمایش داده می‌شود.</p>
+            </div>
+
+            <div class="ca-table-wrap d-none" id="caPurchaseTableWrap">
+                <table class="ca-table" id="caPurchaseTable">
+                    <thead>
+                        <tr>
+                            <th>تاریخ</th>
+                            <th>شماره سفارش</th>
+                            <th>نوع</th>
+                            <th>میز</th>
+                            <th>تعداد اقلام</th>
+                            <th>مبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="caPurchaseBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="ca-loadmore d-none" id="caPurchaseLoadMoreWrap">
+            <span class="ca-loadmore__meta" id="caPurchaseLoadMoreMeta"></span>
+            <button type="button" class="btn ca-btn-ghost btn-sm" id="caPurchaseLoadMoreBtn">
+                <i class="fa-solid fa-chevron-down"></i>
+                <span>بارگذاری بیشتر</span>
+            </button>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="caTxModal" tabindex="-1" aria-labelledby="caTxModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="caTxForm" class="ca-modal__form" autocomplete="off" novalidate>
+                <div class="modal-header">
+                    <div class="ca-modal__heading">
+                        <span class="ca-modal__badge"><i class="fa-solid fa-scale-balanced"></i></span>
+                        <div>
+                            <h5 class="modal-title" id="caTxModalTitle">ثبت تراکنش حساب</h5>
+                            <p class="ca-modal__sub" id="caTxModalSub">—</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <span class="ca-label">نوع تراکنش</span>
+                        <div class="ca-segment" id="caTypeSegment" role="group" aria-label="نوع تراکنش">
+                            <button type="button" class="ca-segment__btn is-active" data-ca-type="Debt">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                                <strong>بدهی</strong>
+                            </button>
+                            <button type="button" class="ca-segment__btn" data-ca-type="Payment">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                                <strong>پرداخت</strong>
+                            </button>
+                            <button type="button" class="ca-segment__btn" data-ca-type="Adjustment">
+                                <i class="fa-solid fa-sliders"></i>
+                                <strong>اصلاح</strong>
+                            </button>
+                        </div>
+                        <span class="ca-help" id="caTypeHelp">افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ باقی‌مانده از تسویه.</span>
+                    </div>
+
+                    <div class="mb-3 ca-adj-wrap" id="caAdjWrap" hidden>
+                        <span class="ca-label">اثر اصلاح بر مانده</span>
+                        <div class="ca-signs" id="caAdjSigns" role="group" aria-label="اثر اصلاح">
+                            <button type="button" class="ca-sign__btn is-active" data-ca-sign="1">افزایش بدهی (+)</button>
+                            <button type="button" class="ca-sign__btn" data-ca-sign="-1">کاهش بدهی (−)</button>
+                        </div>
+                        <span class="ca-help">برای رفع اشتباهِ تراکنش‌های قبلی استفاده می‌شود؛ تراکنش قبلی حذف نمی‌شود.</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="ca-label" for="caAmount">مبلغ</label>
+                        <div class="ca-amount-wrap">
+                            <input type="text" class="form-control" id="caAmount"
+                                   inputmode="numeric" placeholder="0" autocomplete="off" />
+                            <span class="ca-amount-wrap__unit">تومان</span>
+                        </div>
+                        <div class="ca-quick-amounts" id="caQuickAmounts">
+                            <button type="button" data-ca-amount="50000">۵۰ هزار</button>
+                            <button type="button" data-ca-amount="100000">۱۰۰ هزار</button>
+                            <button type="button" data-ca-amount="200000">۲۰۰ هزار</button>
+                            <button type="button" data-ca-amount="500000">۵۰۰ هزار</button>
+                        </div>
+                        <span class="ca-field-error" id="caAmountError" hidden>مبلغ را وارد کنید.</span>
+                    </div>
+
+                    <div class="mb-1">
+                        <label class="ca-label" for="caNote">یادداشت <span class="text-muted fw-normal">(اختیاری)</span></label>
+                        <input type="text" class="form-control" id="caNote" maxlength="500"
+                               placeholder="مثلاً: تسویه نقدی بابت سفارش شنبه" />
+                        <span class="ca-help">یادداشت در گردش حساب ثبت می‌شود و به شناسایی تراکنش کمک می‌کند.</span>
+                    </div>
+
+                    <div class="ca-preview">
+                        <div class="ca-preview__item">
+                            <span class="ca-preview__label">مانده فعلی</span>
+                            <span class="ca-preview__value" id="caPreviewCurrent">—</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-left ca-preview__arrow"></i>
+                        <div class="ca-preview__item">
+                            <span class="ca-preview__label">مانده پس از ثبت</span>
+                            <span class="ca-preview__value" id="caPreviewNext">—</span>
+                        </div>
+                    </div>
+
+                    <p class="ca-audit-note">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>تراکنش‌های حساب مشتری قابل حذف یا ویرایش نیستند و برای حسابرسی نگهداری می‌شوند.</span>
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">انصراف</button>
+                    <button type="submit" class="btn btn-primary" id="caSubmitBtn">
+                        <i class="fa-solid fa-check"></i>
+                        <span>ثبت تراکنش</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict';
+
+            var page = document.getElementById('customerAccountPage');
+            if (!page) return;
+
+            var restaurantId = Number(page.dataset.restaurantId);
+            var customerId = Number(page.dataset.customerId);
+            var API = '/api/v2/customeraccount';
+            var LEDGER_PAGE_SIZE = 25;
+            var PURCHASE_PAGE_SIZE = 20;
+
+            var TYPE_META = {
+                Debt: {
+                    label: 'بدهی',
+                    icon: 'fa-arrow-trend-up',
+                    cls: 'ca-type--debt',
+                    help: 'افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ باقی‌مانده از تسویه.'
+                },
+                Payment: {
+                    label: 'پرداخت',
+                    icon: 'fa-hand-holding-dollar',
+                    cls: 'ca-type--payment',
+                    help: 'کاهش بدهی مشتری؛ مبلغی که مشتری پرداخت کرده است.'
+                },
+                Adjustment: {
+                    label: 'اصلاح',
+                    icon: 'fa-sliders',
+                    cls: 'ca-type--adjustment',
+                    help: 'اصلاح مانده به‌دلیل اشتباه در ثبت‌های قبلی، با ثبت یک تراکنش جدید.'
+                }
+            };
+
+            var state = {
+                balance: 0,
+                ledgerPage: 1,
+                ledgerTotalPages: 0,
+                ledgerLoaded: 0,
+                ledgerTotal: 0,
+                ledgerLoading: false,
+                purchasePage: 1,
+                purchaseTotalPages: 0,
+                purchaseLoaded: 0,
+                purchaseTotal: 0,
+                purchaseLoading: false,
+                type: 'Debt',
+                adjustSign: 1,
+                submitting: false
+            };
+
+            function $(id) { return document.getElementById(id); }
+
+            /* ---------- helpers ---------- */
+
+            function escapeHtml(value) {
+                return String(value == null ? '' : value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function toEnglishDigits(value) {
+                return String(value == null ? '' : value)
+                    .replace(/[\u06F0-\u06F9]/g, function (c) { return String(c.charCodeAt(0) - 1776); })
+                    .replace(/[\u0660-\u0669]/g, function (c) { return String(c.charCodeAt(0) - 1632); });
+            }
+
+            function digitsOnly(value) {
+                return toEnglishDigits(value).replace(/[^\d]/g, '');
+            }
+
+            function groupThousands(digits) {
+                return String(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+
+            function formatMoney(value) {
+                var n = Number(value);
+                if (value == null || Number.isNaN(n)) return '—';
+                return Math.round(n).toLocaleString('fa-IR') + ' تومان';
+            }
+
+            function formatCount(value) {
+                var n = Number(value);
+                if (Number.isNaN(n)) return '۰';
+                return n.toLocaleString('fa-IR');
+            }
+
+            /** Identifiers must keep their exact digits (no grouping). */
+            function formatId(value) {
+                return String(value == null ? '' : value)
+                    .replace(/\d/g, function (d) { return String.fromCharCode(1776 + Number(d)); });
+            }
+
+            /** Ledger transactions are stored as UTC. */
+            function formatUtcAsTehran(iso) {
+                if (!iso) return '—';
+                try {
+                    var s = String(iso).trim();
+                    if (!/[zZ]$|[+-]\d{2}:?\d{2}$/.test(s)) {
+                        s = s.replace(' ', 'T');
+                        if (s.indexOf('T') === -1) return iso;
+                        s += 'Z';
+                    }
+                    var d = new Date(s);
+                    if (isNaN(d.getTime())) return iso;
+                    return d.toLocaleString('fa-IR', {
+                        timeZone: 'Asia/Tehran',
+                        year: 'numeric', month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                } catch (e) {
+                    return iso;
+                }
+            }
+
+            /** Orders keep Tehran wall-clock in DB, so never re-apply an offset. */
+            function formatWallClock(iso) {
+                if (!iso) return '—';
+                try {
+                    var s = String(iso).trim().replace(' ', 'T')
+                        .replace(/[zZ]$/, '')
+                        .replace(/[+-]\d{2}:?\d{2}$/, '');
+                    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+                    if (!m) return iso;
+                    var d = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+                    if (isNaN(d.getTime())) return iso;
+                    return d.toLocaleString('fa-IR', {
+                        year: 'numeric', month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                } catch (e) {
+                    return iso;
+                }
+            }
+
+            function toast(message, type) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast(message, type || 'success');
+                }
+            }
+
+            function showAlert(message) {
+                var el = $('caAlert');
+                el.textContent = message;
+                el.classList.remove('d-none');
+            }
+
+            function clearAlert() {
+                $('caAlert').classList.add('d-none');
+            }
+
+            function waitForFetchWithAuth(timeoutMs) {
+                if (typeof window.fetchWithAuth === 'function') {
+                    return Promise.resolve(window.fetchWithAuth);
+                }
+                return new Promise(function (resolve, reject) {
+                    var start = Date.now();
+                    var timer = setInterval(function () {
+                        if (typeof window.fetchWithAuth === 'function') {
+                            clearInterval(timer);
+                            resolve(window.fetchWithAuth);
+                        } else if (Date.now() - start > timeoutMs) {
+                            clearInterval(timer);
+                            reject(new Error('احراز هویت آماده نیست. صفحه را دوباره باز کنید.'));
+                        }
+                    }, 50);
+                });
+            }
+
+            async function api(path, payload) {
+                var fetchAuth = await waitForFetchWithAuth(8000);
+                var res = await fetchAuth(API + path, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                var body = await res.json().catch(function () { return {}; });
+                if (!res.ok || body.success === false) {
+                    throw new Error(body.message || 'خطا در ارتباط با سرور');
+                }
+                return body;
+            }
+
+            /* ---------- header / balance ---------- */
+
+            function setAvatar(name) {
+                var initial = String(name || '').trim().charAt(0);
+                var el = $('caAvatar');
+                if (initial) el.textContent = initial;
+            }
+
+            function renderBalance(balance) {
+                state.balance = Number(balance) || 0;
+
+                var card = $('caBalanceCard');
+                var chip = $('caBalanceChip');
+                var hint = $('caBalanceHint');
+
+                card.classList.remove('ca-balance--debt', 'ca-balance--credit', 'ca-balance--settled');
+
+                $('caBalanceValue').innerHTML =
+                    escapeHtml(Math.round(Math.abs(state.balance)).toLocaleString('fa-IR')) +
+                    '<span class="ca-balance__unit">تومان</span>';
+
+                if (state.balance > 0) {
+                    card.classList.add('ca-balance--debt');
+                    chip.textContent = 'بدهکار';
+                    hint.textContent = 'این مبلغ باید از مشتری دریافت شود.';
+                } else if (state.balance < 0) {
+                    card.classList.add('ca-balance--credit');
+                    chip.textContent = 'بستانکار';
+                    hint.textContent = 'مانده به نفع مشتری است (پیش‌پرداخت یا اضافه‌پرداخت).';
+                } else {
+                    card.classList.add('ca-balance--settled');
+                    chip.textContent = 'تسویه';
+                    hint.textContent = 'حساب این مشتری تسویه است.';
+                }
+            }
+
+            async function loadSummary() {
+                var body = await api('/summary', { restaurantId: restaurantId, customerId: customerId });
+                var d = body.data || {};
+
+                if (d.customerFullName) {
+                    $('caCustomerName').textContent = d.customerFullName;
+                    setAvatar(d.customerFullName);
+                }
+                if (d.customerMobile) $('caCustomerMobile').textContent = d.customerMobile;
+                if (d.accountId) $('caAccountId').textContent = formatId(d.accountId);
+
+                renderBalance(d.currentBalance);
+
+                $('caStatDebt').textContent = formatMoney(d.totalDebt || 0);
+                $('caStatPayment').textContent = formatMoney(d.totalPayment || 0);
+                $('caLedgerCount').textContent = formatCount(d.transactionCount || 0);
+
+                var chip = $('caLastUpdateChip');
+                if (d.lastTransactionAt) {
+                    $('caLastUpdate').textContent = formatUtcAsTehran(d.lastTransactionAt);
+                    chip.hidden = false;
+                } else {
+                    chip.hidden = true;
+                }
+            }
+
+            /* ---------- ledger ---------- */
+
+            function typeBadge(type) {
+                var meta = TYPE_META[type] || { label: type || '—', icon: 'fa-circle', cls: '' };
+                return '<span class="ca-type ' + meta.cls + '">' +
+                    '<i class="fa-solid ' + meta.icon + '"></i>' +
+                    escapeHtml(meta.label) +
+                    '</span>';
+            }
+
+            function ledgerRowHtml(t) {
+                var signed = Number(t.signedAmount) || 0;
+                var deltaCls = signed > 0 ? 'ca-delta--up' : 'ca-delta--down';
+                var deltaText = (signed > 0 ? '+' : '−') +
+                    Math.round(Math.abs(signed)).toLocaleString('fa-IR');
+                var note = t.note ? escapeHtml(t.note) : '';
+
+                return '<tr>' +
+                    '<td data-label="تاریخ"><span class="ca-cell-strong ca-num">' +
+                        escapeHtml(formatUtcAsTehran(t.createdAt)) + '</span></td>' +
+                    '<td data-label="نوع">' + typeBadge(t.type) + '</td>' +
+                    '<td data-label="مبلغ"><span class="ca-money">' + escapeHtml(formatMoney(t.amount)) + '</span></td>' +
+                    '<td data-label="اثر بر حساب"><span class="ca-delta ca-num ' + deltaCls + '">' +
+                        escapeHtml(deltaText) + '</span></td>' +
+                    '<td data-label="مانده پس از تراکنش"><span class="ca-cell-strong ca-money">' +
+                        escapeHtml(formatMoney(t.balanceAfter)) + '</span></td>' +
+                    '<td data-label="یادداشت">' +
+                        (note
+                            ? '<span class="ca-note" title="' + note + '">' + note + '</span>'
+                            : '<span class="ca-empty-dash">—</span>') +
+                    '</td>' +
+                    '</tr>';
+            }
+
+            async function loadLedger(append) {
+                if (state.ledgerLoading) return;
+                state.ledgerLoading = true;
+
+                var skeleton = $('caLedgerSkeleton');
+                var empty = $('caLedgerEmpty');
+                var wrap = $('caLedgerTableWrap');
+                var more = $('caLedgerLoadMoreWrap');
+
+                if (!append) {
+                    state.ledgerPage = 1;
+                    state.ledgerLoaded = 0;
+                    skeleton.classList.remove('d-none');
+                    empty.classList.add('d-none');
+                    wrap.classList.add('d-none');
+                    more.classList.add('d-none');
+                }
+
+                try {
+                    var body = await api('/transactions', {
+                        restaurantId: restaurantId,
+                        customerId: customerId,
+                        page: state.ledgerPage,
+                        pageSize: LEDGER_PAGE_SIZE
+                    });
+
+                    var items = body.data || [];
+                    state.ledgerTotalPages = body.totalPages || 0;
+                    state.ledgerTotal = body.totalCount || 0;
+                    state.ledgerLoaded += items.length;
+
+                    skeleton.classList.add('d-none');
+                    $('caLedgerCount').textContent = formatCount(state.ledgerTotal);
+
+                    if (!append && items.length === 0) {
+                        empty.classList.remove('d-none');
+                        return;
+                    }
+
+                    var html = items.map(ledgerRowHtml).join('');
+                    if (append) {
+                        $('caLedgerBody').insertAdjacentHTML('beforeend', html);
+                    } else {
+                        $('caLedgerBody').innerHTML = html;
+                    }
+                    wrap.classList.remove('d-none');
+
+                    if (state.ledgerPage < state.ledgerTotalPages) {
+                        $('caLedgerLoadMoreMeta').textContent =
+                            'نمایش ' + formatCount(state.ledgerLoaded) + ' از ' + formatCount(state.ledgerTotal) + ' تراکنش';
+                        more.classList.remove('d-none');
+                    } else {
+                        more.classList.add('d-none');
+                    }
+                } catch (err) {
+                    skeleton.classList.add('d-none');
+                    throw err;
+                } finally {
+                    state.ledgerLoading = false;
+                }
+            }
+
+            /* ---------- purchases ---------- */
+
+            function purchaseRowHtml(p) {
+                var dateText = p.createdAtShamsi || formatWallClock(p.createdAt);
+                var receipt = p.hasReceipt
+                    ? '<span class="ca-receipt-flag"><i class="fa-solid fa-file-invoice"></i>فاکتور</span>'
+                    : '';
+
+                return '<tr>' +
+                    '<td data-label="تاریخ"><span class="ca-cell-strong ca-num">' + escapeHtml(dateText) + '</span></td>' +
+                    '<td data-label="شماره سفارش"><span class="ca-num">#' + escapeHtml(String(p.orderId)) + '</span></td>' +
+                    '<td data-label="نوع">' + escapeHtml(p.orderTypeLabel || '—') + '</td>' +
+                    '<td data-label="میز">' +
+                        (p.tableNumber
+                            ? '<span class="ca-num">' + escapeHtml(p.tableNumber) + '</span>'
+                            : '<span class="ca-empty-dash">—</span>') +
+                    '</td>' +
+                    '<td data-label="تعداد اقلام"><span class="ca-num">' + formatCount(p.itemCount || 0) + '</span></td>' +
+                    '<td data-label="مبلغ"><span class="ca-cell-strong ca-money">' +
+                        escapeHtml(formatMoney(p.amount)) + '</span>' + receipt + '</td>' +
+                    '</tr>';
+            }
+
+            async function loadPurchases(append) {
+                if (state.purchaseLoading) return;
+                state.purchaseLoading = true;
+
+                var skeleton = $('caPurchaseSkeleton');
+                var empty = $('caPurchaseEmpty');
+                var wrap = $('caPurchaseTableWrap');
+                var more = $('caPurchaseLoadMoreWrap');
+
+                if (!append) {
+                    state.purchasePage = 1;
+                    state.purchaseLoaded = 0;
+                    skeleton.classList.remove('d-none');
+                    empty.classList.add('d-none');
+                    wrap.classList.add('d-none');
+                    more.classList.add('d-none');
+                }
+
+                try {
+                    var body = await api('/purchases', {
+                        restaurantId: restaurantId,
+                        customerId: customerId,
+                        page: state.purchasePage,
+                        pageSize: PURCHASE_PAGE_SIZE
+                    });
+
+                    var items = body.data || [];
+                    state.purchaseTotalPages = body.totalPages || 0;
+                    state.purchaseTotal = body.totalCount || 0;
+                    state.purchaseLoaded += items.length;
+
+                    skeleton.classList.add('d-none');
+                    $('caPurchaseCount').textContent = formatCount(state.purchaseTotal);
+                    $('caStatOrders').textContent = formatCount(state.purchaseTotal);
+                    $('caStatSpent').textContent = formatMoney(body.totalSpent || 0);
+
+                    if (!append && items.length === 0) {
+                        empty.classList.remove('d-none');
+                        return;
+                    }
+
+                    var html = items.map(purchaseRowHtml).join('');
+                    if (append) {
+                        $('caPurchaseBody').insertAdjacentHTML('beforeend', html);
+                    } else {
+                        $('caPurchaseBody').innerHTML = html;
+                    }
+                    wrap.classList.remove('d-none');
+
+                    if (state.purchasePage < state.purchaseTotalPages) {
+                        $('caPurchaseLoadMoreMeta').textContent =
+                            'نمایش ' + formatCount(state.purchaseLoaded) + ' از ' + formatCount(state.purchaseTotal) + ' سفارش';
+                        more.classList.remove('d-none');
+                    } else {
+                        more.classList.add('d-none');
+                    }
+                } catch (err) {
+                    skeleton.classList.add('d-none');
+                    throw err;
+                } finally {
+                    state.purchaseLoading = false;
+                }
+            }
+
+            /* ---------- tabs ---------- */
+
+            function activateTab(name) {
+                page.querySelectorAll('.ca-tab').forEach(function (tab) {
+                    var active = tab.dataset.caTab === name;
+                    tab.classList.toggle('is-active', active);
+                    tab.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+                page.querySelectorAll('[data-ca-panel]').forEach(function (panel) {
+                    panel.classList.toggle('d-none', panel.dataset.caPanel !== name);
+                });
+            }
+
+            /* ---------- transaction modal ---------- */
+
+            var txModal = null;
+
+            function getModal() {
+                if (!txModal) {
+                    txModal = new bootstrap.Modal($('caTxModal'));
+                }
+                return txModal;
+            }
+
+            function setType(type) {
+                if (!TYPE_META[type]) type = 'Debt';
+                state.type = type;
+
+                $('caTypeSegment').querySelectorAll('.ca-segment__btn').forEach(function (btn) {
+                    btn.classList.toggle('is-active', btn.dataset.caType === type);
+                });
+                $('caTypeHelp').textContent = TYPE_META[type].help;
+                $('caAdjWrap').hidden = type !== 'Adjustment';
+                updatePreview();
+            }
+
+            function setAdjustSign(sign) {
+                state.adjustSign = Number(sign) === -1 ? -1 : 1;
+                $('caAdjSigns').querySelectorAll('.ca-sign__btn').forEach(function (btn) {
+                    btn.classList.toggle('is-active', Number(btn.dataset.caSign) === state.adjustSign);
+                });
+                updatePreview();
+            }
+
+            function currentAmount() {
+                var digits = digitsOnly($('caAmount').value);
+                return digits ? Number(digits) : 0;
+            }
+
+            function signedDelta(amount) {
+                if (state.type === 'Payment') return -amount;
+                if (state.type === 'Adjustment') return state.adjustSign * amount;
+                return amount;
+            }
+
+            function balanceText(value) {
+                var n = Math.round(Number(value) || 0);
+                var abs = Math.abs(n).toLocaleString('fa-IR');
+                if (n > 0) return abs + ' بدهکار';
+                if (n < 0) return abs + ' بستانکار';
+                return abs + ' (تسویه)';
+            }
+
+            function applyBalanceTone(el, value) {
+                el.classList.remove('ca-preview__value--debt', 'ca-preview__value--credit');
+                if (value > 0) el.classList.add('ca-preview__value--debt');
+                else if (value < 0) el.classList.add('ca-preview__value--credit');
+            }
+
+            function updatePreview() {
+                var currentEl = $('caPreviewCurrent');
+                var nextEl = $('caPreviewNext');
+                var next = state.balance + signedDelta(currentAmount());
+
+                currentEl.textContent = balanceText(state.balance);
+                applyBalanceTone(currentEl, state.balance);
+
+                nextEl.textContent = balanceText(next);
+                applyBalanceTone(nextEl, next);
+            }
+
+            function setAmountError(message) {
+                var err = $('caAmountError');
+                var input = $('caAmount');
+                if (message) {
+                    err.textContent = message;
+                    err.hidden = false;
+                    input.classList.add('is-invalid');
+                } else {
+                    err.hidden = true;
+                    input.classList.remove('is-invalid');
+                }
+            }
+
+            function openTxModal(type) {
+                $('caTxModalSub').textContent = $('caCustomerName').textContent.trim();
+                $('caAmount').value = '';
+                $('caNote').value = '';
+                setAmountError('');
+                setAdjustSign(1);
+                setType(type || 'Debt');
+                getModal().show();
+            }
+
+            /* ---------- data orchestration ---------- */
+
+            async function refreshAll() {
+                clearAlert();
+                try {
+                    await loadSummary();
+                    await Promise.all([loadLedger(false), loadPurchases(false)]);
+                    return true;
+                } catch (err) {
+                    $('caLedgerSkeleton').classList.add('d-none');
+                    $('caPurchaseSkeleton').classList.add('d-none');
+                    showAlert(err && err.message ? err.message : String(err));
+                    return false;
+                }
+            }
+
+            /* ---------- events ---------- */
+
+            $('caRefreshBtn').addEventListener('click', function () {
+                var btn = this;
+                btn.disabled = true;
+                refreshAll().then(function (ok) {
+                    btn.disabled = false;
+                    if (ok) toast('اطلاعات حساب به‌روزرسانی شد.', 'success');
+                });
+            });
+
+            $('caNewTxBtn').addEventListener('click', function () { openTxModal('Debt'); });
+
+            page.querySelectorAll('[data-ca-quick]').forEach(function (btn) {
+                btn.addEventListener('click', function () { openTxModal(btn.dataset.caQuick); });
+            });
+
+            page.querySelectorAll('.ca-tab').forEach(function (tab) {
+                tab.addEventListener('click', function () { activateTab(tab.dataset.caTab); });
+            });
+
+            $('caLedgerLoadMoreBtn').addEventListener('click', function () {
+                var btn = this;
+                btn.disabled = true;
+                state.ledgerPage += 1;
+                loadLedger(true)
+                    .catch(function (err) { showAlert(err.message || String(err)); })
+                    .finally(function () { btn.disabled = false; });
+            });
+
+            $('caPurchaseLoadMoreBtn').addEventListener('click', function () {
+                var btn = this;
+                btn.disabled = true;
+                state.purchasePage += 1;
+                loadPurchases(true)
+                    .catch(function (err) { showAlert(err.message || String(err)); })
+                    .finally(function () { btn.disabled = false; });
+            });
+
+            $('caTypeSegment').addEventListener('click', function (e) {
+                var btn = e.target.closest('.ca-segment__btn');
+                if (btn) setType(btn.dataset.caType);
+            });
+
+            $('caAdjSigns').addEventListener('click', function (e) {
+                var btn = e.target.closest('.ca-sign__btn');
+                if (btn) setAdjustSign(btn.dataset.caSign);
+            });
+
+            $('caQuickAmounts').addEventListener('click', function (e) {
+                var btn = e.target.closest('button[data-ca-amount]');
+                if (!btn) return;
+                var current = currentAmount();
+                var next = current + Number(btn.dataset.caAmount);
+                $('caAmount').value = groupThousands(String(next));
+                setAmountError('');
+                updatePreview();
+            });
+
+            $('caAmount').addEventListener('input', function () {
+                var digits = digitsOnly(this.value).replace(/^0+(?=\d)/, '');
+                this.value = digits ? groupThousands(digits) : '';
+                if (digits) setAmountError('');
+                updatePreview();
+            });
+
+            $('caTxForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                if (state.submitting) return;
+
+                var amount = currentAmount();
+                if (!amount || amount <= 0) {
+                    setAmountError('مبلغ را به‌درستی وارد کنید.');
+                    $('caAmount').focus();
+                    return;
+                }
+
+                var payload = {
+                    restaurantId: restaurantId,
+                    customerId: customerId,
+                    type: state.type,
+                    amount: amount,
+                    note: ($('caNote').value || '').trim() || null
+                };
+                if (state.type === 'Adjustment') {
+                    payload.adjustmentSign = state.adjustSign;
+                }
+
+                var btn = $('caSubmitBtn');
+                state.submitting = true;
+                btn.disabled = true;
+                try {
+                    var body = await api('/addtransaction', payload);
+                    getModal().hide();
+                    toast(body.message || 'تراکنش ثبت شد.', 'success');
+                    await refreshAll();
+                } catch (err) {
+                    toast(err && err.message ? err.message : String(err), 'error');
+                } finally {
+                    state.submitting = false;
+                    btn.disabled = false;
+                }
+            });
+
+            /* ---------- init ---------- */
+
+            function initCustomerAccountPage() {
+                setAvatar($('caCustomerName').textContent);
+                activateTab('ledger');
+                setType('Debt');
+                refreshAll();
+            }
+
+            window.initCustomerAccountPage = initCustomerAccountPage;
+            initCustomerAccountPage();
+        })();
+    </script>
+}

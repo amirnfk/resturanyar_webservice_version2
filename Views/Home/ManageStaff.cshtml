@@ -91,9 +91,23 @@
         overflow: hidden;
     } */
 
+    .user-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: #f1f3f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+
         .user-avatar img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
         }
 
     .staff-name {
@@ -194,18 +208,26 @@
     {
         @foreach (var user in Model)
         {
+            int roleId = user.role_id;
             string roleName = (user.Role?.role_name) ?? "نامشخص";
-            string roleIcon = "/images/default.png";
-            switch (user.Role?.role_id ?? 0)
+            string roleIcon = roleId switch
             {
-                case 3: roleIcon = "/images/baker_9102653.png"; break;
-                case 2: roleIcon = "/images/waiter_2453333.png"; break;
-                case 4: roleIcon = "/images/cashier_1651946.png"; break;
-                case 5: roleIcon = "/images/food_delivery.png"; break;
-            }
+                2 => Url.Content("~/images/waiter_2453333.png"),
+                3 => Url.Content("~/images/baker_9102653.png"),
+                4 => Url.Content("~/images/cashier_1651946.png"),
+                5 => Url.Content("~/images/food_delivery.png"),
+                6 => Url.Content("~/images/barista.png"),
+                _ => Url.Content("~/images/default.png")
+            };
+            string kitchenPermIcon = roleId == 6
+                ? Url.Content("~/images/barista.png")
+                : Url.Content("~/images/baker_9102653.png");
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="user-card">
+                    <div class="user-avatar">
+                        <img src="@roleIcon" alt="@roleName">
+                    </div>
                     <!-- Three permission image places -->
                     <div class="user-permissions" data-order="@user.order_management_permission"
                          data-kitchen="@user.kitchen_management_permission"
@@ -214,28 +236,28 @@
                         <!-- Order -->
                         <div class="perm-icon perm-order @(user.order_management_permission ? "" : "inactive")"
                              title="دسترسی مدیریت سفارشات">
-                            <img src="/images/waiter_2453333.png" alt="Order">  
+                            <img src="@Url.Content("~/images/waiter_2453333.png")" alt="Order">  
                            
                         </div>
 
                         <!-- Kitchen -->
                         <div class="perm-icon perm-kitchen @(user.kitchen_management_permission ? "" : "inactive")"
-                             title="دسترسی مدیریت آشپزخانه">
-                            <img src="/images/baker_9102653.png" alt="Kitchen">  
+                             title="@(roleId == 6 ? "دسترسی باریستا / آشپزخانه" : "دسترسی مدیریت آشپزخانه")">
+                            <img src="@kitchenPermIcon" alt="@(roleId == 6 ? "Barista" : "Kitchen")">  
 
                         </div>
 
                         <!-- Payment -->
                         <div class="perm-icon perm-payment @(user.payment_management_permission ? "" : "inactive")"
                              title="دسترسی مدیریت پرداخت">
-                            <img src="/images/cashier_1651946.png" alt="Payment">  
+                            <img src="@Url.Content("~/images/cashier_1651946.png")" alt="Payment">  
 
                         </div>
 
                         <!-- Delivery -->
                         <div class="perm-icon perm-delivery @(user.delivery_management_permission ? "" : "inactive")"
                              title="دسترسی تحویل / پیک">
-                            <img src="/images/food_delivery.png" alt="Delivery">
+                            <img src="@Url.Content("~/images/food_delivery.png")" alt="Delivery">
                         </div>
                     </div>
 
@@ -246,6 +268,7 @@
                                 data-id="@user.user_id"
                                 data-name="@user.name"
                                 data-role="@roleName"
+                                data-role_id="@roleId"
                                 data-password="@user.password"
                                 data-restaurantid="@user.restaurant_id"
                                 title="مشاهده اطلاعات">
@@ -255,7 +278,7 @@
                                 data-id="@user.user_id"
                                 data-name="@user.name"
                                 data-password="@user.password"
-                                data-role_id="@user.Role?.role_id"
+                                data-role_id="@roleId"
                                 data-restaurantid="@user.restaurant_id"
                                 data-order_management_permission="@(user.order_management_permission ? 1 : 0)"
                                 data-kitchen_management_permission="@(user.kitchen_management_permission ? 1 : 0)"
@@ -328,6 +351,7 @@
                         <option value="3">آشپز</option>
                         <option value="4">صندوقدار</option>
                         <option value="5">پیک</option>
+                        <option value="6">باریستا</option>
                     </select>
                 </div>
                 <div class="mb-3 form-check form-switch">
@@ -380,6 +404,7 @@
                         <option value="3">آشپز</option>
                         <option value="4">صندوقدار</option>
                         <option value="5">پیک</option>
+                        <option value="6">باریستا</option>
                     </select>
                 </div>
                 <div class="mb-3 form-check form-switch">
@@ -425,7 +450,7 @@
 
             var order = false, kitchen = false, payment = false, delivery = false;
             if (roleId === 2) { order = true; }
-            else if (roleId === 3) { kitchen = true; }
+            else if (roleId === 3 || roleId === 6) { kitchen = true; }
             else if (roleId === 4) { payment = true; }
             else if (roleId === 5) { delivery = true; }
 
@@ -437,7 +462,7 @@
             applyPermissionLocks(roleId, modal);
         }
 
-        // پیک: only delivery permission (locked). Other roles: delivery locked off; order/kitchen/payment stay editable.
+        // پیک: only delivery (locked). باریستا مثل آشپز: order/kitchen/payment editable; delivery locked off.
         function applyPermissionLocks(roleId, modal) {
             var base = (modal === 'edit') ? '#edit' : '#add';
             roleId = parseInt(roleId) || 0;
@@ -446,7 +471,7 @@
             $(base + 'OrderPermission').prop('disabled', isCourier);
             $(base + 'KitchenPermission').prop('disabled', isCourier);
             $(base + 'PaymentPermission').prop('disabled', isCourier);
-            $(base + 'DeliveryPermission').prop('disabled', true); // never mixed; only auto-set for role 5
+            $(base + 'DeliveryPermission').prop('disabled', true);
 
             if (isCourier) {
                 $(base + 'OrderPermission').prop('checked', false);
@@ -536,12 +561,20 @@
             const hasPayment = !$card.find(".perm-payment").hasClass("inactive");
             const hasDelivery = !$card.find(".perm-delivery").hasClass("inactive");
 
-            let roles = [];
-            if (hasOrder) roles.push("گارسون");
-            if (hasKitchen) roles.push("آشپز");
-            if (hasPayment) roles.push("صندوقدار");
-            if (hasDelivery) roles.push("پیک");
-            let roleText = roles.length > 0 ? roles.join(" ، ") : "نامشخص";
+            const roleId = parseInt($(this).data("role_id"), 10) || 0;
+            let roleText;
+            if (roleId === 6) {
+                roleText = "باریستا";
+            } else if (roleId === 5) {
+                roleText = "پیک";
+            } else {
+                let roles = [];
+                if (hasOrder) roles.push("گارسون");
+                if (hasKitchen) roles.push("آشپز");
+                if (hasPayment) roles.push("صندوقدار");
+                if (hasDelivery) roles.push("پیک");
+                roleText = roles.length > 0 ? roles.join(" ، ") : ($(this).data("role") || "نامشخص");
+            }
 
             try {
                 const response = await window.fetchWithAuth(

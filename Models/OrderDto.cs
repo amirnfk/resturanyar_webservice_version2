@@ -22,6 +22,9 @@ namespace resturanyar.Models
         public DateTime? ReceiptIssuedAt { get; set; }
         public decimal? EstimatedReceiptGrandTotal { get; set; }
 
+        /// <summary>Linked customer address id from OrderFulfillments (null when free-text or dine-in).</summary>
+        public int? CustomerAddressId { get; set; }
+
         /// <summary>Frozen delivery/takeaway address from OrderFulfillments (null for Dine-In).</summary>
         public string? AddressSnapshot { get; set; }
 

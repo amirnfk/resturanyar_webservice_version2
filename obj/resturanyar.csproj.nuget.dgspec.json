@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {}
+    "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {}
   },
   "projects": {
-    "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {
+    "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "projectUniqueName": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
         "projectName": "resturanyar",
-        "projectPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
+        "projectPath": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\resturanyar.csproj",
         "packagesPath": "C:\\Users\\zmi13\\.nuget\\packages\\",
-        "outputPath": "D:\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\obj\\",
+        "outputPath": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\vs shared folder\\NuGetPackages"

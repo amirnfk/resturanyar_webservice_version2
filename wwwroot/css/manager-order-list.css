@@ -75,6 +75,11 @@
         box-shadow: 0 10px 24px rgba(255, 122, 0, 0.28);
     }
 
+.orders-page .order-edit-btn {
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+}
+
 .orders-page .btn-outline-secondary {
     border-radius: var(--radius-sm);
     font-weight: 600;

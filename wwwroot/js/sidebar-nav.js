@@ -172,7 +172,8 @@
     function cleanupCurrentPage() {
         var destroyFns = [
             'destroyCustomersListPage',
-            'destroyRestaurantSettingsPage'
+            'destroyRestaurantSettingsPage',
+            'destroyManagerOrderListPage'
         ];
         destroyFns.forEach(function (name) {
             if (typeof window[name] === 'function') {
@@ -302,6 +303,7 @@
         ['/menu/publicmenuqrcode', 'initRestaurantSettingsPage'],
         ['/menu/restaurantmenu', 'initRestaurantSettingsPage'],
         ['/home/customerslist', 'initCustomersListPage'],
+        ['/home/customeraccount', 'initCustomerAccountPage'],
         ['/home/managestaff', 'initManageStaffPage'],
         ['/home/messages', 'initMessagesPage'],
         ['/home/menusettings', 'initRestaurantSettingsPage'],

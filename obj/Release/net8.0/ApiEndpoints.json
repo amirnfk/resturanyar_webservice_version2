@@ -2759,6 +2759,70 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "resturanyar.Controllers.Api.V2.CustomerAccountApiController",
+    "Method": "AddTransaction",
+    "RelativePath": "api/v2/customeraccount/addtransaction",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.AddCustomerAccountTransactionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.CustomerAccountApiController",
+    "Method": "ListPurchases",
+    "RelativePath": "api/v2/customeraccount/purchases",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.CustomerAccountPagedLookupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.CustomerAccountApiController",
+    "Method": "GetSummary",
+    "RelativePath": "api/v2/customeraccount/summary",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.CustomerAccountLookupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.CustomerAccountApiController",
+    "Method": "ListTransactions",
+    "RelativePath": "api/v2/customeraccount/transactions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.CustomerAccountPagedLookupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.Api.V2.InventoryApiController",
     "Method": "ListCategories",
     "RelativePath": "api/v2/inventory/categories",

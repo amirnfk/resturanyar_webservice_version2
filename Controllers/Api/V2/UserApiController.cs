@@ -468,6 +468,11 @@ namespace resturanyar.Controllers.Api.V2
                     return NotFound(new { success = false, message = "کاربر یافت نشد یا متعلق به این رستوران نیست" });
                 }
 
+                if (!StaffRolePermissions.IsSettableStaffRole(request.role_id))
+                {
+                    return BadRequest(new { success = false, message = "نقش انتخاب‌شده معتبر نیست." });
+                }
+
                 // 4. Update properties[cite: 5]
                 user.name = request.name;
                 user.role_id = request.role_id;
@@ -486,18 +491,7 @@ namespace resturanyar.Controllers.Api.V2
                 if (request.delivery_management_permission.HasValue)
                     user.delivery_management_permission = request.delivery_management_permission.Value;
 
-                // پیک is delivery-only — never allow mixed permissions
-                if (request.role_id == 5)
-                {
-                    user.order_management_permission = false;
-                    user.kitchen_management_permission = false;
-                    user.payment_management_permission = false;
-                    user.delivery_management_permission = true;
-                }
-                else
-                {
-                    user.delivery_management_permission = false;
-                }
+                StaffRolePermissions.ApplyExclusiveLocks(user);
 
                 _context.SaveChanges();  
 
@@ -595,6 +589,11 @@ namespace resturanyar.Controllers.Api.V2
                     return Ok(new { success = false, message = "کاربری با این نام برای این رستوران قبلاً ثبت شده است" });
                 }
 
+                if (!StaffRolePermissions.IsSettableStaffRole(request.role_id))
+                {
+                    return BadRequest(new { success = false, message = "نقش انتخاب‌شده معتبر نیست." });
+                }
+
                 var user = new User
                 {
                     name = request.name,
@@ -603,20 +602,15 @@ namespace resturanyar.Controllers.Api.V2
                     restaurant_id = request.restaurant_id
                 };
 
-                // Apply default permissions based on V1 logic
                 switch (request.role_id)
                 {
-                    case 1:
-                        user.order_management_permission = true;
-                        user.kitchen_management_permission = true;
-                        user.payment_management_permission = true;
-                        break;
                     case 2:
                         user.order_management_permission = true;
                         user.kitchen_management_permission = false;
                         user.payment_management_permission = false;
                         break;
                     case 3:
+                    case 6: // باریستا — kitchen station like chef
                         user.order_management_permission = false;
                         user.kitchen_management_permission = true;
                         user.payment_management_permission = false;
@@ -641,18 +635,7 @@ namespace resturanyar.Controllers.Api.V2
                 if (request.payment_management_permission.HasValue) user.payment_management_permission = request.payment_management_permission.Value;
                 if (request.delivery_management_permission.HasValue) user.delivery_management_permission = request.delivery_management_permission.Value;
 
-                // پیک is delivery-only — never allow mixed permissions
-                if (request.role_id == 5)
-                {
-                    user.order_management_permission = false;
-                    user.kitchen_management_permission = false;
-                    user.payment_management_permission = false;
-                    user.delivery_management_permission = true;
-                }
-                else
-                {
-                    user.delivery_management_permission = false;
-                }
+                StaffRolePermissions.ApplyExclusiveLocks(user);
 
                 _context.Users.Add(user);
                 _context.SaveChanges();
