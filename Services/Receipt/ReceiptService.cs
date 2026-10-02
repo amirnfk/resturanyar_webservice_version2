@@ -4,6 +4,7 @@ using resturanyar.Models;
 using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Receipt;
 using resturanyar.Services.DiscountCodes;
+using resturanyar.Utility;
 using Resturanyar.Data;
 using System.Text.Json;
 
@@ -39,9 +40,13 @@ namespace resturanyar.Services.Receipt
         Task<List<ChargeDefinitionDto>> GetChargeDefinitionsAsync(int restaurantId);
         Task<List<ChargeDefinitionDto>> EnsureChargeDefinitionsAsync(int restaurantId);
         Task<bool> SaveChargeDefinitionsAsync(int restaurantId, List<ChargeDefinitionDto> definitions);
+        Task<bool> SaveInvoicePrintTemplateAsync(int restaurantId, string? templateId);
+        string GetInvoicePrintTemplateId(Restaurant restaurant);
         /// <summary>Soft-bind or clear an order discount code from the receipt dialog (usage commits on issue).</summary>
         Task<ReceiptServiceResult> SetOrderDiscountCodeAsync(int orderId, int restaurantId, string? code);
         string RenderHtml(ReceiptDto receipt);
+        string RenderHtml(ReceiptDto receipt, bool includeToolbarAndAutoPrint);
+        string RenderHtml(ReceiptDto receipt, bool includeToolbarAndAutoPrint, bool offlineCapture, string? templateRevision = null);
         bool IsSettlementStatus(int statusId);
         bool IsOrderEligibleForChargeDefaults(Restaurant restaurant, DateTime orderCreatedAt);
     }
@@ -102,7 +107,8 @@ namespace resturanyar.Services.Receipt
                     OrderId = orderId,
                     IsIssued = snapshot != null,
                     IssuedAt = snapshot?.IssuedAt,
-                    UsesCharges = usesCharges
+                    UsesCharges = usesCharges,
+                    PrintTemplateId = GetInvoicePrintTemplateId(restaurant)
                 }
             };
         }
@@ -496,6 +502,7 @@ namespace resturanyar.Services.Receipt
                 }
             }
 
+            ApplyPrintTemplate(receipt, load.Restaurant);
             return Success(receipt);
         }
 
@@ -659,6 +666,29 @@ namespace resturanyar.Services.Receipt
             return true;
         }
 
+        public string GetInvoicePrintTemplateId(Restaurant restaurant) =>
+            InvoicePrintTemplates.Normalize(restaurant?.InvoicePrintTemplateId);
+
+        public async Task<bool> SaveInvoicePrintTemplateAsync(int restaurantId, string? templateId)
+        {
+            var restaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId);
+
+            if (restaurant == null || !restaurant.ReceiptChargesEnabled)
+                return false;
+
+            restaurant.InvoicePrintTemplateId = InvoicePrintTemplates.Normalize(templateId);
+            restaurant.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private static void ApplyPrintTemplate(ReceiptDto receipt, Restaurant? restaurant)
+        {
+            if (receipt == null) return;
+            receipt.PrintTemplateId = InvoicePrintTemplates.Normalize(restaurant?.InvoicePrintTemplateId);
+        }
+
         public async Task<ReceiptServiceResult> SetOrderDiscountCodeAsync(int orderId, int restaurantId, string? code)
         {
             var load = await LoadOrderContext(orderId, restaurantId);
@@ -695,6 +725,12 @@ namespace resturanyar.Services.Receipt
         }
 
         public string RenderHtml(ReceiptDto receipt) => _renderer.RenderHtml(receipt);
+
+        public string RenderHtml(ReceiptDto receipt, bool includeToolbarAndAutoPrint) =>
+            _renderer.RenderHtml(receipt, includeToolbarAndAutoPrint);
+
+        public string RenderHtml(ReceiptDto receipt, bool includeToolbarAndAutoPrint, bool offlineCapture, string? templateRevision = null) =>
+            _renderer.RenderHtml(receipt, includeToolbarAndAutoPrint, offlineCapture, templateRevision);
 
         private async Task<OrderLoadResult> LoadOrderContext(int orderId, int restaurantId)
         {
@@ -808,6 +844,7 @@ namespace resturanyar.Services.Receipt
                 GrandTotal = calculation.GrandTotal,
                 UsesCharges = true,
                 IsIssued = false,
+                PrintTemplateId = InvoicePrintTemplates.Normalize(restaurant.InvoicePrintTemplateId),
                 HasOrderDiscountCode = discountMeta.HasCode,
                 OrderDiscountCode = discountMeta.Code
             };
@@ -879,7 +916,8 @@ namespace resturanyar.Services.Receipt
                 ItemsSubtotal = subtotal,
                 GrandTotal = subtotal,
                 UsesCharges = false,
-                IsIssued = false
+                IsIssued = false,
+                PrintTemplateId = InvoicePrintTemplates.Normalize(restaurant.InvoicePrintTemplateId)
             };
         }
 

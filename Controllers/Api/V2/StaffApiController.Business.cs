@@ -1209,6 +1209,48 @@ namespace resturanyar.Controllers.Api.V2
             return StatusCode(result.StatusCode, new { success = result.Success, message = result.Message, data = result.Receipt });
         }
 
+        [HttpGet("orders/{orderId}/receipt")]
+        public async Task<IActionResult> GetReceiptHtml(int orderId, [FromQuery] bool autoPrint = true)
+        {
+            var order = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return NotFound(new { success = false, message = "سفارش یافت نشد." });
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            TryGetStaffUserId(out int staffUserId);
+            var service = GetReceiptService();
+            var status = await service.GetStatusAsync(orderId, order.RestaurantId);
+            if (!status.Success)
+                return StatusCode(status.StatusCode, status.Message);
+
+            if (status.Receipt?.UsesCharges == true && !status.Receipt.IsIssued)
+                return BadRequest("فاکتور این سفارش هنوز صادر نشده است.");
+
+            var result = status.Receipt?.UsesCharges == true
+                ? await service.GetReceiptDataAsync(orderId, order.RestaurantId, "Android", staffUserId)
+                : await service.PreviewAsync(orderId, order.RestaurantId, new ReceiptPreviewRequest());
+
+            if (!result.Success || result.Receipt == null)
+                return StatusCode(result.StatusCode, result.Message ?? "خطا در تولید فاکتور");
+
+            var tpl = await _context.Restaurants.AsNoTracking()
+                .Where(r => r.restaurant_id == order.RestaurantId)
+                .Select(r => new { r.InvoicePrintTemplateId, r.UpdatedAt })
+                .FirstOrDefaultAsync();
+            var templateId = InvoicePrintTemplates.Normalize(tpl?.InvoicePrintTemplateId);
+            var revision = (tpl?.UpdatedAt ?? DateTime.UtcNow).ToUniversalTime().Ticks.ToString();
+            result.Receipt.PrintTemplateId = templateId;
+
+            var offlineCapture = !autoPrint;
+            var html = service.RenderHtml(result.Receipt, includeToolbarAndAutoPrint: autoPrint, offlineCapture, revision);
+
+            Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["X-Print-Template-Id"] = templateId;
+            Response.Headers["X-Print-Template-Rev"] = revision;
+            return Content(html, "text/html; charset=utf-8");
+        }
+
         [HttpGet("restaurants/{restaurantId}/charge-definitions")]
         public async Task<IActionResult> GetChargeDefinitions(int restaurantId)
         {

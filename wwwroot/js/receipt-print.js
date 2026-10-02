@@ -238,7 +238,7 @@
     }
 
     function openReceiptHtml(orderId) {
-        const htmlWindow = window.open(`/Receipt/Html?orderId=${orderId}`, '_blank', 'width=900,height=700');
+        const htmlWindow = window.open(`/Receipt/Html?orderId=${orderId}&_=${Date.now()}`, '_blank', 'width=900,height=700');
         if (!htmlWindow && typeof showToast === 'function') {
             showToast('لطفا مسدودکننده پنجره را غیرفعال کنید', 'error');
         }
@@ -246,9 +246,8 @@
     }
 
     async function printLegacyInvoice(orderId) {
-        if (typeof printInvoice === 'function') {
-            printInvoice(orderId);
-        }
+        // Same server HTML renderer + restaurant print template as the charges path.
+        openReceiptHtml(orderId);
     }
 
     function setButtonLoading(btn, isLoading, loadingLabel) {

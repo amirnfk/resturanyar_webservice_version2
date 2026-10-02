@@ -30,6 +30,9 @@ namespace resturanyar.Models.Receipt
         public DateTime? IssuedAt { get; set; }
         public bool UsesCharges { get; set; }
 
+        /// <summary>Restaurant print layout id (classic / readable / compact).</summary>
+        public string PrintTemplateId { get; set; } = "classic";
+
         /// <summary>True when this order has an attached restaurant discount code.</summary>
         public bool HasOrderDiscountCode { get; set; }
         public string? OrderDiscountCode { get; set; }
@@ -98,5 +101,11 @@ namespace resturanyar.Models.Receipt
     {
         [JsonPropertyName("definitions")]
         public List<ChargeDefinitionDto> Definitions { get; set; } = new();
+    }
+
+    public class SaveInvoicePrintTemplateRequest
+    {
+        [JsonPropertyName("templateId")]
+        public string? TemplateId { get; set; }
     }
 }

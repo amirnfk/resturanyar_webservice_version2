@@ -22,6 +22,18 @@ namespace resturanyar.Services.CustomerAccounts
             var customer = await RequireActiveCustomerAsync(restaurantId, customerId, ct);
             var account = await GetOrCreateAccountAsync(restaurantId, customerId, ct);
 
+            var computedBalance = await _db.CustomerAccountTransactions.AsNoTracking()
+                .Where(t => t.AccountId == account.AccountId)
+                .SumAsync(t => (decimal?)t.SignedAmount, ct) ?? 0m;
+
+            // Heal stale CurrentBalance if ledger and cached balance diverged
+            if (account.CurrentBalance != computedBalance)
+            {
+                account.CurrentBalance = computedBalance;
+                account.UpdatedAt = DateTime.UtcNow;
+                await _db.SaveChangesAsync(ct);
+            }
+
             var totals = await _db.CustomerAccountTransactions.AsNoTracking()
                 .Where(t => t.AccountId == account.AccountId)
                 .GroupBy(t => 1)
@@ -41,7 +53,7 @@ namespace resturanyar.Services.CustomerAccounts
                 CustomerId = account.CustomerId,
                 CustomerFullName = customer.FullName,
                 CustomerMobile = customer.Mobile,
-                CurrentBalance = account.CurrentBalance,
+                CurrentBalance = computedBalance,
                 UpdatedAt = account.UpdatedAt,
                 TotalDebt = totals?.TotalDebt ?? 0m,
                 TotalPayment = Math.Abs(totals?.TotalPayment ?? 0m),

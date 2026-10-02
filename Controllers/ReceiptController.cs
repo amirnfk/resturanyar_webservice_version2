@@ -37,7 +37,8 @@ namespace resturanyar.Controllers
                     orderId = result.Receipt.OrderId,
                     isIssued = result.Receipt.IsIssued,
                     issuedAt = result.Receipt.IssuedAt,
-                    usesCharges = result.Receipt.UsesCharges
+                    usesCharges = result.Receipt.UsesCharges,
+                    printTemplateId = result.Receipt.PrintTemplateId
                 }
             });
         }
@@ -149,6 +150,15 @@ namespace resturanyar.Controllers
                 receipt = preview.Receipt;
             }
 
+            var templateId = await _context.Restaurants.AsNoTracking()
+                .Where(r => r.restaurant_id == restaurantId.Value)
+                .Select(r => r.InvoicePrintTemplateId)
+                .FirstOrDefaultAsync();
+            receipt.PrintTemplateId = InvoicePrintTemplates.Normalize(templateId);
+
+            Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["X-Print-Template-Id"] = receipt.PrintTemplateId;
             return Content(_receiptService.RenderHtml(receipt), "text/html; charset=utf-8");
         }
 
@@ -172,7 +182,9 @@ namespace resturanyar.Controllers
             {
                 RestaurantId = restaurantId.Value,
                 RestaurantName = restaurant.name,
-                Definitions = definitions
+                Definitions = definitions,
+                SelectedPrintTemplateId = InvoicePrintTemplates.Normalize(restaurant.InvoicePrintTemplateId),
+                PrintTemplates = InvoicePrintTemplates.All
             };
 
             return View(model);
@@ -190,6 +202,25 @@ namespace resturanyar.Controllers
                 return Json(new { success = false, message = "ذخیره تنظیمات انجام نشد. لطفاً دوباره تلاش کنید." });
 
             return Json(new { success = true, message = "تنظیمات با موفقیت ذخیره شد." });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveInvoicePrintTemplate([FromBody] SaveInvoicePrintTemplateRequest? request)
+        {
+            var restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "شناسه رستوران مشخص نیست." });
+
+            var ok = await _receiptService.SaveInvoicePrintTemplateAsync(restaurantId.Value, request?.TemplateId);
+            if (!ok)
+                return Json(new { success = false, message = "ذخیره ظاهر چاپ انجام نشد. لطفاً دوباره تلاش کنید." });
+
+            return Json(new
+            {
+                success = true,
+                message = "ظاهر چاپ فاکتور ذخیره شد.",
+                data = new { printTemplateId = InvoicePrintTemplates.Normalize(request?.TemplateId) }
+            });
         }
 
         [HttpGet]

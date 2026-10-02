@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.Receipt;
 using resturanyar.Services.Receipt;
+using resturanyar.Utility;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -166,7 +167,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("orders/{orderId}/receipt")]
-        public async Task<IActionResult> GetReceiptHtml(int orderId)
+        public async Task<IActionResult> GetReceiptHtml(int orderId, [FromQuery] bool autoPrint = true)
         {
             var ownerId = GetOwnerIdFromToken();
             if (ownerId == null)
@@ -195,7 +196,24 @@ namespace resturanyar.Controllers.Api.V2
             if (!result.Success || result.Receipt == null)
                 return StatusCode(result.StatusCode, result.Message ?? "خطا در تولید فاکتور");
 
-            return Content(service.RenderHtml(result.Receipt), "text/html; charset=utf-8");
+            // Always re-read template from DB so web panel changes apply on next Android print without app restart.
+            var tpl = await _context.Restaurants.AsNoTracking()
+                .Where(r => r.restaurant_id == order.RestaurantId)
+                .Select(r => new { r.InvoicePrintTemplateId, r.UpdatedAt })
+                .FirstOrDefaultAsync();
+            var templateId = InvoicePrintTemplates.Normalize(tpl?.InvoicePrintTemplateId);
+            var revision = (tpl?.UpdatedAt ?? DateTime.UtcNow).ToUniversalTime().Ticks.ToString();
+            result.Receipt.PrintTemplateId = templateId;
+
+            // Android (autoPrint=false): self-contained HTML — no /fonts network dependency.
+            var offlineCapture = !autoPrint;
+            var html = service.RenderHtml(result.Receipt, includeToolbarAndAutoPrint: autoPrint, offlineCapture, revision);
+
+            Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["X-Print-Template-Id"] = templateId;
+            Response.Headers["X-Print-Template-Rev"] = revision;
+            return Content(html, "text/html; charset=utf-8");
         }
 
         [HttpGet("restaurants/{restaurantId}/charge-definitions")]

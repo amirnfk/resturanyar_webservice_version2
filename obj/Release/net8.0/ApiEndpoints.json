@@ -244,6 +244,11 @@
         "IsRequired": false
       },
       {
+        "Name": "filter",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "from",
         "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
@@ -3695,6 +3700,27 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "GetReceiptHtml",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/receipt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "autoPrint",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "GetReceiptData",
     "RelativePath": "api/v2/StaffApi/orders/{orderId}/receipt-data",
     "HttpMethod": "GET",
@@ -4702,6 +4728,11 @@
         "IsRequired": false
       },
       {
+        "Name": "filter",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "from",
         "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
@@ -5087,6 +5118,11 @@
         "Name": "orderId",
         "Type": "System.Int32",
         "IsRequired": true
+      },
+      {
+        "Name": "autoPrint",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -5632,6 +5668,11 @@
         "Name": "period",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "filter",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -5656,6 +5697,11 @@
       },
       {
         "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "filter",
         "Type": "System.String",
         "IsRequired": false
       }

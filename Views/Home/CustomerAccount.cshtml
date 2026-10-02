@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="ca-header__actions">
-            <a href="@Url.Action("CustomersList", "Home")" class="btn ca-btn-ghost" data-sidebar-nav>
+            <a href="@Url.Action("CustomersList", "Home")" class="btn ca-btn-ghost">
                 <i class="fa-solid fa-arrow-right"></i>
                 <span>باشگاه مشتریان</span>
             </a>
@@ -981,6 +981,7 @@
                     var body = await api('/addtransaction', payload);
                     getModal().hide();
                     toast(body.message || 'تراکنش ثبت شد.', 'success');
+                    try { sessionStorage.setItem('ry_customers_list_stale', '1'); } catch (e) { /* ignore */ }
                     await refreshAll();
                 } catch (err) {
                     toast(err && err.message ? err.message : String(err), 'error');

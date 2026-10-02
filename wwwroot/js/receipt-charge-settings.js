@@ -1,13 +1,28 @@
 (function () {
-    const config = window.receiptChargeSettings || {};
-    const page = document.querySelector('.receipt-charge-settings-page');
-    const saveBtn = document.getElementById('saveChargeDefinitionsBtn');
-    const list = document.getElementById('chargeDefinitionsList');
-    const dirtyPill = document.getElementById('chargeDirtyPill');
-    if (!page || !saveBtn || !config.saveUrl || !list) return;
+    'use strict';
 
-    const sampleBase = Number(config.sampleBase) || 100000;
-    let isDirty = false;
+    var abortController = null;
+    var beforeUnloadHandler = null;
+    var isDirty = false;
+    var printTemplateDirty = false;
+    var selectedPrintTemplateId = 'classic';
+    var savedPrintTemplateId = 'classic';
+
+    function getConfig() {
+        return window.receiptChargeSettings || {};
+    }
+
+    function getPage() {
+        return document.querySelector('.receipt-charge-settings-page');
+    }
+
+    function updateDirtyUi() {
+        var dirty = isDirty || printTemplateDirty;
+        var pill = document.getElementById('settingsDirtyPill');
+        if (pill) pill.hidden = !dirty;
+        var bar = document.getElementById('receiptSettingsSaveBar');
+        if (bar) bar.classList.toggle('has-unsaved', dirty);
+    }
 
     function toPersianDigits(value) {
         return String(value ?? '').replace(/\d/g, function (d) {
@@ -52,23 +67,6 @@
         return toPersianDigits(Math.round(num).toLocaleString('en-US'));
     }
 
-    function formatValueInput(input, calcType, rawValue) {
-        if (!input) return;
-        var clamped = clampChargeValue(calcType, rawValue);
-        input.dataset.rawValue = String(clamped);
-        input.value = calcType === 0 ? formatPercentDisplay(clamped) : formatFixedDisplay(clamped);
-        input.setAttribute('max', calcType === 0 ? '100' : '');
-        input.setAttribute('inputmode', calcType === 0 ? 'decimal' : 'numeric');
-        return clamped;
-    }
-
-    function readValueInput(card) {
-        var calcType = syncCalcType(card);
-        var input = card.querySelector('.value-input');
-        var raw = parseNumber(input?.value);
-        return formatValueInput(input, calcType, raw);
-    }
-
     function showMessage(message, isSuccess) {
         if (typeof window.showAppToast === 'function') {
             window.showAppToast(message, isSuccess ? 'success' : 'error');
@@ -81,298 +79,114 @@
         alert(message);
     }
 
-    function setDirty(dirty) {
-        isDirty = dirty;
-        if (dirtyPill) dirtyPill.hidden = !dirty;
+    function destroyReceiptChargeSettingsPage() {
+        if (abortController) {
+            abortController.abort();
+            abortController = null;
+        }
+        if (beforeUnloadHandler) {
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            beforeUnloadHandler = null;
+        }
+        isDirty = false;
+        printTemplateDirty = false;
+        var page = getPage();
+        if (page) {
+            delete page.dataset.receiptChargeSettingsReady;
+        }
     }
 
-    function getCards() {
-        return Array.from(list.querySelectorAll('.charge-definition-card'));
-    }
+    function initReceiptChargeSettingsPage() {
+        destroyReceiptChargeSettingsPage();
 
-    function syncOrderTypeFlags(card) {
-        const flags = Array.from(card.querySelectorAll('.order-type-flag:checked'))
-            .reduce(function (sum, input) {
-                return sum + (parseInt(input.value, 10) || 0);
-            }, 0);
-        const hidden = card.querySelector('.order-types-input');
-        if (hidden) hidden.value = String(flags);
-        return flags;
-    }
+        var page = getPage();
+        if (!page) return;
 
-    function syncCalcType(card) {
-        const checked = card.querySelector('.calc-type-radio:checked');
-        const hidden = card.querySelector('.calc-type-input');
-        const unit = card.querySelector('[data-value-unit]');
-        const value = checked ? checked.value : '0';
-        if (hidden) hidden.value = value;
-        if (unit) unit.textContent = value === '0' ? 'درصد' : 'تومان';
-        return parseInt(value, 10) || 0;
-    }
+        page.dataset.receiptChargeSettingsReady = 'true';
+        abortController = new AbortController();
+        var signal = abortController.signal;
+        var config = getConfig();
+        var sampleBase = Number(config.sampleBase) || 100000;
 
-    function syncEnabledState(card) {
-        const enabled = !!card.querySelector('.enabled-input')?.checked;
-        card.classList.toggle('is-enabled', enabled);
-        card.classList.toggle('is-disabled', !enabled);
-        return enabled;
-    }
+        selectedPrintTemplateId = String(config.selectedPrintTemplateId || 'classic');
+        savedPrintTemplateId = selectedPrintTemplateId;
 
-    function syncLiveTitle(card) {
-        const title = card.querySelector('.title-input')?.value?.trim() || 'بدون عنوان';
-        const live = card.querySelector('[data-live-title]');
-        if (live) live.textContent = title;
-    }
+        var printTemplateGrid = document.getElementById('printTemplateGrid');
+        var saveBtn = document.getElementById('saveChargeDefinitionsBtn');
+        var list = document.getElementById('chargeDefinitionsList');
 
-    function syncOrderLabels() {
-        getCards().forEach(function (card, index) {
-            const label = card.querySelector('[data-order-label]');
-            const orderInput = card.querySelector('.order-input');
-            if (label) label.textContent = toPersianDigits(index + 1);
-            if (orderInput) orderInput.value = String((index + 1) * 10);
+        function setPrintTemplateDirty(dirty) {
+            printTemplateDirty = !!dirty;
+            updateDirtyUi();
+        }
 
-            const upBtn = card.querySelector('[data-move="up"]');
-            const downBtn = card.querySelector('[data-move="down"]');
-            if (upBtn) upBtn.disabled = index === 0;
-            if (downBtn) downBtn.disabled = index === getCards().length - 1;
-        });
-    }
+        function setDirty(dirty) {
+            isDirty = !!dirty;
+            updateDirtyUi();
+        }
 
-    function updateStats() {
-        const cards = getCards();
-        const enabledCount = cards.filter(function (card) {
-            return !!card.querySelector('.enabled-input')?.checked;
-        }).length;
+        function syncPrintTemplateSelection() {
+            if (!printTemplateGrid) return;
+            printTemplateGrid.querySelectorAll('.rcs-print-template-option').forEach(function (option) {
+                const id = option.getAttribute('data-template-id');
+                const selected = id === selectedPrintTemplateId;
+                option.classList.toggle('is-selected', selected);
+                option.setAttribute('aria-checked', selected ? 'true' : 'false');
+                const radio = option.querySelector('input[type="radio"]');
+                if (radio) radio.checked = selected;
+            });
+            setPrintTemplateDirty(selectedPrintTemplateId !== savedPrintTemplateId);
+        }
 
-        const totalEl = document.getElementById('statTotalCount');
-        const enabledEl = document.getElementById('statEnabledCount');
-        if (totalEl) totalEl.textContent = toPersianDigits(cards.length);
-        if (enabledEl) enabledEl.textContent = toPersianDigits(enabledCount);
-    }
+        function selectPrintTemplate(id) {
+            if (!id) return;
+            selectedPrintTemplateId = String(id);
+            syncPrintTemplateSelection();
+        }
 
-    function updatePreview(card) {
-        const preview = card.querySelector('[data-preview-text]');
-        if (!preview) return;
+        if (printTemplateGrid) {
+            printTemplateGrid.addEventListener('click', function (e) {
+                const option = e.target.closest('.rcs-print-template-option');
+                if (!option || !printTemplateGrid.contains(option)) return;
+                e.preventDefault();
+                selectPrintTemplate(option.getAttribute('data-template-id'));
+            }, { signal: signal });
 
-        const title = card.querySelector('.title-input')?.value?.trim() || 'این مورد';
-        const calcType = syncCalcType(card);
-        const value = readValueInput(card);
-        const flags = syncOrderTypeFlags(card);
-        const enabled = syncEnabledState(card);
-        const category = parseInt(card.querySelector('.category-input')?.value || '1', 10);
+            printTemplateGrid.addEventListener('keydown', function (e) {
+                const option = e.target.closest('.rcs-print-template-option');
+                if (!option || !printTemplateGrid.contains(option)) return;
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                selectPrintTemplate(option.getAttribute('data-template-id'));
+            }, { signal: signal });
 
-        if (!flags) {
-            preview.textContent = 'حداقل یک نوع سفارش را انتخاب کنید تا این مورد در فاکتور ظاهر شود.';
+            syncPrintTemplateSelection();
+        }
+
+        beforeUnloadHandler = function (e) {
+            if (!isDirty && !printTemplateDirty) return;
+            e.preventDefault();
+            e.returnValue = '';
+        };
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+
+        if (!saveBtn || !config.saveUrl || !list) {
             return;
         }
 
-        const types = [];
-        if (flags & 1) types.push('سالن');
-        if (flags & 2) types.push('بیرون‌بر');
-        if (flags & 4) types.push('ارسال');
-
-        let amountText;
-        if (calcType === 0) {
-            const amount = sampleBase * value / 100;
-            amountText = `${formatPercentDisplay(value)}٪ از ${formatMoney(sampleBase)} تومان = ${formatMoney(amount)} تومان`;
-        } else {
-            amountText = `${formatFixedDisplay(value)} تومان ثابت`;
-        }
-
-        const effect = category === 0 ? 'کاهش' : 'افزایش';
-        const state = enabled ? 'به‌صورت پیش‌فرض فعال' : 'به‌صورت پیش‌فرض غیرفعال';
-        preview.textContent = `${title}: ${amountText} — ${effect} مبلغ فاکتور برای ${types.join('، ')} (${state})`;
-    }
-
-    function refreshCard(card) {
-        syncCalcType(card);
-        syncOrderTypeFlags(card);
-        syncEnabledState(card);
-        syncLiveTitle(card);
-        updatePreview(card);
-    }
-
-    function refreshAll() {
-        getCards().forEach(function (card) {
-            var calcType = syncCalcType(card);
-            var input = card.querySelector('.value-input');
-            var initial = input?.dataset.rawValue || input?.value || '0';
-            formatValueInput(input, calcType, parseNumber(initial));
-            refreshCard(card);
-        });
-        syncOrderLabels();
-        updateStats();
-    }
-
-    function collectDefinitions() {
-        return getCards().map(function (card) {
-            syncCalcType(card);
-            syncOrderTypeFlags(card);
-            return {
-                id: parseInt(card.dataset.id || '0', 10),
-                code: card.querySelector('.code-input')?.value?.trim() || '',
-                title: card.querySelector('.title-input')?.value?.trim() || '',
-                chargeCategory: parseInt(card.querySelector('.category-input')?.value || '1', 10),
-                calculationType: parseInt(card.querySelector('.calc-type-input')?.value || '0', 10),
-                value: readValueInput(card),
-                isEnabled: !!card.querySelector('.enabled-input')?.checked,
-                isTaxable: !!card.querySelector('.taxable-input')?.checked,
-                percentageBase: 0,
-                displayOrder: parseInt(card.querySelector('.order-input')?.value || '0', 10),
-                appliesToOrderTypes: parseInt(card.querySelector('.order-types-input')?.value || '0', 10)
-            };
-        });
-    }
-
-    function validateDefinitions(definitions) {
-        for (var i = 0; i < definitions.length; i++) {
-            var def = definitions[i];
-            if (!def.title) {
-                return 'عنوان نمایشی برای همه موارد الزامی است.';
+        async function savePrintTemplateIfNeeded() {
+            if (!printTemplateDirty || !config.savePrintTemplateUrl) {
+                return { ok: true };
             }
-            if (!(def.appliesToOrderTypes > 0)) {
-                return `برای «${def.title}» حداقل یک نوع سفارش را انتخاب کنید.`;
-            }
-            if (Number.isNaN(def.value) || def.value < 0) {
-                return `مقدار «${def.title}» نامعتبر است.`;
-            }
-            if (def.calculationType === 0 && def.value > 100) {
-                return `درصد «${def.title}» نمی‌تواند بیشتر از ۱۰۰ باشد.`;
-            }
-        }
-        return null;
-    }
 
-    function moveCard(card, direction) {
-        const cards = getCards();
-        const index = cards.indexOf(card);
-        if (index < 0) return;
-
-        if (direction === 'up' && index > 0) {
-            list.insertBefore(card, cards[index - 1]);
-        } else if (direction === 'down' && index < cards.length - 1) {
-            list.insertBefore(cards[index + 1], card);
-        }
-
-        syncOrderLabels();
-        setDirty(true);
-    }
-
-    list.addEventListener('focusin', function (e) {
-        if (!e.target.classList.contains('value-input')) return;
-        var card = e.target.closest('.charge-definition-card');
-        if (!card) return;
-        var calcType = syncCalcType(card);
-        var raw = parseNumber(e.target.value);
-        e.target.value = calcType === 0
-            ? String(clampChargeValue(0, raw))
-            : String(Math.round(clampChargeValue(1, raw)));
-    });
-
-    list.addEventListener('focusout', function (e) {
-        if (!e.target.classList.contains('value-input')) return;
-        var card = e.target.closest('.charge-definition-card');
-        if (!card) return;
-        refreshCard(card);
-    });
-
-    list.addEventListener('input', function (e) {
-        const card = e.target.closest('.charge-definition-card');
-        if (!card) return;
-
-        if (e.target.classList.contains('value-input')) {
-            var calcType = syncCalcType(card);
-            var raw = parseNumber(e.target.value);
-            if (calcType === 0 && raw > 100) {
-                e.target.value = '100';
-                raw = 100;
-            }
-            if (raw < 0) {
-                e.target.value = '0';
-                raw = 0;
-            }
-            e.target.dataset.rawValue = String(raw);
-            syncLiveTitle(card);
-            syncEnabledState(card);
-            // lightweight preview while typing without reformatting separators mid-keystroke
-            var preview = card.querySelector('[data-preview-text]');
-            if (preview) {
-                var title = card.querySelector('.title-input')?.value?.trim() || 'این مورد';
-                if (calcType === 0) {
-                    preview.textContent = `${title}: ${toPersianDigits(raw)}٪ از ${formatMoney(sampleBase)} تومان = ${formatMoney(sampleBase * raw / 100)} تومان`;
-                } else {
-                    preview.textContent = `${title}: ${formatMoney(raw)} تومان ثابت`;
-                }
-            }
-            updateStats();
-            setDirty(true);
-            return;
-        }
-
-        if (e.target.classList.contains('calc-type-radio')) {
-            var type = syncCalcType(card);
-            var input = card.querySelector('.value-input');
-            formatValueInput(input, type, parseNumber(input?.dataset.rawValue || input?.value));
-        }
-
-        refreshCard(card);
-        updateStats();
-        setDirty(true);
-    });
-
-    list.addEventListener('change', function (e) {
-        const card = e.target.closest('.charge-definition-card');
-        if (!card) return;
-
-        if (e.target.classList.contains('calc-type-radio')) {
-            var type = syncCalcType(card);
-            var input = card.querySelector('.value-input');
-            formatValueInput(input, type, parseNumber(input?.dataset.rawValue || input?.value));
-        }
-
-        refreshCard(card);
-        updateStats();
-        setDirty(true);
-    });
-
-    list.addEventListener('click', function (e) {
-        const moveBtn = e.target.closest('[data-move]');
-        if (!moveBtn) return;
-        const card = moveBtn.closest('.charge-definition-card');
-        if (!card) return;
-        moveCard(card, moveBtn.getAttribute('data-move'));
-    });
-
-    window.addEventListener('beforeunload', function (e) {
-        if (!isDirty) return;
-        e.preventDefault();
-        e.returnValue = '';
-    });
-
-    saveBtn.addEventListener('click', async function () {
-        const definitions = collectDefinitions();
-        if (!definitions.length) {
-            showMessage('هیچ موردی برای ذخیره وجود ندارد.', false);
-            return;
-        }
-
-        const validationError = validateDefinitions(definitions);
-        if (validationError) {
-            showMessage(validationError, false);
-            return;
-        }
-
-        saveBtn.disabled = true;
-        const originalHtml = saveBtn.innerHTML;
-        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin ms-1"></i> در حال ذخیره...';
-
-        try {
-            const response = await fetch(config.saveUrl, {
+            const response = await fetch(config.savePrintTemplateUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ definitions: definitions })
+                body: JSON.stringify({ templateId: selectedPrintTemplateId }),
+                signal: signal
             });
 
             let data = null;
@@ -383,19 +197,356 @@
             }
 
             if (!response.ok || !data?.success) {
-                showMessage(data?.message || 'ذخیره تنظیمات انجام نشد.', false);
+                return {
+                    ok: false,
+                    message: data?.message || 'ذخیره ظاهر چاپ انجام نشد.'
+                };
+            }
+
+            savedPrintTemplateId = data?.data?.printTemplateId || selectedPrintTemplateId;
+            selectedPrintTemplateId = savedPrintTemplateId;
+            setPrintTemplateDirty(false);
+            syncPrintTemplateSelection();
+            return { ok: true };
+        }
+
+        function getCards() {
+            return Array.from(list.querySelectorAll('.charge-definition-card'));
+        }
+
+        function syncOrderTypeFlags(card) {
+            const flags = Array.from(card.querySelectorAll('.order-type-flag:checked'))
+                .reduce(function (sum, input) {
+                    return sum + (parseInt(input.value, 10) || 0);
+                }, 0);
+            const hidden = card.querySelector('.order-types-input');
+            if (hidden) hidden.value = String(flags);
+            return flags;
+        }
+
+        function syncCalcType(card) {
+            const checked = card.querySelector('.calc-type-radio:checked');
+            const hidden = card.querySelector('.calc-type-input');
+            const unit = card.querySelector('[data-value-unit]');
+            const value = checked ? checked.value : '0';
+            if (hidden) hidden.value = value;
+            if (unit) unit.textContent = value === '0' ? 'درصد' : 'تومان';
+            return parseInt(value, 10) || 0;
+        }
+
+        function syncEnabledState(card) {
+            const enabled = !!card.querySelector('.enabled-input')?.checked;
+            card.classList.toggle('is-enabled', enabled);
+            card.classList.toggle('is-disabled', !enabled);
+            return enabled;
+        }
+
+        function syncLiveTitle(card) {
+            const title = card.querySelector('.title-input')?.value?.trim() || 'بدون عنوان';
+            const live = card.querySelector('[data-live-title]');
+            if (live) live.textContent = title;
+        }
+
+        function syncOrderLabels() {
+            getCards().forEach(function (card, index) {
+                const label = card.querySelector('[data-order-label]');
+                const orderInput = card.querySelector('.order-input');
+                if (label) label.textContent = toPersianDigits(index + 1);
+                if (orderInput) orderInput.value = String((index + 1) * 10);
+
+                const upBtn = card.querySelector('[data-move="up"]');
+                const downBtn = card.querySelector('[data-move="down"]');
+                if (upBtn) upBtn.disabled = index === 0;
+                if (downBtn) downBtn.disabled = index === getCards().length - 1;
+            });
+        }
+
+        function updateStats() {
+            const cards = getCards();
+            const enabledCount = cards.filter(function (card) {
+                return !!card.querySelector('.enabled-input')?.checked;
+            }).length;
+
+            const totalEl = document.getElementById('statTotalCount');
+            const enabledEl = document.getElementById('statEnabledCount');
+            if (totalEl) totalEl.textContent = toPersianDigits(cards.length);
+            if (enabledEl) enabledEl.textContent = toPersianDigits(enabledCount);
+        }
+
+        function formatValueInput(input, calcType, rawValue) {
+            if (!input) return;
+            var clamped = clampChargeValue(calcType, rawValue);
+            input.dataset.rawValue = String(clamped);
+            input.value = calcType === 0 ? formatPercentDisplay(clamped) : formatFixedDisplay(clamped);
+            input.setAttribute('max', calcType === 0 ? '100' : '');
+            input.setAttribute('inputmode', calcType === 0 ? 'decimal' : 'numeric');
+            return clamped;
+        }
+
+        function readValueInput(card) {
+            var calcType = syncCalcType(card);
+            var input = card.querySelector('.value-input');
+            var raw = parseNumber(input?.value);
+            return formatValueInput(input, calcType, raw);
+        }
+
+        function updatePreview(card) {
+            const preview = card.querySelector('[data-preview-text]');
+            if (!preview) return;
+
+            const title = card.querySelector('.title-input')?.value?.trim() || 'این مورد';
+            const calcType = syncCalcType(card);
+            const value = readValueInput(card);
+            const flags = syncOrderTypeFlags(card);
+            const enabled = syncEnabledState(card);
+            const category = parseInt(card.querySelector('.category-input')?.value || '1', 10);
+
+            if (!flags) {
+                preview.textContent = 'حداقل یک نوع سفارش را انتخاب کنید تا این مورد در فاکتور ظاهر شود.';
                 return;
             }
 
-            setDirty(false);
-            showMessage(data.message || 'تنظیمات با موفقیت ذخیره شد.', true);
-        } catch (error) {
-            showMessage('خطا در ارتباط با سرور.', false);
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalHtml;
-        }
-    });
+            const types = [];
+            if (flags & 1) types.push('سالن');
+            if (flags & 2) types.push('بیرون‌بر');
+            if (flags & 4) types.push('ارسال');
 
-    refreshAll();
+            let amountText;
+            if (calcType === 0) {
+                const amount = sampleBase * value / 100;
+                amountText = `${formatPercentDisplay(value)}٪ از ${formatMoney(sampleBase)} تومان = ${formatMoney(amount)} تومان`;
+            } else {
+                amountText = `${formatFixedDisplay(value)} تومان ثابت`;
+            }
+
+            const effect = category === 0 ? 'کاهش' : 'افزایش';
+            const state = enabled ? 'به‌صورت پیش‌فرض فعال' : 'به‌صورت پیش‌فرض غیرفعال';
+            preview.textContent = `${title}: ${amountText} — ${effect} مبلغ فاکتور برای ${types.join('، ')} (${state})`;
+        }
+
+        function refreshCard(card) {
+            syncCalcType(card);
+            syncOrderTypeFlags(card);
+            syncEnabledState(card);
+            syncLiveTitle(card);
+            updatePreview(card);
+        }
+
+        function refreshAll() {
+            getCards().forEach(function (card) {
+                var calcType = syncCalcType(card);
+                var input = card.querySelector('.value-input');
+                var initial = input?.dataset.rawValue || input?.value || '0';
+                formatValueInput(input, calcType, parseNumber(initial));
+                refreshCard(card);
+            });
+            syncOrderLabels();
+            updateStats();
+        }
+
+        function collectDefinitions() {
+            return getCards().map(function (card) {
+                syncCalcType(card);
+                syncOrderTypeFlags(card);
+                return {
+                    id: parseInt(card.dataset.id || '0', 10),
+                    code: card.querySelector('.code-input')?.value?.trim() || '',
+                    title: card.querySelector('.title-input')?.value?.trim() || '',
+                    chargeCategory: parseInt(card.querySelector('.category-input')?.value || '1', 10),
+                    calculationType: parseInt(card.querySelector('.calc-type-input')?.value || '0', 10),
+                    value: readValueInput(card),
+                    isEnabled: !!card.querySelector('.enabled-input')?.checked,
+                    isTaxable: !!card.querySelector('.taxable-input')?.checked,
+                    percentageBase: 0,
+                    displayOrder: parseInt(card.querySelector('.order-input')?.value || '0', 10),
+                    appliesToOrderTypes: parseInt(card.querySelector('.order-types-input')?.value || '0', 10)
+                };
+            });
+        }
+
+        function validateDefinitions(definitions) {
+            for (var i = 0; i < definitions.length; i++) {
+                var def = definitions[i];
+                if (!def.title) {
+                    return 'عنوان نمایشی برای همه موارد الزامی است.';
+                }
+                if (!(def.appliesToOrderTypes > 0)) {
+                    return `برای «${def.title}» حداقل یک نوع سفارش را انتخاب کنید.`;
+                }
+                if (Number.isNaN(def.value) || def.value < 0) {
+                    return `مقدار «${def.title}» نامعتبر است.`;
+                }
+                if (def.calculationType === 0 && def.value > 100) {
+                    return `درصد «${def.title}» نمی‌تواند بیشتر از ۱۰۰ باشد.`;
+                }
+            }
+            return null;
+        }
+
+        function moveCard(card, direction) {
+            const cards = getCards();
+            const index = cards.indexOf(card);
+            if (index < 0) return;
+
+            if (direction === 'up' && index > 0) {
+                list.insertBefore(card, cards[index - 1]);
+            } else if (direction === 'down' && index < cards.length - 1) {
+                list.insertBefore(cards[index + 1], card);
+            }
+
+            syncOrderLabels();
+            setDirty(true);
+        }
+
+        list.addEventListener('focusin', function (e) {
+            if (!e.target.classList.contains('value-input')) return;
+            var card = e.target.closest('.charge-definition-card');
+            if (!card) return;
+            var calcType = syncCalcType(card);
+            var raw = parseNumber(e.target.value);
+            e.target.value = calcType === 0
+                ? String(clampChargeValue(0, raw))
+                : String(Math.round(clampChargeValue(1, raw)));
+        }, { signal: signal });
+
+        list.addEventListener('focusout', function (e) {
+            if (!e.target.classList.contains('value-input')) return;
+            var card = e.target.closest('.charge-definition-card');
+            if (!card) return;
+            refreshCard(card);
+        }, { signal: signal });
+
+        list.addEventListener('input', function (e) {
+            const card = e.target.closest('.charge-definition-card');
+            if (!card) return;
+
+            if (e.target.classList.contains('value-input')) {
+                var calcType = syncCalcType(card);
+                var raw = parseNumber(e.target.value);
+                if (calcType === 0 && raw > 100) {
+                    e.target.value = '100';
+                    raw = 100;
+                }
+                if (raw < 0) {
+                    e.target.value = '0';
+                    raw = 0;
+                }
+                e.target.dataset.rawValue = String(raw);
+                syncLiveTitle(card);
+                syncEnabledState(card);
+                var preview = card.querySelector('[data-preview-text]');
+                if (preview) {
+                    var title = card.querySelector('.title-input')?.value?.trim() || 'این مورد';
+                    if (calcType === 0) {
+                        preview.textContent = `${title}: ${toPersianDigits(raw)}٪ از ${formatMoney(sampleBase)} تومان = ${formatMoney(sampleBase * raw / 100)} تومان`;
+                    } else {
+                        preview.textContent = `${title}: ${formatMoney(raw)} تومان ثابت`;
+                    }
+                }
+                updateStats();
+                setDirty(true);
+                return;
+            }
+
+            if (e.target.classList.contains('calc-type-radio')) {
+                var type = syncCalcType(card);
+                var input = card.querySelector('.value-input');
+                formatValueInput(input, type, parseNumber(input?.dataset.rawValue || input?.value));
+            }
+
+            refreshCard(card);
+            updateStats();
+            setDirty(true);
+        }, { signal: signal });
+
+        list.addEventListener('change', function (e) {
+            const card = e.target.closest('.charge-definition-card');
+            if (!card) return;
+
+            if (e.target.classList.contains('calc-type-radio')) {
+                var type = syncCalcType(card);
+                var input = card.querySelector('.value-input');
+                formatValueInput(input, type, parseNumber(input?.dataset.rawValue || input?.value));
+            }
+
+            refreshCard(card);
+            updateStats();
+            setDirty(true);
+        }, { signal: signal });
+
+        list.addEventListener('click', function (e) {
+            const moveBtn = e.target.closest('[data-move]');
+            if (!moveBtn) return;
+            const card = moveBtn.closest('.charge-definition-card');
+            if (!card) return;
+            moveCard(card, moveBtn.getAttribute('data-move'));
+        }, { signal: signal });
+
+        saveBtn.addEventListener('click', async function () {
+            const definitions = collectDefinitions();
+            if (!definitions.length) {
+                showMessage('هیچ موردی برای ذخیره وجود ندارد.', false);
+                return;
+            }
+
+            const validationError = validateDefinitions(definitions);
+            if (validationError) {
+                showMessage(validationError, false);
+                return;
+            }
+
+            saveBtn.disabled = true;
+            const originalHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin ms-1"></i> در حال ذخیره...';
+
+            try {
+                const templateResult = await savePrintTemplateIfNeeded();
+                if (!templateResult.ok) {
+                    showMessage(templateResult.message, false);
+                    return;
+                }
+
+                const response = await fetch(config.saveUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ definitions: definitions }),
+                    signal: signal
+                });
+
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch {
+                    data = { success: false, message: 'پاسخ سرور نامعتبر بود.' };
+                }
+
+                if (!response.ok || !data?.success) {
+                    showMessage(data?.message || 'ذخیره تنظیمات انجام نشد.', false);
+                    return;
+                }
+
+                setDirty(false);
+                showMessage(data.message || 'تنظیمات فاکتور با موفقیت ذخیره شد.', true);
+            } catch (error) {
+                if (error && error.name === 'AbortError') return;
+                showMessage('خطا در ارتباط با سرور.', false);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalHtml;
+            }
+        }, { signal: signal });
+
+        refreshAll();
+        updateDirtyUi();
+    }
+
+    window.initReceiptChargeSettingsPage = initReceiptChargeSettingsPage;
+    window.destroyReceiptChargeSettingsPage = destroyReceiptChargeSettingsPage;
+
+    if (getPage()) {
+        initReceiptChargeSettingsPage();
+    }
 })();

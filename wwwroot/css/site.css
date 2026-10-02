@@ -192,3 +192,10 @@ a:not(.btn) {
 ::-webkit-scrollbar-thumb {
     background: #ff8800;
 }
+
+/* Hide floating support chat widget on selected pages (mobile + desktop) */
+html.hide-support-chat-fab #ry-support-root {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}

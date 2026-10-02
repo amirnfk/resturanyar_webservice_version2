@@ -2,98 +2,132 @@
 @{
     ViewData["Title"] = "ارسال پیام به رستوران‌ها";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var selectedIds = new HashSet<int>(Model.SelectedRestaurantIds ?? Array.Empty<int>());
 }
 
-<div dir="rtl" class="admin-msg-page">
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-send-message.css" asp-append-version="true" />
+}
+
+<div class="sm-page" dir="rtl">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        <div class="sm-alert sm-alert--success">
+            <i class="fas fa-circle-check"></i>
+            @TempData["SuccessMessage"]
+        </div>
     }
 
-    <div class="admin-msg-header">
-        <h1><i class="fas fa-paper-plane"></i> ارسال پیام</h1>
-        <a href="@Url.Action("MessageList")" class="btn btn-outline-secondary">پیام‌های ارسالی</a>
-    </div>
+    <header class="sm-header">
+        <div class="sm-header__title-wrap">
+            <div class="sm-header__icon"><i class="fas fa-paper-plane"></i></div>
+            <div>
+                <h1 class="sm-header__title">ارسال پیام</h1>
+                <p class="sm-header__subtitle">ارسال اطلاعیه عمومی یا پیام خصوصی به رستوران‌های انتخابی</p>
+            </div>
+        </div>
+        <div class="sm-header__actions">
+            <a href="@Url.Action("MessageList")" class="sm-btn sm-btn--ghost">
+                <i class="fas fa-envelope-open-text"></i>
+                پیام‌های ارسالی
+            </a>
+        </div>
+    </header>
 
-    <form asp-action="SendMessage" method="post" class="admin-msg-form">
+    <form asp-action="SendMessage" method="post" class="sm-card">
         @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div asp-validation-summary="ModelOnly" class="sm-field-error" style="padding:12px 20px 0;"></div>
 
-        <div class="mb-3">
-            <label asp-for="Title" class="form-label">عنوان پیام</label>
-            <input asp-for="Title" class="form-control" placeholder="مثلاً: به‌روزرسانی سیستم" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+        <div class="sm-card__section">
+            <label asp-for="Title" class="sm-label">عنوان پیام</label>
+            <input asp-for="Title" class="sm-input" placeholder="مثلاً: اطلاع‌رسانی قطعی موقت سرویس" />
+            <span asp-validation-for="Title" class="sm-field-error"></span>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Body" class="form-label">متن پیام</label>
-            <textarea asp-for="Body" class="form-control" rows="6" placeholder="متن پیام را بنویسید..."></textarea>
-            <span asp-validation-for="Body" class="text-danger"></span>
+        <div class="sm-card__section">
+            <label asp-for="Body" class="sm-label">متن پیام</label>
+            <textarea asp-for="Body" class="sm-textarea" placeholder="متن کامل پیام را بنویسید..."></textarea>
+            <span asp-validation-for="Body" class="sm-field-error"></span>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">نوع پیام</label>
-            <div class="d-flex gap-4">
-                <div class="form-check">
-                    <input class="form-check-input msg-type-radio" type="radio" asp-for="MessageType" value="0" id="typePublic" checked />
-                    <label class="form-check-label" for="typePublic">عمومی (همه رستوران‌ها)</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input msg-type-radio" type="radio" asp-for="MessageType" value="1" id="typePrivate" />
-                    <label class="form-check-label" for="typePrivate">خصوصی (رستوران‌های انتخابی)</label>
-                </div>
+        <div class="sm-card__section">
+            <label class="sm-label">نوع پیام</label>
+            <div class="sm-type-grid">
+                <label class="sm-type-card @(Model.MessageType == resturanyar.Models.AdminMessage.AdminMessageType.Public ? "is-active" : "")">
+                    <input class="msg-type-radio" type="radio" asp-for="MessageType" value="0" id="typePublic" />
+                    <p class="sm-type-card__title"><i class="fas fa-bullhorn"></i> عمومی</p>
+                    <p class="sm-type-card__desc">پیام برای همه رستوران‌های سیستم ارسال می‌شود.</p>
+                </label>
+                <label class="sm-type-card @(Model.MessageType == resturanyar.Models.AdminMessage.AdminMessageType.Private ? "is-active" : "")" id="typePrivateCard">
+                    <input class="msg-type-radio" type="radio" asp-for="MessageType" value="1" id="typePrivate" />
+                    <p class="sm-type-card__title"><i class="fas fa-user-check"></i> خصوصی</p>
+                    <p class="sm-type-card__desc">فقط برای رستوران‌هایی که انتخاب می‌کنید ارسال می‌شود.</p>
+                </label>
             </div>
         </div>
 
-        <div class="mb-3" id="restaurantPicker" style="display:none;">
-            <label class="form-label">انتخاب رستوران‌ها</label>
-            <div class="restaurant-picker-box">
+        <div class="sm-card__section sm-picker @(Model.MessageType == resturanyar.Models.AdminMessage.AdminMessageType.Private ? "is-visible" : "")"
+             id="restaurantPicker"
+             style="@(Model.MessageType == resturanyar.Models.AdminMessage.AdminMessageType.Private ? "display:block;" : "display:none;")">
+            <label class="sm-label">انتخاب رستوران‌ها</label>
+
+            <div class="sm-picker__toolbar">
+                <div class="sm-search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text"
+                           id="restaurantSearch"
+                           class="sm-input"
+                           placeholder="جستجو بر اساس نام رستوران، مالک یا شماره تماس..."
+                           autocomplete="off" />
+                </div>
+                <div class="sm-picker__meta">
+                    <span class="sm-badge">نمایش: <strong id="visibleCount">0</strong></span>
+                    <span class="sm-badge sm-badge--accent">انتخاب‌شده: <strong id="selectedCount">0</strong></span>
+                    <button type="button" class="sm-btn sm-btn--ghost sm-btn--sm" id="selectVisibleBtn">انتخاب نتایج</button>
+                    <button type="button" class="sm-btn sm-btn--ghost sm-btn--sm" id="clearSelectionBtn">پاک کردن انتخاب</button>
+                </div>
+            </div>
+
+            <div class="sm-picker__list" id="restaurantList">
                 @foreach (var r in Model.Restaurants)
                 {
-                    <label class="restaurant-picker-item">
-                        <input type="checkbox" name="SelectedRestaurantIds" value="@r.RestaurantId" />
-                        <span>@r.RestaurantName — @r.OwnerName (@r.OwnerPhone)</span>
+                    var isChecked = selectedIds.Contains(r.RestaurantId);
+                    var searchBlob = $"{r.RestaurantName} {r.OwnerName} {r.OwnerPhone}";
+                    <label class="sm-picker__item @(isChecked ? "is-checked" : "")"
+                           data-search="@searchBlob"
+                           data-phone="@(r.OwnerPhone ?? "")">
+                        <input type="checkbox"
+                               name="SelectedRestaurantIds"
+                               value="@r.RestaurantId"
+                               @(isChecked ? "checked" : null) />
+                        <span>
+                            <p class="sm-picker__name">@r.RestaurantName</p>
+                            <p class="sm-picker__meta-line">
+                                <span><i class="fas fa-user"></i> @(string.IsNullOrWhiteSpace(r.OwnerName) ? "—" : r.OwnerName)</span>
+                                <span><i class="fas fa-phone"></i> @(string.IsNullOrWhiteSpace(r.OwnerPhone) ? "—" : r.OwnerPhone)</span>
+                            </p>
+                        </span>
                     </label>
                 }
             </div>
-            <span asp-validation-for="SelectedRestaurantIds" class="text-danger"></span>
+
+            <div class="sm-picker__empty" id="pickerEmpty">
+                <i class="fas fa-search"></i>
+                رستورانی با این مشخصات پیدا نشد.
+            </div>
+
+            <span asp-validation-for="SelectedRestaurantIds" class="sm-field-error"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary px-4">
-            <i class="fas fa-paper-plane"></i> ارسال پیام
-        </button>
+        <div class="sm-card__section sm-actions">
+            <button type="submit" class="sm-btn sm-btn--primary">
+                <i class="fas fa-paper-plane"></i>
+                ارسال پیام
+            </button>
+        </div>
     </form>
 </div>
 
-<style>
-    .admin-msg-page { padding: 1rem; }
-    .admin-msg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .admin-msg-header h1 { font-size: 1.5rem; margin: 0; }
-    .admin-msg-form { max-width: 720px; }
-    .restaurant-picker-box {
-        max-height: 280px; overflow-y: auto;
-        border: 1px solid #dee2e6; border-radius: 8px; padding: .75rem;
-        background: #fafafa;
-    }
-    .restaurant-picker-item {
-        display: flex; align-items: center; gap: .5rem;
-        padding: .4rem 0; cursor: pointer;
-    }
-</style>
-
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const picker = document.getElementById('restaurantPicker');
-            const radios = document.querySelectorAll('.msg-type-radio');
-
-            function togglePicker() {
-                const isPrivate = document.getElementById('typePrivate').checked;
-                picker.style.display = isPrivate ? 'block' : 'none';
-            }
-
-            radios.forEach(r => r.addEventListener('change', togglePicker));
-            togglePicker();
-        });
-    </script>
+    <script src="~/js/admin-send-message.js" asp-append-version="true"></script>
 }

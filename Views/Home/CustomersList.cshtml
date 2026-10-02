@@ -147,60 +147,86 @@
         <header class="cl-directory__head">
             <div class="cl-panel__heading">
                 <h2 class="cl-panel__title">فهرست مشتریان</h2>
-                <p class="cl-panel__hint">جستجو، فیلتر بازه و مرتب‌سازی بر اساس خرید</p>
+                <p class="cl-panel__hint">جستجو، فیلتر و مرتب‌سازی بر اساس خرید و وضعیت حساب</p>
             </div>
             <div id="totalRecordsInfo" class="cl-count d-none" aria-live="polite"></div>
         </header>
 
-        <div class="cl-toolbar" aria-label="جستجو و فیلتر مشتریان">
-            <div class="cl-field cl-field--search">
-                <label class="cl-label" for="searchInput">جستجو در مشتریان</label>
-                <div class="cl-search">
-                    <div class="cl-search__field">
-                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-                        <input type="text" id="searchInput" class="form-control" placeholder="نام، شماره موبایل، توضیحات..." autocomplete="off" />
-                    </div>
-                    <button type="button" id="btnSearch" class="cl-btn cl-btn--primary cl-search__btn">
-                        <i class="fas fa-search"></i>
-                        <span>جستجو</span>
+        <div class="cl-filters" aria-label="جستجو و فیلتر مشتریان">
+            <div class="cl-filters__row">
+                <div class="cl-searchbox">
+                    <i class="fas fa-magnifying-glass cl-searchbox__icon" aria-hidden="true"></i>
+                    <input type="search" id="searchInput" class="cl-searchbox__input" placeholder="جستجوی نام، موبایل یا توضیحات…" autocomplete="off" aria-label="جستجو در مشتریان" />
+                    <button type="button" id="btnSearch" class="cl-searchbox__btn">جستجو</button>
+                </div>
+
+                <label class="cl-picker" title="بازه زمانی سفارش‌ها">
+                    <i class="fas fa-calendar-days" aria-hidden="true"></i>
+                    <select id="periodSelect" aria-label="بازه زمانی سفارش‌ها">
+                        <option value="all">همه زمان‌ها</option>
+                        <option value="today">امروز</option>
+                        <option value="week">هفته گذشته</option>
+                        <option value="month">ماه جاری</option>
+                        <option value="year">سال گذشته</option>
+                    </select>
+                </label>
+
+                <label class="cl-picker" title="مرتب‌سازی">
+                    <i class="fas fa-arrow-down-wide-short" aria-hidden="true"></i>
+                    <select id="sortBySelect" aria-label="مرتب‌سازی بر اساس">
+                        <option value="TotalSpent">بیشترین خرید</option>
+                        <option value="TotalOrders">بیشترین سفارش</option>
+                        <option value="TotalDistinctDays">بیشترین مراجعه</option>
+                    </select>
+                </label>
+
+                <div class="cl-filters__tools">
+                    <button type="button" id="btnResetSearch" class="cl-tool" title="بازنشانی فیلترها">
+                        <i class="fas fa-rotate-left" aria-hidden="true"></i>
+                        <span>بازنشانی</span>
+                    </button>
+                    <button type="button" id="exportBtn" class="cl-tool cl-tool--export" title="دانلود گزارش">
+                        <i class="fas fa-file-arrow-down" aria-hidden="true"></i>
+                        <span>خروجی</span>
                     </button>
                 </div>
             </div>
 
-            <div class="cl-field">
-                <label class="cl-label" for="periodSelect">بازه زمانی سفارش‌ها</label>
-                <select id="periodSelect" class="form-select">
-                    <option value="all">همه زمان‌ها</option>
-                    <option value="today">امروز</option>
-                    <option value="week">هفته گذشته</option>
-                    <option value="month">ماه جاری</option>
-                    <option value="year">سال گذشته</option>
-                </select>
+            <div class="cl-segments" role="radiogroup" aria-label="فیلتر مشتری">
+                <button type="button" class="cl-segment is-active" data-customer-filter="all" role="radio" aria-checked="true">
+                    <i class="fas fa-users"></i> همه
+                </button>
+                <button type="button" class="cl-segment cl-segment--danger" data-customer-filter="debtors" role="radio" aria-checked="false">
+                    <i class="fas fa-circle-exclamation"></i> بدهکار
+                </button>
+                <button type="button" class="cl-segment cl-segment--success" data-customer-filter="creditors" role="radio" aria-checked="false">
+                    <i class="fas fa-wallet"></i> بستانکار
+                </button>
+                <span class="cl-segments__sep" aria-hidden="true"></span>
+                <button type="button" class="cl-segment" data-customer-filter="realMobile" role="radio" aria-checked="false">
+                    <i class="fas fa-mobile-screen"></i> شماره واقعی
+                </button>
+                <button type="button" class="cl-segment" data-customer-filter="autoMobile" role="radio" aria-checked="false">
+                    <i class="fas fa-user-secret"></i> بدون شماره
+                </button>
+                <button type="button" class="cl-segment" data-customer-filter="hasAddress" role="radio" aria-checked="false">
+                    <i class="fas fa-location-dot"></i> دارای آدرس
+                </button>
+                <button type="button" class="cl-segment" data-customer-filter="noOrders" role="radio" aria-checked="false">
+                    <i class="fas fa-bag-shopping"></i> بدون خرید
+                </button>
             </div>
 
-            <div class="cl-field">
-                <label class="cl-label" for="sortBySelect">مرتب‌سازی بر اساس</label>
-                <select id="sortBySelect" class="form-select">
-                    <option value="TotalSpent">بیشترین مبلغ خرید</option>
-                    <option value="TotalOrders">بیشترین تعداد سفارش</option>
-                    <option value="TotalDistinctDays">بیشترین روزهای حضور</option>
-                </select>
-            </div>
-
-            <div class="cl-toolbar__actions">
-                <button type="button" id="btnApplyFilter" class="cl-btn cl-btn--dark">
-                    <i class="fas fa-sliders"></i>
-                    <span>اعمال فیلتر</span>
-                </button>
-                <button type="button" id="btnResetSearch" class="cl-btn cl-btn--ghost">
-                    <i class="fas fa-rotate-left"></i>
-                    <span>بازنشانی</span>
-                </button>
-                <button type="button" id="exportBtn" class="cl-btn">
-                    <i class="bi bi-download"></i>
-                    <span>دانلود گزارش</span>
-                </button>
-            </div>
+            <select id="customerFilterSelect" hidden aria-hidden="true" tabindex="-1">
+                <option value="all">همه</option>
+                <option value="debtors">بدهکار</option>
+                <option value="creditors">بستانکار</option>
+                <option value="realMobile">شماره واقعی</option>
+                <option value="autoMobile">بدون شماره</option>
+                <option value="hasAddress">دارای آدرس</option>
+                <option value="noOrders">بدون خرید</option>
+            </select>
+            <button type="button" id="btnApplyFilter" hidden aria-hidden="true" tabindex="-1"></button>
         </div>
 
         <p class="cl-note">
@@ -504,6 +530,7 @@
     var editingCustomerId = 0;
     var currentPeriod = "all";
     var currentSortBy = "TotalSpent";
+    var currentFilter = "all";
     var customersListPageId = 0;
     var trendChart = null;
     var addressCustomerId = 0;
@@ -528,7 +555,10 @@
     async function loadInsightsCards() {
         const pageId = customersListPageId;
         try {
-            const response = await window.fetchWithAuth(`${API_BASE}/getcustomerinsights/${restaurantId}`);
+            const response = await window.fetchWithAuth(
+                `${API_BASE}/getcustomerinsights/${restaurantId}?_=${Date.now()}`,
+                { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }
+            );
             if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load insights');
             const responseData = await response.json();
@@ -609,12 +639,13 @@
         }
     }
 
-    async function loadCustomers(page, search, period, sortBy) {
+    async function loadCustomers(page, search, period, sortBy, filter) {
         const pageId = customersListPageId;
         currentPage = page || 1;
         currentSearch = search !== undefined ? search : currentSearch;
         currentPeriod = period !== undefined ? period : currentPeriod;
         currentSortBy = sortBy !== undefined ? sortBy : currentSortBy;
+        currentFilter = filter !== undefined ? filter : currentFilter;
         $("#loadingSpinner").removeClass("d-none");
         $("#customersList").empty();
 
@@ -624,9 +655,14 @@
                 pageSize: pageSize,
                 search: currentSearch,
                 period: currentPeriod,
-                sortBy: currentSortBy
+                sortBy: currentSortBy,
+                filter: currentFilter,
+                _: String(Date.now())
             });
-            const response = await window.fetchWithAuth(`${API_BASE}/getcustomerswithstats/${restaurantId}?${params}`);
+            const response = await window.fetchWithAuth(
+                `${API_BASE}/getcustomerswithstats/${restaurantId}?${params}`,
+                { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }
+            );
             if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load customers');
             const responseData = await response.json();
@@ -641,7 +677,7 @@
                         <div class="cl-empty">
                             <div class="cl-empty__icon"><i class="fas fa-user-slash"></i></div>
                             <strong>مشتری‌ای یافت نشد</strong>
-                            <p>با این جستجو و بازه زمانی نتیجه‌ای وجود ندارد. فیلترها را تغییر دهید یا بازنشانی کنید.</p>
+                            <p>با این جستجو و فیلتر نتیجه‌ای وجود ندارد. فیلترها را تغییر دهید یا بازنشانی کنید.</p>
                         </div>`);
                     $("#paginationContainer").empty();
                     $("#totalRecordsInfo").addClass("d-none");
@@ -662,7 +698,10 @@
     async function loadDashboardStats() {
         const pageId = customersListPageId;
         try {
-            const response = await window.fetchWithAuth(`${API_BASE}/getdashboardstats/${restaurantId}`);
+            const response = await window.fetchWithAuth(
+                `${API_BASE}/getdashboardstats/${restaurantId}?_=${Date.now()}`,
+                { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }
+            );
             if (!isCustomersListPageCurrent(pageId)) return;
             if (!response.ok) throw new Error('Failed to load dashboard stats');
             const responseData = await response.json();
@@ -804,14 +843,24 @@
                 </thead>
                 <tbody>`;
         customers.forEach(c => {
+            const balance = Number(c.accountBalance ?? c.AccountBalance ?? 0);
+            let balanceBadge = '';
+            if (balance > 0) {
+                balanceBadge = `<span class="cl-badge cl-badge--debt"><i class="fas fa-circle-exclamation" aria-hidden="true"></i> بدهکار · ${Math.round(balance).toLocaleString('fa-IR')} ت</span>`;
+            } else if (balance < 0) {
+                balanceBadge = `<span class="cl-badge cl-badge--credit"><i class="fas fa-wallet" aria-hidden="true"></i> بستانکار · ${Math.round(Math.abs(balance)).toLocaleString('fa-IR')} ت</span>`;
+            }
+
+            const rawDesc = (c.description || '').trim();
+            const statusLike = /^(بدهکار|بستانکار|تسویه)$/.test(rawDesc);
+            const descriptionNote = (rawDesc && !statusLike)
+                ? `<span class="cl-card__note" title="${escapeHtml(rawDesc)}">
+                        <i class="fas fa-note-sticky" aria-hidden="true"></i>
+                        <span>${escapeHtml(rawDesc)}</span>
+                   </span>`
+                : '';
             const noOrdersHint = c.totalOrders === 0
                 ? `<span class="cl-card__hint"><i class="fas fa-circle-exclamation" aria-hidden="true"></i> بدون سفارش بسته</span>`
-                : '';
-            const descriptionNote = c.description
-                ? `<span class="cl-card__note" title="${escapeHtml(c.description)}">
-                        <i class="fas fa-note-sticky" aria-hidden="true"></i>
-                        <span>${escapeHtml(c.description)}</span>
-                   </span>`
                 : '';
             html += `
                 <tr>
@@ -821,6 +870,7 @@
                             <div class="cl-card__ident">
                                 <h3 class="cl-card__name" title="${escapeHtml(c.fullName)}">${escapeHtml(c.fullName)}</h3>
                                 <span class="cl-card__mobile cl-num">${escapeHtml(c.mobile)}</span>
+                                ${balanceBadge}
                                 ${descriptionNote}
                                 ${noOrdersHint}
                             </div>
@@ -1205,23 +1255,47 @@
         return result;
     }
 
+    function syncCustomerFilterSegments() {
+        var value = $("#customerFilterSelect").val() || 'all';
+        $(".cl-segment").each(function () {
+            var active = $(this).data('customer-filter') === value;
+            $(this).toggleClass('is-active', active).attr('aria-checked', active ? 'true' : 'false');
+        });
+    }
+
     function bindCustomersListEvents() {
         var ns = '.customersList';
 
         $("#btnApplyFilter").off('click' + ns).on('click' + ns, function () {
             currentPeriod = $("#periodSelect").val();
             currentSortBy = $("#sortBySelect").val();
-            loadCustomers(1, currentSearch, currentPeriod, currentSortBy);
+            currentFilter = $("#customerFilterSelect").val() || "all";
+            loadCustomers(1, currentSearch, currentPeriod, currentSortBy, currentFilter);
+        });
+
+        $("#periodSelect, #sortBySelect").off('change' + ns).on('change' + ns, function () {
+            $("#btnApplyFilter").trigger('click');
+        });
+
+        $(document).off('click' + ns, '.cl-segment').on('click' + ns, '.cl-segment', function () {
+            var value = $(this).data('customer-filter') || 'all';
+            if (value === ($("#customerFilterSelect").val() || 'all')) return;
+            $("#customerFilterSelect").val(value);
+            syncCustomerFilterSegments();
+            $("#btnApplyFilter").trigger('click');
         });
 
         $("#btnResetSearch").off('click' + ns).on('click' + ns, function () {
             $("#searchInput").val("");
             $("#periodSelect").val("all");
             $("#sortBySelect").val("TotalSpent");
+            $("#customerFilterSelect").val("all");
+            syncCustomerFilterSegments();
             currentSearch = "";
             currentPeriod = "all";
             currentSortBy = "TotalSpent";
-            loadCustomers(1, "", "all", "TotalSpent");
+            currentFilter = "all";
+            loadCustomers(1, "", "all", "TotalSpent", "all");
             showToast("فیلترها و مرتب‌سازی بازنشانی شدند", 'info');
         });
 
@@ -1233,6 +1307,12 @@
 
         $("#searchInput").off('keypress' + ns).on('keypress' + ns, function (e) {
             if (e.which === 13) {
+                $("#btnSearch").click();
+            }
+        });
+
+        $("#searchInput").off('search' + ns).on('search' + ns, function () {
+            if (!$(this).val().trim() && currentSearch) {
                 $("#btnSearch").click();
             }
         });
@@ -1260,6 +1340,14 @@
         $(document).off('click' + ns, '.open-customer-account').on('click' + ns, '.open-customer-account', function () {
             var id = parseInt($(this).data('id'), 10) || 0;
             if (!id) return;
+            // Mark current SPA entry so browser Back after account page can restore a clean full load.
+            try {
+                history.replaceState({
+                    sidebarNav: true,
+                    url: window.location.href
+                }, document.title, window.location.href);
+            } catch (e) { /* ignore */ }
+            try { sessionStorage.setItem('ry_customers_list_stale', '1'); } catch (e) { /* ignore */ }
             var form = document.createElement('form');
             form.method = 'POST';
             form.action = '/Home/CustomerAccount';
@@ -1524,7 +1612,7 @@
         $(document).off('click' + ns, '.page-link').on('click' + ns, '.page-link', function (e) {
             e.preventDefault();
             var page = $(this).data("page");
-            if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy);
+            if (page) loadCustomers(page, currentSearch, currentPeriod, currentSortBy, currentFilter);
         });
 
         $("#exportBtn").off('click' + ns).on('click' + ns, openCustomersExportFormatModal);
@@ -1537,7 +1625,8 @@
         var params = new URLSearchParams({
             search: toEnglishDigits(rawSearch),
             period: $("#periodSelect").val() || "all",
-            sortBy: $("#sortBySelect").val() || "TotalSpent"
+            sortBy: $("#sortBySelect").val() || "TotalSpent",
+            filter: $("#customerFilterSelect").val() || "all"
         });
         return params.toString();
     }
@@ -1672,11 +1761,18 @@
         editingCustomerId = 0;
         currentPeriod = "all";
         currentSortBy = "TotalSpent";
+        currentFilter = "all";
         deleteId = 0;
         deleteAddressId = 0;
         addressCustomerId = 0;
         addressesCache = [];
         addressesOffcanvas = null;
+
+        $("#searchInput").val("");
+        $("#periodSelect").val("all");
+        $("#sortBySelect").val("TotalSpent");
+        $("#customerFilterSelect").val("all");
+        syncCustomerFilterSegments();
 
         // Mount once under body so Bootstrap close/backdrop is reliable
         getAddressesOffcanvasEl();
@@ -1686,7 +1782,7 @@
         bindCustomersListEvents();
 
         if (restaurantId > 0) {
-            loadCustomers(1, "", "all", "TotalSpent");
+            loadCustomers(1, "", "all", "TotalSpent", "all");
             loadDashboardStats();
             loadInsightsCards();
         } else {
@@ -1700,5 +1796,31 @@
     }
 
     window.initCustomersListPage = initCustomersListPage;
+
+    function refreshCustomersListData() {
+        if (!document.querySelector('.customers-page') || !(restaurantId > 0)) return;
+        // Keep current filters; only pull fresh stats/balances from server
+        var search = currentSearch;
+        var period = $("#periodSelect").val() || currentPeriod || 'all';
+        var sortBy = $("#sortBySelect").val() || currentSortBy || 'TotalSpent';
+        var filter = $("#customerFilterSelect").val() || currentFilter || 'all';
+        syncCustomerFilterSegments();
+        loadCustomers(currentPage || 1, search, period, sortBy, filter);
+        loadDashboardStats();
+        loadInsightsCards();
+    }
+    window.refreshCustomersListData = refreshCustomersListData;
+
+    window.addEventListener('pageshow', function () {
+        if (!document.querySelector('.customers-page')) return;
+        var stale = false;
+        try {
+            stale = sessionStorage.getItem('ry_customers_list_stale') === '1';
+            if (stale) sessionStorage.removeItem('ry_customers_list_stale');
+        } catch (e) { /* ignore */ }
+        if (stale) {
+            refreshCustomersListData();
+        }
+    });
 </script>
 }

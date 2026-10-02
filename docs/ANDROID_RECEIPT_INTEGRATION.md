@@ -244,19 +244,55 @@ GET /api/v2.0/UserApi/orders/{orderId}/receipt-data
 | Feature on + not issued | `404` — فاکتور هنوز صادر نشده |
 | Feature off | Legacy receipt JSON |
 
-### 5.6 Receipt HTML (WebView print)
+### 5.6 Receipt HTML (shared print templates — preferred on Android)
 
 ```
-GET /api/v2.0/UserApi/orders/{orderId}/receipt
+GET /api/v2.0/UserApi/orders/{orderId}/receipt?autoPrint=false
+GET /api/v2.0/StaffApi/orders/{orderId}/receipt?autoPrint=false
 ```
 
-Returns `text/html; charset=utf-8`.
+Optional cache-buster query (Android already sends one): `&_={unixMs}`.
+
+Returns `text/html; charset=utf-8` from the **same** `HtmlReceiptRenderer` as the web panel.
+
+| Query | Meaning |
+|-------|---------|
+| `autoPrint=true` (default) | Web popup: toolbar + auto-print + IRANYekan `@font-face` from `/fonts` |
+| `autoPrint=false` | **Android offlineCapture:** self-contained HTML (system fonts only, white page chrome, light elegant hero). No network font URLs. |
+
+**Response headers (always):**
+
+| Header | Meaning |
+|--------|---------|
+| `Cache-Control: no-store, no-cache, must-revalidate` | Do not cache HTML between prints |
+| `X-Print-Template-Id` | Normalized template id used for this response |
+| `X-Print-Template-Rev` | `Restaurant.UpdatedAt` ticks — changes when template is saved in web panel |
 
 | Case | Result |
 |------|--------|
 | Feature on + not issued | `400` |
-| Feature on + issued | HTML from snapshot |
-| Feature off | Legacy HTML |
+| Feature on + issued | HTML from snapshot + **fresh** `InvoicePrintTemplateId` from DB |
+| Feature off | Legacy HTML with **fresh** print template from DB |
+
+**Print templates** (set in web «تنظیمات فاکتور» — applies on **next** Android print without app restart):
+
+| Id | Label |
+|----|-------|
+| `classic` | مدرن (default) |
+| `readable` | خوانا — larger fonts |
+| `thermal` | فیش حرارتی — bordered slip + amount in words |
+| `formal` | رسمی — double-line administrative look |
+| `elegant` | لوکس — dark hero on web; light print-safe hero for Android offlineCapture |
+
+Legacy id `compact` is accepted and mapped to `thermal`.
+
+**Android contract (stable):**
+
+1. Always `GET .../receipt?autoPrint=false` immediately before print (never reuse HTML from a previous print).
+2. Load HTML with `WebView.loadData(base64, …)` and **block network loads** — do not use `BASE_URL` as base URL.
+3. Destroy the WebView after each capture so template CSS cannot stick across prints.
+
+Flow: `status → (issue/reissue if needed) → GET .../receipt?autoPrint=false → offline WebView bitmap → PrintHelper`.
 
 ### 5.7 Save charge templates (optional)
 
@@ -268,7 +304,7 @@ POST /api/v2.0/UserApi/restaurants/{restaurantId}/charge-definitions
 { "definitions": [ /* ChargeDefinitionDto list */ ] }
 ```
 
-Optional on Android; web panel can configure templates. Add only if you build a settings screen.
+Optional on Android; web panel can configure charge templates and **invoice print appearance**.
 
 ---
 
@@ -303,7 +339,8 @@ data class ReceiptStatusDto(
     val orderId: Int,
     val isIssued: Boolean,
     val issuedAt: String?,
-    val usesCharges: Boolean
+    val usesCharges: Boolean,
+    val printTemplateId: String? = "classic"
 )
 
 data class ReceiptDto(
@@ -329,7 +366,8 @@ data class ReceiptDto(
     val grandTotal: Double,
     val isIssued: Boolean,
     val issuedAt: String?,
-    val usesCharges: Boolean
+    val usesCharges: Boolean,
+    val printTemplateId: String? = "classic"
 )
 
 data class ReceiptItemDto(

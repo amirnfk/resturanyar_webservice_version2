@@ -388,6 +388,14 @@
             }
           },
           {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            }
+          },
+          {
             "name": "from",
             "in": "query",
             "schema": {
@@ -607,6 +615,14 @@
               "type": "string",
               "default": "all"
             }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            }
           }
         ],
         "responses": {
@@ -640,6 +656,14 @@
           },
           {
             "name": "period",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "all"
+            }
+          },
+          {
+            "name": "filter",
             "in": "query",
             "schema": {
               "type": "string",

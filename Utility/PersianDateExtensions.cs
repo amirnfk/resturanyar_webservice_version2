@@ -70,5 +70,52 @@ namespace resturanyar.Utility
             string s = $"{pc.GetYear(dt):0000}/{pc.GetMonth(dt):00}/{pc.GetDayOfMonth(dt):00}";
             return s.ToPersianDigits();
         }
+
+        private static readonly string[] PersianMonthNames =
+        {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+        };
+
+        /// <summary>
+        /// First day of the Persian month that contains <paramref name="dt"/>.
+        /// </summary>
+        public static DateTime GetPersianMonthStart(this DateTime dt)
+        {
+            var pc = new PersianCalendar();
+            var year = pc.GetYear(dt);
+            var month = pc.GetMonth(dt);
+            return pc.ToDateTime(year, month, 1, 0, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// Adds Persian calendar months to a date (day clamped to month length).
+        /// </summary>
+        public static DateTime AddPersianMonths(this DateTime dt, int months)
+        {
+            var pc = new PersianCalendar();
+            var year = pc.GetYear(dt);
+            var month = pc.GetMonth(dt) + months;
+            var day = pc.GetDayOfMonth(dt);
+
+            while (month > 12) { month -= 12; year++; }
+            while (month < 1) { month += 12; year--; }
+
+            var maxDay = pc.GetDaysInMonth(year, month);
+            if (day > maxDay) day = maxDay;
+
+            return pc.ToDateTime(year, month, day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
+        }
+
+        /// <summary>
+        /// e.g. "فروردین ۱۴۰۴"
+        /// </summary>
+        public static string ToPersianMonthLabel(this DateTime dt)
+        {
+            var pc = new PersianCalendar();
+            var year = pc.GetYear(dt);
+            var month = pc.GetMonth(dt);
+            return $"{PersianMonthNames[month - 1]} {year}".ToPersianDigits();
+        }
     }
 }

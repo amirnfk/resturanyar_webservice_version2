@@ -96,6 +96,10 @@ namespace Resturanyar.Data
 
                 entity.Property(r => r.ReceiptChargesEnabledAt);
 
+                entity.Property(r => r.InvoicePrintTemplateId)
+                    .HasMaxLength(32)
+                    .HasDefaultValue("classic");
+
                 entity.Property(r => r.EnableTakeaway)
                     .HasDefaultValue(true);
 

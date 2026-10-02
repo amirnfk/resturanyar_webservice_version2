@@ -22,6 +22,8 @@
 
     <link rel="stylesheet" href="~/css/manager-order-edit.css" asp-append-version="true" />
 
+    <script>document.documentElement.classList.add('hide-support-chat-fab');</script>
+
 }
 
 
@@ -424,7 +426,22 @@
 
     <script>
 
+        function setSupportChatFabVisible(visible) {
+            document.documentElement.classList.toggle('hide-support-chat-fab', !visible);
+            if (!visible && window.__rySupportChatInstance) {
+                try {
+                    if (typeof window.__rySupportChatInstance.minimize === 'function') {
+                        window.__rySupportChatInstance.minimize();
+                    } else if (typeof window.__rySupportChatInstance.close === 'function') {
+                        window.__rySupportChatInstance.close();
+                    }
+                } catch (e) { /* ignore */ }
+            }
+        }
+
         function initManagerOrderListPage() {
+
+            setSupportChatFabVisible(false);
 
             var ordersContainer = document.getElementById('ordersContainer');
 
@@ -780,10 +797,12 @@
                 window.destroyManagerOrderEdit();
             }
             window.reloadManagerOrdersList = null;
+            setSupportChatFabVisible(true);
         }
 
         window.initManagerOrderListPage = initManagerOrderListPage;
         window.destroyManagerOrderListPage = destroyManagerOrderListPage;
+        setSupportChatFabVisible(false);
 
     </script>
 

@@ -30,6 +30,8 @@ namespace resturanyar.Controllers
 {
     public class HomeController : Controller
     {
+        private const string CustomerAccountSessionKey = "CustomerAccountActiveCustomerId";
+
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
@@ -1926,10 +1928,35 @@ namespace resturanyar.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult CustomerAccount()
+        public async Task<IActionResult> CustomerAccount()
         {
-            // Never accept customerId via URL/query; entry is POST-only.
-            return RedirectToAction(nameof(CustomersList));
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return RedirectToAction("ChooseRestaurant");
+
+            // Opened via POST → redirect (PRG). customerId is kept in session, never in the URL.
+            var customerId = HttpContext.Session.GetInt32(CustomerAccountSessionKey);
+            if (customerId == null || customerId.Value <= 0)
+                return RedirectToAction(nameof(CustomersList));
+
+            var customer = await _context.Customers.AsNoTracking()
+                .FirstOrDefaultAsync(c =>
+                    c.CustomerId == customerId.Value &&
+                    c.RestaurantId == restaurantId.Value &&
+                    c.IsActive);
+
+            if (customer == null)
+            {
+                HttpContext.Session.Remove(CustomerAccountSessionKey);
+                TempData["Error"] = "مشتری یافت نشد.";
+                return RedirectToAction(nameof(CustomersList));
+            }
+
+            ViewBag.RestaurantId = restaurantId.Value;
+            ViewBag.CustomerId = customer.CustomerId;
+            ViewBag.CustomerFullName = customer.FullName;
+            ViewBag.CustomerMobile = customer.Mobile;
+            return View();
         }
 
         [Authorize]
@@ -1955,18 +1982,17 @@ namespace resturanyar.Controllers
                 return RedirectToAction(nameof(CustomersList));
             }
 
-            ViewBag.RestaurantId = restaurantId.Value;
-            ViewBag.CustomerId = customer.CustomerId;
-            ViewBag.CustomerFullName = customer.FullName;
-            ViewBag.CustomerMobile = customer.Mobile;
-            return View();
+            HttpContext.Session.SetInt32(CustomerAccountSessionKey, customer.CustomerId);
+            // PRG: so browser Back returns to CustomersList without resubmitting POST / broken styles.
+            return RedirectToAction(nameof(CustomerAccount));
         }
 
         [HttpGet("ExportCustomersToExcel")]
         public async Task<IActionResult> ExportCustomersToExcel(
             string search = "",
             string sortBy = "TotalSpent",
-            string period = "all")
+            string period = "all",
+            string filter = "all")
         {
             try
             {
@@ -1974,7 +2000,7 @@ namespace resturanyar.Controllers
                 if (restaurantId == null)
                     return BadRequest("شناسه رستوران مشخص نیست.");
 
-                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period);
+                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period, filter);
                 if (customers.Count == 0)
                     return BadRequest("هیچ مشتری‌ای با این فیلتر یافت نشد.");
 
@@ -1997,7 +2023,8 @@ namespace resturanyar.Controllers
         public async Task<IActionResult> ExportCustomersToPdf(
             string search = "",
             string sortBy = "TotalSpent",
-            string period = "all")
+            string period = "all",
+            string filter = "all")
         {
             try
             {
@@ -2005,7 +2032,7 @@ namespace resturanyar.Controllers
                 if (restaurantId == null)
                     return BadRequest("شناسه رستوران مشخص نیست.");
 
-                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period);
+                var customers = await LoadCustomerStatsForExportAsync(restaurantId.Value, search, sortBy, period, filter);
                 if (customers.Count == 0)
                     return BadRequest("هیچ مشتری‌ای با این فیلتر یافت نشد.");
 
@@ -2029,7 +2056,8 @@ namespace resturanyar.Controllers
             int restaurantId,
             string search,
             string sortBy,
-            string period)
+            string period,
+            string filter = "all")
         {
             DateTime startDate, endDate;
             var now = DateTime.Now;
@@ -2072,8 +2100,19 @@ namespace resturanyar.Controllers
                     (c.Description != null && c.Description.ToLower().Contains(searchLower)));
             }
 
+            customersQuery = await CustomerListFilters.ApplyAsync(
+                customersQuery, _context, restaurantId, filter);
+
             var customers = await customersQuery.ToListAsync();
             var customerIds = customers.Select(c => c.CustomerId).ToList();
+
+            var accountBalances = customerIds.Count == 0
+                ? new Dictionary<int, decimal>()
+                : await _context.CustomerAccountTransactions.AsNoTracking()
+                    .Where(t => t.RestaurantId == restaurantId && customerIds.Contains(t.CustomerId))
+                    .GroupBy(t => t.CustomerId)
+                    .Select(g => new { CustomerId = g.Key, Balance = g.Sum(t => t.SignedAmount) })
+                    .ToDictionaryAsync(x => x.CustomerId, x => x.Balance);
 
             var orders = await _context.Orders
                 .Where(o => o.CustomerId != null &&
@@ -2093,6 +2132,7 @@ namespace resturanyar.Controllers
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
+                AccountBalance = accountBalances.TryGetValue(c.CustomerId, out var bal) ? bal : 0m,
                 TotalOrders = orders.Count(o => o.CustomerId == c.CustomerId),
                 TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
                     .Select(o => o.CreatedAt.Date).Distinct().Count(),

@@ -1504,6 +1504,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("getcustomerswithstats/{restaurantId}")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> GetCustomersWithStats(
             int restaurantId,
             int page = 1,
@@ -1511,6 +1512,7 @@ namespace resturanyar.Controllers.Api.V2
             string search = "",
             string sortBy = "TotalSpent",
             string period = "all",
+            string filter = "all",
             DateTime? from = null,
             DateTime? to = null)
         {
@@ -1561,8 +1563,19 @@ namespace resturanyar.Controllers.Api.V2
                         (c.Description != null && c.Description.ToLower().Contains(searchLower)));
                 }
 
+                customersQuery = await CustomerListFilters.ApplyAsync(
+                    customersQuery, _context, restaurantId, filter);
+
                 var customers = await customersQuery.ToListAsync();
                 var customerIds = customers.Select(c => c.CustomerId).ToList();
+
+                var accountBalances = customerIds.Count == 0
+                    ? new Dictionary<int, decimal>()
+                    : await _context.CustomerAccountTransactions.AsNoTracking()
+                        .Where(t => t.RestaurantId == restaurantId && customerIds.Contains(t.CustomerId))
+                        .GroupBy(t => t.CustomerId)
+                        .Select(g => new { CustomerId = g.Key, Balance = g.Sum(t => t.SignedAmount) })
+                        .ToDictionaryAsync(x => x.CustomerId, x => x.Balance);
 
                 var ordersQuery = _context.Orders
                     .Where(o => customerIds.Contains(o.CustomerId.Value) &&
@@ -1583,6 +1596,7 @@ namespace resturanyar.Controllers.Api.V2
                     IsActive = c.IsActive,
                     CreatedAt = c.CreatedAt,
                     CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
+                    AccountBalance = accountBalances.TryGetValue(c.CustomerId, out var bal) ? bal : 0m,
                     TotalOrders = orders.Where(o => o.CustomerId == c.CustomerId).Count(),
                     TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
                         .Select(o => o.CreatedAt.Date).Distinct().Count(),

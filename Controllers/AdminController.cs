@@ -88,6 +88,55 @@ namespace resturanyar.Controllers
                     .Where(s => s.IsPaid && !excludedIds.Contains(s.OwnerId))
                     .SumAsync(s => (decimal?)s.PricePaid) ?? 0m;
 
+                viewModel.PaidSubscriptionsCount = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.IsPaid && !excludedIds.Contains(s.OwnerId))
+                    .CountAsync();
+
+                var thisMonthStart = new DateTime(today.Year, today.Month, 1);
+                var lastMonthStart = thisMonthStart.AddMonths(-1);
+
+                viewModel.ThisMonthRevenue = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.IsPaid
+                                && s.PurchaseDate >= thisMonthStart
+                                && s.PurchaseDate < thisMonthStart.AddMonths(1)
+                                && !excludedIds.Contains(s.OwnerId))
+                    .SumAsync(s => (decimal?)s.PricePaid) ?? 0m;
+
+                viewModel.LastMonthRevenue = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.IsPaid
+                                && s.PurchaseDate >= lastMonthStart
+                                && s.PurchaseDate < thisMonthStart
+                                && !excludedIds.Contains(s.OwnerId))
+                    .SumAsync(s => (decimal?)s.PricePaid) ?? 0m;
+
+                if (viewModel.LastMonthRevenue > 0)
+                {
+                    viewModel.RevenueGrowthPercent = Math.Round(
+                        ((viewModel.ThisMonthRevenue - viewModel.LastMonthRevenue) / viewModel.LastMonthRevenue) * 100m, 1);
+                }
+                else if (viewModel.ThisMonthRevenue > 0)
+                {
+                    viewModel.RevenueGrowthPercent = 100m;
+                }
+                else
+                {
+                    viewModel.RevenueGrowthPercent = null;
+                }
+
+                viewModel.ThisMonthNewPaid = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.IsPaid
+                                && s.PurchaseDate >= thisMonthStart
+                                && s.PurchaseDate < thisMonthStart.AddMonths(1)
+                                && !excludedIds.Contains(s.OwnerId))
+                    .CountAsync();
+
+                viewModel.FreeTrialActiveCount = await _context.Subscriptions.AsNoTracking()
+                    .Where(s => s.Status == "Active"
+                                && s.EndDate >= today
+                                && !excludedIds.Contains(s.OwnerId)
+                                && (s.PaymentMethod == "FreeTrial" || !s.IsPaid))
+                    .CountAsync();
+
                 // ===== لیست رستوران‌ها (بدون ساب‌کوئری وابسته به ازای هر ردیف) =====
                 var restaurants = await (
                     from r in _context.Restaurants.AsNoTracking()
@@ -179,10 +228,14 @@ namespace resturanyar.Controllers
                 }
 
                 viewModel.Restaurants = restaurants;
+                viewModel.ActiveRestaurantsCount = restaurants.Count(r => r.SubscriptionStatus == "Active");
+                viewModel.ExpiredRestaurantsCount = restaurants.Count(r => r.SubscriptionStatus == "Expired");
+                viewModel.NoSubscriptionCount = restaurants.Count(r => r.SubscriptionStatus == "None");
 
-                // ===== آمار ماهانه در یک کوئری =====
-                var monthWindowStart = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
-                var monthWindowEnd = new DateTime(today.Year, today.Month, 1).AddMonths(1);
+                // ===== آمار ماهانه شمسی (۶ ماه اخیر) =====
+                var persianMonthStart = today.GetPersianMonthStart();
+                var monthWindowStart = persianMonthStart.AddPersianMonths(-5);
+                var monthWindowEnd = persianMonthStart.AddPersianMonths(1);
 
                 var monthlyRows = await _context.Subscriptions.AsNoTracking()
                     .Where(s => s.PurchaseDate >= monthWindowStart
@@ -194,14 +247,13 @@ namespace resturanyar.Controllers
                 var monthlyStats = new List<MonthlyStatsViewModel>();
                 for (int i = 0; i < 6; i++)
                 {
-                    var month = monthWindowStart.AddMonths(i);
-                    var monthStart = new DateTime(month.Year, month.Month, 1);
-                    var nextMonth = monthStart.AddMonths(1);
+                    var monthStart = monthWindowStart.AddPersianMonths(i);
+                    var nextMonth = monthStart.AddPersianMonths(1);
 
                     var inMonth = monthlyRows.Where(s => s.PurchaseDate >= monthStart && s.PurchaseDate < nextMonth);
                     monthlyStats.Add(new MonthlyStatsViewModel
                     {
-                        Label = month.ToString("yyyy/MM"),
+                        Label = monthStart.ToPersianMonthLabel(),
                         Revenue = inMonth.Where(s => s.IsPaid).Sum(s => s.PricePaid),
                         NewSubscriptions = inMonth.Count()
                     });
@@ -311,7 +363,7 @@ namespace resturanyar.Controllers
                         Status = s.Status,
                         PaymentMethod = s.PaymentMethod
                     })
-                    .Take(10)
+                    .Take(20)
                     .ToListAsync();
 
                 return View(viewModel);
@@ -684,30 +736,38 @@ namespace resturanyar.Controllers
 
                 var excludedIds = GetExcludedOwnerIds();
                 var today = DateTime.Now;
-                var startDate = new DateTime(today.Year, today.Month, 1).AddMonths(-5);
+                var persianMonthStart = today.GetPersianMonthStart();
+                var startDate = persianMonthStart.AddPersianMonths(-5);
+                var endDate = persianMonthStart.AddPersianMonths(1);
 
                 var paidSubs = await _context.Subscriptions
-                    .Where(s => s.IsPaid == true && s.PurchaseDate >= startDate && !excludedIds.Contains(s.OwnerId))
+                    .Where(s => s.IsPaid == true
+                                && s.PurchaseDate >= startDate
+                                && s.PurchaseDate < endDate
+                                && !excludedIds.Contains(s.OwnerId))
                     .Select(s => new { s.PurchaseDate, s.PricePaid })
                     .ToListAsync();
 
                 var allNewSubs = await _context.Subscriptions
-                    .Where(s => s.PurchaseDate >= startDate && !excludedIds.Contains(s.OwnerId))
+                    .Where(s => s.PurchaseDate >= startDate
+                                && s.PurchaseDate < endDate
+                                && !excludedIds.Contains(s.OwnerId))
                     .Select(s => s.PurchaseDate)
                     .ToListAsync();
 
-                var months = Enumerable.Range(0, 6)
-                    .Select(i => startDate.AddMonths(i))
-                    .ToList();
-
-                var result = months.Select(m => new
+                var result = Enumerable.Range(0, 6).Select(i =>
                 {
-                    Label = m.ToString("yyyy/MM"),
-                    Revenue = paidSubs
-                        .Where(s => s.PurchaseDate.Year == m.Year && s.PurchaseDate.Month == m.Month)
-                        .Sum(s => s.PricePaid),
-                    NewSubscriptions = allNewSubs
-                        .Count(d => d.Year == m.Year && d.Month == m.Month)
+                    var monthStart = startDate.AddPersianMonths(i);
+                    var nextMonth = monthStart.AddPersianMonths(1);
+                    return new
+                    {
+                        Label = monthStart.ToPersianMonthLabel(),
+                        Revenue = paidSubs
+                            .Where(s => s.PurchaseDate >= monthStart && s.PurchaseDate < nextMonth)
+                            .Sum(s => s.PricePaid),
+                        NewSubscriptions = allNewSubs
+                            .Count(d => d >= monthStart && d < nextMonth)
+                    };
                 }).ToList();
 
                 return Json(new { success = true, data = result });

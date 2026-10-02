@@ -173,7 +173,8 @@
         var destroyFns = [
             'destroyCustomersListPage',
             'destroyRestaurantSettingsPage',
-            'destroyManagerOrderListPage'
+            'destroyManagerOrderListPage',
+            'destroyReceiptChargeSettingsPage'
         ];
         destroyFns.forEach(function (name) {
             if (typeof window[name] === 'function') {
@@ -309,7 +310,8 @@
         ['/home/menusettings', 'initRestaurantSettingsPage'],
         ['/home/settings', 'initRestaurantSettingsPage'],
         ['/home/restaurantsetting', 'initRestaurantGeneralSettingsPage'],
-        ['/home/support', 'initSupportPage']
+        ['/home/support', 'initSupportPage'],
+        ['/receipt/chargesettings', 'initReceiptChargeSettingsPage']
     ];
 
     function resolvePageInitName(url) {
@@ -422,12 +424,12 @@
     }
 
     function onPopState(event) {
-        if (event.state && event.state.sidebarNav && event.state.url) {
-            window.location.assign(event.state.url);
-            return;
-        }
-
-        window.location.reload();
+        // Always do a full navigation on Back/Forward so page CSS/scripts are correct
+        // (bfcache of AJAX-injected pages often comes back without stylesheets).
+        var targetUrl = (event.state && event.state.sidebarNav && event.state.url)
+            ? event.state.url
+            : window.location.href;
+        window.location.assign(targetUrl);
     }
 
     function onLeaveSpaClick(event) {
@@ -446,7 +448,13 @@
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('click', onLeaveSpaClick, true);
     window.addEventListener('popstate', onPopState);
-    window.addEventListener('pageshow', function () {
+    window.addEventListener('pageshow', function (event) {
+        // Restored from bfcache after leaving to CustomerAccount (or similar): force a clean load
+        // so CustomersList CSS/scripts are present again.
+        if (event.persisted) {
+            window.location.reload();
+            return;
+        }
         if (typeof window.runSidebarPageInit === 'function') {
             window.runSidebarPageInit();
         }

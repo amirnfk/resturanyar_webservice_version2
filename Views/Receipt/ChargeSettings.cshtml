@@ -10,60 +10,138 @@
 }
 
 <div class="settings-page receipt-charge-settings-page" data-restaurant-id="@Model.RestaurantId">
-    <header class="settings-header rcs-hero">
-        <div class="icon-circle">
-            <i class="fas fa-file-invoice-dollar"></i>
-        </div>
+    <header class="rcs-hero">
+        <span class="rcs-hero__icon" aria-hidden="true"><i class="fas fa-file-invoice-dollar"></i></span>
         <div class="rcs-hero__text">
-            <p class="rcs-hero__subtitle">
-                الگوی پیش‌فرض هزینه‌ها برای
+            <h1 class="rcs-hero__title">
+                تنظیمات فاکتور
                 <span class="rcs-hero__restaurant">@Model.RestaurantName</span>
-            </p>
-            <p class="rcs-hero__hint">مالیات، حق سرویس، بسته‌بندی و ارسال را از اینجا تنظیم کنید.</p>
+            </h1>
+            <p class="rcs-hero__hint">ظاهر چاپ فاکتور و هزینه‌هایی مثل مالیات، حق سرویس و ارسال را اینجا تعیین کنید.</p>
         </div>
         <div class="rcs-hero__stats" id="chargeSettingsStats" aria-live="polite">
-            <div class="rcs-stat">
-                <span class="rcs-stat__value" id="statTotalCount">@Model.Definitions.Count.ToString().ToPersianDigits()</span>
-                <span class="rcs-stat__label">کل موارد</span>
-            </div>
-            <div class="rcs-stat is-on">
-                <span class="rcs-stat__value" id="statEnabledCount">@Model.Definitions.Count(d => d.IsEnabled).ToString().ToPersianDigits()</span>
-                <span class="rcs-stat__label">فعال به‌صورت پیش‌فرض</span>
-            </div>
+            <span class="rcs-stat">
+                <strong class="rcs-stat__value" id="statTotalCount">@Model.Definitions.Count.ToString().ToPersianDigits()</strong>
+                <span class="rcs-stat__label">مورد</span>
+            </span>
+            <span class="rcs-stat is-on">
+                <strong class="rcs-stat__value" id="statEnabledCount">@Model.Definitions.Count(d => d.IsEnabled).ToString().ToPersianDigits()</strong>
+                <span class="rcs-stat__label">فعال</span>
+            </span>
         </div>
     </header>
 
-    <div class="rcs-steps">
-        <div class="rcs-step">
-            <span class="rcs-step__num">۱</span>
-            <div>
-                <strong>تعیین مقادیر پیش‌فرض</strong>
-                <p>عنوان، مبلغ یا درصد، و نوع سفارش‌های مشمول هر مورد را مشخص کنید.</p>
-            </div>
-        </div>
-        <div class="rcs-step">
-            <span class="rcs-step__num">۲</span>
-            <div>
-                <strong>ویرایش هنگام چاپ</strong>
-                <p>در صفحه سفارش‌ها، پیش از چاپ هر فاکتور می‌توانید موارد را برای همان سفارش تغییر دهید.</p>
-            </div>
-        </div>
-        <div class="rcs-step">
-            <span class="rcs-step__num">۳</span>
-            <div>
-                <strong>ثبت نهایی پس از چاپ</strong>
-                <p>پس از اولین صدور فاکتور، مبالغ همان سفارش ثابت می‌ماند و در چاپ‌های بعدی تغییر نمی‌کند.</p>
-            </div>
-        </div>
-    </div>
+    <details class="rcs-help">
+        <summary>
+            <i class="fas fa-circle-info"></i>
+            این تنظیمات چطور روی فاکتور اثر می‌گذارد؟
+        </summary>
+        <ol>
+            <li>مواردی که <b>اعمال روی فاکتور</b> روشن است، به‌صورت پیش‌فرض روی فاکتور سفارش‌های جدید محاسبه می‌شوند.</li>
+            <li>هنگام چاپ هر سفارش می‌توانید این موارد را فقط برای همان سفارش کم یا زیاد کنید.</li>
+            <li>بعد از اولین چاپ، مبالغ آن سفارش ثابت می‌ماند و چاپ‌های بعدی همان را نشان می‌دهند.</li>
+        </ol>
+    </details>
 
-    <div class="settings-card rcs-card">
-        <div class="settings-card__title rcs-card__title">
-            <div>
-                <i class="fas fa-sliders"></i>
-                <span>هزینه‌ها، تخفیف‌ها و مالیات</span>
+    <section class="settings-card rcs-card rcs-print-template-card">
+        <div class="rcs-section-head">
+            <span class="rcs-section-head__num">۱</span>
+            <div class="rcs-section-head__text">
+                <h2>ظاهر چاپ فاکتور</h2>
+                <p>همین ظاهر برای همه چاپ‌ها در وب و اپ اندروید استفاده می‌شود. با دکمه ذخیره پایین صفحه ثبت می‌شود.</p>
             </div>
-            <span class="rcs-dirty-pill" id="chargeDirtyPill" hidden>تغییرات ذخیره‌نشده</span>
+        </div>
+
+        <div class="rcs-print-template-grid" id="printTemplateGrid" role="radiogroup" aria-label="تمپلیت چاپ فاکتور">
+            @foreach (var tpl in Model.PrintTemplates)
+            {
+                var selected = string.Equals(tpl.Id, Model.SelectedPrintTemplateId, StringComparison.OrdinalIgnoreCase);
+                <label class="rcs-print-template-option @(selected ? "is-selected" : "")"
+                       data-template-id="@tpl.Id"
+                       tabindex="0"
+                       role="radio"
+                       aria-checked="@(selected ? "true" : "false")"
+                       title="@tpl.Description">
+                    <input type="radio"
+                           name="invoicePrintTemplate"
+                           value="@tpl.Id"
+                           tabindex="-1"
+                           @(selected ? "checked" : null) />
+                    <span class="rcs-print-template-option__check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                    <span class="rcs-print-template-option__preview rcs-preview--@tpl.PreviewKind" aria-hidden="true">
+                        @if (tpl.PreviewKind == "thermal")
+                        {
+                            <span class="rcs-pv-thermal">
+                                <span class="rcs-pv-thermal__brand">نام رستوران</span>
+                                <span class="rcs-pv-thermal__meta"><i>شماره ۱۲</i><i>۱۴۰۵-۰۱-۰۱</i></span>
+                                <span class="rcs-pv-thermal__customer">مشتری : نمونه</span>
+                                <span class="rcs-pv-thermal__table">
+                                    <span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="rcs-pv-thermal__total">جمع کل · مبلغ به حروف</span>
+                            </span>
+                        }
+                        else if (tpl.PreviewKind == "formal")
+                        {
+                            <span class="rcs-pv-formal">
+                                <span class="rcs-pv-formal__top">
+                                    <span class="rcs-pv-formal__title"></span>
+                                    <span class="rcs-pv-formal__box"></span>
+                                </span>
+                                <span class="rcs-pv-formal__line"></span>
+                                <span class="rcs-pv-formal__row"></span>
+                                <span class="rcs-pv-formal__row is-short"></span>
+                                <span class="rcs-pv-formal__grand"></span>
+                            </span>
+                        }
+                        else if (tpl.PreviewKind == "elegant")
+                        {
+                            <span class="rcs-pv-elegant">
+                                <span class="rcs-pv-elegant__hero"></span>
+                                <span class="rcs-pv-elegant__meta"></span>
+                                <span class="rcs-pv-elegant__row"></span>
+                                <span class="rcs-pv-elegant__row is-short"></span>
+                                <span class="rcs-pv-elegant__total"></span>
+                            </span>
+                        }
+                        else if (tpl.PreviewKind == "readable")
+                        {
+                            <span class="rcs-pv-modern is-large">
+                                <span class="rcs-pv-modern__bar"></span>
+                                <span class="rcs-pv-modern__title">نمونه فاکتور</span>
+                                <span class="rcs-pv-modern__line"></span>
+                                <span class="rcs-pv-modern__line is-short"></span>
+                                <span class="rcs-pv-modern__total">جمع کل</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="rcs-pv-modern">
+                                <span class="rcs-pv-modern__bar"></span>
+                                <span class="rcs-pv-modern__title">نمونه فاکتور</span>
+                                <span class="rcs-pv-modern__line"></span>
+                                <span class="rcs-pv-modern__line is-short"></span>
+                                <span class="rcs-pv-modern__total">جمع کل</span>
+                            </span>
+                        }
+                    </span>
+                    <span class="rcs-print-template-option__meta">
+                        <strong>@tpl.Label</strong>
+                        <small>@tpl.Description</small>
+                    </span>
+                </label>
+            }
+        </div>
+    </section>
+
+    <section class="settings-card rcs-card rcs-charges-card">
+        <div class="rcs-section-head">
+            <span class="rcs-section-head__num">۲</span>
+            <div class="rcs-section-head__text">
+                <h2>هزینه‌ها، تخفیف و مالیات</h2>
+                <p>مبلغ یا درصد هر مورد، و اینکه روی سالن، بیرون‌بر یا ارسال اعمال شود را اینجا تنظیم کنید. ترتیب نمایش در فاکتور را با فلش‌ها عوض کنید.</p>
+            </div>
         </div>
 
         <div id="chargeDefinitionsList" class="charge-definitions-list">
@@ -77,28 +155,38 @@
                          data-index="@i"
                          data-category="@((int)def.ChargeCategory)">
                     <div class="charge-definition-card__head">
-                        <div class="charge-definition-card__identity">
-                            <span class="charge-definition-card__icon @GetCategoryClass(def.ChargeCategory)">
-                                <i class="@GetCategoryIcon(def.ChargeCategory)"></i>
-                            </span>
-                            <div>
-                                <div class="charge-definition-card__badges">
-                                    <span class="charge-definition-card__badge @GetCategoryClass(def.ChargeCategory)">@GetCategoryLabel(def.ChargeCategory)</span>
-                                    <span class="charge-definition-card__live-title" data-live-title>@def.Title</span>
-                                </div>
-                                <p class="charge-definition-card__hint mb-0">@GetCategoryHint(def.ChargeCategory)</p>
-                            </div>
+                        <div class="rcs-order-controls">
+                            <button type="button" class="rcs-icon-btn" data-move="up" title="بالاتر در فاکتور" aria-label="بالاتر">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <span class="rcs-order-label" title="ترتیب در فاکتور"><strong data-order-label>@((i + 1).ToString().ToPersianDigits())</strong></span>
+                            <button type="button" class="rcs-icon-btn" data-move="down" title="پایین‌تر در فاکتور" aria-label="پایین‌تر">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
                         </div>
-                        <label class="charge-toggle">
+
+                        <span class="charge-definition-card__icon @GetCategoryClass(def.ChargeCategory)" aria-hidden="true">
+                            <i class="@GetCategoryIcon(def.ChargeCategory)"></i>
+                        </span>
+
+                        <div class="charge-definition-card__identity">
+                            <div class="charge-definition-card__badges">
+                                <span class="charge-definition-card__live-title" data-live-title>@def.Title</span>
+                                <span class="charge-definition-card__badge @GetCategoryClass(def.ChargeCategory)">@GetCategoryLabel(def.ChargeCategory)</span>
+                            </div>
+                            <p class="charge-definition-card__hint mb-0">@GetCategoryHint(def.ChargeCategory)</p>
+                        </div>
+
+                        <label class="charge-toggle" title="روشن باشد تا این مورد به‌صورت پیش‌فرض روی فاکتور سفارش‌ها محاسبه شود">
+                            <span class="charge-toggle__text">اعمال روی فاکتور</span>
                             <input type="checkbox" class="enabled-input" @(def.IsEnabled ? "checked" : null) />
                             <span class="charge-toggle__track" aria-hidden="true"></span>
-                            <span class="charge-toggle__text">پیش‌فرض فعال</span>
                         </label>
                     </div>
 
                     <div class="charge-definition-grid">
-                        <div class="charge-field charge-field--wide">
-                            <label>عنوان نمایشی در فاکتور</label>
+                        <div class="charge-field charge-field--title">
+                            <label>عنوان روی فاکتور</label>
                             <input type="text" class="form-control title-input" value="@def.Title" maxlength="100" placeholder="مثلاً حق سرویس" />
                         </div>
 
@@ -131,48 +219,37 @@
                         </div>
 
                         <div class="charge-field charge-field--wide">
-                            <label>اعمال روی نوع سفارش</label>
-                            <div class="rcs-order-types" data-order-types>
-                                <label class="rcs-order-type-chip">
-                                    <input type="checkbox" class="order-type-flag" value="1" @((flags & 1) != 0 ? "checked" : null) />
-                                    <span><i class="fa-solid fa-utensils"></i> سالن</span>
-                                </label>
-                                <label class="rcs-order-type-chip">
-                                    <input type="checkbox" class="order-type-flag" value="2" @((flags & 2) != 0 ? "checked" : null) />
-                                    <span><i class="fa-solid fa-bag-shopping"></i> بیرون‌بر</span>
-                                </label>
-                                <label class="rcs-order-type-chip">
-                                    <input type="checkbox" class="order-type-flag" value="4" @((flags & 4) != 0 ? "checked" : null) />
-                                    <span><i class="fa-solid fa-motorcycle"></i> ارسال</span>
-                                </label>
-                            </div>
-                            <input type="hidden" class="order-types-input" value="@flags" />
-                            <small class="rcs-field-help">اگر برای سالن تیک نزنید، این هزینه در فاکتور سالن دیده نمی‌شود.</small>
-                        </div>
+                            <label>روی کدام سفارش‌ها حساب شود؟</label>
+                            <div class="rcs-order-row">
+                                <div class="rcs-order-types" data-order-types>
+                                    <label class="rcs-order-type-chip">
+                                        <input type="checkbox" class="order-type-flag" value="1" @((flags & 1) != 0 ? "checked" : null) />
+                                        <span><i class="fa-solid fa-utensils"></i> سالن</span>
+                                    </label>
+                                    <label class="rcs-order-type-chip">
+                                        <input type="checkbox" class="order-type-flag" value="2" @((flags & 2) != 0 ? "checked" : null) />
+                                        <span><i class="fa-solid fa-bag-shopping"></i> بیرون‌بر</span>
+                                    </label>
+                                    <label class="rcs-order-type-chip">
+                                        <input type="checkbox" class="order-type-flag" value="4" @((flags & 4) != 0 ? "checked" : null) />
+                                        <span><i class="fa-solid fa-motorcycle"></i> ارسال</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" class="order-types-input" value="@flags" />
 
-                        <div class="charge-field charge-field--checkbox @(def.ChargeCategory == ChargeCategory.Tax ? "is-hidden" : "")" data-taxable-wrap>
-                            <label class="charge-checkbox">
-                                <input type="checkbox" class="taxable-input" @(def.IsTaxable ? "checked" : null) />
-                                <span>مالیات روی این هزینه هم حساب شود</span>
-                            </label>
+                                <div class="charge-field--checkbox @(def.ChargeCategory == ChargeCategory.Tax ? "is-hidden" : "")" data-taxable-wrap>
+                                    <label class="charge-checkbox">
+                                        <input type="checkbox" class="taxable-input" @(def.IsTaxable ? "checked" : null) />
+                                        <span>مالیات به این مبلغ هم تعلق بگیرد</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="charge-preview" data-preview>
                         <i class="fas fa-calculator"></i>
                         <span data-preview-text>در حال آماده‌سازی نمونه...</span>
-                    </div>
-
-                    <div class="charge-definition-card__footer">
-                        <div class="rcs-order-controls">
-                            <button type="button" class="rcs-icon-btn" data-move="up" title="بالاتر" aria-label="بالاتر">
-                                <i class="fas fa-arrow-up"></i>
-                            </button>
-                            <button type="button" class="rcs-icon-btn" data-move="down" title="پایین‌تر" aria-label="پایین‌تر">
-                                <i class="fas fa-arrow-down"></i>
-                            </button>
-                            <span class="rcs-order-label">ترتیب در فاکتور: <strong data-order-label>@((i + 1).ToString().ToPersianDigits())</strong></span>
-                        </div>
                     </div>
 
                     <input type="hidden" class="code-input" value="@def.Code" />
@@ -190,23 +267,31 @@
             </div>
         }
 
-        <div class="settings-actions rcs-actions">
-            <button type="button" class="btn-save" id="saveChargeDefinitionsBtn">
-                <i class="fas fa-save ms-1"></i>
-                ذخیره تنظیمات
-            </button>
-            <a href="@Url.Action("ManagerOrderList", "Home")" class="btn-outline-link">
-                <i class="fas fa-receipt ms-1"></i>
-                رفتن به لیست سفارش‌ها
-            </a>
+        <div class="rcs-save-bar" id="receiptSettingsSaveBar">
+            <div class="rcs-save-bar__meta">
+                <span class="rcs-dirty-pill rcs-dirty-pill--bar" id="settingsDirtyPill" hidden>تغییرات ذخیره نشده</span>
+                <p class="rcs-save-bar__hint">ظاهر چاپ و هزینه‌ها با یک ذخیره روی همه فاکتورها اعمال می‌شود.</p>
+            </div>
+            <div class="rcs-save-bar__actions">
+                <a href="@Url.Action("ManagerOrderList", "Home")" class="btn-outline-link rcs-btn-sm">
+                    <i class="fas fa-receipt ms-1"></i>
+                    لیست سفارش‌ها
+                </a>
+                <button type="button" class="btn-save rcs-save-primary" id="saveChargeDefinitionsBtn">
+                    <i class="fas fa-save ms-1"></i>
+                    ذخیره تنظیمات فاکتور
+                </button>
+            </div>
         </div>
-    </div>
+    </section>
 </div>
 
 @section Scripts {
     <script>
         window.receiptChargeSettings = {
             saveUrl: '@Url.Action("SaveChargeSettings", "Receipt")',
+            savePrintTemplateUrl: '@Url.Action("SaveInvoicePrintTemplate", "Receipt")',
+            selectedPrintTemplateId: '@Model.SelectedPrintTemplateId',
             sampleBase: 100000
         };
     </script>
@@ -237,8 +322,8 @@
 
     private static string GetCategoryHint(ChargeCategory category) => category switch
     {
-        ChargeCategory.Discount => "از جمع اقلام کم می‌شود",
-        ChargeCategory.Tax => "به عنوان مالیات به فاکتور اضافه می‌شود",
-        _ => "به عنوان کارمزد یا هزینه به فاکتور اضافه می‌شود"
+        ChargeCategory.Discount => "از جمع فاکتور کم می‌شود",
+        ChargeCategory.Tax => "به‌عنوان مالیات به فاکتور اضافه می‌شود",
+        _ => "به جمع فاکتور اضافه می‌شود"
     };
 }

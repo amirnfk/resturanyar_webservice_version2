@@ -1920,11 +1920,215 @@ body.bg-white {
     color: #888;
 }
 
-.owner-msg-popup-body {
-    white-space: pre-wrap;
+/* ===== Owner message popup (unread on page load) ===== */
+.owner-msg-popup-overlay {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.owner-msg-popup-card {
+    position: relative;
+    width: min(420px, calc(100% - 32px)) !important;
+    max-width: 420px !important;
+    padding: 28px 24px 22px !important;
+    overflow: hidden;
+    text-align: center;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow:
+        0 24px 48px rgba(15, 23, 42, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+}
+
+.owner-msg-popup__accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff7a00 0%, #f97316 50%, #fb923c 100%);
+}
+
+.owner-msg-popup__icon {
+    width: 64px;
+    height: 64px;
+    margin: 4px auto 14px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.55rem;
+    color: #ff7a00;
+    background: linear-gradient(145deg, #fff7ed 0%, #ffedd5 100%);
+    box-shadow: 0 8px 20px rgba(255, 122, 0, 0.18);
+}
+
+.owner-msg-popup__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #c2410c;
+    background: rgba(255, 122, 0, 0.12);
+}
+
+.owner-msg-popup__badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff7a00;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.25);
+    animation: owner-msg-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes owner-msg-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+.owner-msg-popup__title {
+    margin: 0 0 14px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.45;
+    color: var(--text-main, #0f172a);
+    text-align: center;
+}
+
+.owner-msg-popup__body-wrap {
+    margin: 0 0 22px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
     text-align: right;
-    max-height: 200px;
+    max-height: 220px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 122, 0, 0.45) transparent;
+}
+
+.owner-msg-popup__body-wrap::-webkit-scrollbar {
+    width: 5px;
+}
+
+.owner-msg-popup__body-wrap::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 8px;
+}
+
+.owner-msg-popup__body-wrap::-webkit-scrollbar-thumb {
+    background: rgba(255, 122, 0, 0.4);
+    border-radius: 8px;
+}
+
+.owner-msg-popup__body-wrap::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 122, 0, 0.65);
+}
+
+.owner-msg-popup__body {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: #475569;
+    white-space: pre-wrap;
+    word-break: break-word;
+    text-align: right;
+}
+
+.owner-msg-popup__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: stretch;
+}
+
+.owner-msg-popup__btn {
+    flex: 1;
+    min-height: 46px;
+    padding: 11px 14px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.owner-msg-popup__btn--ghost {
+    background: #fff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.owner-msg-popup__btn--ghost:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+.owner-msg-popup__btn--primary {
+    background: linear-gradient(135deg, #ff7a00 0%, #f97316 100%);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(255, 122, 0, 0.28);
+}
+
+.owner-msg-popup__btn--primary:hover {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(255, 122, 0, 0.34);
+}
+
+.owner-msg-popup__btn--primary:active {
+    transform: translateY(0);
+}
+
+[data-theme="dark"] .owner-msg-popup-card {
+    background: #1e293b;
+    border-color: rgba(148, 163, 184, 0.12);
+}
+
+[data-theme="dark"] .owner-msg-popup__title {
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .owner-msg-popup__body-wrap {
+    background: #0f172a;
+    border-color: rgba(148, 163, 184, 0.12);
+}
+
+[data-theme="dark"] .owner-msg-popup__body {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .owner-msg-popup__btn--ghost {
+    background: #334155;
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .owner-msg-popup__btn--ghost:hover {
+    background: #475569;
+    color: #f1f5f9;
+}
+
+@media (max-width: 480px) {
+    .owner-msg-popup__actions {
+        flex-direction: column-reverse;
+    }
+
+    .owner-msg-popup__btn {
+        width: 100%;
+    }
 }
 
 /* Unread messages modal */

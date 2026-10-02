@@ -197,15 +197,24 @@ function ensurePopupModal() {
 
     modal = document.createElement('div');
     modal.id = 'ownerMessagePopup';
-    modal.className = 'custom-modal-overlay';
+    modal.className = 'custom-modal-overlay owner-msg-popup-overlay';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'ownerMessagePopupTitle');
     modal.innerHTML = `
         <div class="custom-modal-card owner-msg-popup-card">
-            <div class="custom-modal-icon"><i class="fa-solid fa-envelope"></i></div>
-            <h3 id="ownerMessagePopupTitle" class="custom-modal-title"></h3>
-            <p id="ownerMessagePopupBody" class="custom-modal-desc owner-msg-popup-body"></p>
-            <div class="custom-modal-actions">
-                <button type="button" id="ownerMessagePopupAll" class="custom-modal-btn btn-cancel">مشاهده همه</button>
-                <button type="button" id="ownerMessagePopupOk" class="custom-modal-btn btn-exit">متوجه شدم</button>
+            <div class="owner-msg-popup__accent" aria-hidden="true"></div>
+            <div class="owner-msg-popup__icon" aria-hidden="true">
+                <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <span class="owner-msg-popup__badge">پیام جدید</span>
+            <h3 id="ownerMessagePopupTitle" class="owner-msg-popup__title"></h3>
+            <div class="owner-msg-popup__body-wrap">
+                <p id="ownerMessagePopupBody" class="owner-msg-popup__body"></p>
+            </div>
+            <div class="owner-msg-popup__actions">
+                <button type="button" id="ownerMessagePopupAll" class="owner-msg-popup__btn owner-msg-popup__btn--ghost">مشاهده همه</button>
+                <button type="button" id="ownerMessagePopupOk" class="owner-msg-popup__btn owner-msg-popup__btn--primary">متوجه شدم</button>
             </div>
         </div>
     `;

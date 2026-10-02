@@ -33,6 +33,12 @@ namespace resturanyar.Models
         /// </summary>
         public DateTime? ReceiptChargesEnabledAt { get; set; }
 
+        /// <summary>
+        /// Visual invoice print template id (classic / readable / compact).
+        /// </summary>
+        [MaxLength(32)]
+        public string InvoicePrintTemplateId { get; set; } = "classic";
+
         /// <summary>When true, Takeaway (OrderType=1) create is allowed for this restaurant.</summary>
         public bool EnableTakeaway { get; set; } = true;
 

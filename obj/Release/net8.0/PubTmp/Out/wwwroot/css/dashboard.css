@@ -1246,12 +1246,7 @@ html, body {
     display: none !important;
 }
 
-.owner-msg-popup-body {
-    white-space: pre-wrap;
-    text-align: right;
-    max-height: 220px;
-    overflow-y: auto;
-}
+/* owner message popup styles live in share.css (.owner-msg-popup-*) */
 
 /* --- Inventory critical-stock card (under hero) --- */
 .dash-stock-card {
