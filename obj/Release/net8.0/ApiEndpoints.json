@@ -3853,6 +3853,43 @@
   },
   {
     "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "SettleOrderPayment",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/settle-payment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.SettleOrderPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
+    "Method": "GetOrderSettlementPreview",
+    "RelativePath": "api/v2/StaffApi/orders/{orderId}/settlement-preview",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.StaffApiController",
     "Method": "UnassignDriver",
     "RelativePath": "api/v2/StaffApi/orders/{orderId}/unassign-driver",
     "HttpMethod": "POST",
@@ -5247,6 +5284,43 @@
     "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
     "Method": "GetReceiptStatus",
     "RelativePath": "api/v2/UserApi/orders/{orderId}/receipt/status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "SettleOrderPaymentV2",
+    "RelativePath": "api/v2/UserApi/orders/{orderId}/settle-payment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "resturanyar.Models.CustomerAccounts.SettleOrderPaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "GetOrderSettlementPreviewV2",
+    "RelativePath": "api/v2/UserApi/orders/{orderId}/settlement-preview",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

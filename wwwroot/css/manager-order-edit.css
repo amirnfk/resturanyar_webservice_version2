@@ -959,6 +959,24 @@
     -webkit-box-orient: vertical;
 }
 
+.moe-entity__info .moe-debtor-warn {
+    display: block;
+    margin-top: .25rem;
+    padding: .2rem .45rem;
+    border-radius: 6px;
+    background: #fdecea;
+    color: #b42318;
+    font-size: .72rem;
+    font-weight: 700;
+    line-height: 1.5;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
+.moe-customer-result__text .debtor-badge {
+    margin-top: .2rem;
+}
+
 .moe-entity__action {
     flex: 0 0 auto;
     padding: .3rem .7rem;

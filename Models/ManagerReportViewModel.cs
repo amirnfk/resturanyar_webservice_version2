@@ -34,6 +34,14 @@ namespace resturanyar.Models
         public int IssuedReceiptCount { get; set; }
         public int OrdersWithChargesCount { get; set; }
 
+        /// <summary>
+        /// Remaining order نسیه in the selected period after later account payoffs (live).
+        /// </summary>
+        public decimal UnsettledDebtTotal { get; set; }
+
+        /// <summary>Orders in range that still have remaining settlement debt &gt; 0.</summary>
+        public int UnsettledDebtOrderCount { get; set; }
+
         public List<ChargeBreakdownItemDto> ChargeBreakdown { get; set; } = new();
 
         // مقایسه با دوره قبل

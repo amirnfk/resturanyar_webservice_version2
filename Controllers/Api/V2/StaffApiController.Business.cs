@@ -6,6 +6,8 @@ using resturanyar.Helpers;
 using resturanyar.Models;
 using resturanyar.Models.CustomerModels;
 using resturanyar.Models.Receipt;
+using resturanyar.Models.CustomerAccounts;
+using resturanyar.Services.Orders;
 using resturanyar.Services.Receipt;
 using resturanyar.Utility;
 using System.Security.Claims;
@@ -270,7 +272,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("getcustomers/{restaurantId}")]
-        public IActionResult GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
+        public async Task<IActionResult> GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
         {
             var denied = EnsureRestaurantAccess(restaurantId);
             if (denied != null) return denied;
@@ -285,8 +287,8 @@ namespace resturanyar.Controllers.Api.V2
                 query = query.Where(c => c.FullName.Contains(s) || c.Mobile.Contains(s));
             }
 
-            var total = query.Count();
-            var customers = query
+            var total = await query.CountAsync();
+            var pageRows = await query
                 .OrderByDescending(c => c.CustomerId)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -297,7 +299,19 @@ namespace resturanyar.Controllers.Api.V2
                     c.Mobile,
                     c.Description
                 })
-                .ToList();
+                .ToListAsync();
+
+            var balances = await CustomerBalanceLookup.LoadAsync(
+                _context, restaurantId, pageRows.Select(c => c.CustomerId));
+
+            var customers = pageRows.Select(c => new
+            {
+                c.CustomerId,
+                c.FullName,
+                c.Mobile,
+                c.Description,
+                accountBalance = CustomerBalanceLookup.GetBalance(balances, c.CustomerId)
+            }).ToList();
 
             return Ok(new
             {
@@ -310,7 +324,7 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpPost("addcustomer")]
-        public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
+        public async Task<IActionResult> AddCustomer([FromBody] AddCustomerRequest request)
         {
             var baristaDenied = ForbidBarista("باریستا مجاز به ثبت مشتری نیست.");
             if (baristaDenied != null) return baristaDenied;
@@ -318,8 +332,8 @@ namespace resturanyar.Controllers.Api.V2
             var denied = EnsureRestaurantAccess(request.RestaurantId);
             if (denied != null) return denied;
 
-            var existingCustomer = _context.Customers
-                .FirstOrDefault(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
+            var existingCustomer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
 
             if (existingCustomer != null)
             {
@@ -329,13 +343,17 @@ namespace resturanyar.Controllers.Api.V2
                     existingCustomer.FullName = request.FullName;
                     existingCustomer.Description = request.Description;
                     existingCustomer.UpdatedAt = DateTime.Now;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
+
+                    var reactivatedBalances = await CustomerBalanceLookup.LoadAsync(
+                        _context, request.RestaurantId, new[] { existingCustomer.CustomerId });
                     return Ok(new
                     {
                         success = true,
                         message = "مشتری غیرفعال قبلی با موفقیت فعال و ویرایش شد",
                         customerId = existingCustomer.CustomerId,
-                        wasReactivated = true
+                        wasReactivated = true,
+                        accountBalance = CustomerBalanceLookup.GetBalance(reactivatedBalances, existingCustomer.CustomerId)
                     });
                 }
                 return Ok(new { success = false, message = "این شماره موبایل قبلاً برای این رستوران ثبت شده است" });
@@ -352,13 +370,14 @@ namespace resturanyar.Controllers.Api.V2
                 UpdatedAt = DateTime.Now
             };
             _context.Customers.Add(customer);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(new
             {
                 success = true,
                 message = "مشتری با موفقیت اضافه شد",
                 customerId = customer.CustomerId,
-                wasReactivated = false
+                wasReactivated = false,
+                accountBalance = 0m
             });
         }
 
@@ -563,6 +582,9 @@ namespace resturanyar.Controllers.Api.V2
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    SettlementPaidAmount = o.SettlementPaidAmount,
+                    SettlementDebtAmount = o.SettlementDebtAmount,
+                    SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -584,6 +606,8 @@ namespace resturanyar.Controllers.Api.V2
                     }).ToList()
                 }).ToListAsync();
 
+            await CustomerBalanceLookup.ApplyToOrdersAsync(_context, restaurantId, orders);
+
             if (orders.Count > 0)
             {
                 var receiptService = HttpContext.RequestServices.GetRequiredService<IReceiptService>();
@@ -599,14 +623,14 @@ namespace resturanyar.Controllers.Api.V2
         }
 
         [HttpGet("getOrderById/{orderId}")]
-        public IActionResult GetOrderById(int orderId)
+        public async Task<IActionResult> GetOrderById(int orderId)
         {
-            var order = _context.Orders
+            var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.Fulfillment!)
                     .ThenInclude(f => f.AssignedDriver)
                 .Include(o => o.OrderItems)
-                .FirstOrDefault(o => o.OrderId == orderId);
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order == null)
                 return NotFound(new { success = false, message = "سفارش یافت نشد" });
@@ -640,6 +664,9 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
                 OrderType = (byte)order.OrderType,
+                SettlementPaidAmount = order.SettlementPaidAmount,
+                SettlementDebtAmount = order.SettlementDebtAmount,
+                SettlementType = order.SettlementType,
                 CustomerAddressId = order.Fulfillment?.CustomerAddressId,
                 AddressSnapshot = order.Fulfillment?.AddressSnapshot,
                 PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
@@ -659,6 +686,9 @@ namespace resturanyar.Controllers.Api.V2
                     FoodImageUrl = oi.FoodImageUrl
                 }).ToList()
             };
+
+            await CustomerBalanceLookup.ApplyToOrdersAsync(
+                _context, order.RestaurantId, new List<OrderDto> { orderDto });
 
             return Ok(new { success = true, message = "سفارش با موفقیت دریافت شد", orderData = orderDto });
         }
@@ -944,6 +974,156 @@ namespace resturanyar.Controllers.Api.V2
                 });
 
             return Ok(new { success = true, message = "Order status updated and signal sent successfully.", receipt = receiptData });
+        }
+
+        [HttpGet("orders/{orderId:int}/settlement-preview")]
+        public async Task<IActionResult> GetOrderSettlementPreview(
+            int orderId,
+            [FromServices] IOrderSettlementService settlementService)
+        {
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            if (IsBaristaOnlyStaff())
+                return StatusCode(403, new { success = false, message = "باریستا دسترسی ثبت پرداخت یا نسیه ندارد." });
+
+            try
+            {
+                var data = await settlementService.GetPreviewAsync(orderId, order.RestaurantId);
+                return Ok(new { success = true, message = "ok", data });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("orders/{orderId:int}/settle-payment")]
+        public async Task<IActionResult> SettleOrderPayment(
+            int orderId,
+            [FromBody] SettleOrderPaymentRequest request,
+            [FromServices] IOrderSettlementService settlementService)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Fulfillment)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            var denied = EnsureRestaurantAccess(order.RestaurantId);
+            if (denied != null) return denied;
+
+            if (IsBaristaOnlyStaff())
+                return StatusCode(403, new { success = false, message = "باریستا دسترسی ثبت پرداخت یا نسیه ندارد." });
+
+            if (IsDeliveryOnlyStaff())
+                return StatusCode(403, new { success = false, message = "پیک دسترسی ثبت پرداخت یا نسیه ندارد." });
+
+            if (request == null)
+                return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
+
+            try
+            {
+                var preview = await settlementService.GetPreviewAsync(orderId, order.RestaurantId);
+                var includePrior = request.IncludePriorBalancePayment;
+                var cash = decimal.Round(
+                    includePrior ? (request.CashReceived ?? request.PaidAmount) : request.PaidAmount,
+                    2, MidpointRounding.AwayFromZero);
+                var orderPaid = Math.Min(cash, preview.OrderTotal);
+                var debt = decimal.Round(preview.OrderTotal - orderPaid, 2, MidpointRounding.AwayFromZero);
+                if (debt > 0m && User.FindFirst("payment_permission")?.Value != "1")
+                {
+                    return StatusCode(403, new
+                    {
+                        success = false,
+                        message = "برای ثبت نسیه / بدهی، مجوز مدیریت پرداخت لازم است."
+                    });
+                }
+
+                TryGetStaffUserId(out int staffUserId);
+                var result = await settlementService.SettlePaymentAsync(
+                    orderId, order.RestaurantId, request, null, staffUserId);
+
+                object? receiptData = null;
+                if (!result.AlreadySettled)
+                {
+                    int? nextRoleId = GetNextRoleId(result.NewStatusId, order.OrderType);
+                    if (nextRoleId.HasValue)
+                    {
+                        var existingUpdate = _context.OrderUpdates
+                            .FirstOrDefault(u => u.OrderId == order.OrderId && u.TargetRoleId == nextRoleId.Value);
+                        if (existingUpdate != null)
+                            existingUpdate.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        else
+                        {
+                            _context.OrderUpdates.Add(new OrderUpdate
+                            {
+                                OrderId = order.OrderId,
+                                RestaurantId = order.RestaurantId,
+                                TargetRoleId = nextRoleId.Value,
+                                UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                            });
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+
+                    try
+                    {
+                        var receiptService = HttpContext.RequestServices.GetRequiredService<IReceiptService>();
+                        var issueResult = await receiptService.TryAutoIssueOnSettlementAsync(
+                            order.OrderId, order.RestaurantId, null, result.PreviousStatusId, result.NewStatusId);
+                        if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                        {
+                            receiptData = new
+                            {
+                                isIssued = true,
+                                grandTotal = issueResult.Receipt.GrandTotal,
+                                issuedAt = issueResult.Receipt.IssuedAt
+                            };
+                        }
+                    }
+                    catch { /* best-effort */ }
+
+                    try
+                    {
+                        var inventoryConsumption = HttpContext.RequestServices
+                            .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                        await inventoryConsumption.HandleStatusChangeAsync(
+                            order.OrderId, order.RestaurantId, result.PreviousStatusId, result.NewStatusId);
+                    }
+                    catch { /* best-effort */ }
+
+                    await _hubContext.Clients.Group(order.RestaurantId.ToString())
+                        .SendAsync("ReceiveOrderUpdate", new
+                        {
+                            orderId = order.OrderId,
+                            newStatusId = result.NewStatusId,
+                            message = $"Order {order.OrderId} settled to status {result.NewStatusId}"
+                        });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = result.AlreadySettled
+                        ? "پرداخت این سفارش قبلاً ثبت شده است."
+                        : OrderSettlementTypes.SuccessMessage(
+                            result.PaidAmount, result.DebtAmount, result.PriorBalancePaidAmount),
+                    data = result,
+                    receipt = receiptData
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.Message.Contains("کاربر دیگری", StringComparison.Ordinal))
+                    return Conflict(new { success = false, message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpGet("CheckOrderUpdates")]

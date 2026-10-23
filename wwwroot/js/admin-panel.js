@@ -287,38 +287,78 @@
 
             if (badge) badge.textContent = formatNumber(json.data.length) + ' رستوران';
 
-            const tbody = document.querySelector('#activityTable tbody');
-            if (!tbody) return;
-
-            tbody.innerHTML = json.data.map(r => `
-                <tr>
-                    <td>${r.restaurantName || '-'}</td>
-                    <td>${formatNumber(r.orders1Day)}</td>
-                    <td>${formatNumber(r.orders7Day)}</td>
-                    <td>${formatNumber(r.orders30Day)}</td>
-                    <td>${formatNumber(r.foodItems1Day)}</td>
-                    <td>${formatNumber(r.foodItems7Day)}</td>
-                    <td>${formatNumber(r.foodItems30Day)}</td>
-                </tr>
-            `).join('');
-
-            if (window.jQuery && $.fn.DataTable) {
-                if ($.fn.DataTable.isDataTable('#activityTable')) {
-                    $('#activityTable').DataTable().destroy();
+            if (!(window.jQuery && $.fn.DataTable)) {
+                const tbody = document.querySelector('#activityTable tbody');
+                if (tbody) {
+                    tbody.innerHTML = json.data.map(r => {
+                        const name = r.restaurantName || r.RestaurantName || '-';
+                        return `<tr>
+                            <td>${name}</td>
+                            <td>${formatNumber(r.orders1Day ?? r.Orders1Day)}</td>
+                            <td>${formatNumber(r.orders7Day ?? r.Orders7Day)}</td>
+                            <td>${formatNumber(r.orders30Day ?? r.Orders30Day)}</td>
+                            <td>${formatNumber(r.foodItems1Day ?? r.FoodItems1Day)}</td>
+                            <td>${formatNumber(r.foodItems7Day ?? r.FoodItems7Day)}</td>
+                            <td>${formatNumber(r.foodItems30Day ?? r.FoodItems30Day)}</td>
+                        </tr>`;
+                    }).join('');
                 }
-                $('#activityTable').DataTable({
-                    order: [[3, 'desc']],
-                    pageLength: 15,
-                    language: {
-                        search: 'جستجو:',
-                        lengthMenu: 'نمایش _MENU_',
-                        info: '_START_ تا _END_ از _TOTAL_',
-                        paginate: { previous: 'قبلی', next: 'بعدی' },
-                        zeroRecords: 'موردی یافت نشد',
-                        emptyTable: 'داده‌ای موجود نیست'
-                    }
-                });
+                return;
             }
+
+            // Feed raw numbers to DataTables so sort is numeric; Persian formatting is display-only.
+            const rows = json.data.map(r => ({
+                name: r.restaurantName || r.RestaurantName || '-',
+                orders1Day: Number(r.orders1Day ?? r.Orders1Day ?? 0),
+                orders7Day: Number(r.orders7Day ?? r.Orders7Day ?? 0),
+                orders30Day: Number(r.orders30Day ?? r.Orders30Day ?? 0),
+                foodItems1Day: Number(r.foodItems1Day ?? r.FoodItems1Day ?? 0),
+                foodItems7Day: Number(r.foodItems7Day ?? r.FoodItems7Day ?? 0),
+                foodItems30Day: Number(r.foodItems30Day ?? r.FoodItems30Day ?? 0)
+            }));
+
+            if ($.fn.DataTable.isDataTable('#activityTable')) {
+                $('#activityTable').DataTable().clear().destroy();
+                $('#activityTable tbody').empty();
+            }
+
+            function numCol(field) {
+                return {
+                    data: field,
+                    type: 'num',
+                    render: function (data, type) {
+                        // Keep raw number for sort/type; Persian digits only for display/filter.
+                        if (type === 'display' || type === 'filter') return formatNumber(data);
+                        return Number(data) || 0;
+                    }
+                };
+            }
+
+            $('#activityTable').DataTable({
+                data: rows,
+                order: [[3, 'desc']],
+                pageLength: 15,
+                autoWidth: false,
+                columns: [
+                    { data: 'name' },
+                    numCol('orders1Day'),
+                    numCol('orders7Day'),
+                    numCol('orders30Day'),
+                    numCol('foodItems1Day'),
+                    numCol('foodItems7Day'),
+                    numCol('foodItems30Day')
+                ],
+                language: {
+                    search: 'جستجو:',
+                    lengthMenu: 'نمایش _MENU_',
+                    info: '_START_ تا _END_ از _TOTAL_',
+                    infoEmpty: 'موردی نیست',
+                    infoFiltered: '(فیلتر از _MAX_)',
+                    paginate: { previous: 'قبلی', next: 'بعدی' },
+                    zeroRecords: 'موردی یافت نشد',
+                    emptyTable: 'داده‌ای موجود نیست'
+                }
+            });
         } catch (err) {
             console.error('activity stats failed', err);
             if (badge) badge.textContent = 'خطا در بارگذاری';

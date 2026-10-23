@@ -471,6 +471,7 @@
     var selectedCustomerId = null;
     var selectedCustomerMobile = null;
     var selectedCustomerName = null;
+    var selectedCustomerBalance = 0;
     var selectedAddressId  = null;
     var selectedAddressText = null;
     var addressesCache = [];
@@ -906,14 +907,18 @@
         }
     };
 
-    function selectCustomer(id, mobile, name) {
+    function selectCustomer(id, mobile, name, balance) {
         selectedCustomerId = id;
         selectedCustomerMobile = mobile || '';
         selectedCustomerName = name || '';
+        selectedCustomerBalance = Number(balance || 0);
         selectedAddressId = null;
         selectedAddressText = null;
         addressesCache = [];
         const nameHtml = name ? ` - ${escapeHtml(name)}` : '';
+        const debtHtml = selectedCustomerBalance > 0
+            ? `<div class="add-order-debtor-warn mt-1"><i class="fa-solid fa-triangle-exclamation ms-1"></i>این مشتری بدهکار است — مانده: ${formatMoney(selectedCustomerBalance)} تومان</div>`
+            : '';
         $.each(CONTEXTS, function(ctx, sel) {
             $(sel.hiddenId).val(id);
             $(sel.infoId).html(
@@ -921,6 +926,7 @@
                     <div class="customer-detail">
                         <strong>${escapeHtml(mobile)}</strong>${nameHtml}
                         <div class="small text-muted mt-1"><i class="fa-solid fa-circle-check ms-1"></i> انتخاب شده</div>
+                        ${debtHtml}
                     </div>
                     <button type="button" class="btn-change-customer" data-context="${ctx}">تغییر</button>
                 </div>`);
@@ -942,6 +948,7 @@
         selectedCustomerId = null;
         selectedCustomerMobile = null;
         selectedCustomerName = null;
+        selectedCustomerBalance = 0;
         addressesCache = [];
         clearSelectedAddress(true);
         $('#addressSelect, #offcanvasAddressSelect').html('<option value="">انتخاب آدرس ذخیره‌شده</option>');
@@ -987,7 +994,8 @@
             selectCustomer(
                 $(this).data('id'),
                 $(this).data('mobile'),
-                $(this).data('name') || ''
+                $(this).data('name') || '',
+                $(this).data('balance') || 0
             );
         });
 
@@ -1024,13 +1032,19 @@
             if (res.success && res.data && res.data.length) {
                 var html = '';
                 res.data.forEach(function(c) {
+                    var bal = Number(c.accountBalance ?? c.AccountBalance ?? 0);
+                    var badge = bal > 0
+                        ? `<span class="debtor-badge mt-1">بدهکار · ${formatMoney(bal)}</span>`
+                        : '';
                     html += `<div class="customer-result-item"
                                   data-id="${c.customerId}"
                                   data-mobile="${escapeHtml(c.mobile)}"
-                                  data-name="${escapeHtml(c.fullName || '')}">
+                                  data-name="${escapeHtml(c.fullName || '')}"
+                                  data-balance="${bal}">
                         <div>
                             <div class="customer-mobile"><i class="fa-solid fa-phone ms-1"></i> ${escapeHtml(c.mobile)}</div>
                             ${c.fullName ? `<div class="customer-name">${escapeHtml(c.fullName)}</div>` : ''}
+                            ${badge}
                         </div>
                     </div>`;
                 });
@@ -1094,7 +1108,8 @@
                     $('body').css({ overflow: '', paddingRight: '' });
                 }, 150);
 
-                selectCustomer(res.customerId, mobile, fullName);
+                var bal = Number(res.accountBalance ?? res.AccountBalance ?? 0);
+                selectCustomer(res.customerId, mobile, fullName, bal);
             } else {
                 showToast(res.message || 'خطا در ثبت مشتری', 'error');
                 $btn.html(originalHtml).prop('disabled', false);
@@ -1601,6 +1616,7 @@
         selectedCustomerId = null;
         selectedCustomerMobile = null;
         selectedCustomerName = null;
+        selectedCustomerBalance = 0;
         selectedAddressId = null;
         selectedAddressText = null;
         addressesCache = [];

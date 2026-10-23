@@ -20,8 +20,10 @@
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
     <link href="~/css/bootstrap_rtl_min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="~/css/share.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/order-status-tokens.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/order-settlement.css" asp-append-version="true" />
     <style>
         body {
             direction: rtl;
@@ -193,7 +195,7 @@
 
             <div class="col-auto">
                 <label class="form-label filter-label">جستجو</label>
-                <input type="text" name="search" placeholder="شماره سفارش یا شماره میز" class="form-control" value="@(Model.Search ?? "")" />
+                <input type="text" name="search" placeholder="نام مشتری، موبایل، شماره سفارش یا میز" class="form-control" value="@(Model.Search ?? "")" autocomplete="off" />
             </div>
 
             <div class="col-auto">
@@ -245,6 +247,8 @@
     @await Html.PartialAsync("_ConfirmModal")
     <script src="~/js/confirm-modal.js" asp-append-version="true"></script>
     <script src="~/js/app-toast.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/order-settlement.js" asp-append-version="true"></script>
 
     <script>
         const form = document.getElementById('filterForm');
@@ -341,8 +345,47 @@
             }
         });
 
-        // تابع تغییر وضعیت (مثل قبل)
-        async function changeStatus(orderId, newStatusId) {
+        // تابع تغییر وضعیت — رفتن به ۸: مودال تسویه (نقد / جزئی / نسیه)
+        async function changeStatus(orderId, currentStatusId, newStatusId) {
+            // Backward compat if called with (orderId, newStatusId) only
+            if (typeof newStatusId === 'undefined') {
+                newStatusId = currentStatusId;
+                currentStatusId = 7;
+            }
+
+            // 9/10 cancelled, 11 closed — cannot register payment. Status 8 without settlement is repairable.
+            if (newStatusId === currentStatusId) return;
+
+            const settlementBlocked = new Set([9, 10, 11]);
+            if (newStatusId === 8) {
+                if (settlementBlocked.has(currentStatusId)) {
+                    showToast(
+                        currentStatusId === 11
+                            ? 'این سفارش از قبل بسته شده است.'
+                            : 'این سفارش لغو شده و امکان ثبت پرداخت ندارد.',
+                        'error');
+                    return;
+                }
+                if (!window.OrderSettlement || typeof window.OrderSettlement.settleViaModal !== 'function') {
+                    showToast('صفحه را رفرش کنید و دوباره «پرداخت‌شده / نسیه» را انتخاب کنید .', 'error');
+                    return;
+                }
+                const settled = await window.OrderSettlement.settleViaModal({
+                    orderId: orderId,
+                    currentStatusId: currentStatusId,
+                    urls: {
+                        previewUrl: '@Url.Action("GetOrderSettlementPreview", "Home")',
+                        settleUrl: '@Url.Action("SettleOrderPayment", "Home")',
+                        searchCustomersUrl: '@Url.Action("SearchCustomersForSettlement", "Home")'
+                    },
+                    getToken: getAntiForgeryToken
+                });
+                if (settled && settled.success) {
+                    loadOrders({ page: currentPage });
+                }
+                return;
+            }
+
             if (!(await showConfirm({ message: 'آیا از تغییر وضعیت سفارش مطمئن هستید؟' }))) {
                 return;
             }
@@ -365,7 +408,7 @@
                 const data = await res.json();
                 if (data.success) {
                     showToast(data.message || 'وضعیت با موفقیت تغییر کرد.', 'success');
-                    loadOrders({ page: currentPage }); // بعد از تغییر وضعیت لیست رو آپدیت کن
+                    loadOrders({ page: currentPage });
                 } else {
                     showToast(data.message || 'خطا در تغییر وضعیت.', 'error');
                 }

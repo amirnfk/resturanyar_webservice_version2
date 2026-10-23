@@ -35,6 +35,7 @@
         selectedCustomerId: null,
         selectedCustomerMobile: null,
         selectedCustomerName: null,
+        selectedCustomerBalance: 0,
         selectedAddressId: null,
         selectedAddressText: null,
         addressesCache: [],
@@ -224,6 +225,7 @@
         state.selectedCustomerId = null;
         state.selectedCustomerMobile = null;
         state.selectedCustomerName = null;
+        state.selectedCustomerBalance = 0;
         state.selectedAddressId = null;
         state.selectedAddressText = null;
         state.addressesCache = [];
@@ -487,11 +489,16 @@
         if (state.selectedCustomerId) {
             searchWrap.classList.add('d-none');
             selectedWrap.classList.remove('d-none');
+            var bal = Number(state.selectedCustomerBalance || 0);
+            var debtHtml = bal > 0
+                ? '<span class="moe-debtor-warn">این مشتری بدهکار است — مانده: ' + formatMoney(bal) + ' تومان</span>'
+                : '';
             selectedWrap.innerHTML =
                 '<span class="moe-entity__avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span>' +
                 '<div class="moe-entity__info">' +
                 '<strong>' + escapeHtml(state.selectedCustomerName || 'مشتری') + '</strong>' +
-                '<span>' + escapeHtml(state.selectedCustomerMobile || 'بدون شماره تماس') + '</span></div>' +
+                '<span>' + escapeHtml(state.selectedCustomerMobile || 'بدون شماره تماس') + '</span>' +
+                debtHtml + '</div>' +
                 '<button type="button" class="moe-entity__action" id="moeChangeCustomerBtn">تغییر</button>';
         } else {
             selectedWrap.classList.add('d-none');
@@ -608,10 +615,11 @@
         renderAddress();
     }
 
-    function selectCustomer(id, mobile, name) {
+    function selectCustomer(id, mobile, name, balance) {
         state.selectedCustomerId = String(id);
         state.selectedCustomerMobile = mobile || '';
         state.selectedCustomerName = name || 'مشتری';
+        state.selectedCustomerBalance = Number(balance || 0);
         state.selectedAddressId = null;
         state.selectedAddressText = null;
         renderCustomer();
@@ -641,12 +649,17 @@
                 var id = c.customerId || c.CustomerId;
                 var mobile = c.mobile || c.Mobile || '';
                 var name = c.fullName || c.FullName || '';
+                var bal = Number(c.accountBalance ?? c.AccountBalance ?? 0);
+                var badge = bal > 0
+                    ? '<span class="debtor-badge">بدهکار · ' + formatMoney(bal) + '</span>'
+                    : '';
                 return '<div class="moe-customer-result" role="option" data-id="' + id + '" data-mobile="' + escapeHtml(mobile) +
-                    '" data-name="' + escapeHtml(name) + '">' +
+                    '" data-name="' + escapeHtml(name) + '" data-balance="' + bal + '">' +
                     '<span class="moe-customer-result__avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span>' +
                     '<span class="moe-customer-result__text">' +
                     '<span class="moe-customer-result__mobile">' + escapeHtml(mobile || '—') + '</span>' +
                     (name ? '<span class="moe-customer-result__name">' + escapeHtml(name) + '</span>' : '') +
+                    badge +
                     '</span></div>';
             }).join('');
             box.classList.remove('d-none');
@@ -693,10 +706,12 @@
             state.selectedCustomerId = String(custId);
             state.selectedCustomerName = order.customerFullName || order.CustomerFullName || order.customerNameSnapshot || order.CustomerNameSnapshot || 'مشتری';
             state.selectedCustomerMobile = order.customerMobile || order.CustomerMobile || order.phoneSnapshot || order.PhoneSnapshot || '';
+            state.selectedCustomerBalance = Number(order.customerAccountBalance ?? order.CustomerAccountBalance ?? 0);
         } else {
             state.selectedCustomerId = null;
             state.selectedCustomerName = null;
             state.selectedCustomerMobile = null;
+            state.selectedCustomerBalance = 0;
         }
 
         state.selectedAddressId = order.customerAddressId || order.CustomerAddressId || null;
@@ -896,7 +911,8 @@
             if (result.res.ok && result.data.success) {
                 toast(result.data.message || 'مشتری ثبت شد', 'success');
                 if (state.customerModal) state.customerModal.hide();
-                selectCustomer(result.data.customerId, mobile, fullName);
+                var bal = Number(result.data.accountBalance ?? result.data.AccountBalance ?? 0);
+                selectCustomer(result.data.customerId, mobile, fullName, bal);
             } else {
                 toast((result.data && result.data.message) || 'ثبت مشتری ناموفق بود', 'error');
             }
@@ -1056,7 +1072,11 @@
         on('#moeCustomerResults .moe-customer-result', 'click', function () {
             var id = this.getAttribute('data-id');
             if (!id) return;
-            selectCustomer(id, this.getAttribute('data-mobile'), this.getAttribute('data-name'));
+            selectCustomer(
+                id,
+                this.getAttribute('data-mobile'),
+                this.getAttribute('data-name'),
+                this.getAttribute('data-balance'));
             var box = $('#moeCustomerResults');
             if (box) {
                 box.classList.add('d-none');

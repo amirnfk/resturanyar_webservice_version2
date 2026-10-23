@@ -36,6 +36,21 @@ namespace resturanyar.Models.Receipt
         /// <summary>True when this order has an attached restaurant discount code.</summary>
         public bool HasOrderDiscountCode { get; set; }
         public string? OrderDiscountCode { get; set; }
+
+        /// <summary>
+        /// Cash collected for this order at settlement. Null when unsettled / legacy.
+        /// Live overlay — not stored in receipt snapshot JSON.
+        /// </summary>
+        public decimal? SettlementPaidAmount { get; set; }
+
+        /// <summary>
+        /// Unpaid debt (نسیه) for this order at settlement. Null when unsettled / legacy.
+        /// Live overlay — not stored in receipt snapshot JSON.
+        /// </summary>
+        public decimal? SettlementDebtAmount { get; set; }
+
+        /// <summary>Cash | Credit | Partial — null when unsettled / legacy.</summary>
+        public string? SettlementType { get; set; }
     }
 
     public class ReceiptItemDto

@@ -15,9 +15,21 @@ namespace resturanyar.Models
         public int? CustomerId { get; set; }
         public string CustomerFullName { get; set; }
         public string CustomerMobile { get; set; }
+        /// <summary>Ledger balance (Sum SignedAmount). Positive = debtor.</summary>
+        public decimal? CustomerAccountBalance { get; set; }
         public string? Description { get; set; }
 
         public byte OrderType { get; set; }
+
+        /// <summary>Cash collected at settlement (status 8).</summary>
+        public decimal? SettlementPaidAmount { get; set; }
+
+        /// <summary>Debt (نسیه) at settlement; 0/null when fully paid.</summary>
+        public decimal? SettlementDebtAmount { get; set; }
+
+        /// <summary>Cash | Credit | Partial — null for legacy unsettled / pre-feature rows.</summary>
+        public string? SettlementType { get; set; }
+
         public decimal? ReceiptGrandTotal { get; set; }
         public DateTime? ReceiptIssuedAt { get; set; }
         public decimal? EstimatedReceiptGrandTotal { get; set; }

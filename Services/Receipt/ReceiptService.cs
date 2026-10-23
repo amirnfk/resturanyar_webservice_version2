@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Helpers;
 using resturanyar.Models;
+using resturanyar.Models.CustomerAccounts;
 using resturanyar.Models.DiscountCodes;
 using resturanyar.Models.Receipt;
 using resturanyar.Services.DiscountCodes;
+using resturanyar.Services.Orders;
 using resturanyar.Utility;
 using Resturanyar.Data;
 using System.Text.Json;
@@ -248,6 +250,8 @@ namespace resturanyar.Services.Receipt
             // Always calculate live so staff can preview/edit charges even after a snapshot exists.
             // When charges are off but a discount code is attached, only the code line is applied.
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
+            await ApplySettlementOverlayAsync(receipt, load.Order!);
+            ApplyPrintTemplate(receipt, load.Restaurant);
             return Success(receipt);
         }
 
@@ -417,6 +421,8 @@ namespace resturanyar.Services.Receipt
             var receipt = await BuildCalculatedReceiptAsync(load.Order!, load.Restaurant, load.StatusName!, request);
             receipt.IsIssued = true;
             receipt.IssuedAt = DateTime.UtcNow;
+            await ApplySettlementOverlayAsync(receipt, load.Order!);
+            ApplyPrintTemplate(receipt, load.Restaurant);
 
             if (existing == null)
             {
@@ -432,7 +438,9 @@ namespace resturanyar.Services.Receipt
             existing.ItemsSubtotal = receipt.ItemsSubtotal;
             existing.GrandTotal = receipt.GrandTotal;
             existing.ChargeLinesJson = JsonSerializer.Serialize(receipt.ChargeLines, JsonOptions);
-            existing.ReceiptPayloadJson = JsonSerializer.Serialize(receipt, JsonOptions);
+            // Settlement is a live overlay — strip before freezing snapshot payload.
+            var snapshotPayload = CloneWithoutSettlement(receipt);
+            existing.ReceiptPayloadJson = JsonSerializer.Serialize(snapshotPayload, JsonOptions);
             existing.OrderItemsVersion = load.Order!.UpdatedAt;
             existing.IssuedAt = DateTime.UtcNow;
             existing.IssuedByUserId = userId;
@@ -502,6 +510,7 @@ namespace resturanyar.Services.Receipt
                 }
             }
 
+            await ApplySettlementOverlayAsync(receipt, load.Order!);
             ApplyPrintTemplate(receipt, load.Restaurant);
             return Success(receipt);
         }
@@ -687,6 +696,78 @@ namespace resturanyar.Services.Receipt
         {
             if (receipt == null) return;
             receipt.PrintTemplateId = InvoicePrintTemplates.Normalize(restaurant?.InvoicePrintTemplateId);
+        }
+
+        /// <summary>
+        /// Settlement paid/debt come from the live order (and account payoff), not the frozen
+        /// receipt snapshot. If the customer later clears ledger balance, remaining order debt
+        /// is reduced FIFO so reprint / recalculate shows «پرداخت‌شده».
+        /// </summary>
+        private async Task ApplySettlementOverlayAsync(ReceiptDto receipt, Order order)
+        {
+            if (receipt == null || order == null) return;
+
+            var hasExplicit = order.SettlementPaidAmount.HasValue
+                || order.SettlementDebtAmount.HasValue
+                || !string.IsNullOrWhiteSpace(order.SettlementType);
+
+            if (!hasExplicit)
+            {
+                // Instant-close / legacy paid without settlement fields.
+                if (order.StatusId is 8 or 11)
+                {
+                    receipt.SettlementPaidAmount = receipt.GrandTotal;
+                    receipt.SettlementDebtAmount = 0m;
+                    receipt.SettlementType = OrderSettlementTypes.Cash;
+                }
+                return;
+            }
+
+            var originalDebt = order.SettlementDebtAmount ?? 0m;
+            var remainingDebt = originalDebt > 0m
+                ? await OrderSettlementLiveResolver.ResolveRemainingDebtAsync(_context, order)
+                : 0m;
+            remainingDebt = decimal.Round(Math.Max(0m, remainingDebt), 2, MidpointRounding.AwayFromZero);
+
+            decimal displayPaid;
+            if (receipt.GrandTotal > 0m)
+            {
+                displayPaid = decimal.Round(
+                    Math.Max(0m, receipt.GrandTotal - remainingDebt),
+                    2,
+                    MidpointRounding.AwayFromZero);
+            }
+            else
+            {
+                var originalPaid = order.SettlementPaidAmount ?? 0m;
+                displayPaid = decimal.Round(
+                    originalPaid + (originalDebt - remainingDebt),
+                    2,
+                    MidpointRounding.AwayFromZero);
+            }
+
+            receipt.SettlementPaidAmount = displayPaid;
+            receipt.SettlementDebtAmount = remainingDebt;
+            receipt.SettlementType = OrderSettlementTypes.Resolve(displayPaid, remainingDebt);
+
+            if (order.StatusId == 8)
+            {
+                receipt.OrderStatus = OrderStatusDisplay.BadgeLabel(
+                    order.StatusId,
+                    remainingDebt,
+                    receipt.SettlementType,
+                    receipt.OrderStatus);
+            }
+        }
+
+        private static ReceiptDto CloneWithoutSettlement(ReceiptDto source)
+        {
+            var json = JsonSerializer.Serialize(source, JsonOptions);
+            var clone = JsonSerializer.Deserialize<ReceiptDto>(json, JsonOptions) ?? source;
+            clone.SettlementPaidAmount = null;
+            clone.SettlementDebtAmount = null;
+            clone.SettlementType = null;
+            return clone;
         }
 
         public async Task<ReceiptServiceResult> SetOrderDiscountCodeAsync(int orderId, int restaurantId, string? code)

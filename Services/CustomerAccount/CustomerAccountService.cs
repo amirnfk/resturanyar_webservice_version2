@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Models.CustomerAccounts;
 using resturanyar.Models.Receipt;
+using resturanyar.Services.Orders;
 using Resturanyar.Data;
 
 namespace resturanyar.Services.CustomerAccounts
@@ -97,6 +98,8 @@ namespace resturanyar.Services.CustomerAccounts
                     SignedAmount = t.SignedAmount,
                     BalanceAfter = t.BalanceAfter,
                     Note = t.Note,
+                    OrderId = t.OrderId,
+                    PaidAmount = t.PaidAmount,
                     CreatedAt = t.CreatedAt,
                     CreatedByOwnerId = t.CreatedByOwnerId,
                     CreatedByStaffUserId = t.CreatedByStaffUserId
@@ -172,6 +175,8 @@ namespace resturanyar.Services.CustomerAccounts
                     SignedAmount = signedAmount,
                     BalanceAfter = newBalance,
                     Note = note,
+                    OrderId = request.OrderId,
+                    PaidAmount = request.PaidAmount,
                     CreatedAt = DateTime.UtcNow,
                     CreatedByOwnerId = ownerId,
                     CreatedByStaffUserId = staffUserId
@@ -180,6 +185,18 @@ namespace resturanyar.Services.CustomerAccounts
                 _db.CustomerAccountTransactions.Add(entry);
                 account.CurrentBalance = newBalance;
                 account.UpdatedAt = DateTime.UtcNow;
+
+                // Payments / debt-reducing adjustments clear order نسیه so reprints show «پرداخت‌شده».
+                if (signedAmount < 0m)
+                {
+                    await OrderDebtCreditApplicator.ApplyAsync(
+                        _db,
+                        request.RestaurantId,
+                        request.CustomerId,
+                        -signedAmount,
+                        preferOrderId: request.OrderId,
+                        ct: ct);
+                }
 
                 await _db.SaveChangesAsync(ct);
                 await tx.CommitAsync(ct);
@@ -194,6 +211,8 @@ namespace resturanyar.Services.CustomerAccounts
                     SignedAmount = entry.SignedAmount,
                     BalanceAfter = entry.BalanceAfter,
                     Note = entry.Note,
+                    OrderId = entry.OrderId,
+                    PaidAmount = entry.PaidAmount,
                     CreatedAt = entry.CreatedAt,
                     CreatedByOwnerId = entry.CreatedByOwnerId,
                     CreatedByStaffUserId = entry.CreatedByStaffUserId

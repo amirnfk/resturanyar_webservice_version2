@@ -1972,6 +1972,9 @@ namespace Resturanyar.Controllers.Api
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    SettlementPaidAmount = o.SettlementPaidAmount,
+                    SettlementDebtAmount = o.SettlementDebtAmount,
+                    SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2062,6 +2065,9 @@ namespace Resturanyar.Controllers.Api
                         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                         Description = o.Description,
                         OrderType = (byte)o.OrderType,
+                        SettlementPaidAmount = o.SettlementPaidAmount,
+                        SettlementDebtAmount = o.SettlementDebtAmount,
+                        SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2149,6 +2155,8 @@ namespace Resturanyar.Controllers.Api
                     .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
                     .ToDictionaryAsync(s => s.OrderId);
 
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, request.RestaurantId, orders);
                 var content = resturanyar.Services.OrdersExcelExportService.BuildWorkbook(
                     orders,
                     snapshotMap,
@@ -2198,6 +2206,8 @@ namespace Resturanyar.Controllers.Api
                 var webRoot = HttpContext.RequestServices
                     .GetService<Microsoft.AspNetCore.Hosting.IWebHostEnvironment>()?.WebRootPath;
 
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, request.RestaurantId, orders);
                 var content = resturanyar.Services.OrdersPdfExportService.BuildPdf(
                     orders,
                     snapshotMap,
@@ -3028,6 +3038,9 @@ namespace Resturanyar.Controllers.Api
                     CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                     Description = order.Description,
                     OrderType = (byte)order.OrderType,
+                    SettlementPaidAmount = order.SettlementPaidAmount,
+                    SettlementDebtAmount = order.SettlementDebtAmount,
+                    SettlementType = order.SettlementType,
                     CustomerAddressId = order.Fulfillment?.CustomerAddressId,
                     AddressSnapshot = order.Fulfillment?.AddressSnapshot,
                     PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
@@ -3189,18 +3202,18 @@ namespace Resturanyar.Controllers.Api
     
 
        [HttpPost("addcustomer")]
-        public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
+        public async Task<IActionResult> AddCustomer([FromBody] AddCustomerRequest request)
         {
             try
             {
                 // بررسی وجود رستوران
-                var restaurant = _context.Restaurants.Find(request.RestaurantId);
+                var restaurant = await _context.Restaurants.FindAsync(request.RestaurantId);
                 if (restaurant == null)
                     return NotFound(new { success = false, message = "رستوران یافت نشد" });
 
                 // جستجوی مشتری با این شماره موبایل در همان رستوران (حتی غیرفعال‌ها)
-                var existingCustomer = _context.Customers
-                    .FirstOrDefault(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
+                var existingCustomer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
 
                 if (existingCustomer != null)
                 {
@@ -3213,14 +3226,17 @@ namespace Resturanyar.Controllers.Api
                         existingCustomer.Description = request.Description;
                         existingCustomer.UpdatedAt = DateTime.Now;
 
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
 
+                        var reactivatedBalances = await CustomerBalanceLookup.LoadAsync(
+                            _context, request.RestaurantId, new[] { existingCustomer.CustomerId });
                         return Ok(new
                         {
                             success = true,
                             message = "مشتری غیرفعال قبلی با موفقیت فعال و ویرایش شد",
                             customerId = existingCustomer.CustomerId,
-                            wasReactivated = true
+                            wasReactivated = true,
+                            accountBalance = CustomerBalanceLookup.GetBalance(reactivatedBalances, existingCustomer.CustomerId)
                         });
                     }
                     else
@@ -3243,14 +3259,15 @@ namespace Resturanyar.Controllers.Api
                 };
 
                 _context.Customers.Add(customer);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(new
                 {
                     success = true,
                     message = "مشتری با موفقیت اضافه شد",
                     customerId = customer.CustomerId,
-                    wasReactivated = false
+                    wasReactivated = false,
+                    accountBalance = 0m
                 });
             }
             catch (Exception ex)
@@ -3342,11 +3359,11 @@ namespace Resturanyar.Controllers.Api
         }
 
         [HttpGet("getcustomers/{restaurantId}")]
-        public IActionResult GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
+        public async Task<IActionResult> GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
         {
             try
             {
-                var restaurant = _context.Restaurants.Find(restaurantId);
+                var restaurant = await _context.Restaurants.FindAsync(restaurantId);
                 if (restaurant == null)
                     return NotFound(new { success = false, message = "رستوران یافت نشد" });
 
@@ -3359,8 +3376,8 @@ namespace Resturanyar.Controllers.Api
                                              (c.FullName != null && c.FullName.Contains(search)));
                 }
 
-                var totalCount = query.Count();
-                var customers = query
+                var totalCount = await query.CountAsync();
+                var pageRows = await query
                     .OrderByDescending(c => c.CreatedAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
@@ -3373,7 +3390,21 @@ namespace Resturanyar.Controllers.Api
                         c.CreatedAt,
                         c.UpdatedAt
                     })
-                    .ToList();
+                    .ToListAsync();
+
+                var balances = await CustomerBalanceLookup.LoadAsync(
+                    _context, restaurantId, pageRows.Select(c => c.CustomerId));
+
+                var customers = pageRows.Select(c => new
+                {
+                    c.CustomerId,
+                    c.Mobile,
+                    c.FullName,
+                    c.Description,
+                    c.CreatedAt,
+                    c.UpdatedAt,
+                    accountBalance = CustomerBalanceLookup.GetBalance(balances, c.CustomerId)
+                }).ToList();
 
                 return Ok(new
                 {

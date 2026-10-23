@@ -142,10 +142,35 @@ namespace Resturanyar.Data
                 .HasDefaultValue(OrderTypeKind.DineIn);
 
             modelBuilder.Entity<Order>()
+                .Property(o => o.SettlementPaidAmount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.SettlementDebtAmount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.SettlementType)
+                .HasMaxLength(20);
+
+            modelBuilder.Entity<Order>()
                 .HasOne(o => o.DiscountCode)
                 .WithMany()
                 .HasForeignKey(o => o.DiscountCodeId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<CustomerAccountTransaction>(entity =>
+            {
+                entity.Property(t => t.PaidAmount).HasColumnType("decimal(18,2)");
+                entity.HasIndex(t => t.OrderId)
+                    .IsUnique()
+                    .HasDatabaseName("UX_CustomerAccountTransactions_OrderDebt")
+                    .HasFilter("[OrderId] IS NOT NULL AND [Type] = N'Debt'");
+                entity.HasOne(t => t.Order)
+                    .WithMany()
+                    .HasForeignKey(t => t.OrderId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
 
             modelBuilder.Entity<Order>()
                 .HasIndex(o => o.DiscountCodeId)

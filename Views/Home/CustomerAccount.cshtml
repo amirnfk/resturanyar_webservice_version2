@@ -167,6 +167,7 @@
                             <th>مبلغ</th>
                             <th>اثر بر حساب</th>
                             <th>مانده پس از تراکنش</th>
+                            <th>سفارش</th>
                             <th>یادداشت</th>
                         </tr>
                     </thead>
@@ -269,7 +270,7 @@
                                 <strong>اصلاح</strong>
                             </button>
                         </div>
-                        <span class="ca-help" id="caTypeHelp">افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ باقی‌مانده از تسویه.</span>
+                        <span class="ca-help" id="caTypeHelp">افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ پرداخت‌نشدهٔ یک سفارش. نسیه‌هایی که هنگام ثبت پرداخت سفارش ثبت می‌شوند، اینجا با شماره سفارش دیده می‌شوند.</span>
                     </div>
 
                     <div class="mb-3 ca-adj-wrap" id="caAdjWrap" hidden>
@@ -353,7 +354,7 @@
                     label: 'بدهی',
                     icon: 'fa-arrow-trend-up',
                     cls: 'ca-type--debt',
-                    help: 'افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ باقی‌مانده از تسویه.'
+                    help: 'افزایش بدهی مشتری؛ مثلاً خرید نسیه یا مبلغ پرداخت‌نشدهٔ یک سفارش. نسیه‌هایی که هنگام ثبت پرداخت سفارش ثبت می‌شوند، اینجا با شماره سفارش دیده می‌شوند.'
                 },
                 Payment: {
                     label: 'پرداخت',
@@ -599,6 +600,10 @@
                 var deltaText = (signed > 0 ? '+' : '−') +
                     Math.round(Math.abs(signed)).toLocaleString('fa-IR');
                 var note = t.note ? escapeHtml(t.note) : '';
+                var orderCell = t.orderId
+                    ? '<span class="ca-num ca-order-link" title="نسیهٔ ثبت‌شده هنگام پرداخت سفارش">#' +
+                        escapeHtml(String(t.orderId)) + '</span>'
+                    : '<span class="ca-empty-dash">—</span>';
 
                 return '<tr>' +
                     '<td data-label="تاریخ"><span class="ca-cell-strong ca-num">' +
@@ -609,6 +614,7 @@
                         escapeHtml(deltaText) + '</span></td>' +
                     '<td data-label="مانده پس از تراکنش"><span class="ca-cell-strong ca-money">' +
                         escapeHtml(formatMoney(t.balanceAfter)) + '</span></td>' +
+                    '<td data-label="سفارش">' + orderCell + '</td>' +
                     '<td data-label="یادداشت">' +
                         (note
                             ? '<span class="ca-note" title="' + note + '">' + note + '</span>'

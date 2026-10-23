@@ -100,12 +100,169 @@
     box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
 }
 
+/* Recent growth pulse */
+.ap-pulse {
+    margin-bottom: 16px;
+}
+
+.ap-pulse__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.ap-pulse__title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--ap-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ap-pulse__title i {
+    color: #e11d48;
+}
+
+.ap-pulse__sub {
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+    color: var(--ap-muted);
+}
+
+.ap-pulse__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.ap-pulse-card {
+    background: var(--ap-card);
+    border: 1px solid var(--ap-border);
+    border-radius: var(--ap-radius);
+    box-shadow: var(--ap-shadow);
+    padding: 16px 16px 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ap-pulse-card::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--pulse-accent, #ff7a00);
+}
+
+.ap-pulse-card--day {
+    --pulse-accent: #ff7a00;
+    background: linear-gradient(135deg, #fff 0%, #fff7ed 100%);
+}
+
+.ap-pulse-card--week {
+    --pulse-accent: #059669;
+    background: linear-gradient(135deg, #fff 0%, #ecfdf5 100%);
+}
+
+.ap-pulse-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.ap-pulse-card__badge {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--pulse-accent, #ff7a00);
+}
+
+.ap-pulse-card__clock {
+    font-size: 0.72rem;
+    color: var(--ap-muted);
+    white-space: nowrap;
+}
+
+.ap-pulse-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ap-pulse-metric {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+}
+
+.ap-pulse-metric__val {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ap-text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-pulse-metric--money .ap-pulse-metric__val {
+    font-size: 1.05rem;
+}
+
+.ap-pulse-metric__lbl {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ap-muted);
+}
+
+.ap-pulse-card__breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 4px;
+}
+
+.ap-pulse-bd {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+.ap-pulse-bd__k {
+    flex-shrink: 0;
+    font-weight: 700;
+    color: var(--ap-muted);
+    min-width: 4.5rem;
+}
+
+.ap-pulse-bd__v {
+    color: var(--ap-text);
+    font-weight: 600;
+}
+
 /* KPI grid */
 .ap-kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 18px;
+}
+
+.ap-kpi-grid--compact {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .ap-kpi {
@@ -541,7 +698,12 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-    .ap-kpi-grid {
+    .ap-kpi-grid,
+    .ap-kpi-grid--compact {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ap-pulse-card__metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -551,9 +713,25 @@
     }
 }
 
-@media (max-width: 640px) {
-    .ap-kpi-grid {
+@media (max-width: 900px) {
+    .ap-pulse__grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .ap-kpi-grid,
+    .ap-kpi-grid--compact {
+        grid-template-columns: 1fr;
+    }
+
+    .ap-pulse__head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .ap-pulse-card__metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .ap-header__title {

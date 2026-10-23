@@ -33,6 +33,8 @@ namespace resturanyar.Models.CustomerAccounts
         public decimal SignedAmount { get; set; }
         public decimal BalanceAfter { get; set; }
         public string? Note { get; set; }
+        public int? OrderId { get; set; }
+        public decimal? PaidAmount { get; set; }
         public DateTime CreatedAt { get; set; }
         public int? CreatedByOwnerId { get; set; }
         public int? CreatedByStaffUserId { get; set; }
@@ -72,6 +74,84 @@ namespace resturanyar.Models.CustomerAccounts
 
         [MaxLength(500)]
         public string? Note { get; set; }
+
+        /// <summary>Optional; set only by order-settlement flow (not manual UI).</summary>
+        public int? OrderId { get; set; }
+
+        /// <summary>Cash collected with order debt; optional.</summary>
+        public decimal? PaidAmount { get; set; }
+    }
+
+    public class SettleOrderPaymentRequest
+    {
+        [Required]
+        public int CurrentStatusId { get; set; }
+
+        /// <summary>
+        /// Cash applied to this order only when IncludePriorBalancePayment is false.
+        /// When prior settlement is included, prefer CashReceived (total cash from customer);
+        /// PaidAmount is still accepted as a fallback for CashReceived.
+        /// </summary>
+        [Required]
+        public decimal PaidAmount { get; set; }
+
+        /// <summary>
+        /// Total cash received from the customer. Used when IncludePriorBalancePayment is true.
+        /// Split server-side: order first, remainder to prior balance (capped).
+        /// </summary>
+        public decimal? CashReceived { get; set; }
+
+        /// <summary>
+        /// When true, cash beyond order total (up to prior ledger balance) is written as a Payment.
+        /// Requires a valid CustomerId.
+        /// </summary>
+        public bool IncludePriorBalancePayment { get; set; }
+
+        /// <summary>Required when order debt &gt; 0 or IncludePriorBalancePayment is true.</summary>
+        public int? CustomerId { get; set; }
+
+        [MaxLength(500)]
+        public string? Note { get; set; }
+    }
+
+    public class OrderSettlementPreviewDto
+    {
+        public int OrderId { get; set; }
+        public int RestaurantId { get; set; }
+        public int StatusId { get; set; }
+        public decimal OrderTotal { get; set; }
+        public int? CustomerId { get; set; }
+        public string? CustomerFullName { get; set; }
+        public string? CustomerMobile { get; set; }
+        public decimal? CustomerAccountBalance { get; set; }
+        /// <summary>True when SettlementType is already set (payment already registered).</summary>
+        public bool AlreadySettled { get; set; }
+        public string? SettlementType { get; set; }
+    }
+
+    public class SettleOrderPaymentResultDto
+    {
+        public int OrderId { get; set; }
+        public int NewStatusId { get; set; }
+        public decimal OrderTotal { get; set; }
+        /// <summary>Cash applied to this order only (not prior balance).</summary>
+        public decimal PaidAmount { get; set; }
+        public decimal DebtAmount { get; set; }
+        public string SettlementType { get; set; } = string.Empty;
+        public int? CustomerId { get; set; }
+        public int? DebtTransactionId { get; set; }
+        public int PreviousStatusId { get; set; }
+        public int RestaurantId { get; set; }
+        /// <summary>True when this call did not write again because settlement already existed.</summary>
+        public bool AlreadySettled { get; set; }
+
+        /// <summary>Cash applied to prior club balance as Payment (0 when not included).</summary>
+        public decimal PriorBalancePaidAmount { get; set; }
+
+        /// <summary>Prior balance remaining after this Payment (before new order debt effect on display is separate).</summary>
+        public decimal PriorBalanceRemaining { get; set; }
+
+        public int? PriorPaymentTransactionId { get; set; }
     }
 
     public class CustomerAccountLookupRequest

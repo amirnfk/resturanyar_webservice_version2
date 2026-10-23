@@ -1226,6 +1226,23 @@ body:has(#cartOffcanvas.show) .cart-fab {
     font-size: 0.85rem;
 }
 
+.order-page .add-order-debtor-warn,
+#cartOffcanvas .add-order-debtor-warn {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    background: #fdecea;
+    color: #b42318;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.order-page .customer-result-item .debtor-badge,
+#cartOffcanvas .customer-result-item .debtor-badge {
+    display: inline-flex;
+}
+
 .order-page .btn-change-customer,
 #cartOffcanvas .btn-change-customer,
 .order-page .btn-change-address,

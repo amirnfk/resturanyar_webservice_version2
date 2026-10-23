@@ -28,6 +28,18 @@ namespace resturanyar.Models
         /// <summary>Optional restaurant-owned order discount code (invoice-level).</summary>
         public int? DiscountCodeId { get; set; }
 
+        /// <summary>Cash collected at status-7 settlement (nullable = legacy / unsettled).</summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? SettlementPaidAmount { get; set; }
+
+        /// <summary>Debt (نسیه) recorded at settlement; 0 or null when fully paid in cash.</summary>
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? SettlementDebtAmount { get; set; }
+
+        /// <summary>Cash | Credit | Partial — null for orders settled before this feature.</summary>
+        [MaxLength(20)]
+        public string? SettlementType { get; set; }
+
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
 

@@ -82,6 +82,7 @@
     bool showDiscount = Model.DiscountTotal != 0;
     bool showCoverage = Model.TotalOrders > 0 && Model.IssuedReceiptCount < Model.TotalOrders;
     bool showPrev = Model.HasPreviousPeriodComparison;
+    bool hasUnsettledDebt = Model.UnsettledDebtTotal > 0m;
 }
 
 <div class="report-period-header mr-reveal">
@@ -205,24 +206,27 @@
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-card kpi-card--coverage mr-reveal" style="--mr-delay: 160ms">
-            @if (showDiscount)
+        <div class="kpi-card kpi-card--debt mr-reveal @(hasUnsettledDebt ? "is-alert" : "is-clear")" style="--mr-delay: 160ms">
+            <div class="kpi-card__top">
+                <div class="kpi-title">بدهی تسویه‌نشده</div>
+                <span class="kpi-icon" aria-hidden="true"><i class="bi bi-wallet2"></i></span>
+            </div>
+            <div class="kpi-value">@money(Model.UnsettledDebtTotal)</div>
+            @if (hasUnsettledDebt)
             {
-                <div class="kpi-card__top">
-                    <div class="kpi-title">تخفیف سفارش</div>
-                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-tags"></i></span>
-                </div>
-                <div class="kpi-value">@money(Model.DiscountTotal)</div>
-                <span class="badge text-bg-light kpi-badge">فاکتور: @num(Model.IssuedReceiptCount) از @num(Model.TotalOrders)</span>
+                <span class="badge text-bg-warning kpi-badge">
+                    @num(Model.UnsettledDebtOrderCount) سفارش هنوز بدهی دارد
+                </span>
             }
             else
             {
-                <div class="kpi-card__top">
-                    <div class="kpi-title">پوشش فاکتور</div>
-                    <span class="kpi-icon" aria-hidden="true"><i class="bi bi-clipboard-check"></i></span>
-                </div>
-                <div class="kpi-value" style="font-size: 1.15rem;">@num(Model.IssuedReceiptCount) از @num(Model.TotalOrders)</div>
-                <span class="badge text-bg-light kpi-badge">با هزینه: @num(Model.OrdersWithChargesCount)</span>
+                <span class="badge text-bg-success kpi-badge">
+                    <i class="bi bi-check2-circle"></i> در این بازه بدهی باز نیست
+                </span>
+            }
+            @if (showDiscount)
+            {
+                <span class="kpi-delta is-flat">تخفیف فاکتور: @money(Model.DiscountTotal)</span>
             }
         </div>
     </div>

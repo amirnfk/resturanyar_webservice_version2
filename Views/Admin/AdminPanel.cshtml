@@ -47,15 +47,106 @@
         </div>
     </header>
 
-    @* ===== KPI ===== *@
-    <section class="ap-kpi-grid">
+    @{
+        var pulse = Model.RecentPulse ?? new resturanyar.Models.ViewModels.Admin.AdminRecentPulseViewModel();
+        string PulseChip(IEnumerable<resturanyar.Models.ViewModels.Admin.AdminPulseBreakdownItem> items) =>
+            items != null && items.Any()
+                ? string.Join(" · ", items.Take(5).Select(i => $"{i.Label} ×{i.Count.ToString("N0")}"))
+                : "موردی نبوده";
+    }
+
+    @* ===== نبض اخیر: تغییرات مثبت ۲۴س / ۷روز ===== *@
+    <section class="ap-pulse">
+        <div class="ap-pulse__head">
+            <div>
+                <h2 class="ap-pulse__title"><i class="fas fa-heart-pulse"></i> نبض رشد اخیر</h2>
+                <p class="ap-pulse__sub">بازه غلتان از همین لحظه · رستوران جدید و خرید اشتراک</p>
+            </div>
+            <span class="ap-chip ap-chip--live">۲۴س / ۷روز</span>
+        </div>
+
+        <div class="ap-pulse__grid">
+            <article class="ap-pulse-card ap-pulse-card--day">
+                <header class="ap-pulse-card__head">
+                    <span class="ap-pulse-card__badge">۲۴ ساعت اخیر</span>
+                    <span class="ap-pulse-card__clock"><i class="far fa-clock"></i> تا @pulse.GeneratedAt.ToString("HH:mm")</span>
+                </header>
+                <div class="ap-pulse-card__metrics">
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.NewRestaurants24h.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">رستوران جدید</span>
+                    </div>
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.PaidPurchases24h.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">خرید پولی</span>
+                    </div>
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.FreeTrial24h.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">فری‌ترایال</span>
+                    </div>
+                    <div class="ap-pulse-metric ap-pulse-metric--money">
+                        <span class="ap-pulse-metric__val">@FormatMoney(pulse.PaidRevenue24h)</span>
+                        <span class="ap-pulse-metric__lbl">درآمد (تومان)</span>
+                    </div>
+                </div>
+                <div class="ap-pulse-card__breakdown">
+                    <div class="ap-pulse-bd">
+                        <span class="ap-pulse-bd__k">پلن‌ها</span>
+                        <span class="ap-pulse-bd__v">@PulseChip(pulse.Plans24h)</span>
+                    </div>
+                    <div class="ap-pulse-bd">
+                        <span class="ap-pulse-bd__k">روش پرداخت</span>
+                        <span class="ap-pulse-bd__v">@PulseChip(pulse.Methods24h)</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="ap-pulse-card ap-pulse-card--week">
+                <header class="ap-pulse-card__head">
+                    <span class="ap-pulse-card__badge">۷ روز اخیر</span>
+                    <span class="ap-pulse-card__clock"><i class="far fa-calendar"></i> مجموع خرید: @pulse.TotalPurchases7d.ToString("N0")</span>
+                </header>
+                <div class="ap-pulse-card__metrics">
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.NewRestaurants7d.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">رستوران جدید</span>
+                    </div>
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.PaidPurchases7d.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">خرید پولی</span>
+                    </div>
+                    <div class="ap-pulse-metric">
+                        <span class="ap-pulse-metric__val">+@pulse.FreeTrial7d.ToString("N0")</span>
+                        <span class="ap-pulse-metric__lbl">فری‌ترایال</span>
+                    </div>
+                    <div class="ap-pulse-metric ap-pulse-metric--money">
+                        <span class="ap-pulse-metric__val">@FormatMoney(pulse.PaidRevenue7d)</span>
+                        <span class="ap-pulse-metric__lbl">درآمد (تومان)</span>
+                    </div>
+                </div>
+                <div class="ap-pulse-card__breakdown">
+                    <div class="ap-pulse-bd">
+                        <span class="ap-pulse-bd__k">پلن‌ها</span>
+                        <span class="ap-pulse-bd__v">@PulseChip(pulse.Plans7d)</span>
+                    </div>
+                    <div class="ap-pulse-bd">
+                        <span class="ap-pulse-bd__k">روش پرداخت</span>
+                        <span class="ap-pulse-bd__v">@PulseChip(pulse.Methods7d)</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    @* ===== KPIهای پایه (جمع‌وجور) ===== *@
+    <section class="ap-kpi-grid ap-kpi-grid--compact">
         <article class="ap-kpi ap-kpi--orange">
             <div class="ap-kpi__top">
                 <p class="ap-kpi__label">اکانت فروخته‌شده</p>
                 <span class="ap-kpi__icon"><i class="fas fa-receipt"></i></span>
             </div>
             <p class="ap-kpi__value">@Model.PaidSubscriptionsCount.ToString("N0")</p>
-            <p class="ap-kpi__hint">این ماه: @Model.ThisMonthNewPaid.ToString("N0") خرید پرداخت‌شده</p>
+            <p class="ap-kpi__hint">این ماه: @Model.ThisMonthNewPaid.ToString("N0") خرید</p>
         </article>
 
         <article class="ap-kpi ap-kpi--emerald">
@@ -64,16 +155,7 @@
                 <span class="ap-kpi__icon"><i class="fas fa-bolt"></i></span>
             </div>
             <p class="ap-kpi__value">@Model.ActiveSubscriptions.ToString("N0")</p>
-            <p class="ap-kpi__hint">فری‌ترایال فعال: @Model.FreeTrialActiveCount.ToString("N0")</p>
-        </article>
-
-        <article class="ap-kpi ap-kpi--sky">
-            <div class="ap-kpi__top">
-                <p class="ap-kpi__label">درآمد کل</p>
-                <span class="ap-kpi__icon"><i class="fas fa-coins"></i></span>
-            </div>
-            <p class="ap-kpi__value">@FormatMoney(Model.TotalRevenue)</p>
-            <p class="ap-kpi__hint">تومان · از اشتراک‌های پرداخت‌شده</p>
+            <p class="ap-kpi__hint">فری‌ترایال: @Model.FreeTrialActiveCount.ToString("N0")</p>
         </article>
 
         <article class="ap-kpi ap-kpi--amber">
@@ -91,16 +173,16 @@
                 <span class="ap-kpi__icon"><i class="fas fa-store"></i></span>
             </div>
             <p class="ap-kpi__value">@Model.TotalRestaurants.ToString("N0")</p>
-            <p class="ap-kpi__hint">فعال: @Model.ActiveRestaurantsCount · منقضی: @Model.ExpiredRestaurantsCount</p>
+            <p class="ap-kpi__hint">فعال @Model.ActiveRestaurantsCount · منقضی @Model.ExpiredRestaurantsCount · بدون اشتراک @Model.NoSubscriptionCount</p>
         </article>
 
-        <article class="ap-kpi ap-kpi--slate">
+        <article class="ap-kpi ap-kpi--sky">
             <div class="ap-kpi__top">
-                <p class="ap-kpi__label">صاحبان رستوران</p>
-                <span class="ap-kpi__icon"><i class="fas fa-users"></i></span>
+                <p class="ap-kpi__label">درآمد کل</p>
+                <span class="ap-kpi__icon"><i class="fas fa-coins"></i></span>
             </div>
-            <p class="ap-kpi__value">@Model.TotalOwners.ToString("N0")</p>
-            <p class="ap-kpi__hint">بدون اشتراک: @Model.NoSubscriptionCount رستوران</p>
+            <p class="ap-kpi__value">@FormatMoney(Model.TotalRevenue)</p>
+            <p class="ap-kpi__hint">صاحبان: @Model.TotalOwners.ToString("N0")</p>
         </article>
 
         <article class="ap-kpi ap-kpi--rose">
@@ -109,16 +191,7 @@
                 <span class="ap-kpi__icon"><i class="fas fa-hourglass-half"></i></span>
             </div>
             <p class="ap-kpi__value">@Model.ExpiringSubscriptions.Count.ToString("N0")</p>
-            <p class="ap-kpi__hint">کمتر از ۷ روز تا پایان اشتراک</p>
-        </article>
-
-        <article class="ap-kpi ap-kpi--orange">
-            <div class="ap-kpi__top">
-                <p class="ap-kpi__label">کل اشتراک‌ها</p>
-                <span class="ap-kpi__icon"><i class="fas fa-layer-group"></i></span>
-            </div>
-            <p class="ap-kpi__value">@Model.TotalSubscriptions.ToString("N0")</p>
-            <p class="ap-kpi__hint">شامل پرداخت‌شده و آزمایشی</p>
+            <p class="ap-kpi__hint">کمتر از ۷ روز تا پایان</p>
         </article>
     </section>
 

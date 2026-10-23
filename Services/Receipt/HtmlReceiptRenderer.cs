@@ -194,6 +194,7 @@ namespace resturanyar.Services.Receipt
                             <span>جمع کل</span>
                             <span>{FormatMoney(receipt.GrandTotal)} تومان</span>
                         </div>
+                        {BuildModernSettlementBlock(receipt)}
                     </div>
                 </div>
                 """;
@@ -240,6 +241,7 @@ namespace resturanyar.Services.Receipt
                         <strong dir="ltr">{FormatMoney(receipt.GrandTotal)} تومان</strong>
                     </div>
                     <div class="thermal-total-words">{Escape(words)}</div>
+                    {BuildThermalSettlementBlock(receipt)}
                     {(string.IsNullOrWhiteSpace(receipt.Description) ? "" : $"<div class=\"thermal-note\">{Escape(receipt.Description)}</div>")}
                     <div class="thermal-seal" aria-hidden="true"></div>
                 </div>
@@ -318,6 +320,7 @@ namespace resturanyar.Services.Receipt
                             <strong dir="ltr">{FormatMoney(receipt.GrandTotal)} تومان</strong>
                         </div>
                         <div class="formal-words">{Escape(PersianMoneyWords.ToTomanWords(receipt.GrandTotal).ToPersianDigits())}</div>
+                        {BuildFormalSettlementBlock(receipt)}
                     </div>
                     <div class="formal-footer">
                         <span>با تشکر از انتخاب شما</span>
@@ -394,6 +397,7 @@ namespace resturanyar.Services.Receipt
                                 <span>جمع کل</span>
                                 <strong dir="ltr">{FormatMoney(receipt.GrandTotal)} تومان</strong>
                             </div>
+                            {BuildElegantSettlementBlock(receipt)}
                         </div>
                     </div>
                 </div>
@@ -420,6 +424,81 @@ namespace resturanyar.Services.Receipt
             }
 
             return string.Join("", parts);
+        }
+
+        /// <summary>
+        /// Settlement overlay: only when paid/debt were recorded on the live order.
+        /// Legacy / unsettled orders keep the invoice looking as before (no extra lines).
+        /// </summary>
+        private static bool HasSettlementOverlay(ReceiptDto receipt) =>
+            receipt.SettlementPaidAmount.HasValue
+            || receipt.SettlementDebtAmount.HasValue
+            || !string.IsNullOrWhiteSpace(receipt.SettlementType);
+
+        private static string BuildModernSettlementBlock(ReceiptDto receipt)
+        {
+            if (!HasSettlementOverlay(receipt))
+                return "";
+
+            var paid = receipt.SettlementPaidAmount ?? 0m;
+            var debt = receipt.SettlementDebtAmount ?? 0m;
+            var debtClass = debt > 0m ? " is-debt" : "";
+
+            return $"""
+                <div class="settlement-rows">
+                    <div class="summary-row"><span>مبلغ دریافتی</span><strong class="is-amount" dir="ltr">{FormatMoney(paid)} تومان</strong></div>
+                    <div class="summary-row{debtClass}"><span>بدهی این سفارش</span><strong class="is-amount" dir="ltr">{FormatMoney(debt)} تومان</strong></div>
+                </div>
+                """;
+        }
+
+        private static string BuildThermalSettlementBlock(ReceiptDto receipt)
+        {
+            if (!HasSettlementOverlay(receipt))
+                return "";
+
+            var paid = receipt.SettlementPaidAmount ?? 0m;
+            var debt = receipt.SettlementDebtAmount ?? 0m;
+            var debtClass = debt > 0m ? " is-debt" : "";
+
+            return $"""
+                <div class="thermal-settlement">
+                    <div class="thermal-settle-line"><span>مبلغ دریافتی</span><strong dir="ltr">{FormatMoney(paid)} تومان</strong></div>
+                    <div class="thermal-settle-line{debtClass}"><span>بدهی این سفارش</span><strong dir="ltr">{FormatMoney(debt)} تومان</strong></div>
+                </div>
+                """;
+        }
+
+        private static string BuildFormalSettlementBlock(ReceiptDto receipt)
+        {
+            if (!HasSettlementOverlay(receipt))
+                return "";
+
+            var paid = receipt.SettlementPaidAmount ?? 0m;
+            var debt = receipt.SettlementDebtAmount ?? 0m;
+            var debtAttr = debt > 0m ? " class=\"is-debt\"" : "";
+
+            return $"""
+                <div class="formal-settlement">
+                    <div><span>مبلغ دریافتی</span><strong dir="ltr">{FormatMoney(paid)} تومان</strong></div>
+                    <div{debtAttr}><span>بدهی این سفارش</span><strong dir="ltr">{FormatMoney(debt)} تومان</strong></div>
+                </div>
+                """;
+        }
+
+        private static string BuildElegantSettlementBlock(ReceiptDto receipt)
+        {
+            if (!HasSettlementOverlay(receipt))
+                return "";
+
+            var paid = receipt.SettlementPaidAmount ?? 0m;
+            var debt = receipt.SettlementDebtAmount ?? 0m;
+            var debtClass = debt > 0m ? " is-debt" : "";
+
+            return $"""
+                <div class="row"><span>مبلغ دریافتی</span><strong dir="ltr">{FormatMoney(paid)}</strong></div>
+                <div class="row{debtClass}"><span>بدهی این سفارش</span><strong dir="ltr">{FormatMoney(debt)}</strong></div>
+                """;
         }
 
         // ---------- Shared pieces ----------
@@ -699,6 +778,12 @@ namespace resturanyar.Services.Receipt
                     display: flex; justify-content: space-between; align-items: center;
                     font-size: {{grand}}; font-weight: 800; color: #9a3412;
                 }
+                .settlement-rows {
+                    border-top: 1px dashed #fdba74; padding-top: 4px; margin-top: 2px;
+                }
+                .summary-row.is-debt, .summary-row.is-debt strong {
+                    color: #b91c1c; font-weight: 800;
+                }
                 .customer {
                     margin-top: 16px; padding: 12px 14px; border-radius: 12px; border: 1px dashed #cbd5e1;
                     background: #f8fafc; display: flex; flex-wrap: wrap; gap: 8px 18px;
@@ -796,6 +881,24 @@ namespace resturanyar.Services.Receipt
                 font-size: 13px;
                 font-weight: 800;
                 text-align: right;
+            }
+            .thermal-settlement {
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px dashed #cbd5e1;
+            }
+            .thermal-settle-line {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                font-size: 12px;
+                font-weight: 700;
+                margin-top: 4px;
+            }
+            .thermal-settle-line.is-debt,
+            .thermal-settle-line.is-debt strong {
+                color: #b91c1c;
+                font-weight: 800;
             }
             .thermal-note {
                 margin-top: 10px;
@@ -900,6 +1003,25 @@ namespace resturanyar.Services.Receipt
                 text-align: left;
                 font-weight: 700;
                 font-size: 12px;
+            }
+            .formal-settlement {
+                margin-top: 10px;
+                display: grid;
+                gap: 6px;
+                max-width: 320px;
+                margin-right: auto;
+                font-size: 13px;
+                font-weight: 700;
+            }
+            .formal-settlement > div {
+                display: flex;
+                justify-content: space-between;
+                gap: 16px;
+            }
+            .formal-settlement .is-debt,
+            .formal-settlement .is-debt strong {
+                color: #b91c1c;
+                font-weight: 800;
             }
             .formal-footer {
                 margin-top: 22px;
@@ -1011,6 +1133,8 @@ namespace resturanyar.Services.Receipt
                 color: #475569;
             }
             .elegant-totals .row.is-discount strong { color: #047857; }
+            .elegant-totals .row.is-debt,
+            .elegant-totals .row.is-debt strong { color: #b91c1c; font-weight: 800; }
             .elegant-grand {
                 margin-top: 8px;
                 padding-top: 10px;

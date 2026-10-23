@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using resturanyar.Helpers;
 using resturanyar.Models;
+using resturanyar.Models.CustomerAccounts;
+using resturanyar.Services.Orders;
 using resturanyar.Utility;
 using System.Security.Claims;
 
@@ -94,6 +96,9 @@ namespace resturanyar.Controllers.Api.V2
                 CustomerMobile = order.Customer != null ? order.Customer.Mobile : null,
                 Description = order.Description,
                 OrderType = (byte)order.OrderType,
+                SettlementPaidAmount = order.SettlementPaidAmount,
+                SettlementDebtAmount = order.SettlementDebtAmount,
+                SettlementType = order.SettlementType,
                 CustomerAddressId = order.Fulfillment?.CustomerAddressId,
                 AddressSnapshot = order.Fulfillment?.AddressSnapshot,
                 PhoneSnapshot = order.Fulfillment?.PhoneSnapshot,
@@ -109,6 +114,9 @@ namespace resturanyar.Controllers.Api.V2
                     FoodImageUrl = oi.FoodImageUrl
                 }).ToList()
             };
+
+            await CustomerBalanceLookup.ApplyToOrdersAsync(
+                _context, order.RestaurantId, new List<OrderDto> { orderDto });
 
             return Ok(new { success = true, message = "سفارش با موفقیت دریافت شد", orderData = orderDto });
         }
@@ -331,6 +339,112 @@ namespace resturanyar.Controllers.Api.V2
                 });
             }
 
+            // Instant-close / legacy bypass: jumping to PAID without settlement left
+            // SettlementPaidAmount null → Excel/PDF «مبلغ دریافتی» showed "-".
+            // Auto-register full cash so reports and receipts stay consistent.
+            if (dto.NewStatusId == OrderSettlementService.PaidStatusId
+                && string.IsNullOrWhiteSpace(order.SettlementType))
+            {
+                try
+                {
+                    var settlementService = HttpContext.RequestServices
+                        .GetRequiredService<IOrderSettlementService>();
+                    var preview = await settlementService.GetPreviewAsync(orderId, order.RestaurantId);
+                    var settleResult = await settlementService.SettlePaymentAsync(
+                        orderId,
+                        order.RestaurantId,
+                        new SettleOrderPaymentRequest
+                        {
+                            CurrentStatusId = order.StatusId,
+                            PaidAmount = preview.OrderTotal,
+                            CashReceived = preview.OrderTotal,
+                            IncludePriorBalancePayment = false,
+                            CustomerId = order.CustomerId,
+                            Note = "ثبت خودکار پرداخت هنگام تغییر وضعیت به پرداخت‌شده"
+                        },
+                        ownerId,
+                        null);
+
+                    object? settleReceipt = null;
+                    if (!settleResult.AlreadySettled)
+                    {
+                        int? nextRoleIdSettle = GetNextRoleId(settleResult.NewStatusId, order.OrderType);
+                        if (nextRoleIdSettle.HasValue)
+                        {
+                            var existingUpdate = await _context.OrderUpdates
+                                .FirstOrDefaultAsync(u => u.OrderId == orderId && u.TargetRoleId == nextRoleIdSettle.Value);
+                            if (existingUpdate != null)
+                                existingUpdate.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                            else
+                            {
+                                _context.OrderUpdates.Add(new OrderUpdate
+                                {
+                                    OrderId = orderId,
+                                    RestaurantId = settleResult.RestaurantId,
+                                    TargetRoleId = nextRoleIdSettle.Value,
+                                    UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                                });
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+
+                        try
+                        {
+                            var receiptService = HttpContext.RequestServices
+                                .GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                            var issueResult = await receiptService.TryAutoIssueOnSettlementAsync(
+                                orderId, settleResult.RestaurantId, ownerId,
+                                settleResult.PreviousStatusId, settleResult.NewStatusId);
+                            if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                            {
+                                settleReceipt = new
+                                {
+                                    isIssued = true,
+                                    grandTotal = issueResult.Receipt.GrandTotal,
+                                    issuedAt = issueResult.Receipt.IssuedAt
+                                };
+                            }
+                        }
+                        catch { /* best-effort */ }
+
+                        try
+                        {
+                            var inventoryConsumption = HttpContext.RequestServices
+                                .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                            await inventoryConsumption.HandleStatusChangeAsync(
+                                orderId, settleResult.RestaurantId,
+                                settleResult.PreviousStatusId, settleResult.NewStatusId);
+                        }
+                        catch { /* best-effort */ }
+
+                        await _hubContext.Clients.Group(settleResult.RestaurantId.ToString())
+                            .SendAsync("ReceiveOrderUpdate", new
+                            {
+                                orderId,
+                                newStatusId = settleResult.NewStatusId,
+                                message = $"Order {orderId} auto-settled to status {settleResult.NewStatusId}"
+                            });
+                    }
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Order status updated and payment registered successfully.",
+                        receipt = settleReceipt,
+                        settlement = new
+                        {
+                            paidAmount = settleResult.PaidAmount,
+                            debtAmount = settleResult.DebtAmount,
+                            settlementType = settleResult.SettlementType
+                        }
+                    });
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return BadRequest(new { success = false, message = ex.Message });
+                }
+            }
+
             var previousStatusId = order.StatusId;
             order.StatusId = dto.NewStatusId;
             order.UpdatedAt = DateTime.Now;
@@ -413,6 +527,136 @@ namespace resturanyar.Controllers.Api.V2
             return Ok(new { success = true, message = "Order status updated and signal sent successfully.", receipt = receiptData });
         }
 
+        [HttpGet("orders/{orderId:int}/settlement-preview")]
+        public async Task<IActionResult> GetOrderSettlementPreviewV2(
+            int orderId,
+            [FromServices] IOrderSettlementService settlementService)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            if (await GetOwnedRestaurantAsync(order.RestaurantId, ownerId) == null)
+                return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
+
+            try
+            {
+                var data = await settlementService.GetPreviewAsync(orderId, order.RestaurantId);
+                return Ok(new { success = true, message = "ok", data });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("orders/{orderId:int}/settle-payment")]
+        public async Task<IActionResult> SettleOrderPaymentV2(
+            int orderId,
+            [FromBody] SettleOrderPaymentRequest request,
+            [FromServices] IOrderSettlementService settlementService)
+        {
+            if (!TryGetOwnerId(out int ownerId))
+                return Unauthorized(new { success = false, message = "توکن نامعتبر است." });
+
+            if (request == null)
+                return BadRequest(new { success = false, message = "درخواست نامعتبر است." });
+
+            var orderMeta = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (orderMeta == null)
+                return NotFound(new { success = false, message = "سفارش یافت نشد." });
+
+            if (await GetOwnedRestaurantAsync(orderMeta.RestaurantId, ownerId) == null)
+                return StatusCode(StatusCodes.Status403Forbidden, new { success = false, message = "دسترسی مجاز نیست." });
+
+            try
+            {
+                var result = await settlementService.SettlePaymentAsync(
+                    orderId, orderMeta.RestaurantId, request, ownerId, null);
+
+                object? receiptData = null;
+                if (!result.AlreadySettled)
+                {
+                    // Mirror UpdateOrderStatus side-effects (OrderUpdate + receipt + inventory + SignalR)
+                    int? nextRoleId = GetNextRoleId(result.NewStatusId, orderMeta.OrderType);
+                    if (nextRoleId.HasValue)
+                    {
+                        var existingUpdate = await _context.OrderUpdates
+                            .FirstOrDefaultAsync(u => u.OrderId == orderId && u.TargetRoleId == nextRoleId.Value);
+                        if (existingUpdate != null)
+                            existingUpdate.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                        else
+                        {
+                            _context.OrderUpdates.Add(new OrderUpdate
+                            {
+                                OrderId = orderId,
+                                RestaurantId = result.RestaurantId,
+                                TargetRoleId = nextRoleId.Value,
+                                UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                            });
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+
+                    try
+                    {
+                        var receiptService = HttpContext.RequestServices.GetRequiredService<resturanyar.Services.Receipt.IReceiptService>();
+                        var issueResult = await receiptService.TryAutoIssueOnSettlementAsync(
+                            orderId, result.RestaurantId, ownerId, result.PreviousStatusId, result.NewStatusId);
+                        if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                        {
+                            receiptData = new
+                            {
+                                isIssued = true,
+                                grandTotal = issueResult.Receipt.GrandTotal,
+                                issuedAt = issueResult.Receipt.IssuedAt
+                            };
+                        }
+                    }
+                    catch { /* best-effort */ }
+
+                    try
+                    {
+                        var inventoryConsumption = HttpContext.RequestServices
+                            .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                        await inventoryConsumption.HandleStatusChangeAsync(
+                            orderId, result.RestaurantId, result.PreviousStatusId, result.NewStatusId);
+                    }
+                    catch { /* best-effort */ }
+
+                    await _hubContext.Clients.Group(result.RestaurantId.ToString())
+                        .SendAsync("ReceiveOrderUpdate", new
+                        {
+                            orderId,
+                            newStatusId = result.NewStatusId,
+                            message = $"Order {orderId} settled to status {result.NewStatusId}"
+                        });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = result.AlreadySettled
+                        ? "پرداخت این سفارش قبلاً ثبت شده است."
+                        : OrderSettlementTypes.SuccessMessage(
+                            result.PaidAmount, result.DebtAmount, result.PriorBalancePaidAmount),
+                    data = result,
+                    receipt = receiptData
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.Message.Contains("کاربر دیگری", StringComparison.Ordinal))
+                    return Conflict(new { success = false, message = ex.Message });
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpPost("GetOrdersByRestaurantWithDateFilter")]
         public async Task<IActionResult> GetOrdersByRestaurantWithDateFilterV2([FromBody] OrderDateFilterRequest request)
         {
@@ -460,6 +704,9 @@ namespace resturanyar.Controllers.Api.V2
                         CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                         Description = o.Description,
                         OrderType = (byte)o.OrderType,
+                        SettlementPaidAmount = o.SettlementPaidAmount,
+                        SettlementDebtAmount = o.SettlementDebtAmount,
+                        SettlementType = o.SettlementType,
                         AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                         PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                         CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -475,6 +722,8 @@ namespace resturanyar.Controllers.Api.V2
                         }).ToList()
                     })
                     .ToListAsync();
+
+                await CustomerBalanceLookup.ApplyToOrdersAsync(_context, request.RestaurantId, orders);
 
                 if (orders.Count > 0)
                 {

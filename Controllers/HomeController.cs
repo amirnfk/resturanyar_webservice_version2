@@ -986,7 +986,7 @@ namespace resturanyar.Controllers
             {5, "آماده تحویل"},
             {6, "تحویل داده شده"},
             {7, "در انتظار پرداخت"},
-            {8, "پرداخت شده"},
+            {8, "پرداخت‌شده / نسیه"},
             {9, "لغو شده توسط مشتری"},
             {10,"لغو شده توسط رستوران"},
             {11,"بسته شده"},
@@ -1160,6 +1160,43 @@ namespace resturanyar.Controllers
 
             var totalItemsCount = await orderItemsQuery.SumAsync(oi => (int?)oi.Quantity) ?? 0;
 
+            // Live remaining نسیه (account payoffs reduce recorded SettlementDebtAmount).
+            decimal unsettledDebtTotal = 0m;
+            int unsettledDebtOrderCount = 0;
+            var debtCandidateRows = await ordersQuery
+                .Where(o => o.SettlementDebtAmount != null && o.SettlementDebtAmount > 0m)
+                .Select(o => new
+                {
+                    o.OrderId,
+                    o.RestaurantId,
+                    o.CustomerId,
+                    o.SettlementDebtAmount,
+                    o.SettlementPaidAmount,
+                    o.SettlementType,
+                    o.CreatedAt
+                })
+                .ToListAsync();
+
+            if (debtCandidateRows.Count > 0)
+            {
+                var debtOrders = debtCandidateRows.Select(r => new Order
+                {
+                    OrderId = r.OrderId,
+                    RestaurantId = r.RestaurantId,
+                    CustomerId = r.CustomerId,
+                    SettlementDebtAmount = r.SettlementDebtAmount,
+                    SettlementPaidAmount = r.SettlementPaidAmount,
+                    SettlementType = r.SettlementType,
+                    CreatedAt = r.CreatedAt
+                }).ToList();
+
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, restaurantId.Value, debtOrders);
+
+                unsettledDebtTotal = debtOrders.Sum(o => o.SettlementDebtAmount ?? 0m);
+                unsettledDebtOrderCount = debtOrders.Count(o => (o.SettlementDebtAmount ?? 0m) > 0m);
+            }
+
             decimal GetFinancialTotal(int orderId) =>
                 ResolveOrderFinance(orderId, snapshotMap, orderSubtotals).GrandTotal;
 
@@ -1309,6 +1346,8 @@ namespace resturanyar.Controllers
                 DiscountTotal = discountTotal,
                 IssuedReceiptCount = snapshotMap.Count,
                 OrdersWithChargesCount = ordersWithChargesCount,
+                UnsettledDebtTotal = unsettledDebtTotal,
+                UnsettledDebtOrderCount = unsettledDebtOrderCount,
                 ChargeBreakdown = breakdownMap.Values
                     .OrderByDescending(x => x.Amount)
                     .ToList(),
@@ -1437,6 +1476,8 @@ namespace resturanyar.Controllers
 
                 var fromLabel = DateHelper.ToShamsi(fromDate);
                 var toLabel = DateHelper.ToShamsi(toDate);
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, restaurantId.Value, orders);
                 var content = resturanyar.Services.OrdersExcelExportService.BuildWorkbook(
                     orders,
                     snapshotMap,
@@ -1530,6 +1571,8 @@ namespace resturanyar.Controllers
 
                 var fromLabel = DateHelper.ToShamsi(fromDate);
                 var toLabel = DateHelper.ToShamsi(toDate);
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, restaurantId.Value, orders);
                 var content = resturanyar.Services.OrdersPdfExportService.BuildPdf(
                     orders,
                     snapshotMap,
@@ -1664,13 +1707,50 @@ namespace resturanyar.Controllers
                 5 => "آماده تحویل",
                 6 => "تحویل داده شده",
                 7 => "در انتظار پرداخت",
-                8 => "پرداخت شده",
+                8 => "پرداخت‌شده / نسیه",
                 9 => "لغو شده توسط مشتری",
                 10 => "لغو شده توسط رستوران",
                 11 => "بسته شده",
                 12 => "در انتظار اصلاح سفارش",
                 _ => "-"
             };
+        }
+
+        /// <summary>
+        /// Search orders by order id, table, description, customer name/mobile, or delivery snapshots.
+        /// </summary>
+        private static IQueryable<Order> ApplyOrderListSearch(IQueryable<Order> query, string? search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+                return query;
+
+            var term = NormalizeSearchDigits(search.Trim());
+            if (term.Length == 0)
+                return query;
+
+            return query.Where(o =>
+                o.OrderId.ToString().Contains(term) ||
+                (o.TableNumber != null && o.TableNumber.Contains(term)) ||
+                (o.Description != null && o.Description.Contains(term)) ||
+                (o.Customer != null && (
+                    (o.Customer.FullName != null && o.Customer.FullName.Contains(term)) ||
+                    (o.Customer.Mobile != null && o.Customer.Mobile.Contains(term)))) ||
+                (o.Fulfillment != null && (
+                    (o.Fulfillment.PhoneSnapshot != null && o.Fulfillment.PhoneSnapshot.Contains(term)) ||
+                    (o.Fulfillment.CustomerNameSnapshot != null && o.Fulfillment.CustomerNameSnapshot.Contains(term)))));
+        }
+
+        private static string NormalizeSearchDigits(string input)
+        {
+            var chars = input.ToCharArray();
+            for (var i = 0; i < chars.Length; i++)
+            {
+                if (chars[i] >= '۰' && chars[i] <= '۹')
+                    chars[i] = (char)('0' + (chars[i] - '۰'));
+                else if (chars[i] >= '٠' && chars[i] <= '٩')
+                    chars[i] = (char)('0' + (chars[i] - '٠'));
+            }
+            return new string(chars);
         }
 
 
@@ -2106,13 +2186,7 @@ namespace resturanyar.Controllers
             var customers = await customersQuery.ToListAsync();
             var customerIds = customers.Select(c => c.CustomerId).ToList();
 
-            var accountBalances = customerIds.Count == 0
-                ? new Dictionary<int, decimal>()
-                : await _context.CustomerAccountTransactions.AsNoTracking()
-                    .Where(t => t.RestaurantId == restaurantId && customerIds.Contains(t.CustomerId))
-                    .GroupBy(t => t.CustomerId)
-                    .Select(g => new { CustomerId = g.Key, Balance = g.Sum(t => t.SignedAmount) })
-                    .ToDictionaryAsync(x => x.CustomerId, x => x.Balance);
+            var accountBalances = await CustomerBalanceLookup.LoadAsync(_context, restaurantId, customerIds);
 
             var orders = await _context.Orders
                 .Where(o => o.CustomerId != null &&
@@ -2132,7 +2206,7 @@ namespace resturanyar.Controllers
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
-                AccountBalance = accountBalances.TryGetValue(c.CustomerId, out var bal) ? bal : 0m,
+                AccountBalance = CustomerBalanceLookup.GetBalance(accountBalances, c.CustomerId),
                 TotalOrders = orders.Count(o => o.CustomerId == c.CustomerId),
                 TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
                     .Select(o => o.CreatedAt.Date).Distinct().Count(),
@@ -2226,7 +2300,7 @@ namespace resturanyar.Controllers
         {5, "آماده تحویل"},
         {6, "تحویل داده شده"},
         {7, "در انتظار پرداخت"},
-        {8, "پرداخت شده"},
+        {8, "پرداخت‌شده / نسیه"},
         {9, "لغو شده توسط مشتری"},
         {10, "لغو شده توسط رستوران"},
         {11, "بسته شده"},
@@ -2299,17 +2373,7 @@ namespace resturanyar.Controllers
             if (to.HasValue)
                 query = query.Where(o => o.CreatedAt <= to.Value);
 
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                if (int.TryParse(search, out int numeric))
-                {
-                    query = query.Where(o => o.OrderId == numeric);
-                }
-                else
-                {
-                    query = query.Where(o => o.Description != null && o.Description.Contains(search));
-                }
-            }
+            query = ApplyOrderListSearch(query, search);
 
             var totalItems = await query.CountAsync();
 
@@ -2331,6 +2395,9 @@ namespace resturanyar.Controllers
                     CustomerFullName = o.Customer != null ? o.Customer.FullName : null,
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     OrderType = (byte)o.OrderType,
+                    SettlementPaidAmount = o.SettlementPaidAmount,
+                    SettlementDebtAmount = o.SettlementDebtAmount,
+                    SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2352,6 +2419,8 @@ namespace resturanyar.Controllers
                     }).ToList()
                 })
                 .ToListAsync();
+
+            await CustomerBalanceLookup.ApplyToOrdersAsync(_context, restaurantId.Value, orders);
 
             if (orders.Count > 0)
             {
@@ -2432,6 +2501,18 @@ namespace resturanyar.Controllers
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
             if (order == null) return Json(new { success = false, message = "سفارش پیدا نشد." });
 
+            // Status 8 must go through SettleOrderPayment (cash / partial / credit).
+            if (newStatusId == 8 && order.StatusId != 8)
+            {
+                var terminalMsg = order.StatusId switch
+                {
+                    11 => "این سفارش قبلا بسته شده است.",
+                    9 or 10 => "این سفارش لغو شده و امکان ثبت پرداخت ندارد.",
+                    _ => "برای ثبت پرداخت، از لیست وضعیت «پرداخت‌شده / نسیه» را انتخاب کنید ."
+                };
+                return Json(new { success = false, message = terminalMsg });
+            }
+
             var previousStatusId = order.StatusId;
             order.StatusId = newStatusId;
             order.UpdatedAt = DateTime.Now;
@@ -2500,6 +2581,224 @@ namespace resturanyar.Controllers
             await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, newStatusId, "وضعیت سفارش به‌روز شد");
 
             return Json(new { success = true, message = "وضعیت با موفقیت به‌روز شد.", newStatusId, receipt = receiptData });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomersForSettlement(string? search, int page = 1, int pageSize = 8)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 8;
+            if (pageSize > 20) pageSize = 20;
+
+            var query = _context.Customers.AsNoTracking()
+                .Where(c => c.RestaurantId == restaurantId.Value && c.IsActive);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+                query = query.Where(c =>
+                    c.Mobile.Contains(term) ||
+                    (c.FullName != null && c.FullName.Contains(term)));
+            }
+
+            var totalCount = await query.CountAsync();
+            var pageRows = await query
+                .OrderByDescending(c => c.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new
+                {
+                    customerId = c.CustomerId,
+                    mobile = c.Mobile,
+                    fullName = c.FullName
+                })
+                .ToListAsync();
+
+            var balances = await CustomerBalanceLookup.LoadAsync(
+                _context, restaurantId.Value, pageRows.Select(c => c.customerId));
+
+            var items = pageRows.Select(c => new
+            {
+                c.customerId,
+                c.mobile,
+                c.fullName,
+                accountBalance = CustomerBalanceLookup.GetBalance(balances, c.customerId)
+            }).ToList();
+
+            return Json(new { success = true, data = items, totalCount });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrderSettlementPreview(
+            int orderId,
+            [FromServices] resturanyar.Services.Orders.IOrderSettlementService settlementService)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
+            if (order == null)
+                return Json(new { success = false, message = "سفارش پیدا نشد." });
+
+            try
+            {
+                var data = await settlementService.GetPreviewAsync(orderId, restaurantId.Value);
+                return Json(new { success = true, message = "ok", data });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SettleOrderPayment(
+            [FromServices] resturanyar.Services.Orders.IOrderSettlementService settlementService)
+        {
+            int? restaurantId = User.GetRestaurantId();
+            if (restaurantId == null)
+                return Json(new { success = false, message = "رستوران انتخاب نشده است." });
+
+            var orderIdRaw = Request.Form["orderId"].ToString();
+            var currentStatusRaw = Request.Form["currentStatusId"].ToString();
+            var paidAmountRaw = Request.Form["paidAmount"].ToString();
+            var cashReceivedRaw = Request.Form["cashReceived"].ToString();
+            var includePriorRaw = Request.Form["includePriorBalancePayment"].ToString();
+            var customerIdRaw = Request.Form["customerId"].ToString();
+            var note = Request.Form["note"].ToString();
+
+            if (!int.TryParse(orderIdRaw, out var orderId) || orderId <= 0)
+                return Json(new { success = false, message = "شناسه سفارش نامعتبر است." });
+
+            if (!int.TryParse(currentStatusRaw, out var currentStatusId))
+                currentStatusId = 7;
+
+            bool TryParseMoney(string raw, out decimal value)
+            {
+                if (decimal.TryParse(raw, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out value))
+                    return true;
+                if (decimal.TryParse(raw, System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.GetCultureInfo("fa-IR"), out value))
+                    return true;
+                return decimal.TryParse(raw, out value);
+            }
+
+            if (!TryParseMoney(paidAmountRaw, out var paidAmount))
+                return Json(new { success = false, message = "مبلغ دریافتی نامعتبر است." });
+
+            decimal? cashReceived = null;
+            if (!string.IsNullOrWhiteSpace(cashReceivedRaw))
+            {
+                if (!TryParseMoney(cashReceivedRaw, out var cashVal))
+                    return Json(new { success = false, message = "مبلغ دریافتی نامعتبر است." });
+                cashReceived = cashVal;
+            }
+
+            var includePrior = string.Equals(includePriorRaw, "true", StringComparison.OrdinalIgnoreCase)
+                || includePriorRaw == "1"
+                || string.Equals(includePriorRaw, "on", StringComparison.OrdinalIgnoreCase);
+
+            int? customerId = null;
+            if (int.TryParse(customerIdRaw, out var cid) && cid > 0)
+                customerId = cid;
+
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.RestaurantId == restaurantId);
+            if (order == null)
+                return Json(new { success = false, message = "سفارش پیدا نشد." });
+
+            try
+            {
+                var request = new resturanyar.Models.CustomerAccounts.SettleOrderPaymentRequest
+                {
+                    CurrentStatusId = currentStatusId,
+                    PaidAmount = paidAmount,
+                    CashReceived = cashReceived,
+                    IncludePriorBalancePayment = includePrior,
+                    CustomerId = customerId,
+                    Note = string.IsNullOrWhiteSpace(note) ? null : note
+                };
+
+                var result = await settlementService.SettlePaymentAsync(
+                    orderId,
+                    restaurantId.Value,
+                    request,
+                    User.GetOwnerId(),
+                    null);
+
+                object? receiptData = null;
+                if (!result.AlreadySettled)
+                {
+                    try
+                    {
+                        var issueResult = await _receiptService.TryAutoIssueOnSettlementAsync(
+                            orderId,
+                            restaurantId.Value,
+                            User.GetOwnerId(),
+                            result.PreviousStatusId,
+                            result.NewStatusId);
+
+                        if (issueResult.Success && issueResult.Receipt?.IsIssued == true)
+                        {
+                            var issuedAt = issueResult.Receipt.IssuedAt;
+                            if (issuedAt.HasValue && issuedAt.Value.Kind == DateTimeKind.Unspecified)
+                                issuedAt = DateTime.SpecifyKind(issuedAt.Value, DateTimeKind.Utc);
+
+                            receiptData = new
+                            {
+                                isIssued = true,
+                                grandTotal = issueResult.Receipt.GrandTotal,
+                                issuedAt
+                            };
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Auto-issue receipt failed for settled order {OrderId}", orderId);
+                    }
+
+                    try
+                    {
+                        var inventoryConsumption = HttpContext.RequestServices
+                            .GetRequiredService<resturanyar.Services.Inventory.IOrderInventoryConsumptionService>();
+                        await inventoryConsumption.HandleStatusChangeAsync(
+                            orderId, restaurantId.Value, result.PreviousStatusId, result.NewStatusId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Inventory auto-deduct failed for settled order {OrderId}", orderId);
+                    }
+
+                    await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, result.NewStatusId,
+                        result.DebtAmount > 0 ? "پرداخت با بدهی ثبت شد" : "پرداخت ثبت شد");
+                }
+
+                var message = result.AlreadySettled
+                    ? "پرداخت این سفارش قبلاً ثبت شده است."
+                    : resturanyar.Models.CustomerAccounts.OrderSettlementTypes.SuccessMessage(
+                        result.PaidAmount, result.DebtAmount, result.PriorBalancePaidAmount);
+
+                return Json(new
+                {
+                    success = true,
+                    message,
+                    newStatusId = result.NewStatusId,
+                    data = result,
+                    receipt = receiptData
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpGet]
@@ -2577,7 +2876,7 @@ namespace resturanyar.Controllers
     {
         {6, "تحویل داده شده"},
         {7, "در انتظار پرداخت"},
-        {8, "پرداخت شده"},
+        {8, "پرداخت‌شده / نسیه"},
         {11, "بسته شده"},
 
     };
@@ -2613,14 +2912,7 @@ namespace resturanyar.Controllers
             if (from.HasValue) query = query.Where(o => o.CreatedAt >= from.Value);
             if (to.HasValue) query = query.Where(o => o.CreatedAt <= to.Value);
 
-            // فیلتر سرچ
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                if (int.TryParse(search, out int num))
-                    query = query.Where(o => o.OrderId == num);
-                else
-                    query = query.Where(o => o.Description != null && o.Description.Contains(search));
-            }
+            query = ApplyOrderListSearch(query, search);
 
             var totalItems = await query.CountAsync();
 
@@ -2636,6 +2928,9 @@ namespace resturanyar.Controllers
          CreatedAt = o.CreatedAt,
          Description = o.Description,
          OrderType = (byte)o.OrderType,
+         SettlementPaidAmount = o.SettlementPaidAmount,
+         SettlementDebtAmount = o.SettlementDebtAmount,
+         SettlementType = o.SettlementType,
          AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
          PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
          CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2658,6 +2953,8 @@ namespace resturanyar.Controllers
          }).ToList()
      })
      .ToListAsync();
+
+            await CustomerBalanceLookup.ApplyToOrdersAsync(_context, restaurantId.Value, orders);
 
             // محاسبه مبلغ کل هر سفارش بدون تغییر DTO
             var orderTotals = orders.ToDictionary(
@@ -2723,13 +3020,7 @@ namespace resturanyar.Controllers
             if (filter.From.HasValue) query = query.Where(o => o.CreatedAt >= filter.From.Value);
             if (filter.To.HasValue) query = query.Where(o => o.CreatedAt <= filter.To.Value);
 
-            if (!string.IsNullOrWhiteSpace(filter.Search))
-            {
-                if (int.TryParse(filter.Search, out int num))
-                    query = query.Where(o => o.OrderId == num);
-                else
-                    query = query.Where(o => o.Description != null && o.Description.Contains(filter.Search));
-            }
+            query = ApplyOrderListSearch(query, filter.Search);
 
             if (filter.StatusId.HasValue && filter.StatusId != 0)
             {
@@ -2758,6 +3049,9 @@ namespace resturanyar.Controllers
                     CreatedAt = o.CreatedAt,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    SettlementPaidAmount = o.SettlementPaidAmount,
+                    SettlementDebtAmount = o.SettlementDebtAmount,
+                    SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2781,6 +3075,8 @@ namespace resturanyar.Controllers
                 })
                 .ToListAsync();
 
+            await CustomerBalanceLookup.ApplyToOrdersAsync(_context, restaurantId.Value, orders);
+
             var vm = new OrderListViewModel
             {
                 Orders = orders,
@@ -2794,7 +3090,7 @@ namespace resturanyar.Controllers
                 StatusMap = new Dictionary<int, string> {
             {6, "تحویل داده شده"},
             {7, "در انتظار پرداخت"},
-            {8, "پرداخت شده"},
+            {8, "پرداخت‌شده / نسیه"},
             {11, "بسته شده"},
         }
             };

@@ -145,12 +145,29 @@
     --kpi-icon-bg: rgba(99, 102, 241, 0.14);
 }
 
-.manager-reports-page .report-finance-row .kpi-card--coverage {
+.manager-reports-page .report-finance-row .kpi-card--coverage,
+.manager-reports-page .report-finance-row .kpi-card--debt {
     --kpi-accent: #64748b;
     --kpi-accent-2: #475569;
     --kpi-wash: rgba(100, 116, 139, 0.1);
     --kpi-glow: rgba(100, 116, 139, 0.16);
     --kpi-icon-bg: rgba(100, 116, 139, 0.14);
+}
+
+.manager-reports-page .report-finance-row .kpi-card--debt.is-alert {
+    --kpi-accent: #ef4444;
+    --kpi-accent-2: #dc2626;
+    --kpi-wash: rgba(239, 68, 68, 0.1);
+    --kpi-glow: rgba(239, 68, 68, 0.18);
+    --kpi-icon-bg: rgba(239, 68, 68, 0.14);
+}
+
+.manager-reports-page .report-finance-row .kpi-card--debt.is-clear {
+    --kpi-accent: #10b981;
+    --kpi-accent-2: #059669;
+    --kpi-wash: rgba(16, 185, 129, 0.08);
+    --kpi-glow: rgba(16, 185, 129, 0.16);
+    --kpi-icon-bg: rgba(16, 185, 129, 0.14);
 }
 
 .manager-reports-page .report-coverage-hint {

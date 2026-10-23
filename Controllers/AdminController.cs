@@ -54,6 +54,94 @@ namespace resturanyar.Controllers
             // return _configuration.GetSection("ExcludedOwnerIds").Get<List<int>>() ?? new List<int>();
         }
 
+        private static string NormalizePaymentMethodLabel(string? method)
+        {
+            if (string.IsNullOrWhiteSpace(method)) return "نامشخص";
+            return method switch
+            {
+                "FreeTrial" => "فری‌ترایال",
+                "CafeBazar" => "کافه‌بازار",
+                "Zarinpal" => "زرین‌پال",
+                _ => method
+            };
+        }
+
+        private async Task<AdminRecentPulseViewModel> BuildRecentPulseAsync(
+            List<int> excludedIds,
+            DateTime now,
+            DateTime dayAgo,
+            DateTime weekAgo)
+        {
+            var pulse = new AdminRecentPulseViewModel { GeneratedAt = now };
+
+            pulse.NewRestaurants24h = await _context.Restaurants.AsNoTracking()
+                .Where(r => !excludedIds.Contains(r.owner_id) && r.CreatedAt >= dayAgo)
+                .CountAsync();
+
+            pulse.NewRestaurants7d = await _context.Restaurants.AsNoTracking()
+                .Where(r => !excludedIds.Contains(r.owner_id) && r.CreatedAt >= weekAgo)
+                .CountAsync();
+
+            var recentSubs = await (
+                from s in _context.Subscriptions.AsNoTracking()
+                join p in _context.SubscriptionPlans.AsNoTracking() on s.SubscriptionPlanId equals p.Id into pj
+                from p in pj.DefaultIfEmpty()
+                where !excludedIds.Contains(s.OwnerId) && s.PurchaseDate >= weekAgo
+                select new
+                {
+                    s.PurchaseDate,
+                    s.IsPaid,
+                    s.PricePaid,
+                    s.PaymentMethod,
+                    PlanName = p != null ? p.Name : "نامشخص"
+                }).ToListAsync();
+
+            static bool IsFreeTrial(string? method, bool isPaid) =>
+                !isPaid || string.Equals(method, "FreeTrial", StringComparison.OrdinalIgnoreCase);
+
+            static bool IsPaidPurchase(string? method, bool isPaid) =>
+                isPaid && !string.Equals(method, "FreeTrial", StringComparison.OrdinalIgnoreCase);
+
+            var last24 = recentSubs.Where(s => s.PurchaseDate >= dayAgo).ToList();
+            var last7 = recentSubs;
+
+            pulse.TotalPurchases24h = last24.Count;
+            pulse.TotalPurchases7d = last7.Count;
+            pulse.PaidPurchases24h = last24.Count(s => IsPaidPurchase(s.PaymentMethod, s.IsPaid));
+            pulse.PaidPurchases7d = last7.Count(s => IsPaidPurchase(s.PaymentMethod, s.IsPaid));
+            pulse.FreeTrial24h = last24.Count(s => IsFreeTrial(s.PaymentMethod, s.IsPaid));
+            pulse.FreeTrial7d = last7.Count(s => IsFreeTrial(s.PaymentMethod, s.IsPaid));
+            pulse.PaidRevenue24h = last24.Where(s => IsPaidPurchase(s.PaymentMethod, s.IsPaid)).Sum(s => s.PricePaid);
+            pulse.PaidRevenue7d = last7.Where(s => IsPaidPurchase(s.PaymentMethod, s.IsPaid)).Sum(s => s.PricePaid);
+
+            List<AdminPulseBreakdownItem> GroupByLabel(
+                IEnumerable<(string Label, bool IsPaid, string? Method, decimal Price)> rows,
+                Func<(string Label, bool IsPaid, string? Method, decimal Price), string> keySelector)
+            {
+                return rows
+                    .GroupBy(keySelector)
+                    .Select(g => new AdminPulseBreakdownItem
+                    {
+                        Label = g.Key,
+                        Count = g.Count(),
+                        PaidCount = g.Count(x => IsPaidPurchase(x.Method, x.IsPaid)),
+                        Revenue = g.Where(x => IsPaidPurchase(x.Method, x.IsPaid)).Sum(x => x.Price)
+                    })
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+            }
+
+            var mapped24 = last24.Select(s => (Label: s.PlanName ?? "نامشخص", s.IsPaid, Method: s.PaymentMethod, Price: s.PricePaid));
+            var mapped7 = last7.Select(s => (Label: s.PlanName ?? "نامشخص", s.IsPaid, Method: s.PaymentMethod, Price: s.PricePaid));
+
+            pulse.Plans24h = GroupByLabel(mapped24, x => x.Label);
+            pulse.Plans7d = GroupByLabel(mapped7, x => x.Label);
+            pulse.Methods24h = GroupByLabel(mapped24, x => NormalizePaymentMethodLabel(x.Method));
+            pulse.Methods7d = GroupByLabel(mapped7, x => NormalizePaymentMethodLabel(x.Method));
+
+            return pulse;
+        }
+
         public async Task<IActionResult> AdminPanel()
         {
             try
@@ -136,6 +224,12 @@ namespace resturanyar.Controllers
                                 && !excludedIds.Contains(s.OwnerId)
                                 && (s.PaymentMethod == "FreeTrial" || !s.IsPaid))
                     .CountAsync();
+
+                // ===== نبض اخیر (۲۴س / ۷روز) — رستوران جدید + خرید اشتراک =====
+                var dayAgo = today.AddDays(-1);
+                var weekAgo = today.AddDays(-7);
+
+                viewModel.RecentPulse = await BuildRecentPulseAsync(excludedIds, today, dayAgo, weekAgo);
 
                 // ===== لیست رستوران‌ها (بدون ساب‌کوئری وابسته به ازای هر ردیف) =====
                 var restaurants = await (

@@ -22,7 +22,10 @@
 
     <link rel="stylesheet" href="~/css/manager-order-edit.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="~/css/order-settlement.css" asp-append-version="true" />
+
     <script>document.documentElement.classList.add('hide-support-chat-fab');</script>
+
 
 }
 
@@ -30,132 +33,94 @@
 
 <div class="container orders-page py-4 mt-2">
 
-    <div class="filter-card p-4 mb-4">
+    <div class="filter-card p-3 p-md-4 mb-4">
 
-        <form id="filterForm" class="row g-3 align-items-end" method="get" action="@Url.Action("ManagerOrderList","Home")">
+        <form id="filterForm" method="get" action="@Url.Action("ManagerOrderList","Home")">
 
-            <div class="col-md-2 col-sm-6">
+            <div class="filter-grid">
 
-                <label class="form-label">وضعیت</label>
+                <div class="filter-field filter-field--search">
+                    <label class="form-label" for="orderSearchInput">جست‌وجو</label>
+                    <div class="filter-input-wrap">
+                        <i class="fas fa-search filter-input-icon" aria-hidden="true"></i>
+                        <input type="text" id="orderSearchInput" name="search" class="form-control filter-input--with-icon"
+                               placeholder="نام مشتری، موبایل، شماره سفارش یا میز…"
+                               value="@(Model.Search ?? "")"
+                               autocomplete="off" />
+                    </div>
+                </div>
 
-                <select name="statusId" class="form-select">
+                <div class="filter-field filter-field--status">
+                    <label class="form-label">وضعیت سفارش</label>
+                    <select name="statusId" class="form-select">
+                        <option value="0" selected="@(Model.FilterStatusId == 0 ? "selected" : null)">همه وضعیت‌های فعال</option>
+                        <option value="-1" selected="@(Model.FilterStatusId == -1 ? "selected" : null)">همه</option>
+                        @foreach (var kv in Model.StatusMap)
+                        {
+                            <option value="@kv.Key" selected="@(Model.FilterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
+                        }
+                    </select>
+                </div>
 
-                    <option value="0" selected="@(Model.FilterStatusId == 0 ? "selected" : null)">انتخاب...</option>
+                <div class="filter-field filter-field--date">
+                    <label class="form-label" for="fromFa">از تاریخ</label>
+                    <div class="filter-input-wrap">
+                        <i class="far fa-calendar-alt filter-input-icon" aria-hidden="true"></i>
+                        <input data-jdp id="fromFa" class="form-control bg-white filter-input--with-icon" placeholder="انتخاب تاریخ" readonly />
+                    </div>
+                    <input type="hidden" name="from" id="fromIso" value="@(Model.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
+                    <div id="fromFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
+                </div>
 
-                    <option value="-1" selected="@(Model.FilterStatusId == -1 ? "selected" : null)">همه</option>
+                <div class="filter-field filter-field--date">
+                    <label class="form-label" for="toFa">تا تاریخ</label>
+                    <div class="filter-input-wrap">
+                        <i class="far fa-calendar-alt filter-input-icon" aria-hidden="true"></i>
+                        <input data-jdp id="toFa" class="form-control bg-white filter-input--with-icon" placeholder="انتخاب تاریخ" readonly />
+                    </div>
+                    <input type="hidden" name="to" id="toIso" value="@(Model.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
+                    <div id="toFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
+                </div>
 
-                    @foreach (var kv in Model.StatusMap)
+                <div class="filter-field filter-field--pagesize">
+                    <label class="form-label">تعداد در صفحه</label>
+                    <select name="pageSize" class="form-select">
+                        <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+                        <option value="20" selected="@(Model.PageSize == 20 ? "selected" : null)">20</option>
+                        <option value="50" selected="@(Model.PageSize == 50 ? "selected" : null)">50</option>
+                    </select>
+                </div>
 
-                    {
-
-                        <option value="@kv.Key" selected="@(Model.FilterStatusId == kv.Key ? "selected" : null)">@kv.Value</option>
-
-                    }
-
-                </select>
-
-            </div>
-
-
-
-            <div class="col-md-2 col-sm-6">
-
-                <label class="form-label">از تاریخ</label>
-
-                <input data-jdp id="fromFa" class="form-control bg-white" placeholder="انتخاب کنید" readonly />
-
-                <input type="hidden" name="from" id="fromIso" value="@(Model.FromDate?.ToString("yyyy-MM-dd") ?? "")" />
-
-                <div id="fromFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
-
-            </div>
-
-            <div class="col-md-2 col-sm-6">
-
-                <label class="form-label">تا تاریخ</label>
-
-                <input data-jdp id="toFa" class="form-control bg-white" placeholder="انتخاب کنید" readonly />
-
-                <input type="hidden" name="to" id="toIso" value="@(Model.ToDate?.ToString("yyyy-MM-dd") ?? "")" />
-
-                <div id="toFaErr" class="invalid-feedback d-none">تاریخ معتبر نیست</div>
-
-            </div>
-
-
-
-            <div class="col-md-2 col-sm-6">
-
-                <label class="form-label">جست‌وجو</label>
-
-                <input type="text" name="search" class="form-control" placeholder="شماره سفارش یا توضیح"
-
-                       value="@(Model.Search ?? "")" />
-
-            </div>
-
-
-
-            <div class="col-md-2 col-sm-6">
-
-                <label class="form-label">تعداد در صفحه</label>
-
-                <select name="pageSize" class="form-select">
-
-                    <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
-
-                    <option value="20" selected="@(Model.PageSize == 20 ? "selected" : null)">20</option>
-
-                    <option value="50" selected="@(Model.PageSize == 50 ? "selected" : null)">50</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="col-md-2 col-sm-12">
-
-                <label class="form-label d-none d-md-block">&nbsp;</label>
-
-                <div class="filter-actions">
-
-                    <button type="submit" class="btn btn-primary">اعمال</button>
-
-                    <button type="button" id="btnResetFilters" class="btn btn-outline-secondary">
-
-                        <i class="fas fa-undo-alt ms-1"></i> بازنشانی
-
-                    </button>
-
+                <div class="filter-field filter-field--actions">
+                    <label class="form-label d-none d-lg-block">&nbsp;</label>
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sliders-h ms-1" aria-hidden="true"></i> اعمال
+                        </button>
+                        <button type="button" id="btnResetFilters" class="btn btn-outline-secondary" title="بازنشانی فیلترها">
+                            <i class="fas fa-undo-alt ms-1" aria-hidden="true"></i> بازنشانی
+                        </button>
+                    </div>
                 </div>
 
             </div>
 
-
-
-            <div class="col-12 pt-3 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-
-                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "today", page = 1 })"
-
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
-
-                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "week", page = 1 })"
-
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
-
-                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "month", page = 1 })"
-
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
-
-                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "quarter", page = 1 })"
-
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
-
-                <a href="@Url.Action("ManagerOrderList", "Home", new { period = "year", page = 1 })"
-
-                   class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
-
+            <div class="filter-period-bar">
+                <span class="filter-period-label">
+                    <i class="far fa-clock ms-1" aria-hidden="true"></i> بازه سریع:
+                </span>
+                <div class="filter-period-pills">
+                    <a href="@Url.Action("ManagerOrderList", "Home", new { period = "today", page = 1 })"
+                       class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "today" ? "active" : "")">امروز</a>
+                    <a href="@Url.Action("ManagerOrderList", "Home", new { period = "week", page = 1 })"
+                       class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "week" ? "active" : "")">هفته</a>
+                    <a href="@Url.Action("ManagerOrderList", "Home", new { period = "month", page = 1 })"
+                       class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "month" ? "active" : "")">ماه</a>
+                    <a href="@Url.Action("ManagerOrderList", "Home", new { period = "quarter", page = 1 })"
+                       class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "quarter" ? "active" : "")">سه‌ماهه</a>
+                    <a href="@Url.Action("ManagerOrderList", "Home", new { period = "year", page = 1 })"
+                       class="btn btn-outline-secondary quick-filter-btn @(currentPeriod == "year" ? "active" : "")">سال</a>
+                </div>
             </div>
 
         </form>
@@ -423,6 +388,7 @@
 
     <script src="~/js/jalalidatepicker.min.js"></script>
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script src="~/js/order-settlement.js" asp-append-version="true"></script>
 
     <script>
 

@@ -1299,7 +1299,7 @@ namespace resturanyar.Controllers.Api.V2
 
         [HttpGet("getcustomers/{restaurantId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
+        public async Task<IActionResult> GetCustomers(int restaurantId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string search = null)
         {
             try
             {
@@ -1309,8 +1309,8 @@ namespace resturanyar.Controllers.Api.V2
                     return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
 
                 // Verify restaurant ownership
-                var restaurant = _context.Restaurants
-                    .FirstOrDefault(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == restaurantId && r.owner_id == ownerIdFromToken);
                 if (restaurant == null)
                     return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
 
@@ -1324,8 +1324,8 @@ namespace resturanyar.Controllers.Api.V2
                                              (c.Description != null && c.Description.Contains(search)));
                 }
 
-                var totalCount = query.Count();
-                var customers = query
+                var totalCount = await query.CountAsync();
+                var pageRows = await query
                     .OrderByDescending(c => c.CreatedAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
@@ -1338,7 +1338,21 @@ namespace resturanyar.Controllers.Api.V2
                         c.CreatedAt,
                         c.UpdatedAt
                     })
-                    .ToList();
+                    .ToListAsync();
+
+                var balances = await CustomerBalanceLookup.LoadAsync(
+                    _context, restaurantId, pageRows.Select(c => c.CustomerId));
+
+                var customers = pageRows.Select(c => new
+                {
+                    c.CustomerId,
+                    c.Mobile,
+                    c.FullName,
+                    c.Description,
+                    c.CreatedAt,
+                    c.UpdatedAt,
+                    accountBalance = CustomerBalanceLookup.GetBalance(balances, c.CustomerId)
+                }).ToList();
 
                 return Ok(new
                 {
@@ -1359,7 +1373,7 @@ namespace resturanyar.Controllers.Api.V2
         
         [HttpPost("addcustomer")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult AddCustomer([FromBody] AddCustomerRequest request)
+        public async Task<IActionResult> AddCustomer([FromBody] AddCustomerRequest request)
         {
             try
             {
@@ -1369,14 +1383,14 @@ namespace resturanyar.Controllers.Api.V2
                     return Unauthorized(new { success = false, message = "توکن نامعتبر یا منقضی شده است." });
 
                 // Verify restaurant ownership
-                var restaurant = _context.Restaurants
-                    .FirstOrDefault(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
+                var restaurant = await _context.Restaurants
+                    .FirstOrDefaultAsync(r => r.restaurant_id == request.RestaurantId && r.owner_id == ownerIdFromToken);
                 if (restaurant == null)
                     return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
 
                 // Check for existing customer (including inactive)
-                var existingCustomer = _context.Customers
-                    .FirstOrDefault(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
+                var existingCustomer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.RestaurantId == request.RestaurantId && c.Mobile == request.Mobile);
 
                 if (existingCustomer != null)
                 {
@@ -1387,14 +1401,17 @@ namespace resturanyar.Controllers.Api.V2
                         existingCustomer.FullName = request.FullName;
                         existingCustomer.Description = request.Description;
                         existingCustomer.UpdatedAt = DateTime.Now;
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
 
+                        var reactivatedBalances = await CustomerBalanceLookup.LoadAsync(
+                            _context, request.RestaurantId, new[] { existingCustomer.CustomerId });
                         return Ok(new
                         {
                             success = true,
                             message = "مشتری غیرفعال قبلی با موفقیت فعال و ویرایش شد",
                             customerId = existingCustomer.CustomerId,
-                            wasReactivated = true
+                            wasReactivated = true,
+                            accountBalance = CustomerBalanceLookup.GetBalance(reactivatedBalances, existingCustomer.CustomerId)
                         });
                     }
                     else
@@ -1416,14 +1433,15 @@ namespace resturanyar.Controllers.Api.V2
                 };
 
                 _context.Customers.Add(customer);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(new
                 {
                     success = true,
                     message = "مشتری با موفقیت اضافه شد",
                     customerId = customer.CustomerId,
-                    wasReactivated = false
+                    wasReactivated = false,
+                    accountBalance = 0m
                 });
             }
             catch (Exception ex)
@@ -1569,13 +1587,7 @@ namespace resturanyar.Controllers.Api.V2
                 var customers = await customersQuery.ToListAsync();
                 var customerIds = customers.Select(c => c.CustomerId).ToList();
 
-                var accountBalances = customerIds.Count == 0
-                    ? new Dictionary<int, decimal>()
-                    : await _context.CustomerAccountTransactions.AsNoTracking()
-                        .Where(t => t.RestaurantId == restaurantId && customerIds.Contains(t.CustomerId))
-                        .GroupBy(t => t.CustomerId)
-                        .Select(g => new { CustomerId = g.Key, Balance = g.Sum(t => t.SignedAmount) })
-                        .ToDictionaryAsync(x => x.CustomerId, x => x.Balance);
+                var accountBalances = await CustomerBalanceLookup.LoadAsync(_context, restaurantId, customerIds);
 
                 var ordersQuery = _context.Orders
                     .Where(o => customerIds.Contains(o.CustomerId.Value) &&
@@ -1596,7 +1608,7 @@ namespace resturanyar.Controllers.Api.V2
                     IsActive = c.IsActive,
                     CreatedAt = c.CreatedAt,
                     CreatedAtShamsi = DateHelper.ToShamsi(c.CreatedAt),
-                    AccountBalance = accountBalances.TryGetValue(c.CustomerId, out var bal) ? bal : 0m,
+                    AccountBalance = CustomerBalanceLookup.GetBalance(accountBalances, c.CustomerId),
                     TotalOrders = orders.Where(o => o.CustomerId == c.CustomerId).Count(),
                     TotalDistinctDays = orders.Where(o => o.CustomerId == c.CustomerId)
                         .Select(o => o.CreatedAt.Date).Distinct().Count(),
@@ -2499,6 +2511,9 @@ namespace resturanyar.Controllers.Api.V2
                     CustomerMobile = o.Customer != null ? o.Customer.Mobile : null,
                     Description = o.Description,
                     OrderType = (byte)o.OrderType,
+                    SettlementPaidAmount = o.SettlementPaidAmount,
+                    SettlementDebtAmount = o.SettlementDebtAmount,
+                    SettlementType = o.SettlementType,
                     AddressSnapshot = o.Fulfillment != null ? o.Fulfillment.AddressSnapshot : null,
                     PhoneSnapshot = o.Fulfillment != null ? o.Fulfillment.PhoneSnapshot : null,
                     CustomerNameSnapshot = o.Fulfillment != null ? o.Fulfillment.CustomerNameSnapshot : null,
@@ -2519,6 +2534,8 @@ namespace resturanyar.Controllers.Api.V2
                         FoodImageUrl = oi.FoodImageUrl
                     }).ToList()
                 }).ToListAsync();
+
+            await CustomerBalanceLookup.ApplyToOrdersAsync(_context, restaurantId, orders);
 
             if (orders.Count > 0)
             {
@@ -2621,6 +2638,8 @@ namespace resturanyar.Controllers.Api.V2
                     .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
                     .ToDictionaryAsync(s => s.OrderId);
 
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, request.RestaurantId, orders);
                 var content = resturanyar.Services.OrdersExcelExportService.BuildWorkbook(
                     orders,
                     snapshotMap,
@@ -2676,6 +2695,8 @@ namespace resturanyar.Controllers.Api.V2
                     .Where(s => orders.Select(o => o.OrderId).Contains(s.OrderId))
                     .ToDictionaryAsync(s => s.OrderId);
 
+                await resturanyar.Services.Orders.OrderSettlementLiveResolver.OverlayOnOrdersAsync(
+                    _context, request.RestaurantId, orders);
                 var content = resturanyar.Services.OrdersPdfExportService.BuildPdf(
                     orders,
                     snapshotMap,

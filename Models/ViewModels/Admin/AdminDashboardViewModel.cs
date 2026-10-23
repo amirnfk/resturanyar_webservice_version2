@@ -24,11 +24,46 @@
         public int NoSubscriptionCount { get; set; }
         public int ActiveRestaurantsCount { get; set; }
 
+        /// <summary>Positive-change pulse for last 24h / 7 days (restaurants + purchases).</summary>
+        public AdminRecentPulseViewModel RecentPulse { get; set; } = new();
+
         public List<RestaurantStatusViewModel> Restaurants { get; set; } = new();
         public List<OwnerSummaryViewModel> Owners { get; set; } = new();
         public List<ExpiringSubscriptionViewModel> ExpiringSubscriptions { get; set; } = new();
         public List<RecentSubscriptionViewModel> RecentSubscriptions { get; set; } = new();
         public List<MonthlyStatsViewModel> MonthlyStats { get; set; } = new();
+    }
+
+    public class AdminRecentPulseViewModel
+    {
+        public DateTime GeneratedAt { get; set; }
+
+        public int NewRestaurants24h { get; set; }
+        public int NewRestaurants7d { get; set; }
+
+        public int PaidPurchases24h { get; set; }
+        public int PaidPurchases7d { get; set; }
+        public decimal PaidRevenue24h { get; set; }
+        public decimal PaidRevenue7d { get; set; }
+
+        public int FreeTrial24h { get; set; }
+        public int FreeTrial7d { get; set; }
+
+        public int TotalPurchases24h { get; set; }
+        public int TotalPurchases7d { get; set; }
+
+        public List<AdminPulseBreakdownItem> Plans24h { get; set; } = new();
+        public List<AdminPulseBreakdownItem> Plans7d { get; set; } = new();
+        public List<AdminPulseBreakdownItem> Methods24h { get; set; } = new();
+        public List<AdminPulseBreakdownItem> Methods7d { get; set; } = new();
+    }
+
+    public class AdminPulseBreakdownItem
+    {
+        public string Label { get; set; } = "";
+        public int Count { get; set; }
+        public int PaidCount { get; set; }
+        public decimal Revenue { get; set; }
     }
 
     public class SubscriptionStatsViewModel

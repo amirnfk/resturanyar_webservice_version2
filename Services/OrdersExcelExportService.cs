@@ -1,4 +1,5 @@
 using ClosedXML.Excel;
+using resturanyar.Helpers;
 using resturanyar.Models;
 using resturanyar.Models.Receipt;
 using resturanyar.Utility;
@@ -11,6 +12,8 @@ namespace resturanyar.Services
     /// </summary>
     public static class OrdersExcelExportService
     {
+        private const int SummaryColumnCount = 20;
+
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -28,13 +31,22 @@ namespace resturanyar.Services
             var wsOrders = workbook.Worksheets.Add("خلاصه سفارش‌ها");
 
             decimal salesTotal = 0m;
+            decimal paidTotal = 0m;
+            decimal debtTotal = 0m;
             foreach (var o in orders)
             {
-                salesTotal += GetInvoiceAmount(o, snapshotMap);
+                var invoiceAmount = GetInvoiceAmount(o, snapshotMap);
+                salesTotal += invoiceAmount;
+                var settlement = ResolveSettlementAmounts(o, invoiceAmount);
+                if (settlement.Settled)
+                {
+                    paidTotal += settlement.Paid;
+                    debtTotal += settlement.Debt;
+                }
             }
 
             // Banner rows 1–2
-            wsOrders.Range(1, 1, 1, 18).Merge();
+            wsOrders.Range(1, 1, 1, SummaryColumnCount).Merge();
             wsOrders.Cell(1, 1).Value =
                 $"مجموع فروش از تاریخ {fromDateLabel} تا تاریخ {toDateLabel} (مبالغ به تومان)";
             wsOrders.Cell(1, 1).Style.Font.Bold = true;
@@ -44,9 +56,9 @@ namespace resturanyar.Services
             wsOrders.Cell(1, 1).Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             wsOrders.Row(1).Height = 28;
 
-            wsOrders.Range(2, 1, 2, 18).Merge();
+            wsOrders.Range(2, 1, 2, SummaryColumnCount).Merge();
             wsOrders.Cell(2, 1).Value =
-                $"مبلغ کل فروش: {salesTotal:N0} تومان  |  تعداد سفارش‌ها: {orders.Count}";
+                $"مبلغ کل فروش: {salesTotal:N0} تومان  |  مجموع دریافتی: {paidTotal:N0} تومان  |  مجموع بدهی: {debtTotal:N0} تومان  |  تعداد سفارش‌ها: {orders.Count}";
             wsOrders.Cell(2, 1).Style.Font.Bold = true;
             wsOrders.Cell(2, 1).Style.Font.FontSize = 12;
             wsOrders.Cell(2, 1).Style.Fill.BackgroundColor = XLColor.FromHtml("#D1E7DD");
@@ -72,9 +84,11 @@ namespace resturanyar.Services
             wsOrders.Cell(headerRow, 15).Value = "بسته‌بندی (تومان)";
             wsOrders.Cell(headerRow, 16).Value = "ارسال (تومان)";
             wsOrders.Cell(headerRow, 17).Value = "مبلغ فاکتور (تومان)";
-            wsOrders.Cell(headerRow, 18).Value = "تاریخ صدور فاکتور";
+            wsOrders.Cell(headerRow, 18).Value = "مبلغ دریافتی (تومان)";
+            wsOrders.Cell(headerRow, 19).Value = "بدهی سفارش (تومان)";
+            wsOrders.Cell(headerRow, 20).Value = "تاریخ صدور فاکتور";
 
-            var headerRange = wsOrders.Range(headerRow, 1, headerRow, 18);
+            var headerRange = wsOrders.Range(headerRow, 1, headerRow, SummaryColumnCount);
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -95,7 +109,7 @@ namespace resturanyar.Services
                 wsOrders.Cell(row, 1).Value = o.OrderId;
                 wsOrders.Cell(row, 2).Value = o.CreatedAtShamsi ?? DateHelper.ToShamsi(o.CreatedAt);
                 wsOrders.Cell(row, 3).Value = o.TableNumber;
-                wsOrders.Cell(row, 4).Value = GetStatusName(o.StatusId);
+                wsOrders.Cell(row, 4).Value = GetStatusName(o);
 
                 wsOrders.Cell(row, 5).Value = o.Customer?.FullName ?? "مشتری مهمان";
                 string mobile = o.Customer?.Mobile ?? "-";
@@ -105,6 +119,7 @@ namespace resturanyar.Services
                 wsOrders.Cell(row, 7).Value = o.Description ?? "-";
                 wsOrders.Cell(row, 8).Value = foodQty;
 
+                decimal invoiceAmount;
                 if (snapshot != null)
                 {
                     wsOrders.Cell(row, 9).Value = snapshot.ItemsSubtotal;
@@ -115,8 +130,9 @@ namespace resturanyar.Services
                     SetChargeCodeCell(wsOrders.Cell(row, 14), chargeLines, "vat");
                     SetChargeCodeCell(wsOrders.Cell(row, 15), chargeLines, "packaging");
                     SetChargeCodeCell(wsOrders.Cell(row, 16), chargeLines, "delivery");
-                    wsOrders.Cell(row, 17).Value = snapshot.GrandTotal;
-                    wsOrders.Cell(row, 18).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
+                    invoiceAmount = snapshot.GrandTotal;
+                    wsOrders.Cell(row, 17).Value = invoiceAmount;
+                    wsOrders.Cell(row, 20).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
                 }
                 else
                 {
@@ -128,9 +144,14 @@ namespace resturanyar.Services
                     wsOrders.Cell(row, 14).Value = "-";
                     wsOrders.Cell(row, 15).Value = "-";
                     wsOrders.Cell(row, 16).Value = "-";
-                    wsOrders.Cell(row, 17).Value = itemsTotal;
-                    wsOrders.Cell(row, 18).Value = "-";
+                    invoiceAmount = itemsTotal;
+                    wsOrders.Cell(row, 17).Value = invoiceAmount;
+                    wsOrders.Cell(row, 20).Value = "-";
                 }
+
+                var settlement = ResolveSettlementAmounts(o, invoiceAmount);
+                SetSettlementCell(wsOrders.Cell(row, 18), settlement.Settled ? settlement.Paid : null, settlement.Settled);
+                SetSettlementCell(wsOrders.Cell(row, 19), settlement.Settled ? settlement.Debt : null, settlement.Settled);
 
                 row++;
             }
@@ -183,6 +204,46 @@ namespace resturanyar.Services
             return stream.ToArray();
         }
 
+        private static bool HasExplicitSettlement(Order order) =>
+            order.SettlementPaidAmount.HasValue
+            || order.SettlementDebtAmount.HasValue
+            || !string.IsNullOrWhiteSpace(order.SettlementType);
+
+        /// <summary>
+        /// Explicit settlement wins. Closed (11) or paid (8) without settlement fields
+        /// are treated as fully collected cash (instant close / legacy). Canceled stays blank.
+        /// </summary>
+        private static (bool Settled, decimal Paid, decimal Debt) ResolveSettlementAmounts(
+            Order order,
+            decimal invoiceAmount)
+        {
+            // Canceled orders never count as received cash.
+            if (order.StatusId is 9 or 10)
+                return (false, 0m, 0m);
+
+            if (HasExplicitSettlement(order))
+            {
+                return (
+                    true,
+                    order.SettlementPaidAmount ?? 0m,
+                    order.SettlementDebtAmount ?? 0m);
+            }
+
+            // Instant-close / legacy paid: full invoice assumed received, no debt.
+            if (order.StatusId is 8 or 11)
+                return (true, invoiceAmount, 0m);
+
+            return (false, 0m, 0m);
+        }
+
+        private static void SetSettlementCell(IXLCell cell, decimal? amount, bool settled)
+        {
+            if (!settled)
+                cell.Value = "-";
+            else
+                cell.Value = amount ?? 0m;
+        }
+
         private static decimal GetInvoiceAmount(
             Order order,
             IReadOnlyDictionary<int, OrderReceiptSnapshot> snapshotMap)
@@ -230,9 +291,18 @@ namespace resturanyar.Services
                 cell.Value = amount;
         }
 
-        private static string GetStatusName(int statusId)
+        private static string GetStatusName(Order order)
         {
-            return statusId switch
+            if (order.StatusId == 8)
+            {
+                return OrderStatusDisplay.BadgeLabel(
+                    order.StatusId,
+                    order.SettlementDebtAmount,
+                    order.SettlementType,
+                    "پرداخت‌شده");
+            }
+
+            return order.StatusId switch
             {
                 1 => "در انتظار ثبت نهایی",
                 2 => "در انتظار تایید",
@@ -241,7 +311,6 @@ namespace resturanyar.Services
                 5 => "آماده تحویل",
                 6 => "تحویل داده شده",
                 7 => "در انتظار پرداخت",
-                8 => "پرداخت شده",
                 9 => "لغو شده توسط مشتری",
                 10 => "لغو شده توسط رستوران",
                 11 => "بسته شده",

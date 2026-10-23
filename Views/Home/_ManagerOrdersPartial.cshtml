@@ -47,6 +47,7 @@
                                     _ => statusLabel
                                 };
                             }
+                            statusLabel = OrderStatusDisplay.BadgeLabel(order, statusLabel);
                         }
                         @statusLabel
                     </span>
@@ -86,6 +87,7 @@
                     <select class="form-select form-select-sm"
                             style="min-width:140px"
                             data-orderid="@order.OrderId"
+                            data-current-status="@order.StatusId"
                             onchange="onChangeStatus(this, @order.OrderId)">
                         <option value="">تغییر وضعیت</option>
                         @foreach (var kv in Model.StatusMap)
@@ -109,6 +111,7 @@
                 var customerLabel = order.CustomerId.HasValue
                     ? order.CustomerFullName
                     : "مشتری مهمان";
+                var isDebtor = order.CustomerAccountBalance.HasValue && order.CustomerAccountBalance.Value > 0;
                 <div class="delivery-meta mb-3">
                     <div class="delivery-meta__grid">
                         <div class="delivery-meta__item">
@@ -117,7 +120,13 @@
                             </span>
                             <div class="delivery-meta__copy">
                                 <span class="delivery-meta__label">مشتری</span>
-                                <span class="delivery-meta__value">@customerLabel</span>
+                                <span class="delivery-meta__value">
+                                    @customerLabel
+                                    @if (isDebtor)
+                                    {
+                                        <span class="debtor-badge">بدهکار · @order.CustomerAccountBalance.Value.ToString("N0")</span>
+                                    }
+                                </span>
                             </div>
                         </div>
                         @if (!string.IsNullOrWhiteSpace(deliveryPhone))
@@ -213,6 +222,10 @@
                     <i class="fas fa-user-circle"></i>
                     <span class="customer-name">@order.CustomerFullName</span>
                     <span class="customer-mobile">@order.CustomerMobile</span>
+                    @if (order.CustomerAccountBalance.HasValue && order.CustomerAccountBalance.Value > 0)
+                    {
+                        <span class="debtor-badge">بدهکار · @order.CustomerAccountBalance.Value.ToString("N0")</span>
+                    }
                 </div>
             }
             else
@@ -511,6 +524,7 @@ else
 </script>
 <script src="~/js/invoice-print.js" asp-append-version="true"></script>
 <script src="~/js/receipt-print.js" asp-append-version="true"></script>
+<script src="~/js/order-settlement.js" asp-append-version="true"></script>
 
 <script>
     
@@ -537,6 +551,86 @@ else
         const newStatus = parseInt(sel.value);
         if (!newStatus) return;
 
+        const prevStatus = parseInt(sel.getAttribute('data-current-status') || '0', 10);
+
+        // Same status re-selected — nothing to do.
+        if (newStatus === prevStatus) return;
+
+        const applyStatusUi = function (statusId, receipt, badgeOverride) {
+            const card  = document.querySelector(`#order-${orderId}`);
+            const badge = card?.querySelector('.status-badge') || card?.querySelector('[class*="ost-"]');
+
+            if (badge) {
+                const selectedText = (badgeOverride && String(badgeOverride).trim())
+                    || sel.options[sel.selectedIndex].text.trim();
+                badge.className = `status-badge ost-badge ost-${statusId} ms-2`;
+                badge.textContent = selectedText;
+                badge.style.whiteSpace = 'nowrap';
+                badge.style.display    = 'inline-flex';
+            }
+
+            const meta = card?.querySelector('.order-meta');
+            if (meta) {
+                const now = new Date().toLocaleString('fa-IR');
+                meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
+            }
+
+            sel.setAttribute('data-current-status', String(statusId));
+
+            if (receipt && receipt.isIssued && typeof window.applyIssuedReceipt === 'function') {
+                window.applyIssuedReceipt(orderId, receipt);
+            }
+        };
+
+        // Status 8 = پرداخت‌شده / نسیه — must go through settlement modal.
+        // Closed(11) / cancelled(9/10) cannot register payment again.
+        const settlementBlocked = new Set([9, 10, 11]);
+        if (newStatus === 8) {
+            if (settlementBlocked.has(prevStatus)) {
+                sel.value = String(prevStatus);
+                window.showToast(
+                    prevStatus === 11
+                        ? 'این سفارش از قبل بسته شده است.'
+                        : 'این سفارش لغو شده و امکان ثبت پرداخت ندارد.',
+                    'error');
+                return;
+            }
+            if (prevStatus === 8) {
+                sel.value = String(prevStatus);
+                return;
+            }
+            if (!window.OrderSettlement || typeof window.OrderSettlement.settleViaModal !== 'function') {
+                sel.value = String(prevStatus);
+                window.showToast('صفحه را رفرش کنید و دوباره «پرداخت‌شده / نسیه» را انتخاب کنید .', 'error');
+                return;
+            }
+            const settled = await window.OrderSettlement.settleViaModal({
+                orderId: orderId,
+                currentStatusId: prevStatus,
+                urls: {
+                    previewUrl: '@Url.Action("GetOrderSettlementPreview", "Home")',
+                    settleUrl: '@Url.Action("SettleOrderPayment", "Home")',
+                    searchCustomersUrl: '@Url.Action("SearchCustomersForSettlement", "Home")'
+                }
+            });
+            if (!settled || !settled.success) {
+                sel.value = String(prevStatus);
+                return;
+            }
+            // settleViaModal resolves { success, data: fullSettleJson }
+            // fullSettleJson = { success, message, data: resultDto, receipt }
+            const settleJson = settled.data || {};
+            const resultDto = settleJson.data || {};
+            const debt = Number(resultDto.debtAmount || 0);
+            const settleType = String(resultDto.settlementType || '');
+            const paidBadge = (debt > 0 || /^(Credit|Partial)$/i.test(settleType))
+                ? 'بدهی'
+                : 'پرداخت‌شده';
+            applyStatusUi(8, settleJson.receipt, paidBadge);
+            window.showToast(settleJson.message || 'پرداخت سفارش ثبت شد', 'success');
+            return;
+        }
+
         try {
             const res = await fetch('@Url.Action("UpdateOrderStatus", "Home")', {
                 method: 'POST',
@@ -550,34 +644,15 @@ else
             const data = await res.json();
 
             if (data.success) {
-                const card  = document.querySelector(`#order-${orderId}`);
-                const badge = card?.querySelector('.status-badge');
-
-                if (badge) {
-                    const selectedText = sel.options[sel.selectedIndex].text.trim();
-                    badge.className = `status-badge ost-badge ost-${newStatus} ms-2`;
-                    badge.textContent = selectedText;
-                    badge.style.whiteSpace = 'nowrap';
-                    badge.style.display    = 'inline-flex';
-                }
-
-                // update last-changed timestamp
-                const meta = card?.querySelector('.order-meta');
-                if (meta) {
-                    const now = new Date().toLocaleString('fa-IR');
-                    meta.innerHTML = meta.innerHTML.replace(/آخرین تغییر: .+/, `آخرین تغییر: ${now}`);
-                }
-
-                if (data.receipt && data.receipt.isIssued && typeof window.applyIssuedReceipt === 'function') {
-                    window.applyIssuedReceipt(orderId, data.receipt);
-                }
-
+                applyStatusUi(newStatus, data.receipt);
                 window.showToast('وضعیت سفارش بروز شد', 'success');
             } else {
+                sel.value = String(prevStatus);
                 window.showToast(data.message || 'خطا در تغییر وضعیت', 'error');
             }
         } catch (err) {
             console.error('onChangeStatus error:', err);
+            sel.value = String(prevStatus);
             window.showToast('خطا در ارتباط با سرور', 'error');
         }
     };
