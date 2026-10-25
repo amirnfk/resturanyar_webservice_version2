@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using resturanyar.Models;
 using resturanyar.Models.Receipt;
+using resturanyar.Services.Orders;
 using resturanyar.Utility;
 using Resturanyar.Data;
 
@@ -9,10 +10,12 @@ namespace resturanyar.Services.Fulfillment
     public class DeliveryCourierService : IDeliveryCourierService
     {
         private readonly AppDbContext _db;
+        private readonly IOrderCancellationDebtService _cancelDebt;
 
-        public DeliveryCourierService(AppDbContext db)
+        public DeliveryCourierService(AppDbContext db, IOrderCancellationDebtService cancelDebt)
         {
             _db = db;
+            _cancelDebt = cancelDebt;
         }
 
         public async Task<(bool Ok, int StatusCode, string Message, List<DriverListItemDto>? Drivers)> ListDriversAsync(
@@ -159,6 +162,16 @@ namespace resturanyar.Services.Fulfillment
                 .ExecuteUpdateAsync(s => s
                     .SetProperty(o => o.StatusId, newStatusId)
                     .SetProperty(o => o.UpdatedAt, now), ct);
+
+            try
+            {
+                await _cancelDebt.HandleStatusChangeAsync(
+                    orderId, restaurantId, previousStatusId: 5, newStatusId, ct: ct);
+            }
+            catch
+            {
+                // Best-effort: delivery failure report must not fail if debt reversal fails.
+            }
 
             string message = newStatusId == 9
                 ? "سفارش به دلیل مشتری لغو شد."

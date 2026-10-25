@@ -131,7 +131,6 @@ namespace resturanyar.Services
                     SetChargeCodeCell(wsOrders.Cell(row, 15), chargeLines, "packaging");
                     SetChargeCodeCell(wsOrders.Cell(row, 16), chargeLines, "delivery");
                     invoiceAmount = snapshot.GrandTotal;
-                    wsOrders.Cell(row, 17).Value = invoiceAmount;
                     wsOrders.Cell(row, 20).Value = DateHelper.ToShamsi(snapshot.IssuedAt);
                 }
                 else
@@ -145,9 +144,12 @@ namespace resturanyar.Services
                     wsOrders.Cell(row, 15).Value = "-";
                     wsOrders.Cell(row, 16).Value = "-";
                     invoiceAmount = itemsTotal;
-                    wsOrders.Cell(row, 17).Value = invoiceAmount;
                     wsOrders.Cell(row, 20).Value = "-";
                 }
+
+                // Canceled: keep item breakdown for audit, but sales amount is 0.
+                var salesAmount = o.StatusId is 9 or 10 ? 0m : invoiceAmount;
+                wsOrders.Cell(row, 17).Value = salesAmount;
 
                 var settlement = ResolveSettlementAmounts(o, invoiceAmount);
                 SetSettlementCell(wsOrders.Cell(row, 18), settlement.Settled ? settlement.Paid : null, settlement.Settled);
@@ -248,6 +250,10 @@ namespace resturanyar.Services
             Order order,
             IReadOnlyDictionary<int, OrderReceiptSnapshot> snapshotMap)
         {
+            // Canceled orders do not count toward sales totals.
+            if (order.StatusId is 9 or 10)
+                return 0m;
+
             if (snapshotMap.TryGetValue(order.OrderId, out var snapshot))
                 return snapshot.GrandTotal;
 

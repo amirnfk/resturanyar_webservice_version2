@@ -516,6 +516,15 @@ namespace resturanyar.Controllers.Api.V2
             }
             catch { /* best-effort */ }
 
+            try
+            {
+                var cancelDebt = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Orders.IOrderCancellationDebtService>();
+                await cancelDebt.HandleStatusChangeAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId, ownerId);
+            }
+            catch { /* best-effort */ }
+
             await _hubContext.Clients.Group(order.RestaurantId.ToString())
                 .SendAsync("ReceiveOrderUpdate", new
                 {

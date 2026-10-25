@@ -175,6 +175,26 @@
 
                             </span>
                         </span>
+                        @if (Model.PendingPipelineOrderCount > 0)
+                        {
+                            <div class="kpi-pending" title="سفارش‌های تاییدشده تا قبل از پرداخت؛ مبلغ هنوز نهایی نیست">
+                                <span class="kpi-pending__dot" aria-hidden="true"></span>
+                                <span class="kpi-pending__label">در جریان</span>
+                                <span class="kpi-pending__amount">@Model.PendingPipelineRevenue.ToString("N0")</span>
+                                <span class="kpi-pending__unit">تومان</span>
+                                <span class="kpi-pending__sep" aria-hidden="true">·</span>
+                                <span class="kpi-pending__count">@Model.PendingPipelineOrderCount.ToString("N0") سفارش</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="kpi-pending kpi-pending--empty" title="سفارش تاییدشدهٔ باز برای امروز نیست">
+                                <span class="kpi-pending__dot" aria-hidden="true"></span>
+                                <span class="kpi-pending__label">در جریان</span>
+                                <span class="kpi-pending__amount">۰</span>
+                                <span class="kpi-pending__unit">تومان</span>
+                            </div>
+                        }
                     </div>
                     <div class="kpi-card__body">
                

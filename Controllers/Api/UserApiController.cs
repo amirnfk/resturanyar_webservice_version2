@@ -1742,6 +1742,18 @@ namespace Resturanyar.Controllers.Api
                 // Best-effort: status update must not fail if auto-issue fails.
             }
 
+            try
+            {
+                var cancelDebt = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Orders.IOrderCancellationDebtService>();
+                await cancelDebt.HandleStatusChangeAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId);
+            }
+            catch
+            {
+                // Best-effort: status update must not fail if debt reversal fails.
+            }
+
             // 🔥 اضافه کردن await برای ارسال SignalR
             await _hubContext.Clients.Group(order.RestaurantId.ToString())
                 .SendAsync("ReceiveOrderUpdate", new

@@ -134,7 +134,6 @@ namespace resturanyar.Services
                                     BodyCell(table, fees.ToString("N0"));
                                     BodyCell(table, tax.ToString("N0"));
                                     invoiceAmount = snapshot.GrandTotal;
-                                    BodyCell(table, invoiceAmount.ToString("N0"));
                                 }
                                 else
                                 {
@@ -142,8 +141,11 @@ namespace resturanyar.Services
                                     BodyCell(table, "-");
                                     BodyCell(table, "-");
                                     invoiceAmount = itemsTotal;
-                                    BodyCell(table, invoiceAmount.ToString("N0"));
                                 }
+
+                                // Canceled: keep item breakdown for audit, but sales amount is 0.
+                                var salesAmount = o.StatusId is 9 or 10 ? 0m : invoiceAmount;
+                                BodyCell(table, salesAmount.ToString("N0"));
 
                                 var settlement = ResolveSettlementAmounts(o, invoiceAmount);
                                 BodyCell(table, FormatSettlementAmount(
@@ -281,6 +283,10 @@ namespace resturanyar.Services
             Order order,
             IReadOnlyDictionary<int, OrderReceiptSnapshot> snapshotMap)
         {
+            // Canceled orders do not count toward sales totals.
+            if (order.StatusId is 9 or 10)
+                return 0m;
+
             if (snapshotMap.TryGetValue(order.OrderId, out var snapshot))
                 return snapshot.GrandTotal;
 

@@ -320,21 +320,14 @@ namespace resturanyar.Controllers
                 changePercent = Math.Round((double)changeCount / ordersYesterdaySameTime * 100, 2);
 
             // ========== ۳. وضعیت فروش ==========
-            // ۳-۱. مبلغ فروش امروز
-            var todayRevenue = await _context.OrderItems
-                .AsNoTracking()
-                .Where(oi => oi.Order.RestaurantId == restaurantId
-                             && oi.Order.CreatedAt >= today
-                             && oi.Order.CreatedAt < tomorrow)
-                .SumAsync(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice));
-
-            // ۳-۲. مبلغ فروش دیروز تا همین ساعت
-            var yesterdayRevenue = await _context.OrderItems
-                .AsNoTracking()
-                .Where(oi => oi.Order.RestaurantId == restaurantId
-                             && oi.Order.CreatedAt >= yesterday
-                             && oi.Order.CreatedAt <= yesterdaySameTime)
-                .SumAsync(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice));
+            // فروش نهایی: GrandTotal فاکتور (بعد از تخفیف/کارمزد) برای سفارش‌های
+            // پرداخت‌شده/بسته‌شده؛ لغوی‌ها و سفارش‌های باز داخل جمع نیستند.
+            var todayRevenue = await SumDashboardRevenueByStatusesAsync(
+                restaurantId.Value, today, tomorrow, toExclusive: true, DashboardRevenueStatuses);
+            var yesterdayRevenue = await SumDashboardRevenueByStatusesAsync(
+                restaurantId.Value, yesterday, yesterdaySameTime, toExclusive: false, DashboardRevenueStatuses);
+            var pendingPipeline = await SumDashboardRevenueByStatusesWithCountAsync(
+                restaurantId.Value, today, tomorrow, toExclusive: true, DashboardPendingStatuses);
 
             decimal revenueChange = todayRevenue - yesterdayRevenue;
             double revenueChangePercent = 0;
@@ -384,6 +377,8 @@ namespace resturanyar.Controllers
                 TodayRevenue = todayRevenue,
                 RevenueChange = revenueChange,
                 RevenueChangePercent = revenueChangePercent,
+                PendingPipelineRevenue = pendingPipeline.Total,
+                PendingPipelineOrderCount = pendingPipeline.Count,
                 // (اختیاری) اطلاعات قبلی را هم می‌توانید نگه دارید یا حذف کنید
                 UsersCount = 0, // یا حذف کنید
                 MenuItemsCount = 0,
@@ -413,32 +408,10 @@ namespace resturanyar.Controllers
             var todayStart = DateTime.Today;
             var yesterdayStart = todayStart.AddDays(-1);
 
-            // امروز: از ابتدای روز تا همین لحظه
-            var todayQuery = await _context.OrderItems
-                .Where(oi => oi.Order.RestaurantId == restaurantId &&
-                             oi.Order.CreatedAt >= todayStart &&
-                             oi.Order.CreatedAt <= now)
-                .GroupBy(oi => oi.Order.CreatedAt.Hour)
-                .Select(g => new { Hour = g.Key, Total = g.Sum(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice)) })
-                .ToListAsync();
-
-            // دیروز: کامل
-            var yesterdayQuery = await _context.OrderItems
-                .Where(oi => oi.Order.RestaurantId == restaurantId &&
-                             oi.Order.CreatedAt >= yesterdayStart &&
-                             oi.Order.CreatedAt < todayStart)
-                .GroupBy(oi => oi.Order.CreatedAt.Hour)
-                .Select(g => new { Hour = g.Key, Total = g.Sum(oi => oi.Quantity * (oi.UnitPriceWithDiscount ?? oi.UnitPrice)) })
-                .ToListAsync();
-
-            // پر کردن آرایه‌های ۲۴ ساعته
-            var todayTotals = new decimal[24];
-            foreach (var item in todayQuery)
-                todayTotals[item.Hour] = item.Total;
-
-            var yesterdayTotals = new decimal[24];
-            foreach (var item in yesterdayQuery)
-                yesterdayTotals[item.Hour] = item.Total;
+            var todayTotals = await GetHourlyFinalizedRevenueAsync(
+                restaurantId.Value, todayStart, now, toExclusive: false);
+            var yesterdayTotals = await GetHourlyFinalizedRevenueAsync(
+                restaurantId.Value, yesterdayStart, todayStart, toExclusive: true);
 
             return Json(new
             {
@@ -446,6 +419,129 @@ namespace resturanyar.Controllers
                 yesterday = yesterdayTotals,
                 labels = Enumerable.Range(0, 24).Select(h => $"{h:00}:00").ToArray()
             });
+        }
+
+        /// <summary>Paid (8) / closed (11) — finalized sales.</summary>
+        private static readonly int[] DashboardRevenueStatuses = { 8, 11 };
+
+        /// <summary>Approved → awaiting payment (3–7); amount not yet finalized.</summary>
+        private static readonly int[] DashboardPendingStatuses = { 3, 4, 5, 6, 7 };
+
+        private async Task<decimal> SumDashboardRevenueByStatusesAsync(
+            int restaurantId,
+            DateTime from,
+            DateTime to,
+            bool toExclusive,
+            int[] statusIds)
+        {
+            var result = await SumDashboardRevenueByStatusesWithCountAsync(
+                restaurantId, from, to, toExclusive, statusIds);
+            return result.Total;
+        }
+
+        private async Task<(decimal Total, int Count)> SumDashboardRevenueByStatusesWithCountAsync(
+            int restaurantId,
+            DateTime from,
+            DateTime to,
+            bool toExclusive,
+            int[] statusIds)
+        {
+            var ordersQuery = _context.Orders.AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && statusIds.Contains(o.StatusId)
+                            && o.CreatedAt >= from);
+
+            ordersQuery = toExclusive
+                ? ordersQuery.Where(o => o.CreatedAt < to)
+                : ordersQuery.Where(o => o.CreatedAt <= to);
+
+            var orderIds = await ordersQuery.Select(o => o.OrderId).ToListAsync();
+            if (orderIds.Count == 0)
+                return (0m, 0);
+
+            var snapshotMap = await _context.OrderReceiptSnapshots
+                .AsNoTracking()
+                .Where(s => s.RestaurantId == restaurantId && orderIds.Contains(s.OrderId))
+                .ToDictionaryAsync(s => s.OrderId);
+
+            var orderSubtotals = await _context.OrderItems.AsNoTracking()
+                .Where(oi => orderIds.Contains(oi.OrderId))
+                .GroupBy(oi => oi.OrderId)
+                .Select(g => new
+                {
+                    OrderId = g.Key,
+                    Subtotal = g.Sum(oi =>
+                        (decimal)oi.Quantity *
+                        (
+                            oi.UnitPriceWithDiscount.HasValue &&
+                            oi.UnitPriceWithDiscount.Value > 0
+                                ? oi.UnitPriceWithDiscount.Value
+                                : oi.UnitPrice
+                        ))
+                })
+                .ToDictionaryAsync(x => x.OrderId, x => x.Subtotal);
+
+            decimal total = 0m;
+            foreach (var orderId in orderIds)
+                total += ResolveOrderFinance(orderId, snapshotMap, orderSubtotals).GrandTotal;
+
+            return (total, orderIds.Count);
+        }
+
+        private async Task<decimal[]> GetHourlyFinalizedRevenueAsync(
+            int restaurantId,
+            DateTime from,
+            DateTime to,
+            bool toExclusive)
+        {
+            var ordersQuery = _context.Orders.AsNoTracking()
+                .Where(o => o.RestaurantId == restaurantId
+                            && DashboardRevenueStatuses.Contains(o.StatusId)
+                            && o.CreatedAt >= from);
+
+            ordersQuery = toExclusive
+                ? ordersQuery.Where(o => o.CreatedAt < to)
+                : ordersQuery.Where(o => o.CreatedAt <= to);
+
+            var orders = await ordersQuery
+                .Select(o => new { o.OrderId, o.CreatedAt })
+                .ToListAsync();
+
+            var totals = new decimal[24];
+            if (orders.Count == 0)
+                return totals;
+
+            var orderIds = orders.Select(o => o.OrderId).ToList();
+
+            var snapshotMap = await _context.OrderReceiptSnapshots
+                .AsNoTracking()
+                .Where(s => s.RestaurantId == restaurantId && orderIds.Contains(s.OrderId))
+                .ToDictionaryAsync(s => s.OrderId);
+
+            var orderSubtotals = await _context.OrderItems.AsNoTracking()
+                .Where(oi => orderIds.Contains(oi.OrderId))
+                .GroupBy(oi => oi.OrderId)
+                .Select(g => new
+                {
+                    OrderId = g.Key,
+                    Subtotal = g.Sum(oi =>
+                        (decimal)oi.Quantity *
+                        (
+                            oi.UnitPriceWithDiscount.HasValue &&
+                            oi.UnitPriceWithDiscount.Value > 0
+                                ? oi.UnitPriceWithDiscount.Value
+                                : oi.UnitPrice
+                        ))
+                })
+                .ToDictionaryAsync(x => x.OrderId, x => x.Subtotal);
+
+            foreach (var order in orders)
+            {
+                var amount = ResolveOrderFinance(order.OrderId, snapshotMap, orderSubtotals).GrandTotal;
+                totals[order.CreatedAt.Hour] += amount;
+            }
+
+            return totals;
         }
 
 
@@ -1113,6 +1209,10 @@ namespace resturanyar.Controllers
 
             foreach (var order in ordersInRange)
             {
+                // Canceled orders are excluded from sales / fee / tax aggregates.
+                if (order.StatusId is 9 or 10)
+                    continue;
+
                 var finance = ResolveOrderFinance(
                     order.OrderId,
                     snapshotMap,
@@ -2576,6 +2676,18 @@ namespace resturanyar.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Inventory auto-deduct failed for order {OrderId}", orderId);
+            }
+
+            try
+            {
+                var cancelDebt = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Orders.IOrderCancellationDebtService>();
+                await cancelDebt.HandleStatusChangeAsync(
+                    orderId, restaurantId.Value, previousStatusId, newStatusId, User.GetOwnerId());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Cancel debt reversal failed for order {OrderId}", orderId);
             }
 
             await TryNotifyOrderUpdateAsync(restaurantId.Value, orderId, newStatusId, "وضعیت سفارش به‌روز شد");

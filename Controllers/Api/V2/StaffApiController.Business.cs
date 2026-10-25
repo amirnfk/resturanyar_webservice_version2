@@ -965,6 +965,17 @@ namespace resturanyar.Controllers.Api.V2
             }
             catch { /* best-effort */ }
 
+            try
+            {
+                int? cancelStaffId = TryGetStaffUserId(out var sid) ? sid : null;
+                var cancelDebt = HttpContext.RequestServices
+                    .GetRequiredService<resturanyar.Services.Orders.IOrderCancellationDebtService>();
+                await cancelDebt.HandleStatusChangeAsync(
+                    order.OrderId, order.RestaurantId, previousStatusId, dto.NewStatusId,
+                    ownerId: null, staffUserId: cancelStaffId);
+            }
+            catch { /* best-effort */ }
+
             await _hubContext.Clients.Group(order.RestaurantId.ToString())
                 .SendAsync("ReceiveOrderUpdate", new
                 {

@@ -28,6 +28,12 @@
         public decimal RevenueChange { get; set; }
         public double RevenueChangePercent { get; set; }
 
+        /// <summary>
+        /// Today's in-progress orders (approved → awaiting payment), amount not yet finalized.
+        /// </summary>
+        public decimal PendingPipelineRevenue { get; set; }
+        public int PendingPipelineOrderCount { get; set; }
+
         // (اختیاری) اطلاعات قبلی
         public int UsersCount { get; set; }
         public int MenuItemsCount { get; set; }

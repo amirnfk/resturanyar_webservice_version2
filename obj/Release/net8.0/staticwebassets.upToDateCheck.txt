@@ -17,7 +17,7 @@ wwwroot\apple-icon-precomposed.png
 wwwroot\apple-icon.png
 wwwroot\apple-touch-icon.png
 wwwroot\browserconfig.xml
-wwwroot\js\order-settlement.js
+wwwroot\css\add-order.css
 wwwroot\css\all.min.css
 wwwroot\css\bootstrap-icons.css
 wwwroot\css\bootstrap.min.css
@@ -53,7 +53,7 @@ wwwroot\css\inventory.css
 wwwroot\css\jalalidatepicker.min.css
 wwwroot\css\managerlogin.css
 wwwroot\css\manager_report.css
-wwwroot\css\manager_report_partial.css
+wwwroot\css\order-settlement.css
 wwwroot\css\menu-settings-preview.css
 wwwroot\css\messages.css
 wwwroot\css\order-status-tokens.css
@@ -64,7 +64,7 @@ wwwroot\css\public-menu.css
 wwwroot\css\admin-send-message.css
 wwwroot\css\restaurant-menu.css
 wwwroot\css\restaurant-settings.css
-wwwroot\css\manager-order-edit.css
+wwwroot\js\admin-panel.js
 wwwroot\css\simple_share.css
 wwwroot\css\site.css
 wwwroot\css\support-chat.css
@@ -167,7 +167,7 @@ wwwroot\js\manager_report_partial.js
 wwwroot\js\messages.js
 wwwroot\js\owner-messages.js
 wwwroot\js\persian-date.min.js
-wwwroot\css\add-order.css
+wwwroot\js\order-settlement.js
 wwwroot\js\receipt-charge-settings.js
 wwwroot\js\restaurant-background-cache.js
 wwwroot\js\restaurant-general-settings.js
@@ -276,15 +276,15 @@ wwwroot\webfonts\fa-brands-400.woff2
 wwwroot\webfonts\fa-regular-400.woff2
 wwwroot\webfonts\fa-solid-900.woff2
 wwwroot\images\barista.png
-wwwroot\js\manager-order-edit.js
-wwwroot\css\share.css
 wwwroot\css\admin-panel.css
+wwwroot\css\manager-order-list.css
+wwwroot\js\manager-order-edit.js
 wwwroot\css\customers-list.css
 wwwroot\js\admin-send-message.js
 wwwroot\uploads\f8accbba-569e-4f33-b2f2-f2aa62812a84.jpg
-wwwroot\css\order-settlement.css
+wwwroot\css\manager_report_partial.css
 wwwroot\js\sidebar-nav.js
 wwwroot\js\receipt-print.js
 wwwroot\css\receipt-charge-settings.css
-wwwroot\js\admin-panel.js
-wwwroot\css\manager-order-list.css
+wwwroot\css\manager-order-edit.css
+wwwroot\css\share.css

@@ -107,6 +107,7 @@ builder.Services.AddScoped<resturanyar.Services.Inventory.IOrderInventoryConsump
 builder.Services.AddScoped<resturanyar.Services.Inventory.IUnitConversionService, resturanyar.Services.Inventory.UnitConversionService>();
 builder.Services.AddScoped<resturanyar.Services.CustomerAccounts.ICustomerAccountService, resturanyar.Services.CustomerAccounts.CustomerAccountService>();
 builder.Services.AddScoped<resturanyar.Services.Orders.IOrderSettlementService, resturanyar.Services.Orders.OrderSettlementService>();
+builder.Services.AddScoped<resturanyar.Services.Orders.IOrderCancellationDebtService, resturanyar.Services.Orders.OrderCancellationDebtService>();
 builder.Services.AddHttpClient(nameof(resturanyar.Services.PayamakSmsService));
 builder.Services.AddScoped<resturanyar.Services.IPayamakSmsService, resturanyar.Services.PayamakSmsService>();
 builder.Services.AddSingleton<resturanyar.Services.SupportChat.ISupportPresenceTracker, resturanyar.Services.SupportChat.SupportPresenceTracker>();
