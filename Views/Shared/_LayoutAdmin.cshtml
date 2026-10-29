@@ -8,8 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>@ViewData["Title"] - رستورانیار دلاویتا</title>
+    @* Theme must be applied before any stylesheet/paint to avoid a light flash in dark mode *@
+    <script src="~/js/theme.js" asp-append-version="true"></script>
     <link rel="icon" type="image/png" href="~/images/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @* <link rel="stylesheet" href="~/resturanyar.styles.css" asp-append-version="true" /> *@
@@ -17,6 +20,7 @@
     <meta name="theme-color" content="#FF7A00">
     <style>
         #navSupportChat { position: relative; }
+        .sidebar-footer { align-items: center; gap: 10px; }
     </style>
 
     @await RenderSectionAsync("Styles", required: false)
@@ -74,7 +78,10 @@
                 </a>
               
                 <div class="sidebar-footer">
-                    <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm">
+                    <button type="button" id="themeToggle" class="theme-toggle-btn" data-theme-toggle aria-label="تغییر حالت روشن/تاریک" title="حالت شب/روز">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <form method="post" asp-controller="Home" asp-action="Logout" id="sidebarLogoutForm" class="flex-grow-1">
                         <button type="submit" class="logout-btn">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>خروج</span>
@@ -129,31 +136,7 @@
             //     document.getElementById('sidebar').classList.add('collapsed');
             // }
 
-            // Theme Functions
-            function toggleTheme() {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-
-                const themeIcon = document.querySelector('#themeToggle i');
-                if (newTheme === 'dark') {
-                    themeIcon.className = 'fas fa-sun';
-                } else {
-                    themeIcon.className = 'fas fa-moon';
-                }
-            }
-
-            // Load saved theme
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                const themeIcon = document.querySelector('#themeToggle i');
-                if (savedTheme === 'dark') {
-                    themeIcon.className = 'fas fa-sun';
-                }
-            }
+            // Theme handling lives in /js/theme.js (window.RYTheme); the toggle button is wired there.
 
             // Close mobile sidebar when clicking outside
             document.addEventListener('click', function(event) {

@@ -2508,3 +2508,257 @@
         animation: none !important;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .customers-page,
+[data-theme="dark"] #customerModal,
+[data-theme="dark"] #deleteModal,
+[data-theme="dark"] #addressesOffcanvas,
+[data-theme="dark"] #addressFormModal,
+[data-theme="dark"] #deleteAddressModal,
+[data-theme="dark"] #exportFormatModal,
+[data-theme="dark"] #exportNoOrdersModal {
+    --primary-soft: rgba(255, 122, 0, 0.14);
+    --primary-light: rgba(255, 122, 0, 0.16);
+    --card-bg: var(--ry-surface);
+    --card-border: var(--ry-border);
+    --line: var(--ry-border);
+    --surface: var(--ry-surface-2);
+    --shadow-sm: var(--ry-shadow-sm);
+    --shadow-md: var(--ry-shadow-md);
+    --shadow-lg: var(--ry-shadow-lg);
+    --text-dark: var(--ry-text);
+    --text-muted: var(--ry-text-muted);
+    --money: #5eead4;
+    --money-soft: rgba(20, 184, 166, 0.14);
+    --info: #a5b4fc;
+    --info-soft: rgba(99, 102, 241, 0.16);
+    --warn: #fcd34d;
+    --warn-soft: rgba(245, 158, 11, 0.14);
+    --danger: #fca5a5;
+    --danger-soft: rgba(239, 68, 68, 0.14);
+}
+
+[data-theme="dark"] .customers-page .cl-btn--ghost,
+[data-theme="dark"] .customers-page .cl-tool,
+[data-theme="dark"] .customers-page .cl-act,
+[data-theme="dark"] .customers-page .cl-picker,
+[data-theme="dark"] #addressesOffcanvas .cl-addr-btn {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .customers-page .cl-btn--ghost:hover,
+[data-theme="dark"] .customers-page .cl-tool:hover,
+[data-theme="dark"] .customers-page .cl-picker:hover {
+    border-color: rgba(255, 255, 255, 0.24);
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .customers-page .cl-top {
+    background: linear-gradient(180deg, rgba(255, 122, 0, 0.08) 0%, var(--ry-surface) 42%), var(--ry-surface);
+}
+
+[data-theme="dark"] .customers-page .cl-mini__rank--2 {
+    background: linear-gradient(145deg, var(--ry-surface-3), var(--ry-surface-2));
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .customers-page .cl-mini__rank--1 {
+    background: linear-gradient(145deg, rgba(250, 204, 21, 0.26), rgba(234, 179, 8, 0.12));
+    border-color: rgba(250, 204, 21, 0.45);
+    color: #fcd34d;
+}
+
+[data-theme="dark"] .customers-page .cl-mini__rank--3 {
+    background: linear-gradient(145deg, rgba(251, 146, 60, 0.24), rgba(234, 88, 12, 0.1));
+    border-color: rgba(251, 146, 60, 0.42);
+}
+
+[data-theme="dark"] .customers-page .cl-actionbar__badge,
+[data-theme="dark"] .customers-page .cl-card__avatar {
+    background: linear-gradient(145deg, rgba(255, 138, 31, 0.24), rgba(255, 84, 0, 0.1));
+    border-color: rgba(255, 138, 31, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .customers-page .cl-mini__rank--3,
+[data-theme="dark"] .customers-page .cl-act--address,
+[data-theme="dark"] .customers-page .cl-pagination .page-link:hover {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .customers-page .cl-rate__track,
+[data-theme="dark"] .customers-page .cl-segments__sep {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .customers-page .cl-directory__head {
+    background: linear-gradient(180deg, var(--ry-surface), var(--ry-surface-2));
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .customers-page .cl-filters,
+[data-theme="dark"] .customers-page .cl-count,
+[data-theme="dark"] .customers-page .cl-overlay__box {
+    background: var(--ry-surface);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .customers-page .cl-searchbox {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-input-bg);
+}
+
+[data-theme="dark"] .customers-page .cl-searchbox:focus-within {
+    background: var(--ry-input-bg);
+    border-color: var(--ry-primary);
+}
+
+[data-theme="dark"] .customers-page .cl-searchbox input,
+[data-theme="dark"] .customers-page .cl-picker select,
+[data-theme="dark"] .customers-page .cl-picker .form-select {
+    color: var(--ry-text);
+    background: transparent;
+}
+
+[data-theme="dark"] .customers-page .cl-filters #exportBtn.cl-tool--export {
+    background: var(--ry-surface-2);
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .customers-page .cl-filters #exportBtn.cl-tool--export:hover {
+    background: var(--ry-success-soft);
+    color: #a7f3d0;
+}
+
+[data-theme="dark"] .customers-page .cl-segment:hover {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .customers-page .cl-segment.is-active {
+    background: rgba(255, 122, 0, 0.16);
+    border-color: rgba(255, 138, 31, 0.55);
+    color: #ffb77a;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.08);
+}
+
+[data-theme="dark"] .customers-page .cl-segment--danger.is-active {
+    background: var(--danger-soft);
+    border-color: rgba(248, 113, 113, 0.5);
+    color: var(--danger);
+    box-shadow: none;
+}
+
+[data-theme="dark"] .customers-page .cl-segment--success.is-active {
+    background: var(--money-soft);
+    border-color: rgba(45, 212, 191, 0.5);
+    color: var(--money);
+    box-shadow: none;
+}
+
+[data-theme="dark"] .customers-page .cl-note {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .customers-page .cl-table thead th {
+    background: var(--ry-surface-2);
+    border-bottom-color: var(--ry-border);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .customers-page .cl-table tbody td {
+    color: var(--ry-text);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .customers-page .cl-table tbody tr:hover {
+    background: var(--ry-hover);
+}
+
+[data-theme="dark"] .customers-page .cl-act--delete,
+[data-theme="dark"] #deleteModal .cl-warning,
+[data-theme="dark"] #deleteAddressModal .cl-warning,
+[data-theme="dark"] #addressesOffcanvas .cl-addr-btn--delete {
+    color: var(--ry-danger-text);
+}
+
+[data-theme="dark"] .customers-page .cl-skeleton__avatar,
+[data-theme="dark"] .customers-page .cl-skeleton__line {
+    background: linear-gradient(90deg, var(--ry-surface-2) 25%, var(--ry-surface-3) 37%, var(--ry-surface-2) 63%);
+}
+
+[data-theme="dark"] .customers-page .cl-pagination .page-link {
+    color: var(--ry-text);
+    background: var(--ry-surface);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .customers-page .cl-pagination .page-item.disabled .page-link {
+    border-color: var(--ry-border);
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .customers-page .cl-overlay {
+    background-color: rgba(11, 15, 23, 0.78);
+}
+
+/* Modals / offcanvas */
+[data-theme="dark"] #customerModal .modal-header,
+[data-theme="dark"] #addressFormModal .modal-header,
+[data-theme="dark"] #deleteModal .modal-header,
+[data-theme="dark"] #deleteAddressModal .modal-header,
+[data-theme="dark"] #exportFormatModal .modal-header,
+[data-theme="dark"] #exportNoOrdersModal .modal-header,
+[data-theme="dark"] #addressesOffcanvas .offcanvas-header {
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.12) 0%, var(--ry-surface) 80%);
+}
+
+[data-theme="dark"] #deleteModal .modal-body,
+[data-theme="dark"] #deleteAddressModal .modal-body,
+[data-theme="dark"] #exportNoOrdersModal .cl-notice p,
+[data-theme="dark"] #addressesOffcanvas .cl-addr-card__text,
+[data-theme="dark"] #addressesOffcanvas .cl-addr-chip {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] #customerModal .cl-btn-cancel,
+[data-theme="dark"] #addressFormModal .cl-btn-cancel,
+[data-theme="dark"] #deleteModal .cl-btn-cancel,
+[data-theme="dark"] #deleteAddressModal .cl-btn-cancel,
+[data-theme="dark"] #exportFormatModal .cl-export-option,
+[data-theme="dark"] #exportFormatModal .cl-export-cancel {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #addressesOffcanvas .cl-addr__chip,
+[data-theme="dark"] #addressesOffcanvas .addr-card,
+[data-theme="dark"] #addressesOffcanvas .cl-addr__empty {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] #addressesOffcanvas .cl-addr-chip {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] #addressesOffcanvas .addr-card.is-default {
+    background: linear-gradient(180deg, rgba(255, 122, 0, 0.1) 0%, var(--ry-surface-2) 100%);
+    border-color: rgba(255, 122, 0, 0.4);
+}
+
+@media (max-width: 1199.98px) {
+    [data-theme="dark"] .customers-page .cl-table tbody tr,
+    [data-theme="dark"] .customers-page .cl-table tbody tr:hover {
+        background: var(--ry-surface-2);
+        border-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .customers-page .cl-table tbody td {
+        border-bottom-color: var(--ry-border);
+    }
+}

@@ -273,6 +273,49 @@
             margin-left: 8px;
             color: var(--primary);
         }
+
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] .category-page {
+        --primary-light: rgba(255, 122, 0, 0.14);
+    }
+
+    [data-theme="dark"] .category-page .card {
+        background: var(--ry-surface);
+        border: 1px solid var(--ry-border);
+        box-shadow: var(--ry-shadow-sm);
+        color: var(--ry-text);
+    }
+
+    [data-theme="dark"] .category-order-item {
+        background: var(--ry-surface);
+        border-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .category-drag-handle {
+        border-color: var(--ry-border-strong);
+        background: var(--ry-surface-2);
+        color: var(--ry-text-muted);
+    }
+
+    [data-theme="dark"] .category-order-name {
+        color: var(--ry-text-strong);
+    }
+
+    [data-theme="dark"] .category-order-save-bar {
+        background: var(--ry-surface-2);
+        border-color: var(--ry-border-strong);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    [data-theme="dark"] .drag-hint {
+        color: var(--ry-text);
+        background: rgba(255, 122, 0, 0.12);
+    }
+
+    [data-theme="dark"] .category-move-btns .btn-outline-secondary {
+        color: var(--ry-text);
+        border-color: var(--ry-border-strong);
+    }
 </style>
 
 <div class="container category-page mt-4">

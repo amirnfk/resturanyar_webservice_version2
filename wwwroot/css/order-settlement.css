@@ -530,3 +530,129 @@
         margin: 0.5rem auto;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] #orderSettlementModal .modal-body {
+    background: var(--ry-bg);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-hero,
+[data-theme="dark"] #orderSettlementModal .os-debt-toggle,
+[data-theme="dark"] #orderSettlementModal .os-split,
+[data-theme="dark"] #orderSettlementModal .os-customer,
+[data-theme="dark"] #orderSettlementModal .os-side-note,
+[data-theme="dark"] #orderSettlementModal .os-debt-summary {
+    background: var(--ry-surface);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-hero__value,
+[data-theme="dark"] #orderSettlementModal .os-money-input input,
+[data-theme="dark"] #orderSettlementModal .os-split__row strong,
+[data-theme="dark"] #orderSettlementModal .os-split__row .os-money {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-hero__meta,
+[data-theme="dark"] #orderSettlementModal .os-split__row.is-muted {
+    border-top-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-hero__meta-item,
+[data-theme="dark"] #orderSettlementModal .os-split__row {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-hero__meta-item strong {
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-debt-toggle__text,
+[data-theme="dark"] #orderSettlementModal .os-label,
+[data-theme="dark"] #orderSettlementModal .os-prior-card__title {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-debt-toggle.is-on {
+    background: var(--ry-warning-soft);
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-debt-toggle.is-on .os-debt-toggle__text {
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-switch__thumb {
+    background: #fff;
+}
+
+[data-theme="dark"] #orderSettlementModal .os-money-input {
+    background: var(--ry-input-bg);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-money-input__unit {
+    background: var(--ry-surface-3);
+    color: var(--ry-text-muted);
+    border-inline-start-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-chip {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-chip:hover,
+[data-theme="dark"] #orderSettlementModal .os-chip.is-active {
+    color: var(--ry-success-text);
+    background: var(--ry-success-soft);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-debt-summary {
+    color: var(--ry-danger-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-prior-card {
+    background: var(--ry-warning-soft);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-prior-card.is-on {
+    background: rgba(20, 184, 166, 0.14);
+    border-color: rgba(20, 184, 166, 0.4);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-prior-card.is-on .os-prior-card__title,
+[data-theme="dark"] #orderSettlementModal .os-split__row.is-ok strong,
+[data-theme="dark"] #orderSettlementModal .os-split__row.is-ok .os-money {
+    color: #5eead4;
+}
+
+[data-theme="dark"] #orderSettlementModal .os-customer__selected {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-customer__selected.is-picked {
+    background: var(--ry-success-soft);
+    color: var(--ry-success-text);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-customer #osCustomerResults .list-group-item {
+    border-color: var(--ry-border);
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] #orderSettlementModal .os-customer #osCustomerResults .list-group-item:hover {
+    background: var(--ry-success-soft);
+}
+
+[data-theme="dark"] #orderSettlementModal .modal-footer {
+    background: var(--ry-surface);
+    border-top-color: var(--ry-border);
+}

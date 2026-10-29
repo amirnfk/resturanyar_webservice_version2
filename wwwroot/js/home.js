@@ -1,4 +1,10 @@
 ﻿(function () {
+    // Theme is applied/toggled by the shared module (/js/theme.js → window.RYTheme).
+    // Fallback only if the layout did not include theme.js.
+    if (window.RYTheme) {
+        window.RYTheme.syncToggleIcons();
+        return;
+    }
     const html = document.documentElement;
     const key = "ry-theme";
     const saved = localStorage.getItem(key);

@@ -2,129 +2,1526 @@
 
 @{
     ViewData["Title"] = "مدیریت میزها";
+    var totalTables = Model.Count;
+    var totalSeats = Model.Sum(t => Math.Max(0, t.Seats));
+    var avgSeats = totalTables > 0 ? Math.Round((double)totalSeats / totalTables, 1) : 0;
+    var largest = Model.OrderByDescending(t => t.Seats).FirstOrDefault();
 }
-<style>
-    :root {
-        --primary: #ff7a00;
-        --primary-hover: #e66900;
-        --primary-light: rgba(255,122,0,0.08);
-        --bg-page: #f6f8fc;
-        --card-bg: #ffffff;
-        --card-border: #e9eef5;
-        --shadow-sm: 0 4px 12px rgba(15,23,42,0.04);
-        --shadow-md: 0 8px 24px rgba(15,23,42,0.06);
-        --shadow-lg: 0 16px 40px rgba(15,23,42,0.08);
-        --text-dark: #1e293b;
-        --text-muted: #64748b;
-        --radius-sm: 10px;
-        --radius-md: 16px;
-        --radius-lg: 20px;
-        --radius-pill: 999px;
-        --transition: 0.2s ease;
+
+@functions {
+    private const int MaxDrawnChairs = 12;
+
+    private static string Fa(string value)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        var chars = value.ToCharArray();
+        for (var i = 0; i < chars.Length; i++)
+        {
+            if (chars[i] >= '0' && chars[i] <= '9') chars[i] = (char)('۰' + (chars[i] - '0'));
+            else if (chars[i] == '.') chars[i] = '٫';
+        }
+        return new string(chars);
     }
 
-    .table-page {
+    private static string Fa(int value) => Fa(value.ToString());
+    private static string Fa(double value) => Fa(value.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture));
+
+    private static string SizeKey(int seats)
+    {
+        if (seats <= 2) return "s";
+        if (seats <= 4) return "m";
+        if (seats <= 6) return "l";
+        return "xl";
+    }
+}
+
+<style>
+    .tbl-page {
+        --tp-accent: var(--ry-primary, #ff7a00);
+        --tp-accent-2: #f59e0b;
+        --tp-accent-soft: var(--ry-primary-tint, rgba(255,122,0,.10));
+        --tp-surface: var(--ry-surface, #fff);
+        --tp-border: var(--ry-border, #e2e8f0);
+        --tp-border-soft: var(--ry-border-soft, #f1f5f9);
+        --tp-text: var(--ry-text, #1e293b);
+        --tp-strong: var(--ry-text-strong, #0f172a);
+        --tp-muted: var(--ry-text-muted, #64748b);
+        --tp-faint: var(--ry-text-faint, #94a3b8);
+        --tp-input: var(--ry-input-bg, #fff);
+        --tp-floor: #f7f3ee;
+        --tp-floor-dot: rgba(120, 90, 60, .14);
+        --tp-wood: linear-gradient(145deg, #d9a66b 0%, #b97b45 55%, #9c6233 100%);
+        --tp-wood-edge: #8a5428;
+        --tp-chair: #475569;
+        --tp-chair-hi: #64748b;
+        --tp-radius: 22px;
+        --tp-ease: cubic-bezier(.2, .8, .2, 1);
         direction: rtl;
         font-family: "IRANYekan", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        color: var(--text-dark);
-        line-height: 1.5;
+        color: var(--tp-text);
         -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        padding-bottom: 5.5rem;
     }
 
-    h2 {
-        font-weight: 600;
+    [data-theme="dark"] .tbl-page {
+        --tp-floor: #161d2b;
+        --tp-floor-dot: rgba(255, 255, 255, .06);
+        --tp-wood: linear-gradient(145deg, #a4703f 0%, #7d4f27 60%, #63391a 100%);
+        --tp-wood-edge: #4a2a12;
+        --tp-chair: #94a3b8;
+        --tp-chair-hi: #cbd5e1;
     }
 
-    .card {
-        border: none;
-        border-radius: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        padding: 1rem;
+    /* ===== HERO ===== */
+    .tbl-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 28px 28px 24px;
+        margin-bottom: 22px;
+        color: #fff;
+        background:
+            radial-gradient(900px 300px at 110% -40%, rgba(255,255,255,.22), transparent 60%),
+            radial-gradient(600px 260px at -10% 140%, rgba(255,214,153,.35), transparent 60%),
+            linear-gradient(120deg, #ff7a00 0%, #f97316 45%, #e2580c 100%);
+        box-shadow: 0 22px 48px -18px rgba(234, 88, 12, .55);
     }
 
-    .btn-rounded {
-        border-radius: 10px;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #f97316);
-        border: none;
-        border-radius: var(--radius-sm);
-        font-weight: 700;
-        padding: 8px 20px;
-        box-shadow: 0 6px 16px rgba(255,122,0,0.25);
-        transition: all var(--transition);
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #f97316, var(--primary-hover));
-            transform: translateY(-2px);
+        .tbl-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,.18) 1.2px, transparent 1.4px);
+            background-size: 18px 18px;
+            mask-image: linear-gradient(to left, rgba(0,0,0,.9), transparent 70%);
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,.9), transparent 70%);
+            pointer-events: none;
         }
+
+    .tbl-hero__row {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .tbl-hero__intro {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .tbl-hero__icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        background: rgba(255,255,255,.18);
+        border: 1px solid rgba(255,255,255,.35);
+        backdrop-filter: blur(6px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .tbl-hero__eyebrow {
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .02em;
+        opacity: .85;
+    }
+
+    .tbl-hero h2 {
+        margin: 2px 0 4px;
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .tbl-hero p {
+        margin: 0;
+        font-size: .9rem;
+        opacity: .9;
+    }
+
+    .tbl-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 0;
+        border-radius: 16px;
+        padding: 12px 20px;
+        font-weight: 800;
+        font-size: .95rem;
+        color: #c2410c;
+        background: #fff;
+        box-shadow: 0 10px 24px -8px rgba(0,0,0,.35);
+        transition: transform .25s var(--tp-ease), box-shadow .25s var(--tp-ease);
+    }
+
+        .tbl-add-btn i {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: linear-gradient(135deg, #ff7a00, #ea580c);
+            font-size: .85rem;
+            line-height: 0;
+            direction: ltr;
+        }
+
+            .tbl-add-btn i::before {
+                line-height: 1;
+            }
+
+        .tbl-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px -10px rgba(0,0,0,.4);
+        }
+
+        .tbl-add-btn:focus-visible {
+            outline: 3px solid rgba(255,255,255,.7);
+            outline-offset: 3px;
+        }
+
+    [data-theme="dark"] .tbl-hero {
+        background:
+            radial-gradient(700px 280px at 105% -30%, rgba(255,122,0,.38), transparent 60%),
+            radial-gradient(520px 240px at -10% 130%, rgba(249,115,22,.16), transparent 60%),
+            linear-gradient(135deg, #1c1410 0%, #161b27 55%, #121826 100%);
+        border: 1px solid rgba(255,138,31,.22);
+        box-shadow: 0 22px 48px -22px rgba(255,122,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+        [data-theme="dark"] .tbl-hero::after {
+            background-image: radial-gradient(rgba(255,170,90,.16) 1.2px, transparent 1.4px);
+        }
+
+    [data-theme="dark"] .tbl-hero__icon {
+        color: #ffa057;
+        background: rgba(255,122,0,.14);
+        border-color: rgba(255,138,31,.35);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    [data-theme="dark"] .tbl-hero__eyebrow {
+        color: #ffa057;
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .tbl-hero p {
+        color: var(--ry-text-muted);
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .tbl-add-btn {
+        color: #fff;
+        background: linear-gradient(135deg, #ff8a1f, #ea580c);
+        box-shadow: 0 12px 26px -10px rgba(255,122,0,.65);
+    }
+
+        [data-theme="dark"] .tbl-add-btn i {
+            background: rgba(255,255,255,.2);
+        }
+
+    .tbl-stats {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .tbl-stat {
+        border-radius: 18px;
+        padding: 14px 16px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.24);
+        backdrop-filter: blur(8px);
+        min-width: 0;
+    }
+
+    .tbl-stat__label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .76rem;
+        font-weight: 700;
+        opacity: .9;
+    }
+
+    .tbl-stat__value {
+        margin-top: 4px;
+        font-size: 1.45rem;
+        font-weight: 900;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .tbl-stat__value small {
+            font-size: .75rem;
+            font-weight: 700;
+            opacity: .85;
+            margin-inline-start: 4px;
+        }
+
+    /* ===== TOOLBAR ===== */
+    .tbl-toolbar {
+        position: sticky;
+        top: 8px;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px;
+        margin-bottom: 18px;
+        border-radius: 20px;
+        background: color-mix(in srgb, var(--tp-surface) 88%, transparent);
+        border: 1px solid var(--tp-border);
+        box-shadow: 0 10px 30px -18px rgba(15,23,42,.25);
+        backdrop-filter: blur(10px);
+    }
+
+    .tbl-search {
+        position: relative;
+        flex: 1 1 220px;
+        min-width: 180px;
+    }
+
+        .tbl-search i {
+            position: absolute;
+            inset-inline-start: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--tp-faint);
+            pointer-events: none;
+        }
+
+        .tbl-search input {
+            width: 100%;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--tp-border);
+            background: var(--tp-input);
+            color: var(--tp-text);
+            padding-inline: 40px 14px;
+            font-size: .9rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            .tbl-search input:focus {
+                outline: none;
+                border-color: var(--tp-accent);
+                box-shadow: 0 0 0 4px var(--tp-accent-soft);
+            }
+
+    .tbl-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .tbl-chip {
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--tp-border);
+        background: transparent;
+        color: var(--tp-muted);
+        padding: 0 12px;
+        font-size: .82rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all .2s var(--tp-ease);
+    }
+
+        .tbl-chip:hover {
+            color: var(--tp-accent);
+            border-color: var(--tp-accent);
+        }
+
+        .tbl-chip.is-active {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(135deg, #ff7a00, #ea580c);
+            box-shadow: 0 8px 18px -8px rgba(234,88,12,.7);
+        }
+
+        .tbl-chip__count {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            display: inline-grid;
+            place-items: center;
+            font-size: .7rem;
+            background: var(--tp-border-soft);
+            color: var(--tp-muted);
+        }
+
+        .tbl-chip.is-active .tbl-chip__count {
+            background: rgba(255,255,255,.25);
+            color: #fff;
+        }
+
+    .tbl-toolbar__end {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-inline-start: auto;
+    }
+
+    .tbl-sort {
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--tp-border);
+        background: var(--tp-input);
+        color: var(--tp-text);
+        font-size: .82rem;
+        font-weight: 700;
+        padding: 0 12px;
+    }
+
+        .tbl-sort:focus {
+            outline: none;
+            border-color: var(--tp-accent);
+        }
+
+    .tbl-view {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px;
+        border-radius: 12px;
+        background: var(--tp-border-soft);
+        border: 1px solid var(--tp-border);
+        direction: ltr;
+    }
+
+        .tbl-view button {
+            width: 34px;
+            height: 30px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: var(--tp-muted);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            line-height: 0;
+            direction: ltr;
+            transition: all .2s;
+        }
+
+            .tbl-view button i {
+                display: block;
+                width: 1em;
+                height: 1em;
+                line-height: 1;
+                font-size: .85rem;
+                text-align: center;
+            }
+
+            .tbl-view button.is-active {
+                background: var(--tp-surface);
+                color: var(--tp-accent);
+                box-shadow: 0 2px 8px rgba(15,23,42,.12);
+            }
+
+    .tbl-result-line {
+        font-size: .8rem;
+        color: var(--tp-muted);
+        margin: -6px 4px 14px;
+    }
+
+    /* ===== FLOOR GRID ===== */
+    .tbl-floor {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 16px;
+    }
+
+    .tbl-card {
+        position: relative;
+        border-radius: var(--tp-radius);
+        background: var(--tp-surface);
+        border: 1px solid var(--tp-border);
+        box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 12px 28px -20px rgba(15,23,42,.35);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform .35s var(--tp-ease), box-shadow .35s var(--tp-ease), border-color .35s;
+        animation: tblIn .5s var(--tp-ease) both;
+        animation-delay: calc(var(--i, 0) * 40ms);
+    }
+
+        .tbl-card:hover {
+            transform: translateY(-4px);
+            border-color: color-mix(in srgb, var(--tp-accent) 45%, var(--tp-border));
+            box-shadow: 0 26px 40px -24px rgba(234,88,12,.45);
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card:hover .tbl-art {
+            transform: scale(1.06) rotate(-2deg);
+        }
+
+        .tbl-card[hidden] {
+            display: none !important;
+        }
+
+    @@keyframes tblIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px) scale(.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .tbl-card__stage {
+        position: relative;
+        height: 168px;
+        display: grid;
+        place-items: center;
+        background-color: var(--tp-floor);
+        background-image: radial-gradient(var(--tp-floor-dot) 1.2px, transparent 1.3px);
+        background-size: 14px 14px;
+        border-bottom: 1px solid var(--tp-border-soft);
+    }
+
+    .tbl-card__badge {
+        position: absolute;
+        top: 12px;
+        inset-inline-start: 12px;
+        font-size: .7rem;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--tp-surface);
+        color: var(--tp-muted);
+        border: 1px solid var(--tp-border);
+    }
+
+    .tbl-card[data-size="s"] .tbl-card__badge { color: #0f766e; }
+    .tbl-card[data-size="m"] .tbl-card__badge { color: #1d4ed8; }
+    .tbl-card[data-size="l"] .tbl-card__badge { color: #7c3aed; }
+    .tbl-card[data-size="xl"] .tbl-card__badge { color: #c2410c; }
+
+    [data-theme="dark"] .tbl-card[data-size="s"] .tbl-card__badge { color: #5eead4; border-color: rgba(45, 212, 191, .3); background: rgba(20, 184, 166, .12); }
+    [data-theme="dark"] .tbl-card[data-size="m"] .tbl-card__badge { color: #93c5fd; border-color: rgba(96, 165, 250, .3); background: rgba(59, 130, 246, .12); }
+    [data-theme="dark"] .tbl-card[data-size="l"] .tbl-card__badge { color: #c4b5fd; border-color: rgba(167, 139, 250, .3); background: rgba(139, 92, 246, .12); }
+    [data-theme="dark"] .tbl-card[data-size="xl"] .tbl-card__badge { color: #fdba74; border-color: rgba(251, 146, 60, .3); background: rgba(249, 115, 22, .12); }
+
+    .tbl-card__actions {
+        position: absolute;
+        top: 10px;
+        inset-inline-end: 10px;
+        z-index: 4;
+        display: flex;
+        gap: 6px;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: opacity .25s var(--tp-ease), transform .25s var(--tp-ease);
+    }
+
+    .tbl-floor:not(.is-list) .tbl-card:hover .tbl-card__actions,
+    .tbl-floor:not(.is-list) .tbl-card:focus-within .tbl-card__actions {
+        opacity: 1;
+        transform: none;
+    }
+
+    @@media (hover: none) {
+        .tbl-floor:not(.is-list) .tbl-card__actions {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .tbl-icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        border: 1px solid var(--tp-border);
+        background: var(--tp-surface);
+        color: var(--tp-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        line-height: 0;
+        font-size: .85rem;
+        direction: ltr;
+        box-shadow: 0 4px 10px -4px rgba(15,23,42,.2);
+        transition: all .2s;
+    }
+
+        .tbl-icon-btn i {
+            display: block;
+            line-height: 1;
+            width: 1em;
+            height: 1em;
+            text-align: center;
+        }
+
+        .tbl-icon-btn:hover {
+            color: var(--tp-accent);
+            border-color: var(--tp-accent);
+        }
+
+        .tbl-icon-btn.is-danger:hover {
+            color: #fff;
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+    .tbl-card__body {
+        padding: 14px 16px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .tbl-card__name {
+        margin: 0;
+        font-size: 1.02rem;
+        font-weight: 800;
+        color: var(--tp-strong);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .tbl-card__meta {
+        margin-top: 2px;
+        font-size: .78rem;
+        color: var(--tp-muted);
+    }
+
+    .tbl-seat-pill {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: .85rem;
+        color: var(--tp-accent);
+        background: var(--tp-accent-soft);
+    }
+
+    .tbl-card__foot {
+        display: none;
+    }
+
+    /* ===== TABLE ART (top-down) ===== */
+    .tbl-art {
+        position: relative;
+        transition: transform .45s var(--tp-ease);
+    }
+
+    .tbl-art--round {
+        width: 132px;
+        height: 132px;
+    }
+
+    .tbl-surface {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        color: #fff8ee;
+        font-weight: 900;
+        text-shadow: 0 1px 2px rgba(0,0,0,.35);
+        background: var(--tp-wood);
+        box-shadow:
+            inset 0 2px 0 rgba(255,255,255,.28),
+            inset 0 -4px 0 rgba(0,0,0,.12),
+            0 0 0 3px var(--tp-wood-edge),
+            0 12px 20px -8px rgba(60,30,10,.55);
+    }
+
+        .tbl-surface::before {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border-radius: inherit;
+            border: 1.5px dashed rgba(255,255,255,.28);
+            pointer-events: none;
+        }
+
+        .tbl-surface span {
+            position: relative;
+            font-size: 1.15rem;
+            line-height: 1;
+        }
+
+    .tbl-art--round .tbl-surface {
+        position: absolute;
+        inset: 30px;
+        border-radius: 50%;
+    }
+
+    .tbl-chair {
+        position: absolute;
+        z-index: 1;
+        width: 26px;
+        height: 14px;
+        border-radius: 8px 8px 5px 5px;
+        background: linear-gradient(180deg, var(--tp-chair-hi), var(--tp-chair));
+        box-shadow: 0 3px 6px -2px rgba(15,23,42,.45);
+    }
+
+    .tbl-art--round .tbl-chair {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(var(--a)) translateY(-56px);
+    }
+
+    .tbl-art--rect {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .tbl-art--rect .tbl-surface {
+            height: 62px;
+            min-width: 84px;
+            border-radius: 14px;
+            padding: 0 12px;
+        }
+
+        .tbl-art--rect .tbl-chair-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            min-height: 14px;
+        }
+
+        .tbl-art--rect .tbl-chair {
+            position: static;
+        }
+
+        .tbl-art--rect .tbl-chair-row--bottom .tbl-chair {
+            transform: rotate(180deg);
+        }
+
+    .tbl-art--empty .tbl-surface {
+        filter: grayscale(.6);
+        opacity: .8;
+    }
+
+    .tbl-more {
+        position: absolute;
+        z-index: 3;
+        bottom: -6px;
+        inset-inline-end: -14px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: .7rem;
+        font-weight: 800;
+        color: #fff;
+        background: #0f172a;
+        border: 2px solid var(--tp-floor);
+    }
+
+    /* ===== LIST VIEW ===== */
+    .tbl-floor.is-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+        .tbl-floor.is-list .tbl-card {
+            flex-direction: row;
+            align-items: center;
+            border-radius: 18px;
+            min-height: 88px;
+            padding: 8px;
+            gap: 4px;
+        }
+
+            .tbl-floor.is-list .tbl-card:hover {
+                transform: translateY(-2px);
+            }
+
+        .tbl-floor.is-list .tbl-card__stage {
+            position: relative;
+            width: 72px;
+            min-width: 72px;
+            height: 72px;
+            min-height: 72px;
+            align-self: center;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 0;
+            border-radius: 16px;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        /* Native small art — no scale transform (avoids visual drift) */
+        .tbl-floor.is-list .tbl-art {
+            position: relative;
+            left: auto;
+            top: auto;
+            margin: 0;
+            transform: none !important;
+            flex-shrink: 0;
+        }
+
+        .tbl-floor.is-list .tbl-art--round {
+            width: 56px;
+            height: 56px;
+        }
+
+            .tbl-floor.is-list .tbl-art--round .tbl-surface {
+                inset: 12px;
+            }
+
+            .tbl-floor.is-list .tbl-art--round .tbl-surface span {
+                font-size: .72rem;
+            }
+
+            .tbl-floor.is-list .tbl-art--round .tbl-chair {
+                width: 11px;
+                height: 6px;
+                border-radius: 5px 5px 3px 3px;
+                transform: translate(-50%, -50%) rotate(var(--a)) translateY(-23px);
+            }
+
+        .tbl-floor.is-list .tbl-art--rect {
+            gap: 3px;
+            transform: none !important;
+        }
+
+            .tbl-floor.is-list .tbl-art--rect .tbl-surface {
+                height: 28px;
+                min-width: 40px !important;
+                border-radius: 8px;
+                padding: 0 8px;
+            }
+
+            .tbl-floor.is-list .tbl-art--rect .tbl-surface span {
+                font-size: .78rem;
+            }
+
+            .tbl-floor.is-list .tbl-art--rect .tbl-chair {
+                width: 12px;
+                height: 7px;
+            }
+
+            .tbl-floor.is-list .tbl-art--rect .tbl-chair-row {
+                gap: 5px;
+                min-height: 7px;
+            }
+
+            .tbl-floor.is-list .tbl-more {
+                bottom: -2px;
+                inset-inline-end: -8px;
+                font-size: .6rem;
+                padding: 1px 5px;
+            }
+
+        .tbl-floor.is-list .tbl-card__badge {
+            display: none;
+        }
+
+        .tbl-floor.is-list .tbl-card__actions {
+            position: static !important;
+            top: auto;
+            inset-inline-end: auto;
+            opacity: 1 !important;
+            transform: none !important;
+            flex-shrink: 0;
+            align-self: center;
+            margin: 0;
+            padding-inline-end: 4px;
+            z-index: 1;
+        }
+
+        .tbl-floor.is-list .tbl-card__body {
+            flex: 1;
+            min-width: 0;
+            padding: 4px 8px;
+            align-self: center;
+        }
+
+        .tbl-floor.is-list .tbl-seat-pill {
+            margin-inline-start: auto;
+        }
+
+    /* ===== EMPTY / NO RESULT ===== */
+    .tbl-empty {
+        text-align: center;
+        padding: 56px 20px;
+        border-radius: var(--tp-radius);
+        border: 2px dashed var(--tp-border);
+        background-color: var(--tp-surface);
+        background-image: radial-gradient(var(--tp-floor-dot) 1.2px, transparent 1.3px);
+        background-size: 16px 16px;
+    }
+
+        .tbl-empty .tbl-art {
+            margin: 0 auto 18px;
+        }
+
+        .tbl-empty h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--tp-strong);
+            margin-bottom: 6px;
+        }
+
+        .tbl-empty p {
+            color: var(--tp-muted);
+            font-size: .9rem;
+            margin-bottom: 18px;
+        }
+
+        .tbl-empty .tbl-add-btn {
+            color: #fff;
+            background: linear-gradient(135deg, #ff7a00, #ea580c);
+            box-shadow: 0 12px 26px -10px rgba(234,88,12,.7);
+        }
+
+            .tbl-empty .tbl-add-btn i {
+                background: rgba(255,255,255,.22);
+            }
+
+    .tbl-noresult {
+        text-align: center;
+        padding: 40px 16px;
+        color: var(--tp-muted);
+    }
+
+        .tbl-noresult i {
+            font-size: 2rem;
+            color: var(--tp-faint);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+    /* ===== MODAL ===== */
+    .tbl-modal .modal-content {
+        direction: rtl;
+        border: 0;
+        border-radius: 26px;
+        overflow: hidden;
+        background: var(--tp-surface);
+        color: var(--tp-text);
+        box-shadow: 0 40px 80px -30px rgba(15,23,42,.55);
+    }
+
+    .tbl-modal__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--tp-border-soft);
+    }
+
+        .tbl-modal__head .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--tp-strong);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .tbl-modal__head .modal-title::before {
+                content: "";
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: var(--tp-accent);
+                box-shadow: 0 0 0 4px var(--tp-accent-soft);
+            }
+
+    .tbl-modal__close {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        border: 1px solid var(--tp-border);
+        background: transparent;
+        color: var(--tp-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        line-height: 0;
+        direction: ltr;
+        transition: all .2s;
+    }
+
+        .tbl-modal__close i {
+            display: block;
+            line-height: 1;
+            width: 1em;
+            text-align: center;
+        }
+
+        .tbl-modal__close:hover {
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+    .tbl-modal__preview {
+        height: 190px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        background-color: var(--tp-floor);
+        background-image: radial-gradient(var(--tp-floor-dot) 1.2px, transparent 1.3px);
+        background-size: 14px 14px;
+    }
+
+    .tbl-modal__preview #tblPreviewArt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0;
+    }
+
+        .tbl-modal__preview #tblPreviewArt .tbl-art {
+            transform: none;
+        }
+
+    .tbl-modal__preview-label {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 80%;
+        font-size: .8rem;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: var(--tp-surface);
+        color: var(--tp-strong);
+        border: 1px solid var(--tp-border);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .tbl-modal .modal-body {
+        padding: 20px 22px 6px;
+    }
+
+    .tbl-modal #errorContainer {
+        margin: 14px 22px 0;
+        border-radius: 14px;
+        font-size: .85rem;
+    }
+
+    .tbl-field {
+        margin-bottom: 16px;
+    }
+
+        .tbl-field label {
+            display: block;
+            font-size: .84rem;
+            font-weight: 800;
+            color: var(--tp-strong);
+            margin-bottom: 6px;
+        }
+
+        .tbl-field .form-control {
+            height: 46px;
+            border-radius: 14px;
+            border: 1px solid var(--tp-border);
+            background: var(--tp-input);
+            color: var(--tp-text);
+            font-size: .95rem;
+        }
+
+            .tbl-field .form-control:focus {
+                border-color: var(--tp-accent);
+                box-shadow: 0 0 0 4px var(--tp-accent-soft);
+            }
+
+    .tbl-stepper {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+        .tbl-stepper .form-control {
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            direction: ltr;
+            line-height: 1.2;
+            -moz-appearance: textfield;
+        }
+
+            .tbl-stepper .form-control::-webkit-outer-spin-button,
+            .tbl-stepper .form-control::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+        .tbl-stepper button {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            border: 1px solid var(--tp-border);
+            background: var(--tp-border-soft);
+            color: var(--tp-strong);
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            line-height: 0;
+            direction: ltr;
+            transition: all .2s;
+        }
+
+            .tbl-stepper button span {
+                display: block;
+                line-height: 1;
+                font-size: 1.35rem;
+                font-weight: 500;
+                text-align: center;
+                width: 1.1em;
+            }
+
+            .tbl-stepper button:hover {
+                background: var(--tp-accent);
+                border-color: var(--tp-accent);
+                color: #fff;
+            }
+
+    .tbl-presets {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+        .tbl-presets button {
+            border: 1px dashed var(--tp-border-strong, #cbd5e1);
+            background: transparent;
+            color: var(--tp-muted);
+            border-radius: 10px;
+            padding: 4px 10px;
+            font-size: .78rem;
+            font-weight: 700;
+            transition: all .2s;
+        }
+
+            .tbl-presets button:hover,
+            .tbl-presets button.is-active {
+                border-style: solid;
+                border-color: var(--tp-accent);
+                color: var(--tp-accent);
+                background: var(--tp-accent-soft);
+            }
+
+    .tbl-modal .modal-footer {
+        border-top: 1px solid var(--tp-border-soft);
+        padding: 14px 22px 18px;
+        gap: 8px;
+    }
+
+    .tbl-btn-ghost {
+        border: 1px solid var(--tp-border);
+        background: transparent;
+        color: var(--tp-muted);
+        border-radius: 14px;
+        padding: 10px 18px;
+        font-weight: 700;
+    }
+
+        .tbl-btn-ghost:hover {
+            color: var(--tp-strong);
+            background: var(--tp-border-soft);
+        }
+
+    .tbl-btn-save {
+        border: 0;
+        border-radius: 14px;
+        padding: 10px 24px;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, #ff7a00, #ea580c);
+        box-shadow: 0 10px 22px -10px rgba(234,88,12,.8);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform .2s var(--tp-ease);
+    }
+
+        .tbl-btn-save:hover {
+            transform: translateY(-1px);
+        }
+
+        .tbl-btn-save:disabled {
+            opacity: .7;
+            transform: none;
+        }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 991.98px) {
+        .tbl-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .tbl-hero {
+            padding: 20px 18px 18px;
+            border-radius: 22px;
+        }
+
+            .tbl-hero h2 {
+                font-size: 1.25rem;
+            }
+
+        .tbl-add-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .tbl-toolbar {
+            position: static;
+        }
+
+        .tbl-toolbar__end {
+            width: 100%;
+            margin-inline-start: 0;
+        }
+
+        .tbl-sort {
+            flex: 1;
+        }
+
+        .tbl-floor {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card__stage {
+            height: 128px;
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card .tbl-art {
+            transform: scale(.78);
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card:hover .tbl-art {
+            transform: scale(.8) rotate(-2deg);
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card__body {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px 12px 12px;
+        }
+
+        .tbl-floor:not(.is-list) .tbl-card__meta {
+            display: none;
+        }
+
+        .tbl-floor.is-list {
+            grid-template-columns: 1fr;
+        }
+
+        .tbl-floor.is-list .tbl-card__stage {
+            width: 76px;
+            min-height: 76px;
+        }
+
+        .tbl-floor.is-list .tbl-art--round {
+            width: 56px;
+            height: 56px;
+        }
+
+            .tbl-floor.is-list .tbl-art--round .tbl-surface {
+                inset: 13px;
+            }
+
+            .tbl-floor.is-list .tbl-art--round .tbl-chair {
+                width: 11px;
+                height: 6px;
+                transform: translate(-50%, -50%) rotate(var(--a)) translateY(-23px);
+            }
+
+        .tbl-floor.is-list .tbl-card__body {
+            flex-direction: row;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .tbl-floor.is-list .tbl-card__actions {
+            padding-inline-end: 10px;
+            margin-inline-start: 0;
+        }
+
+        .tbl-floor.is-list .tbl-icon-btn {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    @@media (prefers-reduced-motion: reduce) {
+        .tbl-card, .tbl-art, .tbl-card__actions {
+            animation: none !important;
+            transition: none !important;
+        }
+    }
 </style>
 
-<div class="container table-page mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-       
-        <button class="btn btn-primary" onclick="openAddTableModal()">افزودن میز</button>
+<div class="container tbl-page mt-3">
 
-    </div>
+    <section class="tbl-hero" aria-label="خلاصه میزها">
+        <div class="tbl-hero__row">
+            <div class="tbl-hero__intro">
+                <div class="tbl-hero__icon"><i class="fas fa-chair"></i></div>
+                <div>
+                    <span class="tbl-hero__eyebrow">نقشهٔ سالن رستوران</span>
+                    <h2>مدیریت میزها</h2>
+                    <p>میزها را بچینید، ظرفیت را تنظیم کنید و نمای کلی سالن را یک‌جا ببینید.</p>
+                </div>
+            </div>
+            <button type="button" class="tbl-add-btn" onclick="openAddTableModal()">
+                <i class="fas fa-plus"></i>
+                افزودن میز
+            </button>
+        </div>
+
+        <div class="tbl-stats">
+            <div class="tbl-stat">
+                <div class="tbl-stat__label"><i class="fas fa-table-cells-large"></i> تعداد میزها</div>
+                <div class="tbl-stat__value">@Fa(totalTables)<small>میز</small></div>
+            </div>
+            <div class="tbl-stat">
+                <div class="tbl-stat__label"><i class="fas fa-users"></i> ظرفیت کل سالن</div>
+                <div class="tbl-stat__value">@Fa(totalSeats)<small>نفر</small></div>
+            </div>
+            <div class="tbl-stat">
+                <div class="tbl-stat__label"><i class="fas fa-scale-balanced"></i> میانگین صندلی</div>
+                <div class="tbl-stat__value">@Fa(avgSeats)<small>در هر میز</small></div>
+            </div>
+            <div class="tbl-stat">
+                <div class="tbl-stat__label"><i class="fas fa-crown"></i> بزرگ‌ترین میز</div>
+                <div class="tbl-stat__value" title="@(largest?.TableName)">
+                    @if (largest != null)
+                    {
+                        @largest.TableName<small>@Fa(largest.Seats) نفره</small>
+                    }
+                    else
+                    {
+                        <text>—</text>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-warning text-center">هیچ میزی ثبت نشده است.</div>
+        <div class="tbl-empty">
+            <div class="tbl-art tbl-art--round" aria-hidden="true">
+                @for (var c = 0; c < 4; c++)
+                {
+                    <span class="tbl-chair" style="--a:@(c * 90)deg"></span>
+                }
+                <div class="tbl-surface"><span>?</span></div>
+            </div>
+            <h3>هنوز هیچ میزی ثبت نشده است</h3>
+            <p>اولین میز سالن را بسازید تا سفارش‌ها را بر اساس میز ثبت کنید.</p>
+            <button type="button" class="tbl-add-btn" onclick="openAddTableModal()">
+                <i class="fas fa-plus"></i>
+                ساخت اولین میز
+            </button>
+        </div>
     }
     else
     {
-        <div class="row">
+        <div class="tbl-toolbar" role="toolbar" aria-label="ابزار فیلتر میزها">
+            <label class="tbl-search">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="search" id="tblSearch" placeholder="جست‌وجوی نام میز..." autocomplete="off" aria-label="جست‌وجوی نام میز" />
+            </label>
+
+            <div class="tbl-chips" id="tblChips">
+                <button type="button" class="tbl-chip is-active" data-size="all">همه <span class="tbl-chip__count">@Fa(totalTables)</span></button>
+                <button type="button" class="tbl-chip" data-size="s">۱–۲ نفره <span class="tbl-chip__count">@Fa(Model.Count(t => SizeKey(t.Seats) == "s"))</span></button>
+                <button type="button" class="tbl-chip" data-size="m">۳–۴ نفره <span class="tbl-chip__count">@Fa(Model.Count(t => SizeKey(t.Seats) == "m"))</span></button>
+                <button type="button" class="tbl-chip" data-size="l">۵–۶ نفره <span class="tbl-chip__count">@Fa(Model.Count(t => SizeKey(t.Seats) == "l"))</span></button>
+                <button type="button" class="tbl-chip" data-size="xl">۷+ نفره <span class="tbl-chip__count">@Fa(Model.Count(t => SizeKey(t.Seats) == "xl"))</span></button>
+            </div>
+
+            <div class="tbl-toolbar__end">
+                <select id="tblSort" class="tbl-sort" aria-label="مرتب‌سازی">
+                    <option value="name">مرتب‌سازی: نام میز</option>
+                    <option value="seats-desc">بیشترین ظرفیت</option>
+                    <option value="seats-asc">کمترین ظرفیت</option>
+                    <option value="newest">جدیدترین</option>
+                </select>
+                <div class="tbl-view" role="group" aria-label="نوع نمایش">
+                    <button type="button" class="is-active" data-view="floor" title="نمای سالن" aria-label="نمای سالن"><i class="fas fa-border-all"></i></button>
+                    <button type="button" data-view="list" title="نمای لیست" aria-label="نمای لیست"><i class="fas fa-list"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tbl-result-line" id="tblResultLine" aria-live="polite"></div>
+
+        <div class="tbl-floor" id="tblFloor">
+            @{ var idx = 0; }
             @foreach (var t in Model)
             {
-                <div class="col-12 col-md-6 col-lg-4 mb-3"
-                     data-id="@t.TableId"
-                     data-name="@t.TableName"
-                     data-seats="@t.Seats">
-                    <div class="card h-100">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5>@t.TableName</h5>
-                            @* <small class="text-muted">@t.CreatedAt</small> *@
-                        </div>
-                        <p class="text-muted mt-2">تعداد صندلی: <strong>@t.Seats</strong></p>
-                        <div class="mt-2 d-flex justify-content-between">
-                            <button class="btn btn-sm btn-warning" onclick="openEditTableModal(@t.TableId)">ویرایش</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteTable(@t.TableId)">حذف</button>
-                        </div>
+                var seats = Math.Max(0, t.Seats);
+                var drawn = Math.Min(seats, MaxDrawnChairs);
+                var isRound = seats <= 6;
+                <article class="tbl-card"
+                         style="--i:@(Math.Min(idx, 15))"
+                         data-id="@t.TableId"
+                         data-name="@t.TableName"
+                         data-seats="@t.Seats"
+                         data-size="@SizeKey(seats)"
+                         data-order="@idx">
+                    <div class="tbl-card__stage">
+                        <span class="tbl-card__badge">
+                            @(SizeKey(seats) switch { "s" => "دونفره", "m" => "خانوادگی کوچک", "l" => "خانوادگی", _ => "گروهی" })
+                        </span>
+
+                        @if (isRound)
+                        {
+                            <div class="tbl-art tbl-art--round @(seats == 0 ? "tbl-art--empty" : "")" aria-hidden="true">
+                                @for (var c = 0; c < drawn; c++)
+                                {
+                                    <span class="tbl-chair" style="--a:@((360.0 / drawn * c).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))deg"></span>
+                                }
+                                <div class="tbl-surface"><span>@Fa(seats)</span></div>
+                            </div>
+                        }
+                        else
+                        {
+                            var top = (drawn + 1) / 2;
+                            var bottom = drawn - top;
+                            <div class="tbl-art tbl-art--rect" aria-hidden="true">
+                                <div class="tbl-chair-row">
+                                    @for (var c = 0; c < top; c++) { <span class="tbl-chair"></span> }
+                                </div>
+                                <div class="tbl-surface" style="min-width:@(top * 36 + 10)px"><span>@Fa(seats)</span></div>
+                                <div class="tbl-chair-row tbl-chair-row--bottom">
+                                    @for (var c = 0; c < bottom; c++) { <span class="tbl-chair"></span> }
+                                </div>
+                                @if (seats > MaxDrawnChairs)
+                                {
+                                    <span class="tbl-more">+@Fa(seats - MaxDrawnChairs)</span>
+                                }
+                            </div>
+                        }
                     </div>
-                </div>
+
+                    <div class="tbl-card__body">
+                        <div style="min-width:0">
+                            <h5 class="tbl-card__name" title="@t.TableName">@t.TableName</h5>
+                            <div class="tbl-card__meta">@(seats == 0 ? "صندلی تعیین نشده" : $"مناسب {Fa(seats)} نفر")</div>
+                        </div>
+                        <span class="tbl-seat-pill"><i class="fas fa-user-group"></i> @Fa(seats)</span>
+                    </div>
+
+                    <div class="tbl-card__actions">
+                        <button type="button" class="tbl-icon-btn" title="ویرایش" aria-label="ویرایش @t.TableName" onclick="openEditTableModal(@t.TableId)">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button type="button" class="tbl-icon-btn is-danger" title="حذف" aria-label="حذف @t.TableName" onclick="deleteTable(@t.TableId)">
+                            <i class="fas fa-trash-can"></i>
+                        </button>
+                    </div>
+                </article>
+                idx++;
             }
+        </div>
+
+        <div class="tbl-noresult" id="tblNoResult" hidden>
+            <i class="fas fa-magnifying-glass-minus"></i>
+            میزی با این مشخصات پیدا نشد.
         </div>
     }
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="tableModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade tbl-modal tbl-page" id="tableModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div id="errorContainer" class="alert alert-danger d-none"></div>
-            <div class="modal-header">
+            <div class="tbl-modal__head modal-header">
                 <h5 class="modal-title" id="modalTitle">افزودن میز</h5>
-                <button type="button" class="btn-primary" data-bs-dismiss="modal"></button>
+                <button type="button" class="tbl-modal__close" data-bs-dismiss="modal" aria-label="بستن">
+                    <i class="fas fa-xmark"></i>
+                </button>
             </div>
+
+            <div class="tbl-modal__preview" aria-hidden="true">
+                <div id="tblPreviewArt"></div>
+                <span class="tbl-modal__preview-label" id="tblPreviewLabel">میز جدید</span>
+            </div>
+
+            <div id="errorContainer" class="alert alert-danger d-none"></div>
+
             <div class="modal-body">
-                <form id="tableForm">
+                <form id="tableForm" onsubmit="event.preventDefault(); saveTable();">
                     <input type="hidden" id="tableId" />
-                    <div class="mb-3">
-                        <label>نام میز <span class="text-danger">*</span></label>
-                        <input type="text" id="tableName" class="form-control" required />
+                    <div class="tbl-field">
+                        <label for="tableName">نام میز <span class="text-danger">*</span></label>
+                        <input type="text" id="tableName" class="form-control" required maxlength="100" placeholder="مثلاً: میز ۱۲ یا تراس ۳" autocomplete="off" />
                     </div>
-                    <div class="mb-3">
-                        <label>تعداد صندلی</label>
-                        <input type="number" id="seats" class="form-control" min="1" />
+                    <div class="tbl-field">
+                        <label for="seats">تعداد صندلی</label>
+                        <div class="tbl-stepper">
+                            <button type="button" data-step="-1" aria-label="کاهش صندلی"><span aria-hidden="true">−</span></button>
+                            <input type="number" id="seats" class="form-control" min="1" inputmode="numeric" placeholder="4" />
+                            <button type="button" data-step="1" aria-label="افزایش صندلی"><span aria-hidden="true">+</span></button>
+                        </div>
+                        <div class="tbl-presets" id="tblPresets">
+                            <button type="button" data-seats="2">۲ نفره</button>
+                            <button type="button" data-seats="4">۴ نفره</button>
+                            <button type="button" data-seats="6">۶ نفره</button>
+                            <button type="button" data-seats="8">۸ نفره</button>
+                            <button type="button" data-seats="10">۱۰ نفره</button>
+                        </div>
                     </div>
+                    <button type="submit" hidden></button>
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
-                <button class="btn btn-primary" onclick="saveTable()">ذخیره</button>
+                <button type="button" class="tbl-btn-ghost" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="tbl-btn-save" id="tblSaveBtn" onclick="saveTable()">
+                    <i class="fas fa-check"></i>
+                    ذخیره میز
+                </button>
             </div>
         </div>
     </div>
@@ -133,6 +1530,68 @@
 <script>
     var API_BASE = "/api/v2/UserApi";
     var restaurantId = @(ViewBag.RestaurantId ?? 0);
+    var TBL_MAX_CHAIRS = 12;
+    var TBL_VIEW_KEY = 'ry.tableList.view';
+    var tblState = { q: '', size: 'all', sort: 'name' };
+
+    function tblToFa(value) {
+        return String(value).replace(/[0-9]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; });
+    }
+
+    function tblEscape(text) {
+        return String(text == null ? '' : text).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function tblArtHtml(seats) {
+        seats = Math.max(0, parseInt(seats, 10) || 0);
+        var drawn = Math.min(seats, TBL_MAX_CHAIRS);
+        var label = '<div class="tbl-surface"%STYLE%><span>' + (seats ? tblToFa(seats) : '؟') + '</span></div>';
+        var html = '';
+        var i;
+
+        if (seats <= 6) {
+            html += '<div class="tbl-art tbl-art--round' + (seats === 0 ? ' tbl-art--empty' : '') + '">';
+            for (i = 0; i < drawn; i++) {
+                html += '<span class="tbl-chair" style="--a:' + (360 / drawn * i).toFixed(2) + 'deg"></span>';
+            }
+            html += label.replace('%STYLE%', '') + '</div>';
+            return html;
+        }
+
+        var top = Math.ceil(drawn / 2);
+        var bottom = drawn - top;
+        html += '<div class="tbl-art tbl-art--rect"><div class="tbl-chair-row">';
+        for (i = 0; i < top; i++) html += '<span class="tbl-chair"></span>';
+        html += '</div>' + label.replace('%STYLE%', ' style="min-width:' + (top * 36 + 10) + 'px"');
+        html += '<div class="tbl-chair-row tbl-chair-row--bottom">';
+        for (i = 0; i < bottom; i++) html += '<span class="tbl-chair"></span>';
+        html += '</div>';
+        if (seats > TBL_MAX_CHAIRS) html += '<span class="tbl-more">+' + tblToFa(seats - TBL_MAX_CHAIRS) + '</span>';
+        html += '</div>';
+        return html;
+    }
+
+    function tblUpdatePreview() {
+        var seats = parseInt($("#seats").val(), 10) || 0;
+        var name = ($("#tableName").val() || '').trim();
+        $("#tblPreviewArt").html(tblArtHtml(seats));
+        $("#tblPreviewLabel").text(name || ($("#tableId").val() ? 'بدون نام' : 'میز جدید'));
+        $("#tblPresets button").each(function () {
+            $(this).toggleClass('is-active', parseInt($(this).attr('data-seats'), 10) === seats);
+        });
+    }
+
+    function tblShowModal() {
+        tblUpdatePreview();
+        var el = document.getElementById('tableModal');
+        bootstrap.Modal.getOrCreateInstance(el).show();
+        el.addEventListener('shown.bs.modal', function onShown() {
+            el.removeEventListener('shown.bs.modal', onShown);
+            document.getElementById('tableName').focus();
+        });
+    }
 
     function openAddTableModal() {
         $("#modalTitle").text("افزودن میز");
@@ -140,7 +1599,7 @@
         $("#tableName").val("");
         $("#seats").val("");
         clearErrors();
-        new bootstrap.Modal(document.getElementById('tableModal')).show();
+        tblShowModal();
     }
 
     function openEditTableModal(id) {
@@ -150,7 +1609,7 @@
         $("#seats").val(card.data("seats"));
         $("#modalTitle").text("ویرایش میز");
         clearErrors();
-        new bootstrap.Modal(document.getElementById('tableModal')).show();
+        tblShowModal();
     }
 
     async function saveTable() {
@@ -175,6 +1634,10 @@
             method = "PUT";
         }
 
+        const $btn = $("#tblSaveBtn");
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> در حال ذخیره...');
+
         try {
             const response = await window.fetchWithAuth(url, {
                 method: method,
@@ -186,9 +1649,11 @@
                 showToast(res.message || 'عملیات موفق', 'success');
                 setTimeout(() => location.reload(), 1000);
             } else {
+                $btn.prop('disabled', false).html(originalHtml);
                 showErrors([res.message || "خطا در ذخیره میز"]);
             }
         } catch (error) {
+            $btn.prop('disabled', false).html(originalHtml);
             showErrors([error.message || "خطا در ارتباط با سرور"]);
         }
     }
@@ -214,7 +1679,7 @@
 
     function showErrors(errors) {
         const box = $("#errorContainer");
-        box.html(errors.map(e => `<div>• ${e}</div>`).join(""));
+        box.html(errors.map(e => `<div>• ${tblEscape(e)}</div>`).join(""));
         box.removeClass("d-none");
     }
 
@@ -222,9 +1687,121 @@
         $("#errorContainer").addClass("d-none").html("");
     }
 
+    function tblApplyFilters() {
+        var floor = document.getElementById('tblFloor');
+        if (!floor) return;
+
+        var cards = Array.prototype.slice.call(floor.querySelectorAll('.tbl-card'));
+        var q = tblState.q.trim().toLowerCase();
+        var visible = 0;
+        var visibleSeats = 0;
+
+        cards.sort(function (a, b) {
+            var sa = parseInt(a.getAttribute('data-seats'), 10) || 0;
+            var sb = parseInt(b.getAttribute('data-seats'), 10) || 0;
+            var na = a.getAttribute('data-name') || '';
+            var nb = b.getAttribute('data-name') || '';
+            switch (tblState.sort) {
+                case 'seats-desc': return sb - sa || na.localeCompare(nb, 'fa', { numeric: true });
+                case 'seats-asc': return sa - sb || na.localeCompare(nb, 'fa', { numeric: true });
+                case 'newest': return (parseInt(a.getAttribute('data-order'), 10) || 0) - (parseInt(b.getAttribute('data-order'), 10) || 0);
+                default: return na.localeCompare(nb, 'fa', { numeric: true, sensitivity: 'base' });
+            }
+        });
+
+        cards.forEach(function (card) {
+            floor.appendChild(card);
+            var name = (card.getAttribute('data-name') || '').toLowerCase();
+            var matchQ = !q || name.indexOf(q) !== -1;
+            var matchSize = tblState.size === 'all' || card.getAttribute('data-size') === tblState.size;
+            var show = matchQ && matchSize;
+            card.hidden = !show;
+            if (show) {
+                visible++;
+                visibleSeats += parseInt(card.getAttribute('data-seats'), 10) || 0;
+            }
+        });
+
+        $('#tblNoResult').prop('hidden', visible !== 0);
+        var isFiltered = q || tblState.size !== 'all';
+        $('#tblResultLine').text(isFiltered
+            ? tblToFa(visible) + ' میز از ' + tblToFa(cards.length) + ' میز — ظرفیت ' + tblToFa(visibleSeats) + ' نفر'
+            : '');
+    }
+
+    function tblSetView(view) {
+        var isList = view === 'list';
+        $('#tblFloor').toggleClass('is-list', isList);
+        $('.tbl-view button').each(function () {
+            $(this).toggleClass('is-active', $(this).attr('data-view') === (isList ? 'list' : 'floor'));
+        });
+        try { localStorage.setItem(TBL_VIEW_KEY, isList ? 'list' : 'floor'); } catch (e) { /* ignore */ }
+    }
+
+    function tblNormalizeCardStructure() {
+        document.querySelectorAll('.tbl-card').forEach(function (card) {
+            var stage = card.querySelector('.tbl-card__stage');
+            if (!stage) return;
+            var actions = stage.querySelector(':scope > .tbl-card__actions');
+            if (actions) card.appendChild(actions);
+        });
+    }
+
     function initTableListPage() {
-        // page uses onclick handlers; no extra init required
+        tblState = { q: '', size: 'all', sort: 'name' };
+        tblNormalizeCardStructure();
+
+        $('#tblSearch').off('.tbl').on('input.tbl', function () {
+            tblState.q = this.value || '';
+            tblApplyFilters();
+        });
+
+        $('#tblChips').off('.tbl').on('click.tbl', '.tbl-chip', function () {
+            $('#tblChips .tbl-chip').removeClass('is-active');
+            $(this).addClass('is-active');
+            tblState.size = $(this).attr('data-size') || 'all';
+            tblApplyFilters();
+        });
+
+        $('#tblSort').off('.tbl').on('change.tbl', function () {
+            tblState.sort = this.value;
+            tblApplyFilters();
+        });
+
+        $('.tbl-view').off('.tbl').on('click.tbl', 'button', function () {
+            tblSetView($(this).attr('data-view'));
+        });
+
+        $('#tableName, #seats').off('.tbl').on('input.tbl', tblUpdatePreview);
+
+        $('.tbl-stepper').off('.tbl').on('click.tbl', 'button[data-step]', function () {
+            var current = parseInt($('#seats').val(), 10) || 0;
+            var next = Math.max(1, current + parseInt($(this).attr('data-step'), 10));
+            $('#seats').val(next);
+            tblUpdatePreview();
+        });
+
+        $('#tblPresets').off('.tbl').on('click.tbl', 'button', function () {
+            $('#seats').val($(this).attr('data-seats'));
+            tblUpdatePreview();
+        });
+
+        var savedView = 'floor';
+        try { savedView = localStorage.getItem(TBL_VIEW_KEY) || 'floor'; } catch (e) { /* ignore */ }
+        tblSetView(savedView);
+        tblApplyFilters();
+        tblUpdatePreview();
     }
 
     window.initTableListPage = initTableListPage;
+    window.openAddTableModal = openAddTableModal;
+    window.openEditTableModal = openEditTableModal;
+    window.saveTable = saveTable;
+    window.deleteTable = deleteTable;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTableListPage);
+    } else {
+        initTableListPage();
+    }
 </script>

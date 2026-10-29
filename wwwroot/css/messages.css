@@ -424,3 +424,33 @@
         justify-content: center;
     }
 }
+
+/* ===== DARK MODE ===== */
+/* :root tokens (--card-bg, --text-dark, ...) are remapped globally by theme.css in dark mode. */
+[data-theme="dark"] .messages-page {
+    --primary-light: rgba(255, 122, 0, 0.14);
+}
+
+[data-theme="dark"] .messages-filter-tabs,
+[data-theme="dark"] .message-type-chip,
+[data-theme="dark"] .messages-detail-modal__close {
+    background: var(--ry-surface-3);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .messages-filter-tab.active {
+    background: var(--ry-surface);
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .message-card.is-unread {
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.1) 0%, var(--ry-surface) 100%);
+}
+
+[data-theme="dark"] .messages-detail-modal__close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .message-type-chip.is-private {
+    color: #a5b4fc;
+}

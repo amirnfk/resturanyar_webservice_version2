@@ -751,3 +751,89 @@
         max-height: 420px;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .ap-dash {
+    --ap-bg: var(--ry-bg);
+    --ap-card: var(--ry-surface);
+    --ap-text: var(--ry-text);
+    --ap-muted: var(--ry-text-muted);
+    --ap-border: var(--ry-border-strong);
+    --ap-border-soft: var(--ry-border);
+    --ap-orange-soft: rgba(255, 122, 0, 0.16);
+    --ap-emerald: #6ee7b7;
+    --ap-amber: #fcd34d;
+    --ap-rose: #fda4af;
+    --ap-sky: #7dd3fc;
+    --ap-slate: #cbd5e1;
+    --ap-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .ap-chip {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .ap-pulse-card--day {
+    background: linear-gradient(135deg, var(--ry-surface) 0%, rgba(255, 122, 0, 0.12) 100%);
+}
+
+[data-theme="dark"] .ap-pulse-card--week {
+    background: linear-gradient(135deg, var(--ry-surface) 0%, rgba(16, 185, 129, 0.12) 100%);
+}
+
+[data-theme="dark"] .ap-pulse-metric {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .ap-pulse__title i {
+    color: #fda4af;
+}
+
+[data-theme="dark"] .ap-card__badge,
+[data-theme="dark"] .ap-tab-btn .count {
+    background: var(--ry-surface-3);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .ap-card__badge--warn,
+[data-theme="dark"] .ap-alert-item__days {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .ap-alert-item {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.25);
+}
+
+[data-theme="dark"] .ap-table thead th,
+[data-theme="dark"] .ap-dash table.dataTable thead th {
+    background: var(--ry-surface-2) !important;
+    color: var(--ry-text-muted);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .ap-table tbody td {
+    color: var(--ry-text);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .ap-table tbody tr:hover td {
+    background: var(--ry-hover);
+}
+
+[data-theme="dark"] .ap-status--none {
+    background: var(--ry-surface-3);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .ap-status--active {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .ap-status--expired {
+    color: #fda4af;
+}

@@ -1386,3 +1386,110 @@
         animation: none !important;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] #orderEditOffcanvas,
+[data-theme="dark"] .moe-modal {
+    --moe-ink: var(--ry-text-strong);
+    --moe-ink-2: var(--ry-text);
+    --moe-ink-3: var(--ry-text-muted);
+    --moe-line: var(--ry-border-strong);
+    --moe-line-soft: var(--ry-border);
+    --moe-surface: var(--ry-surface-2);
+    --moe-brand-soft: rgba(255, 122, 0, 0.16);
+    --moe-success: #5eead4;
+    --moe-danger: #fb7185;
+    --moe-sh-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --moe-sh-md: 0 6px 18px -6px rgba(0, 0, 0, 0.55);
+    --moe-sh-lg: 0 22px 45px -20px rgba(0, 0, 0, 0.7);
+    background: var(--ry-surface);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .moe-head {
+    background: linear-gradient(180deg, var(--ry-surface) 0%, var(--ry-surface-2) 100%);
+}
+
+[data-theme="dark"] .moe-chip--type {
+    background: var(--ry-surface-3);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .moe-chip--dirty {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .moe-head__close,
+[data-theme="dark"] .moe-tabs,
+[data-theme="dark"] .moe-pane--catalog,
+[data-theme="dark"] .moe-toolbar,
+[data-theme="dark"] .moe-food-card,
+[data-theme="dark"] .moe-card,
+[data-theme="dark"] .moe-qty-btn,
+[data-theme="dark"] .moe-icon-btn,
+[data-theme="dark"] .moe-ghost-btn,
+[data-theme="dark"] .moe-entity__avatar,
+[data-theme="dark"] .moe-entity__action,
+[data-theme="dark"] .moe-loading__box,
+[data-theme="dark"] .moe-foot,
+[data-theme="dark"] .moe-btn--ghost {
+    background: var(--ry-surface);
+}
+
+[data-theme="dark"] .moe-head__close:hover,
+[data-theme="dark"] .moe-item__remove:hover,
+[data-theme="dark"] .moe-modal .modal-header .btn-close:hover {
+    background: var(--ry-danger-soft);
+}
+
+[data-theme="dark"] #orderEditOffcanvas .form-control,
+[data-theme="dark"] #orderEditOffcanvas .form-select,
+[data-theme="dark"] .moe-modal .form-control,
+[data-theme="dark"] .moe-qty-input {
+    background-color: var(--ry-input-bg);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .moe-food-img-wrap {
+    background: linear-gradient(150deg, var(--ry-surface-2), var(--ry-surface-3));
+}
+
+[data-theme="dark"] .moe-item {
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .moe-item:hover {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .moe-item__img {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .moe-customer-results {
+    background: var(--ry-surface-2);
+    border: 1px solid var(--ry-border-strong);
+}
+
+[data-theme="dark"] .moe-entity {
+    background: linear-gradient(180deg, var(--ry-surface-2), rgba(255, 122, 0, 0.1));
+}
+
+[data-theme="dark"] .moe-entity__info .moe-debtor-warn {
+    background: var(--ry-danger-soft);
+    color: var(--ry-danger-text);
+}
+
+[data-theme="dark"] .moe-modal .modal-header {
+    background: linear-gradient(180deg, var(--ry-surface), var(--ry-surface-2));
+}
+
+[data-theme="dark"] .moe-modal .modal-header .btn-close {
+    background-color: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .moe-modal .modal-footer {
+    background: var(--ry-surface-2);
+}

@@ -386,7 +386,44 @@
 
     }
 
-   
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] .subscription-page {
+        --primary-light: rgba(249, 115, 22, 0.16);
+        --primary-soft: rgba(249, 115, 22, 0.45);
+        --success: #6ee7b7;
+        --danger: #fca5a5;
+        --warning: #fcd34d;
+        --shadow-sm: var(--ry-shadow-sm);
+        --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    [data-theme="dark"] .subscription-page .subscription-card {
+        border-color: rgba(249, 115, 22, 0.2);
+    }
+
+    [data-theme="dark"] .subscription-page .status-badge,
+    [data-theme="dark"] .subscription-page .online-status {
+        background: rgba(22, 163, 74, 0.18);
+    }
+
+    [data-theme="dark"] .subscription-page .auto-renew-btn {
+        background: rgba(245, 158, 11, 0.18);
+        color: #fcd34d;
+    }
+
+        [data-theme="dark"] .subscription-page .auto-renew-btn:hover {
+            background: rgba(245, 158, 11, 0.28);
+        }
+
+    [data-theme="dark"] .subscription-page .info-grid {
+        background: var(--ry-surface-2);
+        border-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .subscription-page .info-icon {
+        background: var(--ry-surface);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
 </style>
 
 <div class="container subscription-page py-4">

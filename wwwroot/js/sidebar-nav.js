@@ -85,6 +85,7 @@
     var LAYOUT_STYLESHEET_MARKERS = [
         '/lib/bootstrap/',
         '/css/bootstrap_rtl',
+        '/css/theme.css',
         '/css/fntawsom',
         '/css/bootstrap-icons',
         '/css/site.css',

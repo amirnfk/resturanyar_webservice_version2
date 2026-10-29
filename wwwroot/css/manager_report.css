@@ -434,3 +434,34 @@
         margin-bottom: 0.25rem;
     }
 }
+
+/* ===== DARK MODE ===== */
+/* --mr-* tokens derive from --login-* which theme.css remaps in dark mode. */
+[data-theme="dark"] .manager-reports-page {
+    --mr-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .manager-reports-page .filter-card__ornament {
+    background:
+        linear-gradient(145deg, rgba(255, 122, 0, 0.26), rgba(255, 84, 0, 0.1)),
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 60%);
+}
+
+[data-theme="dark"] .manager-reports-page .form-control,
+[data-theme="dark"] .manager-reports-page .form-select {
+    background-color: var(--ry-input-bg);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .manager-reports-page .kpi-delta.is-up {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .manager-reports-page .kpi-delta.is-down {
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .manager-reports-page .report-coverage-hint i {
+    color: #93c5fd;
+}

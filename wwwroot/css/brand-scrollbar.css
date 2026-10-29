@@ -135,3 +135,19 @@ html:has(.customers-page)::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #ff9a3d 0%, #ff7a00 40%, #e66900 100%);
     background-clip: padding-box;
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .orders-page,
+[data-theme="dark"] .customers-page {
+    --brand-scroll-track: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"]:has(.orders-page),
+html[data-theme="dark"]:has(.customers-page) {
+    scrollbar-color: rgba(255, 122, 0, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"]:has(.orders-page)::-webkit-scrollbar-track,
+html[data-theme="dark"]:has(.customers-page)::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+}

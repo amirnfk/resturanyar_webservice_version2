@@ -617,7 +617,7 @@
               "RelativeDocumentMoniker": "appsettings.Development.json",
               "ToolTip": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
               "RelativeToolTip": "appsettings.Development.json",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAB5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-06-11T15:27:44.275Z",
               "EditorCaption": ""
@@ -632,8 +632,7 @@
               "RelativeToolTip": "Views\\Home\\CashierDashboard.cshtml",
               "ViewState": "AgIAAIYBAAAAAAAAAAASwHEBAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-08T07:36:34.335Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T07:36:34.335Z"
             },
             {
               "$type": "Document",
@@ -645,8 +644,7 @@
               "RelativeToolTip": "Views\\Home\\_ManagerOrdersPartial.cshtml",
               "ViewState": "AgIAAGICAAAAAAAAAAAwwGsCAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-11T20:16:55.274Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-11T20:16:55.274Z"
             },
             {
               "$type": "Document",
@@ -661,10 +659,6 @@
               "WhenOpened": "2026-10-19T18:22:03.301Z"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "HomeController.cs",
@@ -674,8 +668,7 @@
               "RelativeToolTip": "Controllers\\HomeController.cs",
               "ViewState": "AgIAAJUJAAAAAAAAAAAqwKAJAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-06T17:31:39.267Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-06T17:31:39.267Z"
             },
             {
               "$type": "Document",
@@ -685,9 +678,13 @@
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAAA0AAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-06-08T11:45:26.81Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
@@ -723,8 +720,7 @@
               "RelativeToolTip": "Controllers\\Api\\V2\\UserApiController.cs",
               "ViewState": "AgIAANsBAAAAAAAAAAAlwOABAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-21T07:47:41.131Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-21T07:47:41.131Z"
             },
             {
               "$type": "Document",
@@ -796,8 +792,7 @@
               "RelativeToolTip": "Views\\Home\\Dashboard.cshtml",
               "ViewState": "AgIAABcAAAAAAAAAAAAlwBIAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-05T10:06:35.303Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-05T10:06:35.303Z"
             },
             {
               "$type": "Document",
@@ -820,8 +815,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAADcBAAAAAAAAAAAAwEkBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-08T08:29:54.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-08T08:29:54.563Z"
             },
             {
               "$type": "Document",
@@ -916,8 +910,7 @@
               "RelativeToolTip": "Models\\ViewModels\\DashboardStat\\DashboardStatViewModel.cs",
               "ViewState": "AgIAAB8AAAAAAAAAAAAqwCUAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T08:32:31.883Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T08:32:31.883Z"
             },
             {
               "$type": "Document",
@@ -953,8 +946,7 @@
               "RelativeToolTip": "Controllers\\AdminController.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAWwCYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T11:37:24.388Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T11:37:24.388Z"
             },
             {
               "$type": "Document",
@@ -1002,8 +994,7 @@
               "RelativeToolTip": "Data\\AppDbContext.cs",
               "ViewState": "AgIAAD8BAAAAAAAAAADwv0oBAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T11:56:55.918Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T11:56:55.918Z"
             },
             {
               "$type": "Document",
@@ -1111,8 +1102,7 @@
               "RelativeToolTip": "Utility\\IranianMobileAttribute .cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAAwBEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-06T17:42:41.941Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-06T17:42:41.941Z"
             },
             {
               "$type": "Document",
@@ -1208,8 +1198,7 @@
               "RelativeToolTip": "Models\\AuthorizationModels\\TokenRequestModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-17T06:34:38.515Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-17T06:34:38.515Z"
             },
             {
               "$type": "Document",
@@ -1257,8 +1246,7 @@
               "RelativeToolTip": "Controllers\\Api\\UserApiController.cs",
               "ViewState": "AgIAAIwKAAAAAAAAAAAgwJsKAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T07:57:59.151Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T07:57:59.151Z"
             },
             {
               "$type": "Document",
@@ -1270,8 +1258,7 @@
               "RelativeToolTip": "Controllers\\MenuController.cs",
               "ViewState": "AgIAAI0AAAAAAAAAAAAAwJEAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T09:09:53.735Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-14T09:09:53.735Z"
             },
             {
               "$type": "Document",
@@ -1343,8 +1330,7 @@
               "RelativeToolTip": "Utility\\TokenService.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAkwDUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-08T08:53:57.998Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-08T08:53:57.998Z"
             },
             {
               "$type": "Document",
@@ -1356,8 +1342,7 @@
               "RelativeToolTip": "Models\\AuthorizationModels\\RefreshTokenRequestModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-14T05:44:09.366Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-14T05:44:09.366Z"
             },
             {
               "$type": "Document",
@@ -1369,8 +1354,7 @@
               "RelativeToolTip": "Models\\AuthorizationModels\\RefreshToken.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-14T05:39:59.678Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-14T05:39:59.678Z"
             },
             {
               "$type": "Document",
@@ -1466,8 +1450,7 @@
               "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAkwBEAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-05T10:03:30.647Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-05T10:03:30.647Z"
             },
             {
               "$type": "Document",
@@ -1551,8 +1534,7 @@
               "RelativeToolTip": "Controllers\\Api\\CustomersController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-05T09:17:10.929Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-05T09:17:10.929Z"
             },
             {
               "$type": "Document",
@@ -1612,8 +1594,7 @@
               "RelativeToolTip": "Utility\\OrderHub.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-06T17:19:46.56Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-06T17:19:46.56Z"
             },
             {
               "$type": "Document",
@@ -1637,8 +1618,7 @@
               "RelativeToolTip": "Controllers\\Api\\SubscriptionController.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAAAkwEoAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-18T06:19:40.576Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-18T06:19:40.576Z"
             },
             {
               "$type": "Document",
@@ -1686,8 +1666,7 @@
               "RelativeToolTip": "Models\\Order.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAiwCAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-02T11:01:57.905Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T11:01:57.905Z"
             },
             {
               "$type": "Document",
@@ -1855,8 +1834,7 @@
               "RelativeToolTip": "Models\\ViewModels\\CopounViewModel\\CouponViewModel.cs",
               "ViewState": "AgIAADMAAAAAAAAAAAAowEMAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-25T09:49:00.953Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-25T09:49:00.953Z"
             },
             {
               "$type": "Document",
@@ -1868,8 +1846,7 @@
               "RelativeToolTip": "Models\\ViewModels\\Admin\\AdminLoginViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T12:14:04.284Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T12:14:04.284Z"
             },
             {
               "$type": "Document",
@@ -1881,8 +1858,7 @@
               "RelativeToolTip": "Models\\ViewModels\\CopounViewModel\\CouponListViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-25T09:53:34.083Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-25T09:53:34.083Z"
             },
             {
               "$type": "Document",
@@ -1906,8 +1882,7 @@
               "RelativeToolTip": "Models\\ViewModels\\Admin\\AdminDashboardViewModel.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAAwwCwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T11:48:54.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T11:48:54.828Z"
             },
             {
               "$type": "Document",
@@ -1943,8 +1918,7 @@
               "RelativeToolTip": "Models\\ViewModels\\DashboardStat\\HourlySalesDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T11:41:47.39Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T11:41:47.39Z"
             },
             {
               "$type": "Document",
@@ -1968,8 +1942,7 @@
               "RelativeToolTip": "Models\\OrderItem.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAowA8AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T09:34:45.639Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T09:34:45.639Z"
             },
             {
               "$type": "Document",
@@ -1993,8 +1966,7 @@
               "RelativeToolTip": "Models\\simpleDashboardStatsViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-23T08:33:23.047Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-23T08:33:23.047Z"
             },
             {
               "$type": "Document",
@@ -2006,8 +1978,7 @@
               "RelativeToolTip": "Models\\ViewModels\\CustomerDashboardStatsViewModel.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAkwCEAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T06:15:21.48Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-14T06:15:21.48Z"
             },
             {
               "$type": "Document",
@@ -2019,8 +1990,7 @@
               "RelativeToolTip": "Models\\Subscription.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAQwC0AAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T07:29:01.458Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T07:29:01.458Z"
             },
             {
               "$type": "Document",
@@ -2032,8 +2002,7 @@
               "RelativeToolTip": "Models\\Copoun\\CouponUsage.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAgwAsAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T07:33:28.98Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T07:33:28.98Z"
             },
             {
               "$type": "Document",
@@ -2045,8 +2014,7 @@
               "RelativeToolTip": "Models\\Copoun\\Coupon.cs",
               "ViewState": "AgIAADoAAAAAAAAAAAAgwD8AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T07:32:06.806Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T07:32:06.806Z"
             },
             {
               "$type": "Document",
@@ -2058,8 +2026,7 @@
               "RelativeToolTip": "Models\\Copoun\\ValidateCouponRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T08:20:40.452Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T08:20:40.452Z"
             },
             {
               "$type": "Document",
@@ -2071,8 +2038,7 @@
               "RelativeToolTip": "Models\\Copoun\\CreateZarinpalPaymentRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T08:21:17.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T08:21:17.045Z"
             },
             {
               "$type": "Document",
@@ -2096,8 +2062,7 @@
               "RelativeToolTip": "Models\\CreateZarinpalPaymentRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-22T06:37:15.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-22T06:37:15.225Z"
             },
             {
               "$type": "Document",
@@ -2121,8 +2086,7 @@
               "RelativeToolTip": "Views\\Home\\_ManagerReportsPartial.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-07T12:35:48.419Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-07T12:35:48.419Z"
             },
             {
               "$type": "Document",
@@ -2146,8 +2110,7 @@
               "RelativeToolTip": "Models\\FoodItemViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T09:09:25.659Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-14T09:09:25.659Z"
             },
             {
               "$type": "Document",
@@ -2159,8 +2122,7 @@
               "RelativeToolTip": "Models\\Category.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAQwBAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T08:50:40.331Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-14T08:50:40.331Z"
             },
             {
               "$type": "Document",
@@ -2172,8 +2134,7 @@
               "RelativeToolTip": "Models\\ViewModels\\CustomerStatsViewModel.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T05:47:53.637Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-14T05:47:53.637Z"
             },
             {
               "$type": "Document",
@@ -2257,8 +2218,7 @@
               "RelativeToolTip": "Models\\RegisterWithOtpRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-08T10:47:36.199Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-08T10:47:36.199Z"
             },
             {
               "$type": "Document",

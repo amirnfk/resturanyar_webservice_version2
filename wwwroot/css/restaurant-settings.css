@@ -1253,7 +1253,7 @@
 /* Credentials */
 .rgs-creds {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
 }
 
@@ -1537,4 +1537,138 @@
     .rgs-card {
         padding: 1.1rem 1.15rem;
     }
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .restaurant-general-settings-page.rgs {
+    --rgs-ink: var(--ry-text-strong);
+    --rgs-muted: var(--ry-text-muted);
+    --rgs-line: var(--ry-border-strong);
+    --rgs-surface: var(--ry-surface);
+    --rgs-bg: var(--ry-bg);
+    --rgs-accent: #ffa057;
+    --rgs-accent-soft: rgba(255, 122, 0, 0.14);
+    --rgs-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .rgs-btn--primary {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(234, 88, 12, 0.28);
+}
+
+[data-theme="dark"] .rgs-btn--primary:hover {
+    background: linear-gradient(135deg, #fb8a3c, #f97316);
+}
+
+[data-theme="dark"] .settings-page {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .settings-card,
+[data-theme="dark"] .logo-preview-thumb,
+[data-theme="dark"] .background-option,
+[data-theme="dark"] .restaurant-quick-link,
+[data-theme="dark"] .rgs-toggle--inline {
+    background: var(--ry-surface);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .settings-card__title,
+[data-theme="dark"] .restaurant-info-item code {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .settings-card__title {
+    border-bottom-color: var(--ry-border);
+}
+
+[data-theme="dark"] .settings-header .icon-circle,
+[data-theme="dark"] .logo-file-label,
+[data-theme="dark"] .restaurant-quick-link__icon,
+[data-theme="dark"] .btn-copy-value:hover {
+    background: var(--ry-primary-soft);
+}
+
+[data-theme="dark"] .logo-file-label,
+[data-theme="dark"] .restaurant-info-link,
+[data-theme="dark"] .btn-copy-value:hover,
+[data-theme="dark"] .menu-settings-eyebrow {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .logo-file-label:hover {
+    background: rgba(255, 122, 0, 0.24);
+}
+
+[data-theme="dark"] .settings-loading,
+[data-theme="dark"] .field-hint,
+[data-theme="dark"] .restaurant-info-item dt,
+[data-theme="dark"] .restaurant-quick-link__body small {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .settings-field input[type="text"],
+[data-theme="dark"] .rgs-field input[type="text"],
+[data-theme="dark"] .rgs-select,
+[data-theme="dark"] .color-input-row input[type="color"] {
+    background: var(--ry-input-bg);
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .background-option-label {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .preview-card {
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .preview-content {
+    background: rgba(18, 24, 38, 0.86);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .btn-reset,
+[data-theme="dark"] .btn-copy-value,
+[data-theme="dark"] .rgs .rgs-copy-btn.btn-copy-value {
+    background: var(--ry-surface-2);
+    color: var(--ry-text-muted);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .btn-reset:hover {
+    background: var(--ry-surface-3);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .restaurant-info-item {
+    border-bottom-color: var(--ry-border);
+}
+
+[data-theme="dark"] .restaurant-info-item code,
+[data-theme="dark"] .rgs-cred__row code {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .rgs-toggle__ui::after {
+    background: #fff;
+}
+
+[data-theme="dark"] .field-error {
+    color: var(--ry-danger-text);
+}
+
+[data-theme="dark"] .rgs-toast--success {
+    background: var(--ry-success-soft);
+    color: var(--ry-success-text);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+[data-theme="dark"] .rgs-toast--error {
+    background: var(--ry-danger-soft);
+    color: var(--ry-danger-text);
+    border: 1px solid rgba(239, 68, 68, 0.35);
 }

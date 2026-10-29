@@ -1010,3 +1010,64 @@ body.ry-sc-noscroll {
     animation: none;
   }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] #ry-support-root {
+    --sc-ink: var(--ry-text-strong, #f4f7fb);
+    --sc-ink-soft: var(--ry-text, #e8eef8);
+    --sc-muted: var(--ry-text-muted, #94a3b8);
+    --sc-line: var(--ry-border-strong, rgba(255, 255, 255, 0.14));
+    --sc-surface: var(--ry-surface, #121826);
+    --sc-surface-2: var(--ry-surface-2, #1a2234);
+    --sc-accent-soft: rgba(255, 138, 76, 0.16);
+    --sc-offline: #6b7a90;
+    --sc-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 18px 48px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-loading {
+    background: rgba(11, 15, 23, 0.72);
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-loading-card,
+[data-theme="dark"] #ry-support-root .ry-sc-bubble.theirs {
+    background: var(--ry-surface-2, #1a2234);
+    color: var(--ry-text, #e8eef8);
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-composer {
+    background: rgba(18, 24, 38, 0.94);
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-input-wrap:focus-within,
+[data-theme="dark"] #ry-support-root .ry-sc-attach:hover {
+    background: var(--ry-input-bg, #0f1522);
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-bubble.theirs .ry-sc-quote {
+    color: #ffa057;
+}
+
+[data-theme="dark"] #ry-support-root .ry-sc-reply-bar-text,
+[data-theme="dark"] #ry-support-root .ry-sc-reply-bar-close {
+    color: var(--ry-text-muted, #94a3b8);
+}
+
+[data-theme="dark"] #ry-support-root.is-embed .ry-sc-messages {
+    background-color: var(--ry-bg, #0b0f17);
+}
+
+[data-theme="dark"] #ry-support-root.is-embed .ry-sc-composer {
+    background: var(--ry-surface, #121826);
+    border-top-color: var(--ry-border, rgba(255, 255, 255, 0.08));
+}
+
+@media (max-width: 768px) {
+    [data-theme="dark"] #ry-support-root:not(.is-embed) .ry-sc-panel.is-open .ry-sc-messages {
+        background-color: var(--ry-bg, #0b0f17);
+    }
+
+    [data-theme="dark"] #ry-support-root:not(.is-embed) .ry-sc-panel.is-open .ry-sc-composer {
+        background: var(--ry-surface, #121826);
+        border-top-color: var(--ry-border, rgba(255, 255, 255, 0.08));
+    }
+}

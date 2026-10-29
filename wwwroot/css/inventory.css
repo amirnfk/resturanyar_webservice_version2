@@ -1414,3 +1414,146 @@
         flex: 1;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .inventory-page,
+[data-theme="dark"] .inventory-modal {
+    --surface: var(--ry-surface);
+    --surface-muted: var(--ry-surface-2);
+    --border: var(--ry-border);
+    --border-strong: var(--ry-border-strong);
+    --text: var(--ry-text);
+    --text-muted: var(--ry-text-muted);
+    --text-faint: var(--ry-text-faint);
+    --primary-soft: rgba(255, 122, 0, 0.16);
+    --danger-soft: rgba(239, 68, 68, 0.16);
+    --success-soft: rgba(22, 163, 74, 0.16);
+    --warn-soft: rgba(217, 119, 6, 0.16);
+    --danger: #fca5a5;
+    --success: #6ee7b7;
+    --warn: #fcd34d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --inv-scroll-track: rgba(255, 255, 255, 0.05);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .inventory-page .inv-stat--alert {
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.12) 0%, var(--ry-surface) 100%);
+}
+
+[data-theme="dark"] .inventory-page .inv-toolbar .form-control,
+[data-theme="dark"] .inventory-page .inv-toolbar .form-select,
+[data-theme="dark"] .inventory-page .inv-settings .form-select,
+[data-theme="dark"] .inventory-modal .form-control,
+[data-theme="dark"] .inventory-modal .form-select {
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .inventory-page .inv-toolbar .form-control:focus,
+[data-theme="dark"] .inventory-page .inv-toolbar .form-select:focus,
+[data-theme="dark"] .inventory-page .inv-settings .form-select:focus {
+    background: var(--ry-input-bg);
+}
+
+[data-theme="dark"] .inventory-page .inv-table tbody td {
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .inventory-page .inv-table tbody tr:hover {
+    background: rgba(255, 122, 0, 0.06);
+}
+
+[data-theme="dark"] .inventory-page .inv-table tbody tr.inv-row--low:hover {
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.14), rgba(255, 122, 0, 0.06) 40%);
+}
+
+[data-theme="dark"] .inventory-modal .btn-secondary,
+[data-theme="dark"] .inventory-modal .modal-footer .btn-secondary {
+    background-color: var(--ry-surface-2) !important;
+    border-color: var(--ry-border-strong) !important;
+    color: var(--ry-text) !important;
+}
+
+[data-theme="dark"] .inventory-modal .input-group .btn-outline-primary {
+    background-color: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .inventory-page .inv-reason,
+[data-theme="dark"] .inventory-modal .inv-order-status,
+[data-theme="dark"] .inventory-modal .inv-order-desc,
+[data-theme="dark"] .inventory-modal .inv-help-section p {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-modal__sub,
+[data-theme="dark"] .inventory-modal .inv-order-items-count,
+[data-theme="dark"] .inventory-modal .inv-order-items-table thead th,
+[data-theme="dark"] .inventory-modal .inv-order-total,
+[data-theme="dark"] .inventory-page .inv-manage-cats-hint {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-meta__item,
+[data-theme="dark"] .inventory-modal .inv-order-items-head,
+[data-theme="dark"] .inventory-modal .inv-order-desc,
+[data-theme="dark"] .inventory-modal .inv-help-section {
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-items-wrap,
+[data-theme="dark"] .inventory-modal .inv-order-items-table thead th,
+[data-theme="dark"] .inventory-page .inv-manage-cats-item {
+    background: var(--ry-surface);
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-meta__value,
+[data-theme="dark"] .inventory-modal .inv-order-items-head h6,
+[data-theme="dark"] .inventory-modal .inv-order-items-table tbody td,
+[data-theme="dark"] .inventory-modal .inv-order-line-total,
+[data-theme="dark"] .inventory-modal .inv-help-section h6 {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-items-table tbody td {
+    border-color: var(--ry-border);
+}
+
+/* Semantic text on dark */
+[data-theme="dark"] .inventory-page .inv-alert--error,
+[data-theme="dark"] .inventory-page .inv-delta--neg,
+[data-theme="dark"] .inventory-page .inv-reason--waste,
+[data-theme="dark"] .inventory-modal .inv-order-status--9,
+[data-theme="dark"] .inventory-modal .inv-order-status--10 {
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .inventory-page .inv-alert--success,
+[data-theme="dark"] .inventory-page .inv-badge--ok,
+[data-theme="dark"] .inventory-modal .inv-order-status--6,
+[data-theme="dark"] .inventory-modal .inv-order-status--8 {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .inventory-page .inv-alert--warn {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .inventory-page .inv-reason--sale,
+[data-theme="dark"] .inventory-page .inv-order-chip,
+[data-theme="dark"] .inventory-modal .inv-order-status--3,
+[data-theme="dark"] .inventory-modal .inv-order-status--4,
+[data-theme="dark"] .inventory-modal .inv-order-status--5 {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .inventory-page .inv-order-chip:hover {
+    color: #bfdbfe;
+}
+
+[data-theme="dark"] .inventory-modal .inv-order-total strong,
+[data-theme="dark"] .inventory-modal .inv-help-tip {
+    color: var(--ry-primary-text);
+}

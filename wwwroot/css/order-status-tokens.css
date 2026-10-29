@@ -119,3 +119,35 @@
 .ost-header.ost-99 {
   background-color: var(--ost-h);
 }
+
+/* ===== DARK MODE ===== */
+/* Deeper translucent chip backgrounds + lighter chip text for readability on dark surfaces.
+   Header colors are kept (they sit on their own saturated backgrounds). */
+html[data-theme="dark"] {
+    --ost-1-chip-bg: rgba(99, 102, 241, 0.22);
+    --ost-1-chip-text: #c7d2fe;
+    --ost-2-chip-bg: rgba(37, 99, 235, 0.22);
+    --ost-2-chip-text: #bfdbfe;
+    --ost-3-chip-bg: rgba(217, 119, 6, 0.22);
+    --ost-3-chip-text: #fde68a;
+    --ost-4-chip-bg: rgba(234, 88, 12, 0.22);
+    --ost-4-chip-text: #fed7aa;
+    --ost-5-chip-bg: rgba(8, 145, 178, 0.22);
+    --ost-5-chip-text: #a5f3fc;
+    --ost-6-chip-bg: rgba(5, 150, 105, 0.22);
+    --ost-6-chip-text: #a7f3d0;
+    --ost-7-chip-bg: rgba(13, 148, 136, 0.22);
+    --ost-7-chip-text: #99f6e4;
+    --ost-8-chip-bg: rgba(22, 163, 74, 0.22);
+    --ost-8-chip-text: #bbf7d0;
+    --ost-9-chip-bg: rgba(220, 38, 38, 0.22);
+    --ost-9-chip-text: #fecaca;
+    --ost-10-chip-bg: rgba(220, 38, 38, 0.22);
+    --ost-10-chip-text: #fecaca;
+    --ost-11-chip-bg: rgba(100, 116, 139, 0.26);
+    --ost-11-chip-text: #e2e8f0;
+    --ost-12-chip-bg: rgba(124, 58, 237, 0.22);
+    --ost-12-chip-text: #ddd6fe;
+    --ost-99-chip-bg: rgba(109, 40, 217, 0.22);
+    --ost-99-chip-text: #ddd6fe;
+}

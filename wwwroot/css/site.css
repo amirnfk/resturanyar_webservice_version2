@@ -99,12 +99,13 @@ html {
 }
 
 [data-theme="dark"] {
-    --layout-bg: #0a0c12;
-    --layout-header-bg: #11151f;
-    --layout-text: #e9eef7;
-    --layout-muted: #8b92a8;
+    /* Fallbacks only; theme.css maps these to the shared --ry-* tokens when loaded. */
+    --layout-bg: #0b0f17;
+    --layout-header-bg: #121826;
+    --layout-text: #e8eef8;
+    --layout-muted: #94a3b8;
     --layout-border: rgba(255, 255, 255, 0.08);
-    --layout-card-bg: #11151f;
+    --layout-card-bg: #121826;
 }
 
 /* اعمال روی بدنه */
@@ -175,12 +176,23 @@ body {
         border-bottom-color: var(--layout-border);
     }
 
-/* لینک‌ها */
-a:not(.btn) {
+/* لینک‌ها
+   Old rule `a:not(.btn){color:#D6DBFF}` leaked into light mode. Keep light links unchanged
+   (class-based colors win). In dark, use soft brand orange for bare links. Sidebar nav
+   lavender is preserved separately. */
+[data-theme="dark"] a:where(:not(.btn)) {
+    color: var(--ry-link, #ffa057);
+}
+
+    [data-theme="dark"] a:where(:not(.btn)):hover {
+        color: var(--ry-link-hover, #ffb77a);
+    }
+
+.sidebar-nav .nav-item:not(.active) {
     color: #D6DBFF;
 }
 
-    a:not(.btn):hover {
+    .sidebar-nav .nav-item:not(.active):hover {
         color: #ffaa44;
     }
 
@@ -198,4 +210,30 @@ html.hide-support-chat-fab #ry-support-root {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .btn:focus,
+[data-theme="dark"] .btn:active:focus,
+[data-theme="dark"] .btn-link.nav-link:focus,
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem var(--ry-surface, #121826), 0 0 0 0.25rem rgba(255, 122, 0, 0.55);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+    color: var(--ry-text-faint, #6b7a90);
+}
+
+[data-theme="dark"] .btn-outline-danger {
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.45);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track, #0f1522);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, #2a3448);
 }

@@ -9,6 +9,8 @@
         var pageTitle = seo?.Title ?? (ViewData["Title"]?.ToString() + " - رستورانیار");
     }
     <title>@pageTitle</title>
+    @* Shared theme module (applies saved theme before paint; home.js uses window.RYTheme) *@
+    <script src="~/js/theme.js" asp-append-version="true"></script>
     @await Html.PartialAsync("_SeoHead")
     @await RenderSectionAsync("Head", required: false)
     @await RenderSectionAsync("StructuredData", required: false)

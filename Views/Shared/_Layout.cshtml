@@ -22,9 +22,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>@layoutPageTitle - رستورانیار دلاویتا</title>
+    @* Theme must be applied before any stylesheet/paint to avoid a light flash in dark mode *@
+    <script src="~/js/theme.js" asp-append-version="true"></script>
     <link rel="icon" type="image/png" href="~/images/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/bootstrap_rtl_min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/fntawsom600.css" />
     <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -190,6 +193,9 @@
 
                 <!-- سمت راست: دکمه‌های عملیاتی + پروفایل -->
                 <div class="topbar-actions">
+                    <button type="button" id="themeToggle" class="action-btn theme-toggle-btn" data-theme-toggle aria-label="تغییر حالت روشن/تاریک" title="حالت شب/روز">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <button id="ownerMessageBtn" class="action-btn" type="button" title="پیام‌ها">
                         <i class="fas fa-bell"></i>
                         <span id="ownerMessageBadge" class="owner-msg-badge" hidden></span>
@@ -335,31 +341,7 @@
                 }
             });
 
-            // Theme Functions
-            function toggleTheme() {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-
-                const themeIcon = document.querySelector('#themeToggle i');
-                if (newTheme === 'dark') {
-                    themeIcon.className = 'fas fa-sun';
-                } else {
-                    themeIcon.className = 'fas fa-moon';
-                }
-            }
-
-            // Load saved theme
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                const themeIcon = document.querySelector('#themeToggle i');
-                if (savedTheme === 'dark') {
-                    themeIcon.className = 'fas fa-sun';
-                }
-            }
+            // Theme handling lives in /js/theme.js (window.RYTheme); the toggle button is wired there.
 
             // Close mobile sidebar when clicking outside
             document.addEventListener('click', function (event) {

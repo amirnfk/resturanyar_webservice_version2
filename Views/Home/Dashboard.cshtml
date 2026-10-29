@@ -471,6 +471,9 @@
 
                 // رسم نمودار (حتی اگر همه مقادیر صفر باشند)
                 const ctx = chartCanvas.getContext('2d');
+                const isDarkChart = document.documentElement.getAttribute('data-theme') === 'dark';
+                const axisColor = isDarkChart ? '#94a3b8' : '#6b7280';
+                const gridColor = isDarkChart ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
                 new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -517,6 +520,7 @@
                                 display: true,
                                 grid: { display: false },
                                 ticks: {
+                                    color: axisColor,
                                     font: { size: 8 },
                                     maxTicksLimit: 8,
                                     callback: function (value, index, ticks) {
@@ -526,8 +530,9 @@
                             },
                             y: {
                                 display: true,
-                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                grid: { color: gridColor },
                                 ticks: {
+                                    color: axisColor,
                                     font: { size: 8 },
                                     callback: function (value) {
                                         return value >= 1000 ? (value / 1000) + 'k' : value;

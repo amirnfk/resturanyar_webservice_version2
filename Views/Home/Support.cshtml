@@ -421,6 +421,53 @@
     }
 
     }
+
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] .support-page {
+        --primary-light: rgba(249, 115, 22, 0.16);
+        --primary-soft: rgba(249, 115, 22, 0.45);
+        --success: #6ee7b7;
+        --danger: #fca5a5;
+        --warning: #fcd34d;
+        --shadow-sm: var(--ry-shadow-sm);
+        --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    [data-theme="dark"] .support-page .support-card {
+        border-color: rgba(249, 115, 22, 0.2);
+    }
+
+    [data-theme="dark"] .support-page .info-card-item,
+    [data-theme="dark"] .support-page .chat-section {
+        background: var(--ry-surface-2);
+        border-color: var(--ry-border);
+    }
+
+        [data-theme="dark"] .support-page .info-card-item:hover {
+            background: var(--ry-surface-3);
+        }
+
+        [data-theme="dark"] .support-page .info-card-item .icon-box {
+            background: var(--ry-surface);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+    [data-theme="dark"] .support-page .chat-btn-outline {
+        border-color: var(--ry-border-strong);
+        color: var(--ry-text);
+    }
+
+        [data-theme="dark"] .support-page .chat-btn-outline:hover {
+            background: var(--ry-surface-3);
+        }
+
+    [data-theme="dark"] .support-page .faq-item {
+        border-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .support-page .online-status {
+        background: rgba(22, 163, 74, 0.18);
+    }
 </style>
 
 <div class="container support-page py-4">

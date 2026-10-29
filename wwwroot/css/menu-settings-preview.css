@@ -1092,3 +1092,80 @@
         border: 2px solid #eee;
     }
 }
+
+/* ===== DARK MODE ===== */
+/* The phone preview (.menu-phone-preview .pm-*, .phone-frame, .phone-screen) mirrors the
+   customer-facing public menu and intentionally keeps its own template colors. */
+[data-theme="dark"] .menu-settings-top__intro,
+[data-theme="dark"] .menu-settings-form-col .settings-card,
+[data-theme="dark"] .menu-settings-page .settings-actions {
+    background: var(--ry-surface);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .menu-settings-top__intro h2,
+[data-theme="dark"] .menu-qr-hero__title,
+[data-theme="dark"] .menu-phone-preview-section__head h3,
+[data-theme="dark"] .menu-settings-page .settings-card__title {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .menu-qr-hero__desc,
+[data-theme="dark"] .menu-qr-empty--hero {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .menu-qr-section--hero {
+    background:
+        radial-gradient(circle at 0 0, rgba(249, 115, 22, 0.18), transparent 42%),
+        linear-gradient(145deg, var(--ry-surface), var(--ry-surface-2));
+    border-color: var(--ry-border-strong);
+}
+
+/* Keep the QR code itself on white so it stays scannable; just frame it. */
+[data-theme="dark"] .menu-qr-wrapper {
+    background: #fff;
+    box-shadow: 0 0 0 1px var(--ry-border-strong), var(--ry-shadow-md);
+}
+
+[data-theme="dark"] .menu-qr-hero__label {
+    background: var(--ry-primary-soft);
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .menu-qr-empty--hero {
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .menu-settings-page .settings-card__title {
+    border-bottom-color: var(--ry-border);
+}
+
+[data-theme="dark"] .menu-settings-page .settings-field {
+    border-color: var(--ry-border);
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .menu-settings-page .settings-field label {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .menu-settings-page .settings-field input[type="text"],
+[data-theme="dark"] .menu-settings-page .logo-upload-row {
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .menu-phone-preview {
+    --bs-heading-color: inherit;
+}
+
+[data-theme="dark"] .menu-phone-preview-section {
+    background: linear-gradient(155deg, var(--ry-surface), var(--ry-surface-2));
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .menu-settings-eyebrow {
+    color: var(--ry-primary-text);
+}

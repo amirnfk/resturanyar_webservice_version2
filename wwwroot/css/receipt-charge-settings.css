@@ -1125,3 +1125,121 @@
         flex: 1 1 0;
     }
 }
+
+/* ===== DARK MODE ===== */
+/* Receipt print previews (.rcs-pv-*) simulate paper and intentionally stay white. */
+[data-theme="dark"] .receipt-charge-settings-page {
+    --rcs-accent: #ffa057;
+    --rcs-accent-dark: #ffb77a;
+    --rcs-accent-soft: rgba(255, 122, 0, 0.14);
+    --rcs-accent-line: rgba(255, 122, 0, 0.4);
+    --rcs-ink: var(--ry-text-strong);
+    --rcs-text: var(--ry-text);
+    --rcs-muted: var(--ry-text-muted);
+    --rcs-faint: var(--ry-text-faint);
+    --rcs-line: var(--ry-border-strong);
+    --rcs-bg-soft: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .rcs-print-template-option__preview {
+    --rcs-accent-soft: #fff7ed;
+    --rcs-accent-line: #fed7aa;
+    --rcs-ink: #0f172a;
+    --rcs-text: #334155;
+    --rcs-muted: #64748b;
+    --rcs-line: #e2e8f0;
+    --rcs-bg-soft: #f8fafc;
+    background: #f8fafc;
+    border-color: transparent;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .rcs-section-head__num {
+    background: linear-gradient(135deg, #ff8a1f, #f97316);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+[data-theme="dark"] .rcs-stat,
+[data-theme="dark"] .rcs-print-template-option,
+[data-theme="dark"] .charge-definition-card,
+[data-theme="dark"] .rcs-charges-actions {
+    background: var(--ry-surface);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .rcs-print-template-option {
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .charge-toggle__track::after {
+    background: #fff;
+}
+
+[data-theme="dark"] .charge-field .form-control {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .rcs-segmented {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .rcs-segmented__option input:checked + span {
+    background: var(--ry-surface);
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .rcs-value-unit,
+[data-theme="dark"] .rcs-order-type-chip span,
+[data-theme="dark"] .btn-outline-link {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .rcs-save-bar {
+    background: linear-gradient(180deg, var(--ry-surface) 0%, var(--ry-surface-2) 100%);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .rcs-save-bar.has-unsaved {
+    background: linear-gradient(180deg, var(--ry-surface) 0%, rgba(255, 122, 0, 0.12) 100%);
+}
+
+[data-theme="dark"] .rcs-actions {
+    border-top-color: var(--ry-border);
+}
+
+[data-theme="dark"] .rcs-help {
+    background: var(--ry-info-soft);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .rcs-help summary {
+    color: var(--ry-info-text);
+}
+
+[data-theme="dark"] .rcs-dirty-pill {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .charge-definition-card__icon.is-fee,
+[data-theme="dark"] .charge-definition-card__badge.is-fee {
+    background: var(--ry-info-soft);
+    color: var(--ry-info-text);
+}
+
+[data-theme="dark"] .charge-definition-card__icon.is-tax,
+[data-theme="dark"] .charge-definition-card__badge.is-tax {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .charge-definition-card__icon.is-discount,
+[data-theme="dark"] .charge-definition-card__badge.is-discount {
+    background: var(--ry-success-soft);
+    color: var(--ry-success-text);
+}

@@ -79,7 +79,19 @@
         if (typeof Chart === 'undefined') return;
 
         Chart.defaults.font.family = "Vazir, Tahoma, sans-serif";
-        Chart.defaults.color = '#64748b';
+        Chart.defaults.color = document.documentElement.getAttribute('data-theme') === 'dark' ? '#cbd5e1' : '#64748b';
+
+        // Re-theme existing charts when the user toggles dark/light.
+        if (!window.__ryAdminChartsThemeBound) {
+            window.__ryAdminChartsThemeBound = true;
+            document.addEventListener('ry-theme-change', function (e) {
+                const dark = e.detail && e.detail.theme === 'dark';
+                Chart.defaults.color = dark ? '#cbd5e1' : '#64748b';
+                Object.values(Chart.instances || {}).forEach(function (chart) {
+                    try { chart.update('none'); } catch (err) { /* ignore */ }
+                });
+            });
+        }
 
         const monthly = config.monthlyStats || [];
         const monthlyCanvas = document.getElementById('monthlyRevenueChart');

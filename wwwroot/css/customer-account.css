@@ -1271,3 +1271,168 @@
         animation: none !important;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .ca-page,
+[data-theme="dark"] #caTxModal {
+    --primary-soft: rgba(255, 122, 0, 0.14);
+    --primary-light: rgba(255, 122, 0, 0.16);
+    --card-bg: var(--ry-surface);
+    --card-border: var(--ry-border);
+    --shadow-sm: var(--ry-shadow-sm);
+    --shadow-md: var(--ry-shadow-md);
+    --shadow-lg: var(--ry-shadow-lg);
+    --text-dark: var(--ry-text);
+    --text-muted: var(--ry-text-muted);
+    --debt: #fca5a5;
+    --debt-soft: rgba(239, 68, 68, 0.14);
+    --paid: #5eead4;
+    --paid-soft: rgba(20, 184, 166, 0.14);
+    --adjust: #fcd34d;
+    --adjust-soft: rgba(245, 158, 11, 0.14);
+}
+
+[data-theme="dark"] .ca-page .ca-chip-meta {
+    color: var(--ry-text);
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .ca-page .ca-btn-ghost,
+[data-theme="dark"] #caTxModal .btn-outline-secondary,
+[data-theme="dark"] #caTxModal .ca-quick-amounts button {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .ca-page .ca-btn-ghost:hover,
+[data-theme="dark"] #caTxModal .btn-outline-secondary:hover {
+    background: var(--ry-surface-3);
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="dark"] .ca-page .ca-stat--orders .ca-stat__icon {
+    background: rgba(99, 102, 241, 0.18);
+    color: #a5b4fc;
+}
+
+[data-theme="dark"] .ca-page .ca-tab {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .ca-page .ca-tab:hover {
+    background: var(--ry-hover);
+}
+
+[data-theme="dark"] .ca-page .ca-tab.is-active,
+[data-theme="dark"] .ca-page .ca-tab.is-active .ca-tab__count,
+[data-theme="dark"] #caTxModal .ca-segment__btn.is-active i,
+[data-theme="dark"] #caTxModal .ca-segment__btn.is-active strong,
+[data-theme="dark"] #caTxModal .ca-sign__btn.is-active,
+[data-theme="dark"] #caTxModal .ca-quick-amounts button:hover {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .ca-page .ca-tab__count {
+    background: var(--ry-surface-3);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .ca-page .ca-tab.is-active .ca-tab__count {
+    background: var(--ry-surface);
+}
+
+[data-theme="dark"] .ca-page .ca-panel__head {
+    border-bottom-color: var(--ry-border);
+    background: linear-gradient(180deg, var(--ry-surface), var(--ry-surface-2));
+}
+
+[data-theme="dark"] .ca-page .ca-table thead th {
+    background: var(--ry-surface-2);
+    color: var(--ry-text-muted);
+    border-bottom-color: var(--ry-border);
+}
+
+[data-theme="dark"] .ca-page .ca-table tbody td {
+    color: var(--ry-text);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .ca-page .ca-table tbody tr:hover {
+    background: var(--ry-hover);
+}
+
+[data-theme="dark"] .ca-page .ca-note {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .ca-page .ca-skeleton__row {
+    background: linear-gradient(90deg, var(--ry-surface-2) 25%, var(--ry-surface-3) 37%, var(--ry-surface-2) 63%);
+}
+
+[data-theme="dark"] .ca-page .ca-type--debt,
+[data-theme="dark"] .ca-page .ca-delta--up,
+[data-theme="dark"] #caTxModal .ca-field-error,
+[data-theme="dark"] #caTxModal .ca-preview__value--debt {
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .ca-page .ca-type--payment,
+[data-theme="dark"] .ca-page .ca-delta--down,
+[data-theme="dark"] #caTxModal .ca-preview__value--credit {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .ca-page .ca-receipt-flag {
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.18);
+}
+
+/* Transaction modal */
+[data-theme="dark"] #caTxModal .modal-header {
+    background: linear-gradient(180deg, var(--ry-surface), var(--ry-surface-2));
+}
+
+[data-theme="dark"] #caTxModal .modal-footer {
+    background: var(--ry-surface);
+}
+
+[data-theme="dark"] #caTxModal .form-control {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] #caTxModal .ca-segment__btn,
+[data-theme="dark"] #caTxModal .ca-sign__btn {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] #caTxModal .ca-segment__btn:hover,
+[data-theme="dark"] #caTxModal .ca-sign__btn:hover {
+    background: var(--ry-surface-3);
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="dark"] #caTxModal .ca-preview {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] #caTxModal .ca-audit-note {
+    color: var(--ry-warning-text);
+}
+
+@media (max-width: 767.98px) {
+    [data-theme="dark"] .ca-page .ca-table tbody tr,
+    [data-theme="dark"] .ca-page .ca-table tbody tr:hover {
+        background: var(--ry-surface-2);
+        border-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .ca-page .ca-table tbody td {
+        border-bottom-color: var(--ry-border);
+    }
+}

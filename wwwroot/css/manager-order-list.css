@@ -1567,3 +1567,413 @@
         justify-content: center;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .orders-page {
+    --card-border: var(--ry-border);
+    --primary-light: rgba(255, 122, 0, 0.14);
+    color: var(--ry-text);
+}
+
+/* Filters */
+[data-theme="dark"] .orders-page .filter-card {
+    background: var(--ry-surface);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .orders-page .filter-card .form-label {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .filter-card .form-control,
+[data-theme="dark"] .orders-page .filter-card .form-select {
+    border-color: var(--ry-border-strong);
+    background-color: var(--ry-input-bg);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .filter-card .form-control:hover,
+[data-theme="dark"] .orders-page .filter-card .form-select:hover,
+[data-theme="dark"] .orders-page .filter-card .form-control:focus,
+[data-theme="dark"] .orders-page .filter-card .form-select:focus {
+    border-color: var(--ry-primary);
+    background-color: var(--ry-input-bg);
+}
+
+[data-theme="dark"] .orders-page .filter-period-bar {
+    border-top-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .orders-page .filter-period-label {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .orders-page .btn-outline-secondary {
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .btn-outline-secondary:hover {
+    background: var(--ry-surface-2);
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .orders-page .quick-filter-btn {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .pagination .page-link {
+    color: var(--ry-text);
+}
+
+/* Order cards */
+[data-theme="dark"] .orders-page .order-card {
+    background: var(--ry-surface);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .orders-page .order-header {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .orders-page .food-header {
+    background: var(--ry-surface-2);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .orders-page .food-name {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .food-qty,
+[data-theme="dark"] .orders-page .food-price,
+[data-theme="dark"] .orders-page .food-sum {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .orders-page .total-box {
+    background: var(--ry-surface-2);
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--estimate {
+    border-color: rgba(45, 212, 191, 0.24);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.14), rgba(20, 184, 166, 0.04)), var(--ry-surface-2);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--issued {
+    border-color: rgba(52, 211, 153, 0.24);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.04)), var(--ry-surface-2);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--estimate .order-receipt-card__icon {
+    background: rgba(45, 212, 191, 0.16);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--issued .order-receipt-card__icon {
+    background: rgba(52, 211, 153, 0.16);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card__amount {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card__meta {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--estimate .order-receipt-card__icon,
+[data-theme="dark"] .orders-page .order-receipt-card--estimate .order-receipt-card__label {
+    color: #5eead4;
+}
+
+[data-theme="dark"] .orders-page .order-receipt-card--issued .order-receipt-card__icon,
+[data-theme="dark"] .orders-page .order-receipt-card--issued .order-receipt-card__label {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .orders-page .customer-info .customer-name {
+    color: #fdba74;
+}
+
+[data-theme="dark"] .orders-page .customer-info .customer-mobile {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .customer-info.unknown {
+    background: var(--ry-surface-2);
+}
+
+@media (max-width: 576px) {
+    [data-theme="dark"] .orders-page .food-row {
+        border-bottom-color: var(--ry-border);
+        background: var(--ry-surface-2);
+    }
+
+    [data-theme="dark"] .orders-page .total-box {
+        background: rgba(16, 185, 129, 0.12);
+    }
+}
+
+/* Delivery / courier */
+[data-theme="dark"] .orders-page .delivery-meta {
+    background: linear-gradient(180deg, rgba(255, 122, 0, 0.08) 0%, var(--ry-surface) 55%);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .orders-page .delivery-meta__item {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .orders-page .delivery-meta__icon {
+    background: var(--ry-primary-soft);
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .orders-page .delivery-meta__value {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .orders-page .courier-panel {
+    background: var(--ry-surface);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .orders-page .courier-panel.is-unassigned {
+    background: rgba(255, 122, 0, 0.08);
+}
+
+[data-theme="dark"] .orders-page .courier-panel.is-assigned {
+    background: rgba(16, 185, 129, 0.08);
+}
+
+[data-theme="dark"] .orders-page .courier-panel.is-readonly {
+    border-color: var(--ry-border);
+    background: var(--ry-surface-2);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__avatar {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .orders-page .courier-panel.is-assigned .courier-panel__avatar {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.16);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__label {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__name {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__select-wrap .courier-select {
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text);
+    background-color: var(--ry-input-bg);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__clear {
+    color: var(--ry-text);
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__clear:hover {
+    color: var(--ry-danger-text);
+    background: var(--ry-danger-soft);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__badge.is-assigned {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.16);
+}
+
+[data-theme="dark"] .orders-page .courier-panel__badge.is-unassigned {
+    color: var(--ry-primary-text);
+    background: var(--ry-primary-soft);
+}
+
+[data-theme="dark"] .orders-page .courier-failure__icon {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .orders-page .courier-failure__title,
+[data-theme="dark"] .orders-page .courier-failure__reason,
+[data-theme="dark"] .orders-page .courier-failure__time {
+    color: var(--ry-warning-text);
+}
+
+/* Receipt issue modal */
+[data-theme="dark"] .receipt-issue-modal__header {
+    border-bottom-color: var(--ry-border);
+    background: linear-gradient(180deg, rgba(255, 122, 0, 0.1) 0%, var(--ry-surface) 100%);
+}
+
+[data-theme="dark"] .receipt-issue-modal__footer {
+    border-top-color: var(--ry-border);
+}
+
+[data-theme="dark"] .receipt-issue-modal__subtitle,
+[data-theme="dark"] .receipt-section__hint,
+[data-theme="dark"] .receipt-discount-header__chevron,
+[data-theme="dark"] .receipt-charge-row__unit {
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .receipt-section__label,
+[data-theme="dark"] .receipt-discount-header__title {
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .receipt-order-type__btn {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .receipt-order-type__btn:hover {
+    background: var(--ry-primary-soft);
+}
+
+[data-theme="dark"] .receipt-order-type__btn.is-active {
+    background: linear-gradient(180deg, rgba(255, 122, 0, 0.2) 0%, rgba(255, 122, 0, 0.1) 100%);
+    border-color: rgba(255, 122, 0, 0.55);
+}
+
+[data-theme="dark"] .receipt-order-type__btn.is-active i,
+[data-theme="dark"] .receipt-order-type__btn.is-active .receipt-order-type__title,
+[data-theme="dark"] .receipt-order-type__btn.is-active .receipt-order-type__hint {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .receipt-discount-section {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .receipt-discount-code-input {
+    border-color: var(--ry-border-strong);
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .receipt-discount-header__chip,
+[data-theme="dark"] .receipt-discount-code-applied__chip {
+    background: var(--ry-primary-soft);
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .receipt-discount-code-applied {
+    background: var(--ry-success-soft);
+}
+
+[data-theme="dark"] .receipt-discount-header__hint.is-applied,
+[data-theme="dark"] .receipt-discount-code-applied__label {
+    color: var(--ry-success-text);
+}
+
+[data-theme="dark"] .receipt-discount-code-clear {
+    color: var(--ry-primary-text);
+}
+
+[data-theme="dark"] .receipt-discount-code-clear:hover {
+    background: var(--ry-primary-soft);
+}
+
+[data-theme="dark"] .receipt-discount-code-feedback.is-ok {
+    color: var(--ry-success-text);
+    background: var(--ry-success-soft);
+}
+
+[data-theme="dark"] .receipt-discount-code-feedback.is-error {
+    color: var(--ry-danger-text);
+    background: var(--ry-danger-soft);
+}
+
+[data-theme="dark"] .receipt-charge-row {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border);
+}
+
+[data-theme="dark"] .receipt-charge-row.is-locked {
+    background: var(--ry-surface-3);
+}
+
+[data-theme="dark"] .receipt-charge-row__title {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .receipt-charge-row__lock-hint {
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .receipt-charge-row__badge.is-fee {
+    background: var(--ry-info-soft);
+    color: var(--ry-info-text);
+}
+
+[data-theme="dark"] .receipt-charge-row__badge.is-tax {
+    background: var(--ry-warning-soft);
+    color: var(--ry-warning-text);
+}
+
+[data-theme="dark"] .receipt-charge-row__badge.is-discount {
+    background: var(--ry-success-soft);
+    color: var(--ry-success-text);
+}
+
+[data-theme="dark"] .receipt-charge-empty {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+    color: var(--ry-text-muted);
+}
+
+[data-theme="dark"] .receipt-summary {
+    background: linear-gradient(180deg, var(--ry-surface-2) 0%, var(--ry-surface-3) 100%);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .receipt-summary__row {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .receipt-summary__row.is-total {
+    border-top-color: var(--ry-border-strong);
+    color: var(--ry-text-strong);
+}
+
+[data-theme="dark"] .receipt-summary__amount.is-discount {
+    color: var(--ry-success-text);
+}
+
+[data-theme="dark"] .receipt-modal-loading {
+    background: rgba(11, 15, 23, 0.72);
+}
+
+[data-theme="dark"] .receipt-modal-loading__panel {
+    background: var(--ry-surface-2);
+    border: 1px solid var(--ry-border-strong);
+}
+
+[data-theme="dark"] .receipt-modal-loading__text {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .orders-page .debtor-badge,
+[data-theme="dark"] .debtor-badge {
+    background: var(--ry-danger-soft);
+    color: var(--ry-danger-text);
+}

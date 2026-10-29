@@ -3126,10 +3126,11 @@ D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.build.json.cache
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.development.json
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.build.endpoints.json
-D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.upToDateCheck.txt
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturan.3E290ECC.Up2Date
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.dll
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\refint\resturanyar.dll
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.pdb
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\ref\resturanyar.dll
+D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\swae.build.ex.cache
+D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.upToDateCheck.txt

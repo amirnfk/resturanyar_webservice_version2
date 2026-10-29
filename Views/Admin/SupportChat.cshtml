@@ -526,6 +526,79 @@
         .sc-admin-card { min-height: 360px; }
         .sc-online-pill { width: 100%; justify-content: center; margin-right: 0; }
     }
+
+    /* ===== DARK MODE ===== */
+    [data-theme="dark"] .sc-admin-page {
+        --sc-ink: var(--ry-text);
+        --sc-muted: var(--ry-text-muted);
+        --sc-line: var(--ry-border);
+        --sc-surface: var(--ry-surface);
+        --sc-surface-2: var(--ry-surface-2);
+    }
+
+    [data-theme="dark"] .sc-admin-toolbar {
+        background: linear-gradient(145deg, #0e1120 0%, #1a2234 100%);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    [data-theme="dark"] .sc-admin-card {
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] .sc-chat-header {
+        background: linear-gradient(145deg, rgba(255, 122, 0, 0.12), var(--ry-surface));
+    }
+
+    [data-theme="dark"] .sc-item {
+        border-bottom-color: var(--ry-border);
+    }
+
+    [data-theme="dark"] .sc-item:hover {
+        background: var(--ry-hover);
+    }
+
+    [data-theme="dark"] .sc-item.active {
+        background: linear-gradient(90deg, rgba(255, 122, 0, 0.16), rgba(245, 158, 11, 0.08));
+    }
+
+    [data-theme="dark"] .sc-item-time {
+        color: var(--ry-text-faint);
+    }
+
+    [data-theme="dark"] .sc-bubble.customer {
+        background: var(--ry-surface-2);
+        color: var(--ry-text);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .sc-bubble.customer .sc-quote {
+        background: rgba(255, 122, 0, 0.14);
+        color: #fdba74;
+    }
+
+    [data-theme="dark"] .sc-composer {
+        background: rgba(18, 24, 38, 0.95);
+    }
+
+    [data-theme="dark"] .sc-composer .sc-input-wrap:focus-within {
+        background: var(--ry-input-bg);
+    }
+
+    [data-theme="dark"] .sc-composer .sc-attach:hover:not(:disabled) {
+        background: var(--ry-surface-2);
+    }
+
+    [data-theme="dark"] .sc-reply-bar {
+        background: rgba(255, 122, 0, 0.12);
+    }
+
+    [data-theme="dark"] .sc-reply-bar-who {
+        color: #fdba74;
+    }
+
+    [data-theme="dark"] .sc-ctx-row span {
+        color: var(--ry-text);
+    }
 </style>
 
 <div class="sc-admin-page">

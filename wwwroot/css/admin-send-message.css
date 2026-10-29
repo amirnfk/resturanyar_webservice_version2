@@ -401,3 +401,71 @@
         width: 100%;
     }
 }
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .sm-page {
+    --sm-orange-soft: rgba(255, 122, 0, 0.16);
+    --sm-text: var(--ry-text);
+    --sm-muted: var(--ry-text-muted);
+    --sm-border: var(--ry-border-strong);
+    --sm-card: var(--ry-surface);
+    --sm-bg: var(--ry-bg);
+    --sm-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .sm-btn--ghost {
+    background: var(--ry-surface-2);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .sm-btn--ghost:hover {
+    background: var(--ry-surface-3);
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+[data-theme="dark"] .sm-card__section,
+[data-theme="dark"] .sm-picker__item {
+    border-bottom-color: var(--ry-border);
+}
+
+[data-theme="dark"] .sm-label {
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .sm-input,
+[data-theme="dark"] .sm-textarea {
+    background: var(--ry-input-bg);
+    color: var(--ry-text);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .sm-type-card {
+    background: var(--ry-surface-2);
+    border-color: var(--ry-border-strong);
+}
+
+[data-theme="dark"] .sm-type-card.is-active,
+[data-theme="dark"] .sm-picker__item.is-checked {
+    background: var(--ry-primary-soft);
+    border-color: rgba(255, 122, 0, 0.45);
+}
+
+[data-theme="dark"] .sm-badge {
+    background: var(--ry-surface-3);
+    color: var(--ry-text);
+}
+
+[data-theme="dark"] .sm-picker__item:hover {
+    background: var(--ry-hover);
+}
+
+[data-theme="dark"] .sm-alert--success {
+    background: var(--ry-success-soft);
+    color: var(--ry-success-text);
+}
+
+[data-theme="dark"] .sm-field-error {
+    color: #fda4af;
+}

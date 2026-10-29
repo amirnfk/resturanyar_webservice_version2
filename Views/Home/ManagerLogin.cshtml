@@ -163,20 +163,5 @@
     </div>
 
     <script src="~/js/managerlogin.js" asp-append-version="true"></script>
-    <script>
-        (function() {
-          const html = document.documentElement;
-          const storageKey = "ry-theme";
-          try {
-            const saved = localStorage.getItem(storageKey);
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (saved) {
-              html.setAttribute('data-theme', saved);
-            } else if (prefersDark) {
-              html.setAttribute('data-theme', 'dark');
-            }
-          } catch(e) {}
-        })();
-    </script>
 </body>
 </html>
