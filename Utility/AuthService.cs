@@ -107,7 +107,12 @@ namespace resturanyar.Utility
             };
         }
 
-        public async Task SignInOwnerCookieAsync(Owner owner)
+        public Task SignInOwnerCookieAsync(Owner owner)
+        {
+            return SignInOwnerCookieAsync(owner, restaurantId: null);
+        }
+
+        public async Task SignInOwnerCookieAsync(Owner owner, int? restaurantId)
         {
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext == null) return;
@@ -118,6 +123,11 @@ namespace resturanyar.Utility
                 new Claim("OwnerId", owner.Id.ToString()),
                 new Claim(ClaimTypes.Role, "Owner")
             };
+
+            if (restaurantId.HasValue && restaurantId.Value > 0)
+            {
+                claims.Add(new Claim("RestaurantId", restaurantId.Value.ToString()));
+            }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);

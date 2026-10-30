@@ -45,6 +45,7 @@ namespace Resturanyar.Data
         public DbSet<CustomerAccountTransaction> CustomerAccountTransactions { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<StaffRefreshToken> StaffRefreshTokens { get; set; }
+        public DbSet<WebLoginTicket> WebLoginTickets { get; set; }
         public DbSet<AdminMessage> AdminMessages { get; set; }
         public DbSet<AdminMessageRecipient> AdminMessageRecipients { get; set; }
         public DbSet<AdminMessageRead> AdminMessageReads { get; set; }

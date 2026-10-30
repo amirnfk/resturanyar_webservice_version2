@@ -41,6 +41,12 @@
         size: 11
     };
 
+    // Theme-aware chart chrome (ticks/legend text, grid lines, doughnut segment borders)
+    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+    const segmentBorder = isDarkTheme ? '#121826' : '#fff';
+    Chart.defaults.color = isDarkTheme ? '#cbd5e1' : '#666';
+    Chart.defaults.borderColor = isDarkTheme ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+
     function applyFontOptions(options) {
         if (!options) options = {};
         options.font = persianFont;
@@ -140,7 +146,7 @@
                         data: chargeValues,
                         backgroundColor: chargeLabels.map((_, i) => chargePalette[i % chargePalette.length]),
                         borderWidth: 1,
-                        borderColor: '#fff'
+                        borderColor: segmentBorder
                     }]
                 },
                 options: applyFontOptions({
@@ -220,7 +226,7 @@
                     datasets: [{
                         data: statusValues,
                         backgroundColor: statusBg,
-                        borderWidth: 1, borderColor: '#fff'
+                        borderWidth: 1, borderColor: segmentBorder
                     }]
                 },
                 options: applyFontOptions({
@@ -286,3 +292,13 @@
         }
     }
 };
+
+// Re-render report charts when the theme changes (bound once).
+if (!window.__ryReportChartsThemeBound) {
+    window.__ryReportChartsThemeBound = true;
+    document.addEventListener('ry-theme-change', function () {
+        if (typeof window.initManagerReportCharts === 'function' && document.querySelector('.manager-reports-page')) {
+            window.initManagerReportCharts();
+        }
+    });
+}

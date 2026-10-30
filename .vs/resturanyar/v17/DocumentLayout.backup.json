@@ -615,9 +615,9 @@
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
               "RelativeDocumentMoniker": "appsettings.Development.json",
-              "ToolTip": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json",
-              "RelativeToolTip": "appsettings.Development.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAB5AAAAAAAAAA==",
+              "ToolTip": "D:\\My Workspace\\My Workspace\\Resturanyar-Web\\resturanyar_webservice_version2\\appsettings.Development.json*",
+              "RelativeToolTip": "appsettings.Development.json*",
+              "ViewState": "AgIAACYAAAAAAAAAAAAswCkAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-06-11T15:27:44.275Z",
               "EditorCaption": ""
@@ -680,7 +680,8 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-06-08T11:45:26.81Z"
+              "WhenOpened": "2026-06-08T11:45:26.81Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",

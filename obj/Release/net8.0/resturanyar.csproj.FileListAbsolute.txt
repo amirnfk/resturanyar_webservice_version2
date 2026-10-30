@@ -3132,5 +3132,4 @@ D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.pdb
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\resturanyar.genruntimeconfig.cache
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\ref\resturanyar.dll
-D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\swae.build.ex.cache
 D:\My Workspace\My Workspace\Resturanyar-Web\resturanyar_webservice_version2\obj\Release\net8.0\staticwebassets.upToDateCheck.txt

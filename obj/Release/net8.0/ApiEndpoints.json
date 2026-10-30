@@ -5627,6 +5627,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "resturanyar.Controllers.Api.V2.UserApiController",
+    "Method": "CreateWebLoginTicket",
+    "RelativePath": "api/v2/UserApi/web-login-ticket",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "resturanyar.Controllers.Api.V2.UserApiController\u002BWebLoginTicketRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "resturanyar.Controllers.ArticlesController",
     "Method": "Index",
     "RelativePath": "articles",
@@ -5654,6 +5670,22 @@
         "Name": "slug",
         "Type": "System.String",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "resturanyar.Controllers.WebLoginController",
+    "Method": "WebLogin",
+    "RelativePath": "Auth/WebLogin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ticket",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

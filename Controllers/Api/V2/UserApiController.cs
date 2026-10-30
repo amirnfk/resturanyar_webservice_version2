@@ -1004,6 +1004,9 @@ namespace resturanyar.Controllers.Api.V2
                 if (restaurant == null)
                     return NotFound(new { success = false, message = "رستوران یافت نشد یا شما دسترسی ندارید." });
 
+                if (request.Seats < 1)
+                    return Ok(new { success = false, message = "تعداد صندلی باید حداقل ۱ باشد." });
+
                 bool exists = await _context.RestaurantTables.AnyAsync(t =>
                     t.RestaurantId == request.RestaurantId &&
                     t.TableName.ToLower().Trim() == request.TableName.ToLower().Trim());
@@ -1047,6 +1050,9 @@ namespace resturanyar.Controllers.Api.V2
                     .FirstOrDefaultAsync(t => t.TableId == request.TableId && t.RestaurantId == request.RestaurantId);
                 if (table == null)
                     return NotFound(new { success = false, message = "میز یافت نشد یا متعلق به این رستوران نیست" });
+
+                if (request.Seats < 1)
+                    return Ok(new { success = false, message = "تعداد صندلی باید حداقل ۱ باشد." });
 
                 bool duplicate = await _context.RestaurantTables.AnyAsync(t =>
                     t.RestaurantId == request.RestaurantId &&

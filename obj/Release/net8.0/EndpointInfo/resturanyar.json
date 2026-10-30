@@ -5277,6 +5277,27 @@
           }
         }
       }
+    },
+    "/Auth/WebLogin": {
+      "get": {
+        "tags": [
+          "WebLogin"
+        ],
+        "parameters": [
+          {
+            "name": "ticket",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {

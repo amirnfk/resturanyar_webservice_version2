@@ -46,12 +46,15 @@ i, .fas, .far, .fab, .bi, .fa, .material-icons, [class*="icon"] {
 }
 
 [data-theme="dark"] {
-    --bg: #0a0c12;
-    --card: #11151f;
-    --text: #e9eef7;
-    --muted: #8b92a8;
-    --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.4);
+    /* aligned with the shared --ry-* palette in theme.css */
+    --bg: #0b0f17;
+    --card: #121826;
+    --text: #e8eef8;
+    --muted: #94a3b8;
+    --muted-light: #6b7a90;
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.55);
 }
 
 html, body {
@@ -1831,4 +1834,65 @@ html, body {
         background: #fff;
         border-color: #e8edf5;
     }
+}
+
+/* ===== DARK MODE ===== */
+/* Small gaps left by the original dark rules */
+[data-theme="dark"] .dash-hero__logo {
+    background: var(--card);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .progress-steps {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .change-badge.zero {
+    color: var(--muted);
+}
+
+[data-theme="dark"] .change-badge.down {
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .dash-stock-card--ok .dash-stock-card__icon,
+[data-theme="dark"] .dash-stock-card__badge--ok {
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .dash-stock-chip--critical .dash-stock-chip__current {
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .top-food-mini {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .top-food__img {
+    background: var(--ry-surface-2, #1a2234);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+    /* Soften bright JPEG placeholders on dark surfaces */
+    mix-blend-mode: normal;
+    object-fit: cover;
+}
+
+[data-theme="dark"] .tile__arrow {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .progress-steps .step-line,
+[data-theme="dark"] .progress-steps .connector,
+[data-theme="dark"] .status-flow__line,
+[data-theme="dark"] .legend-grid .arrow,
+[data-theme="dark"] .order-flow-arrow {
+    color: #94a3b8;
+    opacity: 0.85;
+}
+
+[data-theme="dark"] .dash-hero__actions .btn-chip,
+[data-theme="dark"] .dash-hero__actions .action-btn {
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.05);
 }

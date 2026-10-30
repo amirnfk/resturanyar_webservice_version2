@@ -2865,6 +2865,11 @@ namespace Resturanyar.Controllers.Api
                     return NotFound(new { success = false, message = "رستوران یافت نشد" });
                 }
 
+                if (request.Seats < 1)
+                {
+                    return Ok(new { success = false, message = "تعداد صندلی باید حداقل ۱ باشد." });
+                }
+
                 bool exists = _context.RestaurantTables.Any(t =>
                     t.RestaurantId == request.RestaurantId &&
                     t.TableName.ToLower().Trim() == request.TableName.ToLower().Trim());
@@ -2979,6 +2984,15 @@ namespace Resturanyar.Controllers.Api
                     {
                         Success = false,
                         Message = "میز یافت نشد یا متعلق به این رستوران نیست"
+                    });
+                }
+
+                if (request.Seats < 1)
+                {
+                    return Ok(new GenericResponse
+                    {
+                        Success = false,
+                        Message = "تعداد صندلی باید حداقل ۱ باشد."
                     });
                 }
 

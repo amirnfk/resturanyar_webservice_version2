@@ -1,26 +1,10 @@
-﻿// Theme Manager (Existing Code)
+﻿// Theme: applied/toggled by the shared module in /js/theme.js (window.RYTheme).
+// The #themeToggle button is wired there; we only re-theme the charts on change.
 const html = document.documentElement;
-const key = "ry-theme";
-try {
-    const saved = localStorage.getItem(key);
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved) html.setAttribute('data-theme', saved);
-    else if (prefersDark) html.setAttribute('data-theme', 'dark');
-} catch (e) { }
-
-const btn = document.getElementById('themeToggle');
-const setIcon = () => {
-    if (!btn) return;
-    const dark = html.getAttribute('data-theme') === 'dark';
-    btn.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-};
-setIcon();
-btn?.addEventListener('click', () => {
-    const current = html.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    try { localStorage.setItem(key, next); } catch (e) { }
-    setIcon();
+if (window.RYTheme) {
+    window.RYTheme.syncToggleIcons();
+}
+document.addEventListener('ry-theme-change', () => {
     // به‌روزرسانی رنگ چارت‌ها در صورت تغییر تم
     updateChartsTheme();
 });

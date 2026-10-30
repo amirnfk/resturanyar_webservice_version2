@@ -39,6 +39,7 @@ namespace resturanyar.Controllers
         private readonly resturanyar.Services.Receipt.IReceiptService _receiptService;
         private readonly resturanyar.Services.Inventory.IInventoryService _inventoryService;
         private readonly IHubContext<OrderHub> _hubContext;
+        private readonly WebAccessService _webAccess;
 
         public HomeController(
             AppDbContext context,
@@ -47,7 +48,8 @@ namespace resturanyar.Controllers
             IWebHostEnvironment env,
             resturanyar.Services.Receipt.IReceiptService receiptService,
             resturanyar.Services.Inventory.IInventoryService inventoryService,
-            IHubContext<OrderHub> hubContext)
+            IHubContext<OrderHub> hubContext,
+            WebAccessService webAccess)
         {
             _context = context;
             _logger = logger;
@@ -56,6 +58,7 @@ namespace resturanyar.Controllers
             _receiptService = receiptService;
             _inventoryService = inventoryService;
             _hubContext = hubContext;
+            _webAccess = webAccess;
         }
         public IActionResult Manage(int restaurantId)
         {
@@ -871,32 +874,28 @@ namespace resturanyar.Controllers
             return code;
         }
 
+        [Authorize]
         public async Task<IActionResult> SelectRestaurant(int restaurantId)
         {
-            var subscription = await _context.Subscriptions
-                .Include(s => s.SubscriptionPlan)
-                .Where(s =>
-                    s.RestaurantId == restaurantId &&
-                    s.Status == "Active" &&
-                    s.EndDate >= DateTime.Now)
-                .OrderByDescending(s => s.EndDate)
-                .ThenByDescending(s => s.Id)
-                .FirstOrDefaultAsync();
+            if (User.Identity?.IsAuthenticated != true)
+                return RedirectToAction("ManagerLogin");
 
-            if (subscription == null || subscription.SubscriptionPlan == null || !subscription.SubscriptionPlan.CanUseWeb)
+            var ownerId = User.GetOwnerId();
+            if (ownerId == null)
+                return RedirectToAction("ManagerLogin");
+
+            if (!await _webAccess.IsOwnerOfRestaurantAsync(ownerId.Value, restaurantId))
+                return Forbid();
+
+            if (!await _webAccess.CanUseWebAsync(restaurantId))
             {
-                // ذخیره restaurantId و نام رستوران در Session
                 HttpContext.Session.SetInt32("UpgradeRestaurantId", restaurantId);
                 var restaurant = await _context.Restaurants.FindAsync(restaurantId);
                 if (restaurant != null)
                     HttpContext.Session.SetString("UpgradeRestaurantName", restaurant.name);
 
-                // هدایت به Upgrade بدون پارامتر (بدون نمایش ID در URL)
                 return RedirectToAction("Upgrade");
             }
-
-            if (!User.Identity.IsAuthenticated)
-                return RedirectToAction("ManagerLogin");
 
             var claims = User.Claims.Where(c => c.Type != "RestaurantId").ToList();
             claims.Add(new Claim("RestaurantId", restaurantId.ToString()));

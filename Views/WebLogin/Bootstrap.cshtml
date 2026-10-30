@@ -1,0 +1,44 @@
+@model resturanyar.Controllers.WebLoginBootstrapViewModel
+@{
+    Layout = null;
+    Context.Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+    Context.Response.Headers["Pragma"] = "no-cache";
+    Context.Response.Headers["Referrer-Policy"] = "no-referrer";
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>ورود خودکار...</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f7f7f7;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <p>در حال ورود به پنل...</p>
+    <script>
+        (function () {
+            try {
+                localStorage.setItem('accessToken', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AccessToken)));
+                localStorage.setItem('refreshToken', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RefreshToken)));
+                localStorage.setItem('phone', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Phone ?? "")));
+            } catch (e) { /* ignore storage errors */ }
+            location.replace(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TargetUrl)));
+        })();
+    </script>
+    <noscript>
+        <p>برای ادامه، جاوااسکریپت را فعال کنید و دوباره از اپلیکیشن وارد شوید.</p>
+    </noscript>
+</body>
+</html>

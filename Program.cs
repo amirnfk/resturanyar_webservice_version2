@@ -94,6 +94,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<resturanyar.Utility.TokenService>();
 builder.Services.AddScoped<resturanyar.Utility.AuthService>();
+builder.Services.AddScoped<resturanyar.Utility.WebAccessService>();
 builder.Services.AddScoped<resturanyar.Utility.MessageService>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptCalculationEngine, resturanyar.Services.Receipt.ReceiptCalculationEngine>();
 builder.Services.AddScoped<resturanyar.Services.Receipt.IReceiptRenderer, resturanyar.Services.Receipt.HtmlReceiptRenderer>();
@@ -242,6 +243,25 @@ builder.Services.AddRateLimiter(options =>
                 PermitLimit = 3,                 // max 3 attempts
                 QueueLimit = 0,
                 Window = TimeSpan.FromMinutes(5) // within 5 minutes
+            });
+    });
+
+    // ---- Android → web SSO ticket issuance ----
+    // Partition by IP because UseRateLimiter runs before UseAuthentication.
+    options.AddPolicy("WebLoginTicketPolicy", httpContext =>
+    {
+        var ip = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                 ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                 ?? "unknown_ip";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: "web_login_ticket:" + ip,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
             });
     });
 });
